@@ -3,7 +3,7 @@
 Every locked choice and why. Entries are in the order they were made. **Index:**
 - **Product:** Originality · Body Map Required · Crew · Trends Over Single Readings · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
 - **Data and content:** No Medicines or Diagnoses · Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
-- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open)
+- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open) · Logic Engine · Logic Engine Assumptions · Logic Tests
 - **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
 
 ## Frontend
@@ -615,3 +615,81 @@ function and health status. It's also central to the demo.
 
 Status:
 LOCKED
+
+---
+
+## Logic Engine
+
+CHECKLIST §2 lives in `src/lib/engine/` as plain JavaScript functions (no React, DOM,
+database or network), each marked with the checklist item it satisfies. Import from
+`@/lib/engine`. `evaluateMission(records, baselines, fromDay, toDay)` runs everything for
+one astronaut.
+- **One source of truth for health numbers.** Every threshold, source, region, exam and
+  search keyword is read from `src/data/`. Each band in `src/data/indicators.js` now has a
+  `check`: the machine-readable form of its `rule` text (e.g. `{ below: 70 }`), validated by
+  `npm run check:content`. Keep `rule` and `check` in step when editing a band.
+- **"Urgent" bands are the red limits:** they open the red-limit screen and cap the health
+  score at 25. Streak bands (e.g. short sleep 3+ nights in a row) need consecutive days; a
+  missing day breaks the streak. Heart rate and SpO₂ have no bands, so they're judged only
+  by drift (Heart Rate and SpO₂).
+- **Baselines:** sample standard deviation (n − 1). The raw SD is stored; the per-indicator
+  minimum is applied in the z-score step. Missing values are skipped, never filled in, and
+  too few readings gives no numbers.
+
+Reason:
+Keeps the engine testable on its own and keeps health numbers in one reviewed place
+(AGENTS.md: never hard-code health numbers).
+
+Status:
+ACTIVE
+
+---
+
+## Logic Engine Assumptions
+
+Choices made while building CHECKLIST §2 where no decision existed. Each is marked
+ASSUMPTION in the code; change it in one place, then run `npm test`.
+- **Daily-record field names** (`RECORD_FIELDS` in `src/lib/engine/indicators.js`): camelCase,
+  e.g. `heartRate`, `bpSystolic`, `bpDiastolic`, `glucose` (mg/dL), `temperature` (°C),
+  `sleepHours`, `mood`, `reactionMedianMs`, `reactionLapses`, `reactionFalseStarts`,
+  `exerciseMinutes`, `symptoms` (list of symptom ids), `spo2`, `radiationMsv`, `missionDay`.
+  CHECKLIST §1 "Daily record defined" should confirm or rename them.
+- **Drift-tracked:** heart rate, both blood-pressure numbers, glucose, temperature, sleep, mood,
+  reaction median and lapses, exercise and SpO₂. Not tracked: false starts (no worrying
+  direction given), symptoms (not a number), radiation dose (a running total).
+- **Minimum spread `s`** (Drift Cut-off gives none): heart rate 2 bpm, systolic 3 mmHg,
+  diastolic 2 mmHg, glucose 4 mg/dL, temperature 0.1 °C, sleep 0.25 h, mood 0.3, reaction
+  median 10 ms, lapses 0.5, exercise 5 min, SpO₂ 0.5 %. Tune after simulator runs.
+- **Pre-flight baseline window:** mission days −30 to −1. **Minimum readings per baseline:** 10.
+- **"Expected adaptation"** (status not defined before): the 7-day average differs from the
+  PRE-FLIGHT baseline by z ≥ 3.5 in the worrying direction but is NOT drifting against the
+  in-flight baseline: "changed since Earth, stable in space". This gives the pre-flight
+  baseline its job. Before day 36 nothing can be "drifting".
+- **Alert escalation:** an alert starts on the first day with 2+ drifting groups and ends only
+  on a day WITH data that has fewer than 2; it escalates 14 days after it started. Days
+  without data neither start nor end an alert.
+- **Reminders:** every non-optional indicator plus the symptom check, once per mission day.
+- **Exam calendar:** an exam repeating every N days is first due on mission day N.
+- **Search:** a query counts as a symptom (emergency guides first) when all its words match an
+  emergency guide or symptom and it isn't the name of a measurement.
+- **Scenario Lab effect sizes** are invented demo values, never to be shown as physiology.
+
+Interim check of the 3.5 cut-off (Drift Cut-off asks for a re-run on our own simulator):
+with the engine and its test-data generator (`src/lib/engine/testData.js`), 100 healthy
+180-day missions gave 1 false alert and 100 of 100 declining missions were caught (median day
+101; decline from day 75). 68 of the 100 healthy missions had at least one "note" day, so the
+UI should present a note quietly. Re-run with the real mission simulator (§1).
+
+Status:
+ACTIVE (team to confirm)
+
+---
+
+## Logic Tests
+
+Engine functions are tested with Node's built-in test runner (`node:test`), so nothing extra
+is installed. Test files sit next to the code as `*.test.js`; run them with `npm test`. They
+use the real content in `src/data/`, so they also catch content and engine drifting apart.
+
+Status:
+ACTIVE

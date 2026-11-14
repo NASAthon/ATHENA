@@ -10,6 +10,15 @@
 // ATHENA design choices, NOT health thresholds.
 // These bands are red limits for single readings. Personal drift (z-score) is separate
 // (docs/DECISIONS.md > Drift Cut-off).
+//
+// `check` is the machine-readable form of `rule`, used by the logic engine
+// (src/lib/engine/redLimits.js). Keep the two in step when editing a band.
+// - A condition: { part?, below?, atMost?, atLeast?, above? }. `part` is "value" (default),
+//   or "systolic" / "diastolic" for blood pressure. All given limits must hold.
+// - Or { any: [conditions] } / { all: [conditions] } for two-number readings.
+// - streakDays: n  = the condition must hold on n days in a row, ending today.
+// - withSymptoms: [symptom ids] = only when one of these symptoms is also ticked.
+// A band without `check` is not evaluated automatically (e.g. reaction lapses).
 
 export const INDICATORS = [
   {
@@ -72,17 +81,17 @@ export const INDICATORS = [
       prevention: "Exercise, healthy diet, fluids before landing (NASA countermeasures).",
     },
     bands: [
-      { level: "normal", label: "Normal", rule: "Top below 120 and bottom below 80", basis: "clinical", sourceId: "cdc-bp-about",
+      { level: "normal", label: "Normal", rule: "Top below 120 and bottom below 80", basis: "clinical", sourceId: "cdc-bp-about", check: { all: [{ part: "systolic", below: 120 }, { part: "diastolic", below: 80 }] },
         action: "No action needed." },
-      { level: "watch", label: "Elevated", rule: "Top 120–129 and bottom below 80", basis: "clinical", sourceId: "cdc-bp-about",
+      { level: "watch", label: "Elevated", rule: "Top 120–129 and bottom below 80", basis: "clinical", sourceId: "cdc-bp-about", check: { all: [{ part: "systolic", atLeast: 120, below: 130 }, { part: "diastolic", below: 80 }] },
         action: "Re-measure tomorrow at the same time and keep logging." },
-      { level: "watch", label: "Stage 1 high", rule: "Top 130–139 or bottom 80–89", basis: "clinical", sourceId: "cdc-bp-about",
+      { level: "watch", label: "Stage 1 high", rule: "Top 130–139 or bottom 80–89", basis: "clinical", sourceId: "cdc-bp-about", check: { any: [{ part: "systolic", atLeast: 130, below: 140 }, { part: "diastolic", atLeast: 80, below: 90 }] },
         action: "Re-measure twice, 1–2 minutes apart. If it stays here for several days, note it for the flight surgeon." },
-      { level: "act", label: "Stage 2 high", rule: "Top 140 or more or bottom 90 or more", basis: "clinical", sourceId: "cdc-bp-about",
+      { level: "act", label: "Stage 2 high", rule: "Top 140 or more or bottom 90 or more", basis: "clinical", sourceId: "cdc-bp-about", check: { any: [{ part: "systolic", atLeast: 140 }, { part: "diastolic", atLeast: 90 }] },
         action: "Rest 5 minutes and re-measure. If it stays this high, report it to the flight surgeon." },
-      { level: "urgent", label: "Severe", rule: "Top above 180 and/or bottom above 120, no symptoms", basis: "clinical", sourceId: "cdc-bp-about",
+      { level: "urgent", label: "Severe", rule: "Top above 180 and/or bottom above 120, no symptoms", basis: "clinical", sourceId: "cdc-bp-about", check: { any: [{ part: "systolic", above: 180 }, { part: "diastolic", above: 120 }] },
         action: "Contact the flight surgeon now." },
-      { level: "urgent", label: "Emergency", rule: "Top above 180 and/or bottom above 120 with chest pain, shortness of breath, back pain, numbness, weakness, vision change or trouble speaking", basis: "clinical", sourceId: "cdc-bp-about",
+      { level: "urgent", label: "Emergency", rule: "Top above 180 and/or bottom above 120 with chest pain, shortness of breath, back pain, numbness, weakness, vision change or trouble speaking", basis: "clinical", sourceId: "cdc-bp-about", check: { any: [{ part: "systolic", above: 180 }, { part: "diastolic", above: 120 }], withSymptoms: ["chest-pain", "shortness-of-breath", "back-pain", "face-arm-speech", "vision-change"] },
         action: "Open the Emergency guide and alert the crew and flight surgeon immediately.", emergencyId: "severe-high-bp" },
     ],
     sourceIds: ["cdc-bp-about", "cdc-bp-measure", "nasa-risk-cardio"],
@@ -117,15 +126,15 @@ export const INDICATORS = [
       prevention: "Regular, balanced meals (NASA enhanced diets, more food variety).",
     },
     bands: [
-      { level: "urgent", label: "Low", rule: "Below 70 mg/dL", basis: "clinical", sourceId: "ada-hypoglycemia",
+      { level: "urgent", label: "Low", rule: "Below 70 mg/dL", basis: "clinical", sourceId: "ada-hypoglycemia", check: { below: 70 },
         action: "Treat now with the 15-15 rule (Emergency guide: Low blood sugar).", emergencyId: "low-blood-sugar" },
-      { level: "normal", label: "Normal (fasting)", rule: "70–99 mg/dL fasting", basis: "clinical", sourceId: "ada-diagnosis",
+      { level: "normal", label: "Normal (fasting)", rule: "70–99 mg/dL fasting", basis: "clinical", sourceId: "ada-diagnosis", check: { atLeast: 70, below: 100 },
         action: "No action needed." },
-      { level: "watch", label: "Raised (fasting)", rule: "100–125 mg/dL fasting", basis: "clinical", sourceId: "ada-diagnosis",
+      { level: "watch", label: "Raised (fasting)", rule: "100–125 mg/dL fasting", basis: "clinical", sourceId: "ada-diagnosis", check: { atLeast: 100, below: 126 },
         action: "Re-check fasting on another day. One reading isn't a diagnosis." },
-      { level: "act", label: "High (fasting)", rule: "126 mg/dL or more fasting", basis: "clinical", sourceId: "ada-diagnosis",
+      { level: "act", label: "High (fasting)", rule: "126 mg/dL or more fasting", basis: "clinical", sourceId: "ada-diagnosis", check: { atLeast: 126 },
         action: "Re-check fasting on another day and report to the flight surgeon." },
-      { level: "urgent", label: "Very high", rule: "Above 240 mg/dL", basis: "clinical", sourceId: "ada-hyperglycemia",
+      { level: "urgent", label: "Very high", rule: "Above 240 mg/dL", basis: "clinical", sourceId: "ada-hyperglycemia", check: { above: 240 },
         action: "Report to the flight surgeon. Don't exercise until they advise." },
     ],
     sourceIds: ["ada-diagnosis", "ada-hypoglycemia", "ada-hyperglycemia", "cdc-glucose-monitoring", "nasa-risk-nutrition"],
@@ -153,11 +162,11 @@ export const INDICATORS = [
       prevention: "Hygiene and surface cleaning; limiting contact before launch (NASA countermeasures).",
     },
     bands: [
-      { level: "urgent", label: "Very low (hypothermia)", rule: "Below 35.0°C (95°F)", basis: "clinical", sourceId: "cdc-hypothermia",
+      { level: "urgent", label: "Very low (hypothermia)", rule: "Below 35.0°C (95°F)", basis: "clinical", sourceId: "cdc-hypothermia", check: { below: 35 },
         action: "Medical emergency. Open the Emergency guide: Low body temperature.", emergencyId: "hypothermia" },
-      { level: "normal", label: "No fever", rule: "35.0–37.9°C", basis: "design", sourceId: "cdc-fever",
+      { level: "normal", label: "No fever", rule: "35.0–37.9°C", basis: "design", sourceId: "cdc-fever", check: { atLeast: 35, below: 38 },
         action: "No action needed. (Range is between the CDC hypothermia and fever cut-offs.)" },
-      { level: "act", label: "Fever", rule: "38.0°C (100.4°F) or above", basis: "clinical", sourceId: "cdc-fever",
+      { level: "act", label: "Fever", rule: "38.0°C (100.4°F) or above", basis: "clinical", sourceId: "cdc-fever", check: { atLeast: 38 },
         action: "Report to the flight surgeon and re-measure. A fever lasting more than 48 hours, or with a rash or trouble breathing, is more serious." },
     ],
     sourceIds: ["cdc-fever", "cdc-hypothermia", "nasa-risk-immune"],
@@ -185,11 +194,11 @@ export const INDICATORS = [
       prevention: "Lighting that mimics Earth's day and night; planned rest time (NASA countermeasures).",
     },
     bands: [
-      { level: "normal", label: "Enough", rule: "7 hours or more", basis: "clinical", sourceId: "cdc-sleep",
+      { level: "normal", label: "Enough", rule: "7 hours or more", basis: "clinical", sourceId: "cdc-sleep", check: { atLeast: 7 },
         action: "No action needed." },
-      { level: "watch", label: "Short", rule: "Under 7 hours", basis: "clinical", sourceId: "cdc-sleep",
+      { level: "watch", label: "Short", rule: "Under 7 hours", basis: "clinical", sourceId: "cdc-sleep", check: { below: 7 },
         action: "Plan rest time. Short sleep slows reactions." },
-      { level: "act", label: "Ongoing short sleep", rule: "Under 7 hours on 3 or more nights in a row", basis: "design", sourceId: "nasa-risk-sleep",
+      { level: "act", label: "Ongoing short sleep", rule: "Under 7 hours on 3 or more nights in a row", basis: "design", sourceId: "nasa-risk-sleep", check: { below: 7, streakDays: 3 },
         action: "Note it for the flight surgeon and review the schedule and lighting." },
     ],
     sourceIds: ["cdc-sleep", "nasa-risk-sleep"],
@@ -223,11 +232,11 @@ export const INDICATORS = [
       prevention: "Journaling, growing plants, private space and windows (NASA countermeasures).",
     },
     bands: [
-      { level: "normal", label: "Okay or better", rule: "3–5", basis: "design", sourceId: "nasa-risk-behavioural",
+      { level: "normal", label: "Okay or better", rule: "3–5", basis: "design", sourceId: "nasa-risk-behavioural", check: { atLeast: 3 },
         action: "No action needed." },
-      { level: "watch", label: "Low", rule: "1–2", basis: "design", sourceId: "nasa-risk-behavioural",
+      { level: "watch", label: "Low", rule: "1–2", basis: "design", sourceId: "nasa-risk-behavioural", check: { atMost: 2 },
         action: "Take time for rest or something you enjoy; talk to a crewmate." },
-      { level: "act", label: "Ongoing low mood", rule: "1–2 on 3 or more days in a row", basis: "design", sourceId: "nasa-risk-behavioural",
+      { level: "act", label: "Ongoing low mood", rule: "1–2 on 3 or more days in a row", basis: "design", sourceId: "nasa-risk-behavioural", check: { atMost: 2, streakDays: 3 },
         action: "Arrange a private talk with the flight surgeon or the mission's support team." },
     ],
     sourceIds: ["nasa-risk-behavioural", "nasa-hazard-isolation"],
@@ -284,9 +293,9 @@ export const INDICATORS = [
       prevention: "Resistance and aerobic exercise 6 to 7 days a week, about 1.5 hours a day (NASA).",
     },
     bands: [
-      { level: "normal", label: "On target", rule: "About 90 minutes or more", basis: "clinical", sourceId: "nasa-risk-fitness",
+      { level: "normal", label: "On target", rule: "About 90 minutes or more", basis: "clinical", sourceId: "nasa-risk-fitness", check: { atLeast: 90 },
         action: "No action needed." },
-      { level: "watch", label: "Below target", rule: "Under 90 minutes", basis: "design", sourceId: "nasa-risk-fitness",
+      { level: "watch", label: "Below target", rule: "Under 90 minutes", basis: "design", sourceId: "nasa-risk-fitness", check: { below: 90 },
         action: "Plan extra exercise time tomorrow." },
     ],
     sourceIds: ["nasa-risk-fitness", "nasa-risk-bone"],

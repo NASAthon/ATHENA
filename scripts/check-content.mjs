@@ -54,6 +54,7 @@ for (const i of INDICATORS) {
     check(["clinical", "design"].includes(b.basis), `${w} band ${n + 1}: bad basis "${b.basis}"`);
     check(b.basis === "design" || b.sourceId, `${w} band ${n + 1}: clinical band needs a source`);
     if (b.emergencyId) check(emergencyIds.has(b.emergencyId), `${w} band ${n + 1}: unknown emergency "${b.emergencyId}"`);
+    if (b.check) checkBandCheck(b.check, `${w} band ${n + 1}`);
   });
   kw(i, w);
 }
@@ -91,6 +92,22 @@ check(MISSION_MODES.some((m) => m.id === DEFAULT_MISSION_MODE), `unknown DEFAULT
 for (const i of INDICATORS) {
   if (i.input) check(i.input.min < i.input.max, `indicator ${i.id}: input.min must be below input.max`);
   if (i.inputs) i.inputs.forEach((f) => check(f.min < f.max, `indicator ${i.id} ${f.id}: min must be below max`));
+}
+
+// Machine-readable band checks used by the logic engine (src/data/indicators.js header).
+function checkBandCheck(c, where) {
+  const LIMITS = ["below", "atMost", "atLeast", "above"];
+  const condition = (x, w) => {
+    const keys = Object.keys(x);
+    check(keys.every((k) => k === "part" || LIMITS.includes(k)), `${w}: unknown key in check condition`);
+    check(LIMITS.some((k) => typeof x[k] === "number"), `${w}: check condition needs a numeric limit`);
+    check(!x.part || ["value", "systolic", "diastolic"].includes(x.part), `${w}: unknown check part "${x.part}"`);
+  };
+  const list = c.any ?? c.all;
+  if (list) { check(Array.isArray(list) && list.length > 0, `${where}: empty any/all`); list.forEach((x) => condition(x, where)); }
+  else condition(Object.fromEntries(Object.entries(c).filter(([k]) => k !== "streakDays" && k !== "withSymptoms")), where);
+  check(c.streakDays === undefined || (Number.isInteger(c.streakDays) && c.streakDays >= 2), `${where}: streakDays must be a whole number of 2 or more`);
+  all(c.withSymptoms, symptomIds, where, "symptom");
 }
 
 // No medicines or doses (docs/DECISIONS.md > No Medicines or Diagnoses).
