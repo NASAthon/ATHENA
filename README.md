@@ -80,6 +80,14 @@ Lunar Gateway
 
 Mars Transit
 
+### Adaptive Search
+
+One search bar for everything: indicators, measurement guides, emergency
+guides and body parts. It still finds the right thing when the term is
+misspelt or worded differently. For example, "hart rate", "pulse" or
+"heartbeat" all find Heart Rate, and "can't breathe" finds the
+low-oxygen guidance. Works fully offline.
+
 ### Measurement Reminders
 
 Prompts the crew to take scheduled measurements as part of the mission routine.

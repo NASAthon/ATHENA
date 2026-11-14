@@ -125,6 +125,7 @@ Planning should decide which of these are **must-have for the demo** versus **st
 **Added from the challenge video (Section 7). These were not in our original plan:**
 - **Emergency guidance (required: "gives guidance on what to do in an emergency"):** a step-by-step, offline emergency mode for acute events, e.g. *a crewmate with sharp chest pain who collapses halfway to Mars*. Must work for **assessing a crewmate**, not only yourself: pick the affected astronaut, follow the steps, record vitals, see the escalation (crew action vs contact flight surgeon, with the Earth Link delay shown).
 - **Measurement guides (required: "astronauts are not doctors"):** for **every** indicator, a short card covering (1) **how to take it** in flight, (2) **why it matters** (linked to the NASA hazard or risk), and (3) **what to do if it's abnormal**. Reachable from the body map, alerts and data entry.
+- **Adaptive search (required, team decision):** one search bar that finds any indicator, measurement guide, emergency guide, alert explanation or body part, **even when the astronaut words it wrong**. See `DECISIONS.md` › Search.
 - **Measurement reminders (required, team decision):** prompt the crew to take scheduled measurements as part of the mission routine.
 - **Environments:** the video names spacecraft, space station and Moon surface base. Our Mission Modes (ISS, Lunar Gateway, Mars Transit) cover spacecraft and station. **Lunar Surface Base is out of scope** (time).
 - **Earth impact story:** the same tool could support healthcare in remote communities with limited access to health services. Use it in the pitch (Impact criterion, Galactic Impact award).
@@ -142,6 +143,7 @@ Planning should decide which of these are **must-have for the demo** versus **st
 - **Emergency guidance (crewmate assessment)** (challenge requirement)
 - **Measurement guides: how to take it, why it matters, what to do** (challenge requirement)
 - **Measurement reminders** (team decision)
+- **Adaptive search, tolerant of typos and wrong terms** (team decision)
 - Scenario Lab
 - Earth Link
 - "Why this alert?" explanations

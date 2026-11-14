@@ -51,6 +51,9 @@ GitHub is the single source of truth, so always branch from the latest `main`.
   **emergency guidance** (including for a crewmate) and a **measurement guide for
   every indicator** covering how to take it, why it matters and what to do if it's abnormal.
   Every indicator you add needs its guide.
+- **Adaptive search** is required (`DECISIONS.md` › Search). Every indicator, guide and
+  emergency entry you add must include search keywords: synonyms, plain-English terms
+  and symptoms, so search can find it.
 - **Measurement reminders** are also required (team decision). Lunar Surface Base is out of scope.
 - Mark assumptions explicitly. Never present an assumption as an official NASA value.
 - The repo is **public**. No secrets, API keys, personal data, or anyone's

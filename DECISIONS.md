@@ -224,3 +224,34 @@ LOCKED
 
 Status:
 LOCKED
+
+
+---
+
+## Search
+
+A required, adaptive, fully offline search bar covering indicators, measurement
+guides, emergency guides, "Why this alert?" answers and body parts. It must find
+what the astronaut means even if they word it wrong.
+
+Edge cases it must handle:
+- **Typos and misspellings:** "hart rate", "temprature", "glucos" (fuzzy matching).
+- **Partial words while typing:** "oxy" finds Blood Oxygen / SpO₂ (prefix matching).
+- **Synonyms and plain English:** "pulse", "heartbeat" → Heart Rate; "sugar" →
+  Blood Glucose; "fever" → Body Temperature; "BP" → Blood Pressure.
+- **Medical vs everyday terms both ways:** "low oxygen" ↔ hypoxia ↔ SpO₂.
+- **Symptoms, not just measurement names:** "chest pain", "dizzy", "can't sleep",
+  "headache" → the relevant emergency guide or indicator.
+- **Case, punctuation, extra spaces and word order** are ignored.
+- **No exact match:** show "Did you mean…?" plus the closest results and the emergency
+  guide shortcut. Never a dead end.
+
+How:
+- Each searchable item has a `keywords` list (synonyms, symptoms, plain-English
+  terms, common misspellings), stored with the content data.
+- Use a small open-source fuzzy search library that runs in the browser, e.g.
+  MiniSearch (MIT) or Fuse.js (Apache-2.0). Record the choice in `docs/SOURCES.md`.
+- Rank results with emergency matches first when the query looks like a symptom.
+
+Status:
+LOCKED (library choice open)
