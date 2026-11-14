@@ -44,6 +44,9 @@ jobs:
       - name: Build static export
         run: npm run build -- --webpack
 
+      - name: Verify compiled styles
+        run: npm run check:built-css
+
       - name: Preserve Next.js asset directory
         run: touch out/.nojekyll
 

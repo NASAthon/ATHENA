@@ -75,7 +75,7 @@ The full licence text of every package is in [`THIRD_PARTY_LICENSES.md`](../THIR
 |---|---|---|---|
 | Next.js | App framework (static export) | MIT | https://github.com/vercel/next.js |
 | React / React DOM | UI library | MIT | https://github.com/facebook/react |
-| Tailwind CSS (+ @tailwindcss/turbopack) | Styling | MIT | https://github.com/tailwindlabs/tailwindcss |
+| Tailwind CSS (+ @tailwindcss/turbopack and @tailwindcss/postcss) | Styling and production CSS compilation | MIT | https://github.com/tailwindlabs/tailwindcss |
 | shadcn/ui (`shadcn` CLI and CSS, `cn`) | UI components copied into `src/components/ui/`; class merging | MIT | https://github.com/shadcn-ui/ui |
 | Radix UI (`radix-ui`) | Accessible UI primitives used by shadcn/ui | MIT | https://github.com/radix-ui/primitives |
 | Lucide (`lucide-react`) | Icons (status icons and so on) | ISC | https://github.com/lucide-icons/lucide |
