@@ -119,16 +119,15 @@
 }
 
 /* Tap targets (DECISIONS.md › Inclusive Design: "at least 44×44 px, usable with gloves").
-   Text links (source links, "Back to crew", "Cancel") and "Learn more" toggles are given at
-   least 44 px of height without changing how they look. Buttons already meet this.
+   Covers in-text links such as "Back to crew", "Cancel" and the "Crew page" link inside
+   empty-state sentences, plus <summary> toggles. Buttons already meet this.
+   Links stay inline, so a sentence keeps its normal line spacing: vertical padding on an
+   inline element enlarges its tap area (44 px in total) without changing the line height.
    Found by the accessibility audit on 14 Nov 2026 (axe-core plus a tap-target check). */
 main a.underline,
 main a[class*="hover:underline"] {
-  display: inline-flex;
-  align-items: center;
-  min-height: 2.75rem;
+  padding-block: max(0px, calc((2.75rem - 1lh) / 2));
 }
 main summary {
   min-height: 2.75rem;
-  line-height: 2.75rem;
 }
