@@ -264,3 +264,33 @@ Both run fully offline, need no server and are free to use.
 
 Status:
 LOCKED (library choice open)
+
+
+---
+
+## Inclusive Design: Different Knowledge and Abilities
+
+ATHENA must work for every astronaut, whatever their medical knowledge and
+whatever their state at that moment. We show judges we've thought about this.
+
+**Different knowledge:**
+- Plain English, with a glance summary plus a "Learn more" layer (see Content Style).
+- Medical terms explained in brackets. Measurement guides explain how, why and what to do.
+- Adaptive search understands typos, everyday words and symptoms (see Search).
+
+**Different abilities and conditions** (fatigue, stress, emergencies, gloves,
+microgravity, colour blindness, low vision):
+- Status is never shown by colour alone: colour **plus** an icon **plus** a text
+  label (e.g. ⚠ "Watch").
+- Colour-blind-safe palette with high contrast (aim for WCAG AA, 4.5:1 for text).
+- Large text and large tap targets (at least 44×44 px), usable with gloves.
+- Full keyboard navigation and screen-reader labels on all controls, images and the SVG body map.
+- Respect "reduced motion": no essential information in animations alone.
+- Emergency mode: very few, very large controls, one step on screen at a time.
+
+**Pitch angle:** "Built for an astronaut who is exhausted, stressed and isn't a
+doctor." This scores on Validity (usability) and Impact (the same design suits
+remote communities on Earth).
+
+Status:
+LOCKED

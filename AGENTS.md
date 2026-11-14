@@ -51,6 +51,9 @@ GitHub is the single source of truth, so always branch from the latest `main`.
   **emergency guidance** (including for a crewmate) and a **measurement guide for
   every indicator** covering how to take it, why it matters and what to do if it's abnormal.
   Every indicator you add needs its guide.
+- **Inclusive design is required** (`DECISIONS.md` › Inclusive Design). Build every screen
+  for different knowledge levels and abilities: plain English, colour plus icon plus label,
+  large tap targets, high contrast, keyboard and screen-reader support, and reduced motion.
 - **Adaptive search** is required (`DECISIONS.md` › Search). Every indicator, guide and
   emergency entry you add must include search keywords: synonyms, plain-English terms
   and symptoms, so search can find it.
@@ -100,6 +103,8 @@ may review and merge their own PR, but still go through the checks below.
    - it doesn't change the locked stack;
    - every health rule cites a source;
    - health text is accurate, sourced and in plain English, with a glance summary plus "Learn more";
+   - the inclusive design checklist passes (colour isn't the only signal, tap targets are large,
+     it works by keyboard, images have labels, contrast is OK);
    - new libraries, fonts and icons are open-licensed and listed in `docs/SOURCES.md`;
    - it adds no secrets, NASA logos or likenesses;
    - AI use is logged in `docs/AI_USAGE.md`.

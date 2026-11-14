@@ -80,6 +80,15 @@ Lunar Gateway
 
 Mars Transit
 
+### Designed for Every Astronaut
+
+Astronauts aren't doctors, and they may be tired, stressed or wearing gloves.
+ATHENA is built for different levels of knowledge and different abilities:
+- Plain English, with a quick summary first and full detail on tap
+- Search that understands typos, everyday words and symptoms
+- Status shown with colour **plus** icons and labels (colour-blind friendly)
+- Large text and large buttons, high contrast, keyboard and screen-reader support
+
 ### Adaptive Search
 
 One search bar for everything: indicators, measurement guides, emergency
