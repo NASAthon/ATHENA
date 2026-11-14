@@ -72,7 +72,7 @@ export const DRIFT_INDICATORS = Object.freeze(
     { key: "mood", group: "mood", direction: "down", sdFloor: 0.3 },
     { key: "reactionMedianMs", group: "reaction", direction: "up", sdFloor: 10 },
     { key: "reactionLapses", group: "reaction", direction: "up", sdFloor: 0.5 },
-    { key: "exerciseMinutes", group: "exercise", direction: "down", sdFloor: 5 },
+    { key: "exerciseMinutes", group: "exercise", direction: "down", sdFloor: 10 },
     { key: "spo2", group: "spo2", direction: "down", sdFloor: 0.5 },
   ].map((indicator) => Object.freeze(indicator)),
 );

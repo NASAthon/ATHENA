@@ -133,6 +133,13 @@ One line per designed page. A page is ticked when it's built and working in the 
 - [x] **M** Card on click: function, status, risk, hazard, advice, "last checked" date (PR #9; text from `src/data/regions.js`)
 - [x] **S** Fallback: region tiles if the drawing takes too long (PR #9: the accessible region list beside the figure)
 
+### Demo polish (14 Nov)
+
+- [x] **S** Demo mission includes a realistic exam history, so the calendar and crew reminders aren't falsely "overdue" (PR #NN: `demoExamResults`)
+- [x] **S** Reaction test result compares with the astronaut's stored in-flight baseline (the same one the engine uses), not a re-run of the simulator (PR #NN)
+- [x] **S** Mission mode remembered after a reload (PR #NN: stored on the device)
+- [x] **S** One low exercise day no longer counts as drift (PR #NN: exercise minimum spread 5 → 10 min, DECISIONS › Logic Engine Assumptions)
+
 ### Calendar, summary, extras
 
 - [x] **S** Mission calendar listing due and completed periodic exams (PR #21: `/calendar`, overdue, due today, next 30 days, "Mark done today" saves with `saveExamResult`)

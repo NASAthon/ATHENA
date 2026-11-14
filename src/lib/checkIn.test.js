@@ -5,7 +5,7 @@ import initSqlJs from "sql.js";
 import { openDatabase } from "./db/database.js";
 import { memoryPersistence } from "./db/persistence.js";
 import { loadDemoMission, resetData } from "./sim/demo.js";
-import { checkInStreak, loadExamResults, saveCheckIn, saveExamResult } from "./checkIn.js";
+import { EXAM_META_PREFIX, checkInStreak, loadExamResults, saveCheckIn, saveExamResult } from "./checkIn.js";
 
 const SQL = await initSqlJs();
 const freshDb = () => openDatabase({ SQL, persistence: memoryPersistence() });
@@ -51,6 +51,7 @@ test("checkInStreak counts consecutive checked days, skipping launch day", () =>
 test("exam results are stored per astronaut, replaced on the same day, and cleared by Reset data", async () => {
   const db = await freshDb();
   await loadDemoMission(db);
+  await db.deleteMetaPrefix(EXAM_META_PREFIX); // start from no exam history (the demo seeds some)
   await saveExamResult(db, "rivera", "eye-scan", 100);
   await saveExamResult(db, "rivera", "eye-scan", 100, "no change");
   await saveExamResult(db, "rivera", "fitness-check", 120);
