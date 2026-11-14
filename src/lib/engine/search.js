@@ -3,18 +3,19 @@
 // (docs/DECISIONS.md › Search). Runs fully in the browser with no network.
 //
 // The searchable content is everything in src/data: indicators (with their measurement
-// guides), emergency guides, symptoms, body regions, risks, hazards and exams, each
+// guides), emergency guides, symptoms, body regions, risks, hazards, exams and mission
+// modes, each
 // with its `keywords` list. `buildContentSearchIndex()` indexes all of it.
 
 import MiniSearch from "minisearch";
-import { EMERGENCIES, EXAMS, HAZARDS, INDICATORS, REGIONS, RISKS, SYMPTOMS } from "../../data/index.js";
+import { EMERGENCIES, EXAMS, HAZARDS, INDICATORS, MISSION_MODES, REGIONS, RISKS, SYMPTOMS } from "../../data/index.js";
 
 /**
  * One searchable item.
  *
  * @typedef {Object} SearchDocument
  * @property {string} id      Unique across all content, e.g. "indicator:heartRate".
- * @property {"indicator" | "emergency" | "symptom" | "bodyPart" | "risk" | "hazard" | "exam"} type
+ * @property {"indicator" | "emergency" | "symptom" | "bodyPart" | "risk" | "hazard" | "exam" | "mission"} type
  * @property {string} title   e.g. "Heart rate".
  * @property {ReadonlyArray<string>} keywords Synonyms, plain-English terms, symptoms and common
  *   misspellings, e.g. ["pulse", "heartbeat", "hart rate"] (DECISIONS › Search).
@@ -74,6 +75,7 @@ export function contentDocuments() {
     ...RISKS.map((r) => doc("risk", r, r.summary)),
     ...HAZARDS.map((h) => doc("hazard", h, h.summary)),
     ...EXAMS.map((x) => doc("exam", x, x.why)),
+    ...MISSION_MODES.map((m) => doc("mission", m, m.environment)),
   ]);
 }
 

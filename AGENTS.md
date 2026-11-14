@@ -56,8 +56,9 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 - **Installed packages** (all open source; licences are in `docs/SOURCES.md`):
   - **shadcn/ui** (Radix base, dark theme): add components with `npx shadcn@latest add <name>`.
     They land in `src/components/ui/`. Use `cn` from `@/lib/utils` and icons from `lucide-react`.
-  - **sql.js:** `npm install` copies the engine to `public/sql-wasm.wasm` (`scripts/copy-sqljs-wasm.mjs`).
-    Load it with `initSqlJs({ locateFile: () => "/sql-wasm.wasm" })`, never from a CDN.
+  - **sql.js:** `npm install` copies the engine to `public/sql-wasm.wasm` and `public/sql-wasm.js`
+    (`scripts/copy-sqljs-wasm.mjs`), never from a CDN. Don't open it yourself: use the shared
+    database from `@/lib/db` (`await getDatabase()`), which loads both files and saves to IndexedDB.
   - **MiniSearch** for search.
   - Before adding any other package, check its licence, add it to `docs/SOURCES.md`, and run
     `npm run licenses` to refresh `THIRD_PARTY_LICENSES.md`.

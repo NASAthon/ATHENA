@@ -11,6 +11,10 @@ export const SOURCES = {
   "nasa-hazard-gravity": { title: "Hazard: Gravity Fields", publisher: "NASA HRP", url: "https://www.nasa.gov/hrp/hazard-gravity-fields/" },
   "nasa-hazard-hostile": { title: "Hazard: Hostile/Closed Environments", publisher: "NASA HRP", url: "https://www.nasa.gov/hrp/hazard-hostile-closed-environments/" },
 
+  // NASA communications (Earth-link delays per mission mode; team-approved 14 Nov, docs/DECISIONS.md > Data Sources)
+  "nasa-iss-comms": { title: "Data Rate Increase on the International Space Station Supports Future Exploration", publisher: "NASA Goddard", url: "https://www.nasa.gov/feature/goddard/2019/data-rate-increase-on-the-international-space-station-supports-future-exploration" },
+  "nasa-tm-comm-delay": { title: "Assessment of the State of Communication Delay Research in Preparation for Missions Beyond Low Earth Orbit (NASA/TM-20250003885)", publisher: "NASA", url: "https://ntrs.nasa.gov/citations/20250003885" },
+
   // NASA Human Research Program: risks
   "nasa-risks": { title: "Risks of Human Spaceflight", publisher: "NASA HRP", url: "https://www.nasa.gov/hrp/risks/" },
   "nasa-risk-immune": { title: "Risk of Altered Immune System Responses", publisher: "NASA HRP", url: "https://www.nasa.gov/reference/risk-of-altered-immune-system-responses/" },
