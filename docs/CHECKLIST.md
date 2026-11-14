@@ -151,8 +151,8 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 ## 5. Offline
 
-- [ ] **M** App loads and works with the network switched off
-- [ ] **M** No fonts, scripts or data fetched from the internet at run time 🟡 Partial (PR #3, PR #4): system fonts only and sql.js engine served locally; still to do: re-check once all screens exist
+- [x] **M** App loads and works with the network switched off (checked 14 Nov on the production build: every file, the database engine and the demo data come from the device; first run seeds the mission with no internet. Repeat with Wi-Fi off in the final rehearsal)
+- [x] **M** No fonts, scripts or data fetched from the internet at run time (checked 14 Nov: build scan plus all 10 pages loaded with 0 external requests; system fonts only. Re-check new screens in PR review)
 - [x] **M** Data survives closing and reopening the browser (PR #14 storage, PR #17 app wiring; checked in the app 14 Nov: reset stays empty and loaded data stays loaded after reload)
 - [ ] **S** Installable as an app (PWA) on a laptop or tablet
 

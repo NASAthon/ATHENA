@@ -105,6 +105,8 @@ LOCKED
 - 30-second video "offline moment": turn Wi-Fi off on camera, reload, and trigger
   an alert (a dangerous reading, or a Scenario Lab event if built). The alert still fires.
 - README screenshots go in `docs/screenshots/`.
+- **Demo browser:** present from a clean Chrome profile (or with extensions turned off). In testing, a browser
+  extension injected Google Fonts and a hidden panel into the page; ATHENA itself makes no external requests.
 
 Status:
 LOCKED

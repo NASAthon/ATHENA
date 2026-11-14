@@ -146,7 +146,8 @@ may review and merge their own PR, but still go through the checks below.
 
 1. Read the PR diff (`gh pr diff <number>`) against this file and `docs/DECISIONS.md`.
 2. Check that:
-   - it builds, `npm test` and `npm run check:content` pass, and it works offline;
+   - it builds, `npm test` and `npm run check:content` pass, and it works offline (no external fonts,
+     scripts or data: check the browser's network log shows only the app's own address);
    - it doesn't change the locked stack;
    - every health rule cites a source;
    - health text is accurate, sourced and in plain English, with a glance summary plus "Learn more";
