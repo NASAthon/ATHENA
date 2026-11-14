@@ -51,3 +51,7 @@ SQLite
 AI:
 Isolation Forest
 LLM Chat Interface
+
+## Full Brief
+
+See `context.md` for the official challenge text, rules, judging rubric and every NASA data source. Agents follow the workflow in `AGENTS.md`.
