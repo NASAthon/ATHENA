@@ -17,6 +17,8 @@ GitHub is the single source of truth, so always branch from the latest `main`.
   - `src/lib/sim/`: the seeded mission simulator (`simulateAstronaut`, `simulateCrew`) and `loadDemoMission` / `resetData`.
     Prefer it over `src/lib/sampleData.js` (hand-written SIMULATED statuses, kept until screens switch over). Always label simulated data in the UI.
   - `src/components/CrewProvider.js`: the selected astronaut, shared by every page (`useCrew()`).
+  - **Saving:** use `useMissionData()` (`saveCheckIn`, `saveExamResult`) from `src/components/MissionDataProvider.js`.
+    Never write to the database directly from a screen. Records are validated first (`src/lib/dailyRecord.js`).
 - `src/data/`: all health content (hazards, risks, body regions, indicators with thresholds and
   input limits, emergencies, symptoms, exams, mission modes, sources). Import from `@/data`. Shared UI helpers (e.g. `focusRing`) live in `@/lib/ui`. **Never hard-code health text
   or numbers in components; use these files.** Run `npm run check:content` after editing them.

@@ -2,6 +2,7 @@
 // the shared database from @/lib/db, so the buttons only need to call these.
 
 import { simulateCrew, DEMO_SEED } from "./simulator.js";
+import { EXAM_META_PREFIX } from "../checkIn.js";
 
 /** Mission day the demo opens on: the day of Nakamura's event, with Rivera's drift alert active. */
 export const DEMO_TODAY = 129;
@@ -35,6 +36,7 @@ export async function loadDemoMission(db, { today = DEMO_TODAY, seed = DEMO_SEED
 export async function resetData(db) {
   await db.resetAll();
   await db.setMeta("today", "");
+  await db.deleteMetaPrefix(EXAM_META_PREFIX); // stored exam results (src/lib/checkIn.js)
 }
 
 /** Meta key set once the app has been opened before (so "Reset data" stays empty). */
