@@ -128,7 +128,7 @@ A visual astronaut self-assessment tool with these building blocks:
 - **Environments:** the video names spacecraft, space station and Moon surface base. Our Mission Modes (ISS, Lunar Gateway, Mars Transit) cover spacecraft and station. **Lunar Surface Base is out of scope** (time).
 - **Earth impact story:** the same tool could support healthcare in remote communities with limited access to health services. Use it in the pitch (Impact criterion, Galactic Impact award).
 
-> **Decided:** all guidance is **accurate and informative, in plain English**: astronauts aren't doctors, so simplify the wording, not the facts. Show a glanceable summary first and a "Learn more" layer with the full explanation. Emergency steps are clear and ordered, each with a short "why", and labelled not medical advice. See `docs/DECISIONS.md` › Content Style.
+> **Decided:** all guidance is **accurate and informative, in plain English**: astronauts aren't doctors, so simplify the wording, not the facts. Quick reference only: status, meaning and what to do, with no "Learn more" layer (DECISIONS › Quick Reference Only). Emergency steps are clear and ordered, each with a short "why", and labelled not medical advice. See `docs/DECISIONS.md` › Content Style.
 
 **What makes ATHENA original (our pitch line):** ATHENA **catches the slow decline that generic one-size-fits-all thresholds miss** (by comparing each astronaut with their own baseline), is **built for astronauts who aren't doctors**, and **works fully offline**. See `docs/DECISIONS.md` › Originality.
 

@@ -1,5 +1,5 @@
 // Health indicators: measurement guides, thresholds and the brief's five questions.
-// Rules (docs/DECISIONS.md): plain English, glance + "Learn more", every number cited,
+// Rules (docs/DECISIONS.md): plain English, quick reference, every number cited,
 // clinical numbers labelled "general clinical reference range" (not NASA flight standards).
 //
 // Band levels, mildest to most serious: "normal" | "watch" | "act" | "urgent".

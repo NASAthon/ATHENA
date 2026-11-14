@@ -384,19 +384,9 @@ function DailyCheck() {
           )}
           {focused.spaceNote && <p className="mt-3 text-muted-foreground">{focused.spaceNote}</p>}
 
-          <details className="mt-5 rounded-lg border border-border p-4">
-            <summary className={`cursor-pointer rounded font-bold ${focusRing}`}>Learn more</summary>
-            <h3 className="mt-3 font-bold">Why it matters in space</h3>
-            <p className="mt-1 text-muted-foreground">{focused.whyItMatters}</p>
-            <h3 className="mt-3 font-bold">When to get help</h3>
-            <p className="mt-1 text-muted-foreground">{focused.briefAnswers.whenToEscalate}</p>
-            {focused.personalBaselineOnly && (
-              <p className="mt-3 text-muted-foreground">{focused.personalBaselineOnly}</p>
-            )}
-            <p className="mt-3 text-sm text-muted-foreground">
-              Ranges are general clinical reference ranges, not NASA flight standards. Not medical advice.
-            </p>
-          </details>
+          <p className="mt-5 text-sm text-muted-foreground">
+            Ranges are general clinical reference ranges, not NASA flight standards. Not medical advice.
+          </p>
 
           {focused.howToMeasure.length > 0 && (
             <button

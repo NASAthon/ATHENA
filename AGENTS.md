@@ -82,8 +82,8 @@ GitHub is the single source of truth, so always branch from the latest `main`.
   never as NASA flight standards.
 - **Health content: accurate, informative and in plain English.** Astronauts aren't doctors,
   so give them more understanding, but simply. Simplify the words, not the facts.
-  Show a glanceable summary first, with a "Learn more" layer for the full plain-English
-  detail. Explain medical terms in brackets (`docs/DECISIONS.md` › Content Style).
+  Quick reference only: status, meaning and what to do, with no "Learn more" layers
+  (`docs/DECISIONS.md` › Quick Reference Only). Explain medical terms in brackets (`docs/DECISIONS.md` › Content Style).
 - Track the 6 indicators the official challenge names (heart rate, blood pressure,
   blood glucose, body temperature, sleep hours, mood) before adding extras.
 - The challenge video adds two requirements (`docs/context.md` Section 6.1):
@@ -152,7 +152,7 @@ may review and merge their own PR, but still go through the checks below.
      scripts or data: check the browser's network log shows only the app's own address);
    - it doesn't change the locked stack;
    - every health rule cites a source in `docs/SOURCES.md`, and the app shows no external links;
-   - health text is accurate, sourced and in plain English, with a glance summary plus "Learn more";
+   - health text is accurate, sourced and in plain English, quick reference only (no "Learn more" layers);
    - the inclusive design checklist passes (colour isn't the only signal, tap targets are large,
      it works by keyboard, images have labels, contrast is OK);
    - new libraries, fonts and icons are open-licensed and listed in `docs/SOURCES.md`;
