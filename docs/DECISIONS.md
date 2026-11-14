@@ -675,7 +675,9 @@ ASSUMPTION in the code; change it in one place, then run `npm test`.
   direction given), symptoms (not a number), radiation dose (a running total).
 - **Minimum spread `s`** (Drift Cut-off gives none): heart rate 2 bpm, systolic 3 mmHg,
   diastolic 2 mmHg, glucose 4 mg/dL, temperature 0.1 °C, sleep 0.25 h, mood 0.3, reaction
-  median 10 ms, lapses 0.5, exercise 5 min, SpO₂ 0.5 %. Tune after simulator runs.
+  median 10 ms, lapses 0.5, exercise 10 min (raised from 5 on 14 Nov: with 5, one 20-minute day made a
+  steady astronaut's exercise "drift"; with 10 a single bad day doesn't, and every crew story test still passes),
+  SpO₂ 0.5 %. Tune after simulator runs.
 - **Pre-flight baseline window:** mission days −30 to −1. **Minimum readings per baseline:** 10.
 - **"Expected adaptation"** (status not defined before): the 7-day average differs from the
   PRE-FLIGHT baseline by z ≥ 3.5 in the worrying direction but is NOT drifting against the
@@ -726,6 +728,9 @@ the 3 crew in Crew. Every number is an invented demo value, labelled simulated, 
   handling; values stay within the entry form's limits.
 - **Demo day:** `loadDemoMission` stores the mission up to day 129 (all three stories visible at
   once) and stores each astronaut's fixed baselines.
+- **Demo exam history** (14 Nov): every periodic exam is recorded as done on its due day up to the day
+  before the demo day (`demoExamResults`), so the calendar isn't falsely "overdue"; an exam due on the demo
+  day itself stays to do. Labelled "Simulated demo record".
 - **Scenario Lab** (`/scenario-lab`) runs events on a copy of this mission with the fixed
   baselines, so it never changes stored data.
 - **First run and Reset data:** the demo mission is loaded automatically the very first time
@@ -864,8 +869,8 @@ ACTIVE
 ## Shared Mission Mode
 
 The mission mode chosen in the header is shared app-wide (`MissionModeProvider`, `useMissionMode()`), so the
-flight-surgeon summary uses its Earth-link delay and search can switch it. It isn't stored: it resets to the
-default mode on reload.
+flight-surgeon summary uses its Earth-link delay and search can switch it. It's remembered on the device
+(database meta `mission_mode`, 14 Nov), so a reload keeps it; "Reset data" doesn't change it.
 
 Status:
 ACTIVE

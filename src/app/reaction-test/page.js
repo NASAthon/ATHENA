@@ -1,25 +1,23 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ExternalLink, TriangleAlert } from "lucide-react";
 import { INDICATORS, SOURCES } from "@/data";
 import { useCrew } from "@/components/CrewProvider";
 import {
-  IN_FLIGHT_WINDOW,
   LAPSE_THRESHOLD_MS,
-  calculateMissionBaselines,
   compareReactionToBaseline,
   reactionRecordFields,
   scoreReactionTest,
 } from "@/lib/engine";
-import { simulateAstronaut } from "@/lib/sim/simulator";
+import { useTodayEvaluation } from "@/components/useTodayEvaluation";
 import { useMissionData } from "@/components/MissionDataProvider";
 import { focusRing } from "@/lib/ui";
 
 // Reaction test (design and test flow by Izabela, PR #16).
 // Scoring is the engine's (scoreReactionTest); "your normal" is the selected astronaut's own
-// in-flight baseline from the SIMULATED mission (until real stored data is used).
+// stored in-flight baseline (useTodayEvaluation).
 const RUN_SECONDS = 60; // test length (test design)
 const TIMEOUT_MS = 2000; // no tap after this long is recorded as a slow response (test design)
 const reaction = INDICATORS.find((i) => i.id === "reaction");
@@ -44,11 +42,10 @@ function ReactionTest() {
   const [guest, setGuest] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
   const [savedRun, setSavedRun] = useState(false); // this run is already saved
-  // The astronaut's own in-flight baseline (simulated mission, DECISIONS › Baselines).
-  const baseline = useMemo(() => {
-    const records = simulateAstronaut(crewId).filter((r) => r.missionDay <= IN_FLIGHT_WINDOW.toDay);
-    return calculateMissionBaselines(records, ["reactionMedianMs", "reactionLapses"]).inflight.indicators;
-  }, [crewId]);
+  // The astronaut's own STORED in-flight baseline (fixed, DECISIONS › Baselines), the same one the
+  // engine uses for drift, so this result and the Trends chart always agree.
+  const { baselines } = useTodayEvaluation();
+  const baseline = baselines?.inflight?.indicators ?? {};
   const [phase, setPhase] = useState("idle"); // idle | waiting | signal | done
   const [times, setTimes] = useState([]);
   const [falseStarts, setFalseStarts] = useState(0);
@@ -312,7 +309,7 @@ function ReactionTest() {
             <p className="mt-3 text-lg">{reaction.glance}</p>
             <p className="mt-4 text-muted-foreground">{reaction.whyItMatters}</p>
             <p className="mt-4 text-muted-foreground">
-              Your result is only compared with {member.name}&apos;s own normal (simulated mission for now).
+              Your result is only compared with {member.name}&apos;s own normal (their stored in-flight baseline; demo data is simulated).
             </p>
             <ul className="mt-3 space-y-1 text-sm">
               {reaction.sourceIds.map((id) => (
@@ -368,7 +365,7 @@ function ReactionTest() {
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
                 {compared
-                  ? `Your normal: ${compared.usualMs} ms (usual range ${compared.typicalLowMs} to ${compared.typicalHighMs}, simulated)`
+                  ? `Your normal: ${compared.usualMs} ms (usual range ${compared.typicalLowMs} to ${compared.typicalHighMs})`
                   : "No baseline yet"}
               </p>
             </div>
@@ -376,7 +373,7 @@ function ReactionTest() {
               <p className="text-muted-foreground">Lapses (over {LAPSE_THRESHOLD_MS} ms)</p>
               <p className="mt-1 text-4xl font-bold">{lapses}</p>
               <p className="mt-1 text-sm text-muted-foreground">
-                {usualLapses === null ? "No baseline yet" : `Your normal: about ${usualLapses} per test (simulated)`}
+                {usualLapses === null ? "No baseline yet" : `Your normal: about ${usualLapses} per test`}
               </p>
             </div>
             <div>
