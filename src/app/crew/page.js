@@ -22,7 +22,7 @@ import { focusRing } from "@/lib/ui";
 const nameOf = Object.fromEntries(INDICATORS.map((i) => [i.id, i.name]));
 const examName = Object.fromEntries(EXAMS.map((e) => [e.id, e.name]));
 const emergencyName = Object.fromEntries(EMERGENCIES.map((e) => [e.id, e.name]));
-const card = "rounded-2xl border border-border bg-card p-6";
+const card = "rounded-xl border border-border bg-card p-4";
 
 // Health score bands (src/lib/engine/healthScore.js): colour token + icon + text label.
 const BAND_STYLE = {
@@ -67,10 +67,10 @@ function describe(member, evaluation) {
 function CrewCard({ member, result, onOpen }) {
   if (result.state !== "ready" || !result.evaluation) {
     return (
-      <article className="flex flex-col rounded-3xl border border-border bg-card p-6">
-        <h2 className="text-2xl font-bold">{member.name}</h2>
+      <article className="flex flex-col rounded-3xl border border-border bg-card p-4">
+        <h2 className="text-xl font-bold">{member.name}</h2>
         <p className="text-muted-foreground">{member.role}</p>
-        <p className="mt-6 flex-1 text-lg text-muted-foreground">No data stored yet. Load the demo mission below.</p>
+        <p className="mt-4 flex-1 text-base text-muted-foreground">No data stored yet. Load the demo mission below.</p>
       </article>
     );
   }
@@ -80,10 +80,10 @@ function CrewCard({ member, result, onOpen }) {
   const week = change.over7Days;
   const WeekIcon = week === null || week === 0 ? Minus : week < 0 ? ArrowDown : ArrowUp;
   return (
-    <article className="flex flex-col rounded-3xl border-2 bg-card p-6" style={{ borderColor: health.band === "good" ? "var(--border)" : band.colour }}>
+    <article className="flex flex-col rounded-3xl border-2 bg-card p-4" style={{ borderColor: health.band === "good" ? "var(--border)" : band.colour }}>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold">{member.name}</h2>
+          <h2 className="text-xl font-bold">{member.name}</h2>
           <p className="text-muted-foreground">{member.role}</p>
         </div>
         <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-semibold" style={{ borderColor: band.colour, color: band.colour }}>
@@ -91,7 +91,7 @@ function CrewCard({ member, result, onOpen }) {
           {health.label ?? "No score"}
         </span>
       </div>
-      <div className="mt-6 flex items-center gap-4">
+      <div className="mt-4 flex items-center gap-4">
         <span className="text-8xl font-bold leading-none" style={{ color: band.colour }}>
           {health.score ?? "—"}
         </span>
@@ -103,11 +103,11 @@ function CrewCard({ member, result, onOpen }) {
           </p>
         </div>
       </div>
-      <p className="mt-5 flex-1 text-lg">{info.text}</p>
+      <p className="mt-3 flex-1 text-base">{info.text}</p>
       <Link
         href={info.href}
         onClick={onOpen}
-        className={`mt-5 flex min-h-14 items-center justify-center rounded-xl px-4 text-center text-lg font-semibold ${focusRing} ${
+        className={`mt-3 flex min-h-12 items-center justify-center rounded-xl px-4 text-center text-base font-semibold ${focusRing} ${
           info.urgent ? "bg-destructive text-background hover:bg-destructive/90" : "border border-input hover:bg-accent"
         }`}
       >
@@ -156,38 +156,38 @@ export default function Crew() {
   const link = advice.earthLink;
 
   return (
-    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">
-      <h1 className="text-4xl font-bold">Crew status</h1>
-      <p className="mt-2 text-lg text-muted-foreground">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-5">
+      <h1 className="text-3xl font-bold">Crew status</h1>
+      <p className="mt-2 text-base text-muted-foreground">
         {mode.name}
         {today !== null && ` · mission day ${today}`} · each score compares the astronaut with their own normal · simulated demo mission
       </p>
 
       {status === "loading" ? (
-        <p className="mt-6 text-lg text-muted-foreground">Opening the mission data…</p>
+        <p className="mt-4 text-base text-muted-foreground">Opening the mission data…</p>
       ) : (
-        <div className="mt-6 grid gap-6 lg:grid-cols-3">
+        <div className="mt-4 grid gap-4 lg:grid-cols-3">
           {CREW.map((m) => (
             <CrewCard key={m.id} member={m} result={results?.[m.id] ?? { state: "empty" }} onOpen={() => setCrewId(m.id)} />
           ))}
         </div>
       )}
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+      <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <section className={card} aria-labelledby="reminders-heading">
           <h2 id="reminders-heading" className="text-sm uppercase tracking-wider text-muted-foreground">
             Reminders today
           </h2>
           {reminders.length === 0 ? (
-            <p className="mt-3 text-lg">Nothing due.</p>
+            <p className="mt-3 text-base">Nothing due.</p>
           ) : (
             <ul className="mt-3 divide-y divide-border">
               {reminders.map((r) => (
                 <li key={r.key}>
-                  <Link href={r.href} onClick={() => setCrewId(r.crewId)} className={`flex min-h-14 gap-4 rounded-lg py-3 hover:bg-accent/60 ${focusRing}`}>
-                    <r.Icon className="mt-1 size-6 shrink-0" aria-hidden="true" style={{ color: r.colour }} />
+                  <Link href={r.href} onClick={() => setCrewId(r.crewId)} className={`flex min-h-12 gap-4 rounded-lg py-3 hover:bg-accent/60 ${focusRing}`}>
+                    <r.Icon className="mt-1 size-5 shrink-0" aria-hidden="true" style={{ color: r.colour }} />
                     <span>
-                      <span className="block text-lg font-semibold">{r.title}</span>
+                      <span className="block text-base font-semibold">{r.title}</span>
                       <span className="block text-muted-foreground">{r.note}</span>
                     </span>
                   </Link>
@@ -201,27 +201,27 @@ export default function Crew() {
           <h2 id="earth-heading" className="text-sm uppercase tracking-wider text-muted-foreground">
             Earth link · {mode.name}
           </h2>
-          <p className="mt-3 text-3xl font-bold">{link ? link.text : "Delay not known"}</p>
-          {link && <p className="mt-3 text-lg">A question to the flight surgeon sent now: reply expected {link.replyText}.</p>}
-          <p className="mt-2 text-lg">{advice.glance}</p>
+          <p className="mt-3 text-2xl font-bold">{link ? link.text : "Delay not known"}</p>
+          {link && <p className="mt-3 text-base">A question to the flight surgeon sent now: reply expected {link.replyText}.</p>}
+          <p className="mt-2 text-base">{advice.glance}</p>
           <p className="mt-3 text-sm text-muted-foreground">
             {advice.basisLabel}
           </p>
-          <Link href="/summary" className={`mt-4 inline-flex min-h-12 items-center rounded-lg border border-input px-4 font-semibold hover:bg-accent ${focusRing}`}>
+          <Link href="/summary" className={`mt-4 inline-flex min-h-11 items-center rounded-lg border border-input px-4 font-semibold hover:bg-accent ${focusRing}`}>
             Flight-surgeon summary
           </Link>
         </section>
       </div>
 
-      <section className="mt-6 rounded-2xl border border-dashed border-border p-6" aria-labelledby="demo-heading">
+      <section className="mt-4 rounded-xl border border-dashed border-border p-4" aria-labelledby="demo-heading">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h2 id="demo-heading" className="text-xl font-bold">
+            <h2 id="demo-heading" className="text-lg font-bold">
               Demo controls
             </h2>
             <p className="text-muted-foreground">All crew data is simulated. Reload the demo mission, clear it, or try events in the Scenario Lab.</p>
           </div>
-          <Link href="/scenario-lab" className={`inline-flex min-h-12 items-center gap-2 rounded-xl border border-input px-4 hover:bg-accent ${focusRing}`}>
+          <Link href="/scenario-lab" className={`inline-flex min-h-11 items-center gap-2 rounded-xl border border-input px-4 hover:bg-accent ${focusRing}`}>
             <FlaskConical className="size-5" aria-hidden="true" /> Scenario Lab
           </Link>
         </div>

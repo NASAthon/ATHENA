@@ -38,7 +38,7 @@ const ICONS = { CircleCheck, CircleMinus, Info, OctagonAlert, TrendingDown, Mess
 // Groups in the order of the design: the ones that show slow decline first.
 const ORDER = ["sleep", "reaction", "mood", "heartRate", "bloodPressure", "glucose", "temperature", "exercise", "spo2"];
 const GROUPS = ORDER.map((id) => ({ id, keys: DRIFT_INDICATORS.filter((d) => d.group === id).map((d) => d.key) })).filter((g) => g.keys.length);
-const card = "rounded-2xl border border-border bg-card p-6";
+const card = "rounded-xl border border-border bg-card p-4";
 const GENERIC_LABEL = { normal: "Normal", watch: "Watch", act: "Act", urgent: "Red limit" };
 
 function StatusPill({ status }) {
@@ -94,9 +94,9 @@ export default function Trends() {
 
   if (state !== "ready" || evaluations.length === 0) {
     return (
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">
-        <h1 className="text-4xl font-bold">Trends</h1>
-        <p className="mt-4 text-lg text-muted-foreground">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-5">
+        <h1 className="text-3xl font-bold">Trends</h1>
+        <p className="mt-4 text-base text-muted-foreground">
           {state === "loading" ? (
             "Opening the mission data…"
           ) : (
@@ -138,13 +138,13 @@ export default function Trends() {
   const link = adviceForMode(modeId).earthLink;
 
   return (
-    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">
-      <div className="flex flex-wrap items-end justify-between gap-6">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-5">
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0 flex-[1_1_480px]">
-          <h1 className="text-4xl font-bold">
-            Trends <span className="text-2xl font-normal text-muted-foreground">· {member.name}</span>
+          <h1 className="text-3xl font-bold">
+            Trends <span className="text-xl font-normal text-muted-foreground">· {member.name}</span>
           </h1>
-          <p className="mt-2 text-lg text-muted-foreground">
+          <p className="mt-2 text-base text-muted-foreground">
             Each line is the 7-day average. The gap between the two bands is expected adaptation to space; leaving the blue
             in-flight band in the worrying direction is drift. Simulated demo mission.
           </p>
@@ -169,25 +169,25 @@ export default function Trends() {
         </div>
       </div>
 
-      <div role="group" aria-label="Show indicators" className="mt-6 flex flex-wrap gap-2">
+      <div role="group" aria-label="Show indicators" className="mt-4 flex flex-wrap gap-2">
         {[{ id: "drifting", label: `Drifting (${drifting.length})` }, ...GROUPS.map((g) => ({ id: g.id, label: byId[g.id]?.name ?? g.id })), { id: "all", label: "All" }].map((c) => (
           <button
             key={c.id}
             type="button"
             aria-pressed={filter === c.id}
             onClick={() => setFilter(c.id)}
-            className={`min-h-12 rounded-full border px-4 ${focusRing} ${filter === c.id ? "border-primary bg-accent font-semibold" : "border-input hover:bg-accent/60"}`}
+            className={`min-h-11 rounded-full border px-4 ${focusRing} ${filter === c.id ? "border-primary bg-accent font-semibold" : "border-input hover:bg-accent/60"}`}
           >
             {c.label}
           </button>
         ))}
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,1.2fr)]">
-        <div className="space-y-6">
+      <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(0,1.2fr)]">
+        <div className="space-y-4">
           {visible.length === 0 && (
             <section className={card}>
-              <p className="flex items-center gap-2 text-lg">
+              <p className="flex items-center gap-2 text-base">
                 <CircleCheck className="size-5" aria-hidden="true" style={{ color: "var(--status-steady)" }} />
                 Nothing is drifting on day {day}. Choose an indicator or All to see the charts.
               </p>
@@ -198,7 +198,7 @@ export default function Trends() {
             return (
               <section key={g.id} className={card} aria-labelledby={`trend-${g.id}`}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
-                  <h2 id={`trend-${g.id}`} className="text-2xl font-bold">
+                  <h2 id={`trend-${g.id}`} className="text-xl font-bold">
                     {byId[g.id]?.name ?? g.id}
                   </h2>
                   <StatusPill status={status} />
@@ -239,9 +239,9 @@ export default function Trends() {
           })}
         </div>
 
-        <aside className="space-y-6">
+        <aside className="space-y-4">
           <section className={card} aria-labelledby="compare-heading">
-            <h2 id="compare-heading" className="text-xl font-bold">
+            <h2 id="compare-heading" className="text-lg font-bold">
               ATHENA vs one-size-fits-all
             </h2>
             <p className="mt-2 text-muted-foreground">
@@ -281,8 +281,8 @@ export default function Trends() {
           </section>
 
           {drifting.length > 0 && (
-            <section className="rounded-2xl border-2 p-6" style={{ borderColor: "var(--status-amber)" }} aria-labelledby="helps-heading">
-              <h2 id="helps-heading" className="text-xl font-bold">
+            <section className="rounded-xl border-2 p-4" style={{ borderColor: "var(--status-amber)" }} aria-labelledby="helps-heading">
+              <h2 id="helps-heading" className="text-lg font-bold">
                 What helps
               </h2>
               <ul className="mt-3 space-y-3">
@@ -301,10 +301,10 @@ export default function Trends() {
           )}
 
           <section className={card} aria-labelledby="ground-heading">
-            <h2 id="ground-heading" className="flex items-center gap-2 text-xl font-bold">
+            <h2 id="ground-heading" className="flex items-center gap-2 text-lg font-bold">
               <Radio className="size-5" aria-hidden="true" /> When to tell the ground
             </h2>
-            <p className="mt-3 text-lg">
+            <p className="mt-3 text-base">
               {level === "escalated"
                 ? `The drift alert hasn't recovered since day ${alertSince}. Tell the crew and send the summary to the flight surgeon now.`
                 : level === "alert"
@@ -314,7 +314,7 @@ export default function Trends() {
                     : "No drift alert on this day. Nothing to send."}
             </p>
             {link && <p className="mt-2 text-muted-foreground">Reply from Earth expected {link.replyText}.</p>}
-            <Link href="/summary" className={`mt-4 inline-flex min-h-12 items-center rounded-lg border border-input px-4 font-semibold hover:bg-accent ${focusRing}`}>
+            <Link href="/summary" className={`mt-4 inline-flex min-h-11 items-center rounded-lg border border-input px-4 font-semibold hover:bg-accent ${focusRing}`}>
               Open the flight-surgeon summary
             </Link>
           </section>

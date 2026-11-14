@@ -18,7 +18,7 @@ import { focusRing } from "@/lib/ui";
 
 const LOOK_AHEAD_DAYS = 30;
 const examById = Object.fromEntries(EXAMS.map((e) => [e.id, e]));
-const card = "rounded-2xl border border-border bg-card p-6";
+const card = "rounded-xl border border-border bg-card p-4";
 
 // Exam status: colour + icon + text label (DECISIONS › Inclusive Design).
 const EXAM_STATUS = {
@@ -48,9 +48,9 @@ export default function CalendarPage() {
 
   if (status === "loading" || today === null) {
     return (
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
-        <h1 className="text-4xl font-bold">Mission calendar</h1>
-        <p className="mt-4 text-lg text-muted-foreground">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-5">
+        <h1 className="text-3xl font-bold">Mission calendar</h1>
+        <p className="mt-4 text-base text-muted-foreground">
           {status === "loading" ? (
             "Opening the mission data…"
           ) : (
@@ -99,16 +99,16 @@ export default function CalendarPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
-      <h1 className="text-4xl font-bold">
-        Mission calendar <span className="text-2xl font-normal text-muted-foreground">· {member.name} · mission day {today}</span>
+    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-5">
+      <h1 className="text-3xl font-bold">
+        Mission calendar <span className="text-xl font-normal text-muted-foreground">· {member.name} · mission day {today}</span>
       </h1>
-      <p className="mt-2 text-lg text-muted-foreground">
+      <p className="mt-2 text-base text-muted-foreground">
         Periodic exams named on NASA risk pages. How often they repeat in flight is an ATHENA design choice: NASA doesn&apos;t state it.
       </p>
 
-      <section className="mt-6" aria-labelledby="exams-heading">
-        <h2 id="exams-heading" className="text-2xl font-bold">
+      <section className="mt-4" aria-labelledby="exams-heading">
+        <h2 id="exams-heading" className="text-xl font-bold">
           Exams
         </h2>
         <ul className="mt-4 grid gap-4 md:grid-cols-2">
@@ -119,7 +119,7 @@ export default function CalendarPage() {
             return (
               <li key={exam.id} className={card} style={needsDoing ? { borderColor: s.colour } : undefined}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
-                  <h3 className="text-xl font-semibold">{info.name}</h3>
+                  <h3 className="text-lg font-semibold">{info.name}</h3>
                   <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-semibold" style={{ borderColor: s.colour, color: s.colour }}>
                     <s.Icon className="size-4" aria-hidden="true" />
                     {s.label}
@@ -136,7 +136,7 @@ export default function CalendarPage() {
                     type="button"
                     onClick={() => markDone(exam.id)}
                     disabled={saving !== null || status === "busy"}
-                    className={`mt-4 inline-flex min-h-12 items-center gap-2 rounded-lg bg-primary px-5 font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60 ${focusRing}`}
+                    className={`mt-4 inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-4 font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60 ${focusRing}`}
                   >
                     <CircleCheck className="size-5" aria-hidden="true" />
                     {saving === exam.id ? "Saving…" : `Mark done today (day ${today})`}
@@ -153,9 +153,9 @@ export default function CalendarPage() {
         )}
       </section>
 
-      <div className="mt-8 grid gap-6 md:grid-cols-2">
+      <div className="mt-6 grid gap-4 md:grid-cols-2">
         <section className={card} aria-labelledby="upcoming-heading">
-          <h2 id="upcoming-heading" className="text-xl font-bold">
+          <h2 id="upcoming-heading" className="text-lg font-bold">
             Next {LOOK_AHEAD_DAYS} days
           </h2>
           {upcoming.length === 0 ? (
@@ -174,7 +174,7 @@ export default function CalendarPage() {
 
         {notInFlight.length > 0 && (
           <section className={card} aria-labelledby="ground-heading">
-            <h2 id="ground-heading" className="text-xl font-bold">
+            <h2 id="ground-heading" className="text-lg font-bold">
               Done on the ground
             </h2>
             <ul className="mt-3 space-y-3">
@@ -191,7 +191,7 @@ export default function CalendarPage() {
         )}
       </div>
 
-      <p className="mt-6 text-muted-foreground">Demo mission: all data on this screen is simulated. Not medical advice.</p>
+      <p className="mt-4 text-muted-foreground">Demo mission: all data on this screen is simulated. Not medical advice.</p>
     </main>
   );
 }

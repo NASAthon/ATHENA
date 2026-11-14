@@ -9,7 +9,7 @@ import { useMissionData } from "@/components/MissionDataProvider";
 import { CREW } from "@/lib/crew";
 import { focusRing } from "@/lib/ui";
 
-const card = "rounded-2xl border border-border bg-card p-6";
+const card = "rounded-xl border border-border bg-card p-4";
 const button = `inline-flex min-h-11 items-center gap-2 rounded-lg border px-4 font-medium disabled:opacity-50 ${focusRing}`;
 
 export default function MissionDataPanel() {
@@ -36,7 +36,7 @@ export default function MissionDataPanel() {
 
   return (
     <section aria-labelledby="mission-data-heading" className={card}>
-      <h2 id="mission-data-heading" className="flex items-center gap-2 text-xl font-semibold">
+      <h2 id="mission-data-heading" className="flex items-center gap-2 text-lg font-semibold">
         <Database aria-hidden="true" className="size-5" /> Mission data
       </h2>
       <p className="mt-1 text-muted-foreground">
@@ -70,7 +70,7 @@ export default function MissionDataPanel() {
       )}
 
       {confirming ? (
-        <div role="group" aria-labelledby="confirm-text" className="mt-6 rounded-lg border p-4" style={{ borderColor: "var(--status-amber)" }}>
+        <div role="group" aria-labelledby="confirm-text" className="mt-4 rounded-lg border p-4" style={{ borderColor: "var(--status-amber)" }}>
           <p id="confirm-text" className="flex items-start gap-2">
             <TriangleAlert aria-hidden="true" className="mt-0.5 size-5 shrink-0" style={{ color: "var(--status-amber)" }} />
             {confirming === "reset"
@@ -93,7 +93,7 @@ export default function MissionDataPanel() {
           </div>
         </div>
       ) : (
-        <div className="mt-6 flex flex-wrap gap-3">
+        <div className="mt-4 flex flex-wrap gap-3">
           <button type="button" disabled={busy} onClick={onLoad} className={`${button} border-primary bg-primary text-primary-foreground`}>
             <RotateCcw aria-hidden="true" className="size-4" /> Load demo mission
           </button>

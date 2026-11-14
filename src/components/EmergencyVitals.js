@@ -91,7 +91,7 @@ export default function EmergencyVitals({ astronautId, astronautName, currentGui
                 setValues((v) => ({ ...v, [key]: e.target.value }));
                 setResult(null);
               }}
-              className={`mt-2 min-h-14 w-full rounded-lg border border-input bg-input/30 px-4 text-xl ${focusRing}`}
+              className={`mt-2 min-h-12 w-full rounded-lg border border-input bg-input/30 px-4 text-lg ${focusRing}`}
             />
           </div>
         ))}
@@ -100,7 +100,7 @@ export default function EmergencyVitals({ astronautId, astronautName, currentGui
         type="button"
         onClick={save}
         disabled={status === "busy"}
-        className={`mt-5 inline-flex min-h-14 items-center gap-2 rounded-xl bg-primary px-6 text-lg font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60 ${focusRing}`}
+        className={`mt-3 inline-flex min-h-12 items-center gap-2 rounded-xl bg-primary px-4 text-base font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60 ${focusRing}`}
       >
         Save vitals
       </button>
@@ -114,7 +114,7 @@ export default function EmergencyVitals({ astronautId, astronautName, currentGui
       )}
 
       {result && (
-        <div role="status" className="mt-5 space-y-3">
+        <div role="status" className="mt-3 space-y-3">
           <p className="flex items-center gap-2 font-semibold">
             <CircleCheck className="size-5" aria-hidden="true" style={{ color: "var(--status-steady)" }} />
             Saved to {astronautName}&apos;s record (mission day {result.day}).

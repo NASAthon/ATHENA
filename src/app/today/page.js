@@ -31,7 +31,7 @@ const MAIN = ["sleep", "reaction", "mood", "heartRate", "bloodPressure", "glucos
 const EXTRAS = ["temperature", "exercise", "spo2", "radiation"];
 const ICONS = { CircleCheck, CircleMinus, Info, OctagonAlert, TrendingDown, MessageCircleWarning: TriangleAlert };
 
-const card = "rounded-2xl border border-border bg-card p-6";
+const card = "rounded-xl border border-border bg-card p-4";
 
 // Health score bands (src/lib/engine/healthScore.js): icon + colour token + label.
 const BAND_STYLE = {
@@ -65,13 +65,13 @@ function IndicatorCard({ id, group, record, baselines }) {
   const { unit, value, normal } = readingFor(id, record, baselines);
   const readingOnly = id === "radiation";
   return (
-    <article className="rounded-2xl border border-border bg-card p-5">
+    <article className="rounded-xl border border-border bg-card p-4">
       <div className="flex items-start justify-between gap-3">
-        <h3 className="text-lg text-muted-foreground">{byId[id].name}</h3>
+        <h3 className="text-base text-muted-foreground">{byId[id].name}</h3>
         {readingOnly ? <StatusPill status="no_data" label="Reading only" /> : <StatusPill status={group?.status ?? "no_data"} />}
       </div>
-      <p className="mt-3 text-4xl font-bold">
-        {value ?? "—"} {value && <span className="text-xl font-normal text-muted-foreground">{unit}</span>}
+      <p className="mt-3 text-3xl font-bold">
+        {value ?? "—"} {value && <span className="text-lg font-normal text-muted-foreground">{unit}</span>}
       </p>
       <p className="mt-3 text-muted-foreground">
         {readingOnly
@@ -101,9 +101,9 @@ export default function Today() {
 
   if (state !== "ready") {
     return (
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">
-        <h1 className="text-4xl font-bold">{member.name} · today</h1>
-        <p className="mt-4 text-lg text-muted-foreground">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-5">
+        <h1 className="text-3xl font-bold">{member.name} · today</h1>
+        <p className="mt-4 text-base text-muted-foreground">
           {state === "loading" ? (
             "Opening the mission data…"
           ) : (
@@ -142,32 +142,32 @@ export default function Today() {
   }[alert.level];
 
   return (
-    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-5">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <Link href="/crew" className={`rounded text-primary hover:underline ${focusRing}`}>
             Back to crew
           </Link>
-          <h1 className="mt-2 text-4xl font-bold">
-            {member.name} · today <span className="text-2xl font-normal text-muted-foreground">(mission day {today})</span>
+          <h1 className="mt-2 text-3xl font-bold">
+            {member.name} · today <span className="text-xl font-normal text-muted-foreground">(mission day {today})</span>
           </h1>
         </div>
         <Link
           href="/daily-check"
-          className={`flex min-h-14 items-center gap-2 rounded-xl bg-primary px-6 text-lg font-semibold text-primary-foreground hover:bg-primary/90 ${focusRing}`}
+          className={`flex min-h-12 items-center gap-2 rounded-xl bg-primary px-4 text-base font-semibold text-primary-foreground hover:bg-primary/90 ${focusRing}`}
         >
           <ClipboardList className="size-5" aria-hidden="true" />
           Start today&apos;s check
         </Link>
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+      <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
         <section className={card} aria-labelledby="score-heading">
           <p id="score-heading" className="text-sm uppercase tracking-wider text-muted-foreground">
             Health score
           </p>
           {health.score === null ? (
-            <p className="mt-4 text-lg text-muted-foreground">Not enough data yet to score.</p>
+            <p className="mt-4 text-base text-muted-foreground">Not enough data yet to score.</p>
           ) : (
             <>
               <div className="mt-4 flex flex-wrap items-center gap-4">
@@ -175,14 +175,14 @@ export default function Today() {
                   {health.score}
                 </span>
                 <span
-                  className="inline-flex items-center gap-2 rounded-full border px-4 py-1 text-lg font-semibold"
+                  className="inline-flex items-center gap-2 rounded-full border px-4 py-1 text-base font-semibold"
                   style={{ borderColor: band.colour, color: band.colour }}
                 >
                   <band.Icon className="size-5" aria-hidden="true" />
                   {health.label}
                 </span>
               </div>
-              <p className="mt-4 flex flex-wrap gap-x-6 gap-y-1 text-lg">
+              <p className="mt-4 flex flex-wrap gap-x-6 gap-y-1 text-base">
                 <Change value={change.sinceYesterday} label="since yesterday" />
                 <Change value={change.over7Days} label="this week" />
               </p>
@@ -199,18 +199,18 @@ export default function Today() {
         </section>
 
         {redLimits.length > 0 ? (
-          <section aria-labelledby="alert-title" className="rounded-2xl border-2 p-6" style={{ borderColor: "var(--status-red)" }}>
+          <section aria-labelledby="alert-title" className="rounded-xl border-2 p-4" style={{ borderColor: "var(--status-red)" }}>
             <p className="flex items-center gap-2 font-bold uppercase tracking-wider" style={{ color: "var(--status-red)" }}>
               <OctagonAlert className="size-5" aria-hidden="true" />
               Red limit · today
             </p>
-            <h2 id="alert-title" className="mt-3 text-3xl font-bold">
+            <h2 id="alert-title" className="mt-3 text-2xl font-bold">
               Act now
             </h2>
             <ul className="mt-3 space-y-4">
               {redLimits.map((r) => (
                 <li key={r.indicatorId}>
-                  <p className="text-lg font-semibold">
+                  <p className="text-base font-semibold">
                     {byId[r.indicatorId].name}: {r.label}
                   </p>
                   <p className="mt-1">{r.action}</p>
@@ -229,18 +229,18 @@ export default function Today() {
             </ul>
           </section>
         ) : alert.level !== "none" ? (
-          <section aria-labelledby="alert-title" className="rounded-2xl border-2 p-6" style={{ borderColor: "var(--status-amber)" }}>
+          <section aria-labelledby="alert-title" className="rounded-xl border-2 p-4" style={{ borderColor: "var(--status-amber)" }}>
             <p className="flex items-center gap-2 font-bold uppercase tracking-wider" style={{ color: "var(--status-amber)" }}>
               <TriangleAlert className="size-5" aria-hidden="true" />
               {alert.level === "note" ? "Note" : alert.level === "escalated" ? "Escalated alert" : "Drift alert"}
               {alert.alertSince !== null && ` · since day ${alert.alertSince}`}
             </p>
-            <h2 id="alert-title" className="mt-3 text-3xl font-bold">
+            <h2 id="alert-title" className="mt-3 text-2xl font-bold">
               {alertTitle}
             </h2>
-            <p className="mt-3 text-lg">Drifting: {driftingNames.join(", ")}.</p>
+            <p className="mt-3 text-base">Drifting: {driftingNames.join(", ")}.</p>
             {hazards.length > 0 && (
-              <div className="mt-2 text-lg">
+              <div className="mt-2 text-base">
                 <p>
                   Likely hazard: <span className="font-semibold">{hazards[0].name}</span>
                   {hazards.length > 1 && <span className="text-muted-foreground"> (also {hazards.slice(1).map((h) => h.name).join(", ")})</span>}
@@ -257,9 +257,9 @@ export default function Today() {
                 </p>
               </div>
             )}
-            <p className="mt-2 text-lg">{alertNext}</p>
-            <details className="mt-5 border-t border-border pt-4">
-              <summary className={`flex min-h-11 cursor-pointer items-center rounded text-lg font-semibold ${focusRing}`}>
+            <p className="mt-2 text-base">{alertNext}</p>
+            <details className="mt-3 border-t border-border pt-4">
+              <summary className={`flex min-h-11 cursor-pointer items-center rounded text-base font-semibold ${focusRing}`}>
                 Why this alert?
               </summary>
               <p className="mt-2 text-muted-foreground">
@@ -271,12 +271,12 @@ export default function Today() {
             </details>
           </section>
         ) : (
-          <section aria-labelledby="alert-title" className="rounded-2xl border-2 p-6" style={{ borderColor: "var(--status-steady)" }}>
+          <section aria-labelledby="alert-title" className="rounded-xl border-2 p-4" style={{ borderColor: "var(--status-steady)" }}>
             <p className="flex items-center gap-2 font-bold uppercase tracking-wider" style={{ color: "var(--status-steady)" }}>
               <CircleCheck className="size-5" aria-hidden="true" />
               No alerts
             </p>
-            <h2 id="alert-title" className="mt-3 text-3xl font-bold">
+            <h2 id="alert-title" className="mt-3 text-2xl font-bold">
               Everything is inside your own normal
             </h2>
           </section>
@@ -284,10 +284,10 @@ export default function Today() {
       </div>
 
       {(otherFlags.length > 0 || due.length > 0) && (
-        <div className="mt-6 grid gap-6 md:grid-cols-2">
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
           {otherFlags.length > 0 && (
             <section className={card} aria-labelledby="flags-heading">
-              <h2 id="flags-heading" className="text-xl font-bold">
+              <h2 id="flags-heading" className="text-lg font-bold">
                 Today&apos;s readings to watch
               </h2>
               <ul className="mt-3 space-y-3">
@@ -305,7 +305,7 @@ export default function Today() {
           )}
           {due.length > 0 && (
             <section className={card} aria-labelledby="due-heading">
-              <h2 id="due-heading" className="text-xl font-bold">
+              <h2 id="due-heading" className="text-lg font-bold">
                 Still due today
               </h2>
               <p className="mt-2 text-muted-foreground">{due.join(", ")}</p>
@@ -322,8 +322,8 @@ export default function Today() {
         </div>
       )}
 
-      <div className="mt-8 flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="text-2xl font-bold">Indicators today</h2>
+      <div className="mt-6 flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="text-xl font-bold">Indicators today</h2>
         <p className="text-muted-foreground">Status compares your 7-day average with your own in-flight normal, not Earth ranges</p>
       </div>
 
@@ -338,7 +338,7 @@ export default function Today() {
         ))}
       </div>
 
-      <p className="mt-6 text-muted-foreground">Demo mission: all data on this screen is simulated. Not medical advice.</p>
+      <p className="mt-4 text-muted-foreground">Demo mission: all data on this screen is simulated. Not medical advice.</p>
     </main>
   );
 }

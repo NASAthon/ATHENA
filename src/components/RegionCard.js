@@ -35,7 +35,7 @@ function describeReason(reason) {
 export default function RegionCard({ status }) {
   if (!status) {
     return (
-      <section className="rounded-xl border bg-card p-6 text-muted-foreground">
+      <section className="rounded-xl border bg-card p-4 text-muted-foreground">
         Select a body region to see its details.
       </section>
     );
@@ -46,10 +46,10 @@ export default function RegionCard({ status }) {
   const main = status.reasons[0];
 
   return (
-    <section aria-labelledby="region-card-title" className="flex flex-col gap-4 rounded-xl border bg-card p-6">
+    <section aria-labelledby="region-card-title" className="flex flex-col gap-4 rounded-xl border bg-card p-4">
       {/* Glance */}
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <h2 id="region-card-title" className="text-2xl font-semibold">
+        <h2 id="region-card-title" className="text-xl font-semibold">
           {status.name}
         </h2>
         <span
