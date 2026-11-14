@@ -1,6 +1,13 @@
 # ATHENA build checklist
 
-The single list of **what to build and what to hand in**. Tick items as they're done and push the change.
+The single list of **what to build and what to hand in**. Update it in the same PR as the work.
+
+**Legend:**
+- `- [ ]` = not started
+- `- [ ] 🟡 Partial (PR #n): done…; still to do: …` = partly done, including overlap from another task
+- `- [x] … (PR #n)` = done and working
+
+Full rules: `AGENTS.md` › Before finishing a task.
 Order within each section is the build order. **M** = must have, **S** = should have (cut from the bottom if time runs short).
 The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choices are in `docs/DECISIONS.md`.
 
@@ -51,11 +58,11 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 ### Layout
 
-- [ ] **M** Navigation: Today, Trends, Body, Calendar, Summary
-- [ ] **M** Search bar and an **Emergency** button on every screen
-- [ ] **M** Crew switcher, with the mission day and astronaut name always visible
+- [x] **M** Navigation: Today, Trends, Body, Calendar, Summary (PR #6)
+- [ ] **M** Search bar and an **Emergency** button on every screen 🟡 Partial (PR #6): both shown on every screen; still to do: search logic and results (section 3 › Search) and the Emergency screen content
+- [ ] **M** Crew switcher, with the mission day and astronaut name always visible 🟡 Partial (PR #6): switcher for all 3 crew in the header; still to do: real mission day from the simulator, and sharing the selected astronaut with the pages
 - [ ] **M** Alert banner area at the top of every screen
-- [ ] **M** Dark theme dashboard (`docs/DECISIONS.md` › Design)
+- [x] **M** Dark theme dashboard (`docs/DECISIONS.md` › Design) (PR #4, PR #6)
 - [ ] **M** Health score (0–100) shown prominently per astronaut, with a status icon and drop indicator
 - [ ] **M** One colour scheme for status, used everywhere, always colour **plus** icon **plus** text label
 - [ ] **M** Readable on a laptop and a tablet
@@ -63,8 +70,8 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 ### Inclusive design (`docs/DECISIONS.md` › Inclusive Design)
 
 - [ ] **M** Colour-blind-safe palette, text contrast at least 4.5:1
-- [ ] **M** Tap targets at least 44×44 px (usable with gloves); large text
-- [ ] **M** Full keyboard navigation and screen-reader labels (including the body figure)
+- [ ] **M** Tap targets at least 44×44 px (usable with gloves); large text 🟡 Partial (PR #6): header and navigation done; still to do: every other screen
+- [ ] **M** Full keyboard navigation and screen-reader labels (including the body figure) 🟡 Partial (PR #6): header, nav (with current page) and crew switcher done; still to do: every other screen and the body figure
 - [ ] **M** Respects "reduce motion"; no information shown only through animation
 - [ ] **M** Health text in plain English: glance summary plus "Learn more" layer, medical terms explained in brackets (`docs/DECISIONS.md` › Content Style)
 

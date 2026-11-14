@@ -106,7 +106,14 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 
 ## 3. Before finishing a task
 
-1. Tick the items you completed in `docs/CHECKLIST.md`.
+1. **Update `docs/CHECKLIST.md` in the same PR** (see the legend at the top of that file):
+   - **Done:** change `- [ ]` to `- [x]` and add `(PR #<number>)` at the end.
+   - **Partly done:** keep `- [ ]` and add `🟡 Partial (PR #<number>): <what's done>; still to do: <what's left>`.
+     This includes items your work only partly covers because they overlap with your task
+     (e.g. you added the search bar but not the search logic).
+   - Check related items in other sections too, since one change often covers several.
+   - Never tick an item that isn't fully working. When a later PR finishes a partial item,
+     replace the 🟡 note with `[x]` and both PR numbers.
 2. If you made or changed a decision, add it to `docs/DECISIONS.md` with a reason.
 3. Log how AI was used in `docs/AI_USAGE.md` (required for submission). List
    any AI-generated image or media there, because it must be watermarked or credited.
