@@ -247,9 +247,12 @@ AI-generated code was used to speed up the development process.
 
 ### Hosted evaluation copy
 
-Judges can open [ATHENA on GitHub Pages](https://nasathon.github.io/ATHENA/) without installing
-packages. This is a convenience copy: it has no backend, and its simulated mission data stays in
-that browser's IndexedDB. Internet is needed for the initial hosted page load.
+Judges can open the hosted evaluation copy without installing packages:
+
+**[https://nasathon.github.io/ATHENA/](https://nasathon.github.io/ATHENA/)**
+
+This is a convenience copy: it has no backend, and its simulated mission data stays in that
+browser's IndexedDB. Internet is needed for the initial hosted page load.
 
 ### Local offline version
 
