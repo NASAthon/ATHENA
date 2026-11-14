@@ -87,8 +87,8 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 
 The reviewer must be **another teammate's agent**, run by a different person than
 the PR author. Using Claude too is fine; it just can't be the author's own
-session or anything else on the author's machine. Never review or merge a PR you opened
-or that came from your own teammate's account.
+session or anything else on the author's machine. Never review or merge a PR opened
+from your own GitHub account.
 
 1. Read the PR diff (`gh pr diff <number>`) against this file and `DECISIONS.md`.
 2. Check that:
