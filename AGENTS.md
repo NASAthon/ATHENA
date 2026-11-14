@@ -14,8 +14,8 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 2. Read these files in this order:
    1. `context.md`: the official event brief. It covers the rules, submission
       deliverables, judging rubric, challenge text, NASA data sources and the
-      data caveat. Section 6.1 holds the ATHENA product spec: vision, MVP
-      scope, demo flow and stack.
+      data caveat. Section 6.1 holds the ATHENA product spec: vision, crew, features
+      and stack.
    2. `CHECKLIST.md`: what to build and hand in, with priorities (M = must, S = should).
       Pick your task from here.
    3. `judging.md`: the official Space Apps submission and judging guide. It
@@ -28,7 +28,7 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 3. If two files conflict:
    - Submission, demo, AI/SI rules and judging: `judging.md` wins.
    - Challenge, data and citations: the official sections of `context.md` win.
-   - Product scope and architecture: `DECISIONS.md` wins, then `context.md` Section 6.1.
+   - Product scope and architecture: `DECISIONS.md` wins, then `CHECKLIST.md`, then `context.md` Section 6.1.
    - Anything still unclear: ask the team. Do not guess.
 
 ## 2. While working

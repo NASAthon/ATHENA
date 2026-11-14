@@ -137,7 +137,7 @@ Planning should decide which of these are **must-have for the demo** versus **st
 
 **Innovation angles:** explainable alerts, personal fixed baselines + z-score drift detection, 0–100 health score, decision support, Earth-delay simulation.
 
-**Tech stack** (locked in `DECISIONS.md`): offline-first PWA. Next.js (JavaScript, static export) + Tailwind + ShadCN; SQLite in the browser (sql.js, saved to IndexedDB); JS rules engine + rolling-baseline/z-score trend detection; 2D SVG body map. No backend server. Everything runs onboard.
+**Tech stack** (locked in `DECISIONS.md`): offline-first PWA. Next.js (JavaScript, static export) + Tailwind + ShadCN; SQLite in the browser (sql.js, saved to IndexedDB); JS rules engine + fixed-baseline z-score drift detection (|z| ≥ 2); 2D SVG body map. No backend server. Everything runs onboard.
 
 **MVP scope, priorities and demo script:** see **`CHECKLIST.md`**.
 

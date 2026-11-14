@@ -8,9 +8,15 @@ Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Age
 | Risks of Human Spaceflight | https://www.nasa.gov/hrp/risks/ | 17 risks and the hazard-to-risk link | Yes | US Gov work; no NASA logos |
 | NASA Open Science Data Repository (OSDR) | https://osdr.nasa.gov/ | Real spaceflight biology data for inspiration and testing (named in the challenge video) | Yes | Check each dataset's licence before use |
 | Challenge video (Brazilian Space Agency) | https://www.youtube.com/watch?v=RERG3gEmdC8 | Challenge goals, emergency scenario, guidance requirements | Official challenge material | Cite and link only |
+| 17 NASA risk pages + 5 hazard pages | URLs listed in `docs/BODY_MAP.md` | Body regions, affected systems, verified facts (e.g. bone loss 1–1.5%/month) | Yes | US Gov work; no NASA logos |
+| NASA Space Apps resources (submission and judging guides) | https://www.spaceappschallenge.org/resources/ | Rules, deadlines and judging criteria (`judging.md`) | Official event material | Cite and link only |
 | Monitoring Radiation for Astronaut Health (CSA) | https://www.asc-csa.gc.ca/eng/news/articles/2026/2026-02-26-monitoring-radiation-astronaut-health.asp | Radiation monitoring context (CANS) | No (partner) | Cite and link only; check CSA notices |
 
-## Clinical reference ranges (thresholds only, see `DECISIONS.md` › Thresholds)
+## Clinical reference ranges (thresholds only, see `DECISIONS.md` › Thresholds and › Red-Limit Sources)
+
+Licence notes: **CDC** content is US Government work (public domain). **AHA** and **ADA** pages are
+copyrighted, so use only the numeric facts (facts can't be copyrighted), write our own
+wording, and cite the page. Never copy their text, images or charts.
 
 | Indicator | Range used | Source | URL |
 |---|---|---|---|
@@ -24,5 +30,16 @@ Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Age
 | React | UI library | MIT |
 | Tailwind CSS | Styling | MIT |
 | ESLint + eslint-config-next | Linting (dev only) | MIT |
+| shadcn/ui (when installed) | UI components, copied into the repo | MIT (uses Radix UI, MIT, and Lucide icons, ISC) |
 | sql.js | SQLite database in the browser (WASM) | MIT. https://github.com/sql-js/sql.js |
 | MiniSearch | Offline fuzzy search (typos, prefixes, synonyms) | MIT. https://github.com/lucaong/minisearch |
+
+### Dependency licence scan (14 Nov 2026)
+
+All installed npm packages (direct and transitive, about 350) are open source:
+MIT (294), Apache-2.0 (22), ISC (14), BSD-2/3-Clause (9), MPL-2.0 (3: axe-core,
+lightningcss), BlueOak-1.0.0 (2), CC-BY-4.0 (caniuse-lite browser data), CC0-1.0,
+0BSD, Python-2.0 (argparse), and LGPL-3.0 (sharp/libvips, Next's optional image
+optimiser; unused with static export and not modified).
+No proprietary or unknown licences. Re-run the scan after adding packages, e.g.
+`npx license-checker --summary`.

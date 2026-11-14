@@ -168,7 +168,7 @@ Database:
 
 Analytics:
 - Rules engine with cited sources
-- Personal rolling baselines and z-score trend detection
+- Fixed personal baselines and z-score drift detection
 
 No backend server and no internet connection needed at runtime.
 
