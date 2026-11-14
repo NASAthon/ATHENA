@@ -422,3 +422,43 @@ feature and the pitch should support this line.
 
 Status:
 LOCKED
+
+
+---
+
+## Roles
+
+No fixed roles. Each teammate picks `CHECKLIST.md` tasks they're comfortable with.
+Say which item you're taking, and work on its own branch to avoid clashes.
+
+Status:
+LOCKED
+
+---
+
+## Drift Cut-off
+
+An indicator counts as **drifting at |z| ≥ 2** (7-day average against the in-flight baseline).
+
+Reason:
+Stricter than 1.5, so normal day-to-day noise doesn't trigger alerts. This
+protects the "no false alarms" story (Pilot Singh stays green).
+
+Status:
+LOCKED
+
+---
+
+## Red-Limit Sources
+
+Red limits (and normal ranges) come from published clinical guidelines:
+- Heart rate and blood pressure: **American Heart Association (AHA)**
+- Blood glucose: **American Diabetes Association (ADA)**
+- Body temperature and sleep: **CDC**
+
+Every value must be **checked against the live source page before use**, entered
+with its exact URL in `docs/SOURCES.md`, and labelled "general clinical reference
+range" in the app. If a value can't be verified, don't use it.
+
+Status:
+LOCKED
