@@ -1,19 +1,17 @@
 import Link from "next/link";
 import { TriangleAlert } from "lucide-react";
+import CrewSwitcher from "@/components/CrewSwitcher";
+import NavLinks from "@/components/NavLinks";
 
-const navItems = [
-  { href: "/", label: "Today" },
-  { href: "/trends", label: "Trends" },
-  { href: "/body", label: "Body" },
-  { href: "/calendar", label: "Calendar" },
-  { href: "/summary", label: "Summary" },
-];
+// Shared keyboard focus style (inclusive design: always show where focus is).
+const focusRing =
+  "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
 export default function Header() {
   return (
-    <header className="border-b border-white/20 bg-black/40">
+    <header className="border-b border-border bg-card">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3">
-        <Link href="/" className="text-xl font-bold tracking-wide">
+        <Link href="/" className={`rounded-md text-xl font-bold tracking-wide ${focusRing}`}>
           ATHENA
         </Link>
 
@@ -25,35 +23,22 @@ export default function Header() {
             id="search"
             type="search"
             placeholder="Search, e.g. chest pain or heart rate"
-            className="min-h-11 w-full rounded-lg border border-white/30 bg-white/5 px-3 text-base"
+            className={`min-h-11 w-full rounded-lg border border-input bg-input/30 px-3 text-base placeholder:text-muted-foreground ${focusRing}`}
           />
         </div>
 
-        <div className="flex min-h-11 items-center rounded-lg border border-white/30 px-3 text-sm">
-          Day 1 · Cmdr Rivera
-        </div>
+        <CrewSwitcher />
 
         <Link
           href="/emergency"
-          className="flex min-h-11 items-center gap-2 rounded-lg bg-red-700 px-4 font-semibold text-white hover:bg-red-600"
+          className={`flex min-h-11 items-center gap-2 rounded-lg bg-destructive px-4 font-semibold text-background hover:bg-destructive/90 ${focusRing}`}
         >
           <TriangleAlert aria-hidden="true" className="size-5" /> Emergency
         </Link>
       </div>
 
       <nav aria-label="Main" className="mx-auto max-w-6xl px-4 pb-3">
-        <ul className="flex flex-wrap gap-2">
-          {navItems.map((item) => (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                className="flex min-h-11 items-center rounded-lg px-4 font-medium hover:bg-white/10"
-              >
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <NavLinks />
       </nav>
     </header>
   );
