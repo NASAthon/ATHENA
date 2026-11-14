@@ -5,6 +5,7 @@
 > - **Inferred:** our own mapping, consistent with the page but not stated by it. Present it as ATHENA's interpretation, not as a NASA claim.
 >
 > **Important:** the risk pages **don't** use the five-hazard list. They name causes such as "microgravity" or "prolonged isolation". The hazard links below come from matching those causes and the hazard pages, so most are marked *Inferred*.
+> **In the app:** this content lives in `src/data/regions.js` (`risks`, `riskNotes`, `hazards`, `facts`) and powers the Body page (PR #9). Keep the two in sync.
 > Card text follows `docs/DECISIONS.md` › Content Style (accurate, plain English, glance summary plus "Learn more").
 
 ## Regions

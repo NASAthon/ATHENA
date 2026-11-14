@@ -46,7 +46,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** Handles missing days without crashing or false alerts
 - [ ] **M** Search index: offline fuzzy search over all content (typos, prefixes, synonyms, symptoms; `docs/DECISIONS.md` › Search). Library: **MiniSearch** (MIT)
 - [ ] **M** Reminder scheduler: which measurements are due today
-- [ ] **M** Region mapper: indicator-to-body-region table and worst-status function 🟡 Partial (PR #7): the indicator-to-region table is in `src/data/regions.js`; still to do: worst-status function
+- [ ] **M** Region mapper: indicator-to-body-region table and worst-status function 🟡 Partial (PR #7, PR #9): indicator-to-region table in `src/data/regions.js`; worst-status function for the UI (with recent-symptom layer) in `src/lib/regionStatus.js`; still to do: wire to the logic engine's region statuses (PR #10)
 - [ ] **S** Calendar scheduler: which periodic exams are due on a given mission day
 - [ ] **S** Summary builder for the flight-surgeon report
 - [ ] **S** Mission mode changes which hazards and advice are shown (ISS, Lunar Gateway, Mars Transit; no Lunar Surface Base)
@@ -60,20 +60,20 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 - [x] **M** Navigation: Today, Trends, Body, Calendar, Summary (PR #6)
 - [ ] **M** Search bar and an **Emergency** button on every screen 🟡 Partial (PR #6): both shown on every screen; still to do: search logic and results (section 3 › Search) and the Emergency screen content
-- [ ] **M** Crew switcher, with the mission day and astronaut name always visible 🟡 Partial (PR #6): switcher for all 3 crew in the header; still to do: real mission day from the simulator, and sharing the selected astronaut with the pages
+- [ ] **M** Crew switcher, with the mission day and astronaut name always visible 🟡 Partial (PR #6, PR #9): switcher for all 3 crew, shared with every page (`CrewProvider`); still to do: real mission day from the simulator
 - [ ] **M** Alert banner area at the top of every screen
 - [x] **M** Dark theme dashboard (`docs/DECISIONS.md` › Design) (PR #4, PR #6)
 - [ ] **M** Health score (0–100) shown prominently per astronaut, with a status icon and drop indicator
-- [ ] **M** One colour scheme for status, used everywhere, always colour **plus** icon **plus** text label
+- [ ] **M** One colour scheme for status, used everywhere, always colour **plus** icon **plus** text label 🟡 Partial (PR #9): status tokens `--status-*` in `globals.css`, used with icon and label on the body map; still to do: alerts, Today and Trends
 - [ ] **M** Readable on a laptop and a tablet
 
 ### Inclusive design (`docs/DECISIONS.md` › Inclusive Design)
 
-- [ ] **M** Colour-blind-safe palette, text contrast at least 4.5:1 🟡 Partial (PR #8): space palette checked (text 6.5–17:1, form borders 3.5–3.9:1); still to do: status colours and chart colours
-- [ ] **M** Tap targets at least 44×44 px (usable with gloves); large text 🟡 Partial (PR #6, PR #8): header, navigation and daily check done; still to do: other screens
-- [ ] **M** Full keyboard navigation and screen-reader labels (including the body figure) 🟡 Partial (PR #6, PR #8): header, nav, crew switcher, mission mode and daily check done; still to do: other screens and the body figure
+- [ ] **M** Colour-blind-safe palette, text contrast at least 4.5:1 🟡 Partial (PR #8, PR #9): palette and status colours checked (text 5.8–17:1, form borders 3.5–3.9:1); still to do: chart colours (colour-blind check)
+- [ ] **M** Tap targets at least 44×44 px (usable with gloves); large text 🟡 Partial (PR #6, PR #8, PR #9): header, navigation, daily check and body page done; still to do: other screens
+- [ ] **M** Full keyboard navigation and screen-reader labels (including the body figure) 🟡 Partial (PR #6, PR #8, PR #9): header, nav, crew switcher, mission mode, daily check and body figure (region list, one SVG summary) done; still to do: other screens
 - [ ] **M** Respects "reduce motion"; no information shown only through animation
-- [ ] **M** Health text in plain English: glance summary plus "Learn more" layer, medical terms explained in brackets 🟡 Partial (PR #8): daily check side panel (glance, steps, Learn more, sources) reads from `src/data`; still to do: alerts, body cards, emergency screens (`docs/DECISIONS.md` › Content Style)
+- [ ] **M** Health text in plain English: glance summary plus "Learn more" layer, medical terms explained in brackets 🟡 Partial (PR #8, PR #9): daily check side panel and body region cards (glance plus Learn more, sources, NASA states/interpretation tags) read from `src/data`; still to do: alerts and emergency screens (`docs/DECISIONS.md` › Content Style)
 
 ### Daily check
 
@@ -116,10 +116,10 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 ### Body figure (2D SVG; regions in `docs/BODY_MAP.md` and `src/data/regions.js`). Required: the brief asks for a clickable body figure
 
-- [ ] **M** Outline with the eight clickable regions from `docs/BODY_MAP.md`
-- [ ] **M** Region colour (plus icon and label) from the region mapper
-- [ ] **M** Card on click: function, status, risk, hazard, advice, "last checked" date (card text ready in `src/data/regions.js`)
-- [ ] **S** Fallback: region tiles if the drawing takes too long
+- [x] **M** Outline with the eight clickable regions from `docs/BODY_MAP.md` (PR #9)
+- [ ] **M** Region colour (plus icon and label) from the region mapper 🟡 Partial (PR #9): status colour, icon and label per region, per crew member against their own baseline; still to do: real data from the logic engine instead of the simulated sample
+- [x] **M** Card on click: function, status, risk, hazard, advice, "last checked" date (PR #9; text from `src/data/regions.js`)
+- [x] **S** Fallback: region tiles if the drawing takes too long (PR #9: the accessible region list beside the figure)
 
 ### Calendar, summary, extras
 
