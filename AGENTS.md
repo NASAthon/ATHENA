@@ -11,6 +11,9 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 - **Root:** `AGENTS.md`, `CLAUDE.md` and `README.md` (they must stay at the root, because agents and GitHub look for them there), plus config files.
 - `docs/`: all project context for agents (`context.md`, `CHECKLIST.md`, `DECISIONS.md`, `judging.md`, `SOURCES.md`, `AI_USAGE.md`, `BODY_MAP.md`).
 - `src/`: all app code (`src/app/` pages, `src/components/`, `src/lib/`). Import with `@/`, e.g. `@/lib/utils`.
+- `src/data/`: all health content (hazards, risks, body regions, indicators with thresholds,
+  emergencies, symptoms, exams, sources). Import from `@/data`. **Never hard-code health text
+  or numbers in components; use these files.** Run `npm run check:content` after editing them.
 - `public/`: static files served as-is. `scripts/`: build helper scripts.
 
 ## 1. Before starting any task
@@ -51,7 +54,8 @@ GitHub is the single source of truth, so always branch from the latest `main`.
   - **sql.js:** `npm install` copies the engine to `public/sql-wasm.wasm` (`scripts/copy-sqljs-wasm.mjs`).
     Load it with `initSqlJs({ locateFile: () => "/sql-wasm.wasm" })`, never from a CDN.
   - **MiniSearch** for search.
-  - Before adding any other package, check its licence and add it to `docs/SOURCES.md`.
+  - Before adding any other package, check its licence, add it to `docs/SOURCES.md`, and run
+    `npm run licenses` to refresh `THIRD_PARTY_LICENSES.md`.
 
 - **Do not redesign the architecture.** Stack: offline-first PWA,
   Next.js (JavaScript) + Tailwind + ShadCN, SQLite in the browser (sql.js +
@@ -81,6 +85,8 @@ GitHub is the single source of truth, so always branch from the latest `main`.
   emergency entry you add must include search keywords: synonyms, plain-English terms
   and symptoms, so search can find it.
 - **Measurement reminders** are also required (team decision). Lunar Surface Base is out of scope.
+- **No medicines, doses or diagnoses** anywhere in the app (`docs/DECISIONS.md` › No Medicines or Diagnoses).
+  Give signs, first-response actions and when to contact the flight surgeon.
 - Mark assumptions explicitly. Never present an assumption as an official NASA value.
 - The repo is **public**. No secrets, API keys, personal data, or anyone's
   photo, voice or likeness. Some participants may be under 18.
@@ -106,7 +112,14 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 
 ## 3. Before finishing a task
 
-1. Tick the items you completed in `docs/CHECKLIST.md`.
+1. **Update `docs/CHECKLIST.md` in the same PR** (see the legend at the top of that file):
+   - **Done:** change `- [ ]` to `- [x]` and add `(PR #<number>)` at the end.
+   - **Partly done:** keep `- [ ]` and add `🟡 Partial (PR #<number>): <what's done>; still to do: <what's left>`.
+     This includes items your work only partly covers because they overlap with your task
+     (e.g. you added the search bar but not the search logic).
+   - Check related items in other sections too, since one change often covers several.
+   - Never tick an item that isn't fully working. When a later PR finishes a partial item,
+     replace the 🟡 note with `[x]` and both PR numbers.
 2. If you made or changed a decision, add it to `docs/DECISIONS.md` with a reason.
 3. Log how AI was used in `docs/AI_USAGE.md` (required for submission). List
    any AI-generated image or media there, because it must be watermarked or credited.
