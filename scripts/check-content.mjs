@@ -78,7 +78,14 @@ for (const x of EXAMS) { const w = `exam ${x.id}`; src(x.sourceId, w); check(ris
 for (const m of MISSION_MODES) {
   const w = `mission mode ${m.id}`;
   m.sourceIds.forEach((s) => src(s, w)); kw(m, w);
-  if (m.earthDelay) src(m.earthDelay.sourceId, `${w} earthDelay`);
+  if (m.earthDelay) {
+    src(m.earthDelay.sourceId, `${w} earthDelay`);
+    const d = m.earthDelay.oneWaySeconds;
+    check(d && typeof d.max === "number" && d.max > 0 && (d.min === null || (typeof d.min === "number" && d.min <= d.max)),
+      `${w}: earthDelay.oneWaySeconds needs a positive max and a min (or null) not above it`);
+  }
+  (m.emphasis?.hazards ?? []).forEach((h) => check(hazardIds.has(h), `${w}: unknown emphasised hazard "${h}"`));
+  check(!m.advice || (m.advice.glance && ["design", "clinical"].includes(m.advice.basis)), `${w}: advice needs glance text and a basis`);
 }
 check(MISSION_MODES.some((m) => m.id === DEFAULT_MISSION_MODE), `unknown DEFAULT_MISSION_MODE "${DEFAULT_MISSION_MODE}"`);
 for (const i of INDICATORS) {
