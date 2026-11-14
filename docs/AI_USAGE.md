@@ -52,6 +52,7 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Isaac | Claude | Page tidy: "Day N" wording, no Back to crew on Today, second compact pass, shorter symptom names, Trends All button first and arrow-ended day slider, Summary "Send to Earth" (simulated) instead of Copy text | `src/app/*`, `src/components/*`, `src/data/symptoms.js`, `src/app/globals.css`, `docs/CHECKLIST.md` |
 | 14 Nov 2026 | Isaac | Claude | Page tidy 2: "|" separators, "Page | Name | Day N" headings, Today flags on indicator cards (no separate box), Trends day number box and fewer filters, Body page fits the screen, centred nav, third compact pass, "Stroke signs" symptom name | `src/app/*`, `src/components/*`, `src/data/symptoms.js` |
 | 14 Nov 2026 | Isaac | Claude | Emergency page tidy: one-line intro, smaller heading icons, guide cards and crew buttons in the site-wide card/button style | `src/app/emergency/page.js` |
+| 14 Nov 2026 | Isaac | Claude | Emergency guide layout: one-row crew picker, larger current step with Back/Next as the main controls, vitals in a collapsible section, signs first in the side column, compact flight-surgeon card; Daily check "Save readings" button at the end of the Readings card | `src/app/emergency/page.js`, `src/app/daily-check/page.js` |
 
 ## AI-generated media
 

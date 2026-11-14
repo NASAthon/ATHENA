@@ -99,78 +99,81 @@ function Guide({ guide }) {
 
   const noteTime = () => setTimes((t) => [...t, new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })]);
 
+  const secondaryButton = `inline-flex min-h-11 items-center gap-2 rounded-lg border border-input px-3 text-sm hover:bg-accent ${focusRing}`;
+
   return (
-    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
-      <Link href="/emergency" className={`inline-flex min-h-11 items-center gap-1 rounded text-primary hover:underline ${focusRing}`}>
+    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-3">
+      {/* Header: back, guide name, one-line summary, and who it's for on one row */}
+      <Link href="/emergency" className={`inline-flex min-h-11 items-center gap-1 rounded text-sm text-primary hover:underline ${focusRing}`}>
         <ArrowLeft className="size-4" aria-hidden="true" /> All emergency guides
       </Link>
-      <h1 className="mt-2 flex items-start gap-2 text-xl font-bold">
-        <OctagonAlert className="mt-0.5 size-6 shrink-0" aria-hidden="true" style={{ color: "var(--status-red)" }} />
+      <h1 className="flex items-center gap-2 text-xl font-bold">
+        <OctagonAlert className="size-6 shrink-0" aria-hidden="true" style={{ color: "var(--status-red)" }} />
         {guide.name}
       </h1>
-      <p className="mt-2 text-base">{guide.glance}</p>
+      <p className="mt-1 text-base text-muted-foreground">{guide.glance}</p>
 
-      {/* Who needs help: works for yourself or a crewmate. Also switches the whole app to them. */}
-      <fieldset className="mt-2">
-        <legend className="text-base font-semibold">Who needs help?</legend>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {CREW.map((m) => {
-            const selected = m.id === crewId;
-            return (
-              <button
-                key={m.id}
-                type="button"
-                aria-pressed={selected}
-                onClick={() => setCrewId(m.id)}
-                className={`min-h-11 rounded-lg border px-4 text-base font-semibold ${focusRing} ${selected ? "border-primary bg-accent" : "border-input bg-card hover:bg-accent/60"}`}
-              >
-                {m.name}
-              </button>
-            );
-          })}
-        </div>
-        <p className="mt-2 text-muted-foreground">Helping a crewmate? Pick them, then follow the steps for them and record their vitals below.</p>
+      {/* Who needs help: yourself or a crewmate. Also switches the whole app to them. */}
+      <fieldset className="mt-2 flex flex-wrap items-center gap-2">
+        <legend className="sr-only">Who needs help?</legend>
+        <span aria-hidden="true" className="text-sm font-semibold text-muted-foreground">
+          Helping:
+        </span>
+        {CREW.map((m) => {
+          const selected = m.id === crewId;
+          return (
+            <button
+              key={m.id}
+              type="button"
+              aria-pressed={selected}
+              onClick={() => setCrewId(m.id)}
+              className={`min-h-11 rounded-lg border px-3 text-sm font-semibold ${focusRing} ${selected ? "border-primary bg-accent" : "border-input bg-card hover:bg-accent/60"}`}
+            >
+              {m.name}
+            </button>
+          );
+        })}
       </fieldset>
 
-      {redLimits.length > 0 && (
-        <p className="mt-2 flex flex-wrap items-center gap-2 rounded-xl border-2 bg-card px-3 py-2 text-base font-semibold" style={{ borderColor: "var(--status-red)" }}>
-          <OctagonAlert className="size-5" aria-hidden="true" style={{ color: "var(--status-red)" }} />
-          {member.name} today: {redLimits.map((r) => `${indicatorName[r.indicatorId]}: ${r.label}`).join("; ")}
-        </p>
-      )}
-
-      {related.length > 0 && (
-        <div className="mt-2 rounded-xl border border-border bg-card px-3 py-2">
-          <p className="text-base font-semibold">Also reported today by {member.name}:</p>
-          <ul className="mt-2 flex flex-wrap gap-2">
-            {related.map((s) => (
-              <li key={s.id}>
+      {(redLimits.length > 0 || related.length > 0) && (
+        <div className="mt-2 space-y-2">
+          {redLimits.length > 0 && (
+            <p className="flex flex-wrap items-center gap-2 rounded-xl border-2 bg-card px-3 py-2 text-base font-semibold" style={{ borderColor: "var(--status-red)" }}>
+              <OctagonAlert className="size-5" aria-hidden="true" style={{ color: "var(--status-red)" }} />
+              {member.name} today: {redLimits.map((r) => `${indicatorName[r.indicatorId]}: ${r.label}`).join("; ")}
+            </p>
+          )}
+          {related.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2 rounded-xl border border-border bg-card px-3 py-2">
+              <span className="text-sm font-semibold">Also reported today:</span>
+              {related.map((s) => (
                 <Link
+                  key={s.id}
                   href={`/emergency?id=${s.emergencyId}`}
-                  className={`inline-flex min-h-11 items-center gap-2 rounded-lg bg-destructive px-4 font-semibold text-background hover:bg-destructive/90 ${focusRing}`}
+                  className={`inline-flex min-h-11 items-center gap-2 rounded-lg bg-destructive px-3 text-sm font-semibold text-background hover:bg-destructive/90 ${focusRing}`}
                 >
-                  <TriangleAlert className="size-5" aria-hidden="true" />
+                  <TriangleAlert className="size-4" aria-hidden="true" />
                   {s.name}: open {guideById[s.emergencyId].name}
                 </Link>
-              </li>
-            ))}
-          </ul>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
-      <div className="mt-2 grid gap-2 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-        <div className="space-y-2">
-          {/* The step */}
-          <section aria-labelledby="step-heading" className="rounded-xl border-2 p-3" style={{ borderColor: "var(--status-red)" }}>
+      <div className="mt-3 grid items-start gap-3 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+        <div className="space-y-3">
+          {/* The current step: the one thing to read */}
+          <section aria-labelledby="step-heading" className="rounded-xl border-2 bg-card p-4" style={{ borderColor: "var(--status-red)" }}>
             {finished ? (
               <div aria-live="polite">
-                <h2 id="step-heading" ref={stepHeading} tabIndex={-1} className="rounded text-lg font-bold outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <h2 id="step-heading" ref={stepHeading} tabIndex={-1} className="rounded text-xl font-bold outline-none focus-visible:ring-2 focus-visible:ring-ring">
                   All {total} steps done
                 </h2>
                 <p className="mt-2 text-base">
                   Stay with {member.name}, keep recording their vitals, and follow the flight surgeon&apos;s advice.
                 </p>
-                <div className="mt-2 flex flex-wrap gap-2">
+                <div className="mt-3 flex flex-wrap gap-2">
                   <Link href="/summary" className={`${bigButton} bg-primary text-primary-foreground hover:bg-primary/90`}>
                     Summary for the flight surgeon
                   </Link>
@@ -181,27 +184,27 @@ function Guide({ guide }) {
               </div>
             ) : (
               <>
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="text-base font-semibold text-muted-foreground">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                     Step {step + 1} of {total}
                   </p>
-                  <ol className="flex gap-1.5" aria-hidden="true">
+                  <ol className="flex gap-1" aria-hidden="true">
                     {guide.steps.map((_, i) => (
-                      <li key={i} className={`h-2.5 w-6 rounded-full ${i <= step ? "bg-primary" : "bg-border"}`} />
+                      <li key={i} className={`h-2 w-5 rounded-full ${i <= step ? "bg-primary" : "bg-border"}`} />
                     ))}
                   </ol>
                 </div>
                 <div aria-live="polite">
-                  <h2 id="step-heading" ref={stepHeading} tabIndex={-1} className="mt-2 rounded text-lg font-bold leading-snug outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                  <h2 id="step-heading" ref={stepHeading} tabIndex={-1} className="mt-3 rounded text-2xl font-bold leading-snug outline-none focus-visible:ring-2 focus-visible:ring-ring">
                     {current.text}
                   </h2>
-                  <p className="mt-2 text-base">
-                    <span className="font-semibold">Why: </span>
+                  <p className="mt-2 text-base text-muted-foreground">
+                    <span className="font-semibold text-foreground">Why: </span>
                     {current.why}
                   </p>
                 </div>
                 {current.adaptation && (
-                  <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                  <p className="mt-2 text-sm text-muted-foreground">
                     <span className="rounded border border-dashed border-border px-1.5 py-0.5">ATHENA&apos;s adaptation for spaceflight</span>
                   </p>
                 )}
@@ -209,12 +212,12 @@ function Guide({ guide }) {
                   <button
                     type="button"
                     onClick={() => router.push(`/emergency?id=${current.nextEmergencyId}`)}
-                    className={`${bigButton} mt-2 w-full bg-destructive text-background hover:bg-destructive/90`}
+                    className={`${bigButton} mt-3 w-full bg-destructive text-background hover:bg-destructive/90`}
                   >
                     <TriangleAlert className="size-5" aria-hidden="true" /> Switch to: {guideById[current.nextEmergencyId].name}
                   </button>
                 )}
-                <div className="mt-2 grid grid-cols-2 gap-2">
+                <div className="mt-4 grid grid-cols-[1fr_2fr] gap-2">
                   <button
                     type="button"
                     onClick={() => (step === 1 ? goTo(0) : setStep(Math.max(0, step - 1)))}
@@ -227,58 +230,35 @@ function Guide({ guide }) {
                     {step + 1 === total ? "Done" : "Next step"} <ArrowRight className="size-5" aria-hidden="true" />
                   </button>
                 </div>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => speak(`Step ${step + 1}. ${current.text} Why: ${current.why}`)}
-                    className={`inline-flex min-h-11 items-center gap-2 rounded-lg border border-input px-4 hover:bg-accent ${focusRing}`}
-                  >
-                    <Volume2 className="size-5" aria-hidden="true" /> Read this step aloud
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <button type="button" onClick={() => speak(`Step ${step + 1}. ${current.text} Why: ${current.why}`)} className={secondaryButton}>
+                    <Volume2 className="size-4" aria-hidden="true" /> Read aloud
                   </button>
-                  <button
-                    type="button"
-                    onClick={noteTime}
-                    className={`inline-flex min-h-11 items-center gap-2 rounded-lg border border-input px-4 hover:bg-accent ${focusRing}`}
-                  >
-                    <Clock className="size-5" aria-hidden="true" /> Note the time
+                  <button type="button" onClick={noteTime} className={secondaryButton}>
+                    <Clock className="size-4" aria-hidden="true" /> Note the time
                   </button>
                 </div>
               </>
             )}
             {times.length > 0 && (
-              <p role="status" className="mt-2 text-base">
+              <p role="status" className="mt-2 text-sm">
                 Times noted: {times.join(", ")}
               </p>
             )}
           </section>
 
-          <section aria-labelledby="vitals-heading" className={card}>
-            <h2 id="vitals-heading" className="text-base font-bold">
-              Record vitals
-            </h2>
+          {/* Vitals: open when needed, so the step stays the focus */}
+          <details className={card}>
+            <summary className={`flex min-h-11 cursor-pointer items-center rounded text-base font-semibold ${focusRing}`}>
+              Record {member.name}&apos;s vitals
+            </summary>
             <div className="mt-2">
               <EmergencyVitals key={crewId} astronautId={crewId} astronautName={member.name} currentGuideId={guide.id} />
             </div>
-          </section>
+          </details>
         </div>
 
-        <aside className="space-y-2">
-          <section aria-labelledby="ground-heading" className="rounded-xl border-2 p-3" style={{ borderColor: "var(--status-amber)" }}>
-            <h2 id="ground-heading" className="flex items-center gap-2 text-base font-bold">
-              <Radio className="size-5" aria-hidden="true" /> Contact the flight surgeon
-            </h2>
-            <p className="mt-2 text-base">
-              {mode.name}: reply expected <span className="font-semibold">{link ? link.replyText : "after an unknown delay"}</span>.
-            </p>
-            <p className="mt-2">{advice.glance}</p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {advice.basisLabel}
-            </p>
-            <Link href="/summary" className={`mt-2 inline-flex min-h-11 items-center rounded-lg border border-input px-4 font-semibold hover:bg-accent ${focusRing}`}>
-              Open the summary to send
-            </Link>
-          </section>
-
+        <aside className="space-y-3">
           <section aria-labelledby="signs-heading" className={card}>
             <h2 id="signs-heading" className="text-base font-bold">
               Signs to look for
@@ -290,23 +270,39 @@ function Guide({ guide }) {
             </ul>
           </section>
 
+          <section aria-labelledby="ground-heading" className="rounded-xl border-2 bg-card p-3" style={{ borderColor: "var(--status-amber)" }}>
+            <h2 id="ground-heading" className="flex items-center gap-2 text-base font-bold">
+              <Radio className="size-5" aria-hidden="true" /> Flight surgeon
+            </h2>
+            <p className="mt-1 text-base">
+              {mode.name}: reply in <span className="font-semibold">{link ? link.replyText : "an unknown time"}</span>.
+            </p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {advice.glance} <span className="italic">({advice.basisLabel})</span>
+            </p>
+            <Link href="/summary" className={`mt-2 inline-flex min-h-11 items-center rounded-lg border border-input px-3 text-sm font-semibold hover:bg-accent ${focusRing}`}>
+              Send the summary
+            </Link>
+          </section>
+
           <details className={card}>
             <summary className={`flex min-h-11 cursor-pointer items-center rounded text-base font-semibold ${focusRing}`}>All steps at once</summary>
-            <ol className="mt-2 list-decimal space-y-2 pl-5">
+            <ol className="mt-1 list-decimal space-y-1 pl-5">
               {guide.steps.map((s, i) => (
                 <li key={i}>
-                  <button type="button" onClick={() => goTo(i)} className={`min-h-11 rounded text-left underline-offset-2 hover:underline ${focusRing}`}>
+                  <button
+                    type="button"
+                    onClick={() => goTo(i)}
+                    aria-current={i === step ? "step" : undefined}
+                    className={`min-h-11 rounded text-left underline-offset-2 hover:underline aria-[current=step]:font-semibold ${focusRing}`}
+                  >
                     {s.text}
                   </button>
                 </li>
               ))}
             </ol>
-            <button
-              type="button"
-              onClick={() => speak(guide.steps.map((s, i) => `Step ${i + 1}. ${s.text}`).join(" "))}
-              className={`mt-2 inline-flex min-h-11 items-center gap-2 rounded-lg border border-input px-4 hover:bg-accent ${focusRing}`}
-            >
-              <Volume2 className="size-5" aria-hidden="true" /> Read all steps aloud
+            <button type="button" onClick={() => speak(guide.steps.map((s, i) => `Step ${i + 1}. ${s.text}`).join(" "))} className={`mt-2 ${secondaryButton}`}>
+              <Volume2 className="size-4" aria-hidden="true" /> Read all steps aloud
             </button>
           </details>
 
