@@ -9,7 +9,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { CircleCheck, Eye, OctagonAlert, TriangleAlert } from "lucide-react";
-import { EMERGENCIES, INDICATORS, SOURCES } from "@/data";
+import { EMERGENCIES, INDICATORS } from "@/data";
 import { RECORD_FIELDS, checkReading } from "@/lib/engine";
 import { useMissionData } from "@/components/MissionDataProvider";
 import { plainFieldError } from "@/lib/readings";
@@ -139,14 +139,6 @@ export default function EmergencyVitals({ astronautId, astronautName, currentGui
                     )}
                     <p className="mt-1 text-sm text-muted-foreground">
                       {b.basisLabel}
-                      {b.source && (
-                        <>
-                          {" · "}
-                          <a href={b.source.url} target="_blank" rel="noreferrer" className={`rounded underline ${focusRing}`}>
-                            Source: {b.source.title ?? SOURCES[b.sourceId]?.title}
-                          </a>
-                        </>
-                      )}
                     </p>
                   </li>
                 );

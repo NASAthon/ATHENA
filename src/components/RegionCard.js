@@ -2,7 +2,7 @@
 // All content comes from src/data (regions, risks, hazards, sources, indicators, symptoms).
 // Layered, as docs/DECISIONS.md > Content Style asks:
 //   Glance (always visible): name, status, the main reason, last checked.
-//   Learn more (on tap): body parts, NASA risks and hazards with source links, verified facts.
+//   Learn more (on tap): body parts, NASA risks and hazards, verified facts (sources are in docs/SOURCES.md).
 //
 // Props:
 //   status  one entry from getRegionStatuses() (src/lib/regionStatus.js)
@@ -10,13 +10,12 @@
 import {
   CircleCheck,
   CircleMinus,
-  ExternalLink,
   Info,
   MessageCircleWarning,
   OctagonAlert,
   TrendingDown,
 } from "lucide-react";
-import { REGIONS, RISKS, HAZARDS, SOURCES, INDICATORS, SYMPTOMS } from "@/data";
+import { REGIONS, RISKS, HAZARDS, INDICATORS, SYMPTOMS } from "@/data";
 import { focusRing } from "@/lib/ui";
 
 const ICONS = { CircleCheck, CircleMinus, Info, MessageCircleWarning, OctagonAlert, TrendingDown };
@@ -26,7 +25,6 @@ const riskById = Object.fromEntries(RISKS.map((r) => [r.id, r]));
 const hazardById = Object.fromEntries(HAZARDS.map((h) => [h.id, h]));
 const indicatorById = Object.fromEntries(INDICATORS.map((i) => [i.id, i]));
 const symptomById = Object.fromEntries(SYMPTOMS.map((s) => [s.id, s]));
-const urlOf = (item) => SOURCES[item.sourceIds[0]].url;
 
 // One reason as a plain-English line, e.g. "Sleep 5.8 h (your normal 6.8 h)".
 function describeReason(reason) {
@@ -47,21 +45,6 @@ function BasisTag({ basis }) {
     <span className="rounded border border-dashed border-border px-1.5 py-0.5 text-xs text-muted-foreground">
       ATHENA&apos;s interpretation
     </span>
-  );
-}
-
-function SourceLink({ href, children }) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      className={`inline-flex items-center gap-1 rounded underline underline-offset-2 hover:text-foreground ${focusRing}`}
-    >
-      {children}
-      <ExternalLink aria-hidden="true" className="size-3.5" />
-      <span className="sr-only">(opens NASA page)</span>
-    </a>
   );
 }
 
@@ -132,7 +115,7 @@ export default function RegionCard({ status }) {
               {region.risks.map((id) => (
                 <li key={id} className="flex flex-col gap-1">
                   <span className="flex flex-wrap items-center gap-2">
-                    <SourceLink href={urlOf(riskById[id])}>{riskById[id].name}</SourceLink>
+                    <span className="font-medium">{riskById[id].name}</span>
                     <BasisTag basis={region.riskNotes[id].basis} />
                   </span>
                   <span className="text-muted-foreground">{region.riskNotes[id].note}</span>
@@ -147,7 +130,7 @@ export default function RegionCard({ status }) {
               {region.hazards.map((h) => (
                 <li key={h.id} className="flex flex-col gap-1">
                   <span className="flex flex-wrap items-center gap-2">
-                    <SourceLink href={urlOf(hazardById[h.id])}>{hazardById[h.id].name}</SourceLink>
+                    <span className="font-medium">{hazardById[h.id].name}</span>
                     <BasisTag basis={h.basis} />
                   </span>
                   <span className="text-muted-foreground">{h.note}</span>
@@ -162,10 +145,7 @@ export default function RegionCard({ status }) {
               <ul className="flex list-disc flex-col gap-1 pl-5">
                 {region.facts.map((f, i) => (
                   <li key={i}>
-                    {f.text}{" "}
-                    <span className="text-muted-foreground">
-                      Source: <SourceLink href={SOURCES[f.sourceId].url}>{SOURCES[f.sourceId].title}</SourceLink>
-                    </span>
+                    {f.text}
                   </li>
                 ))}
               </ul>

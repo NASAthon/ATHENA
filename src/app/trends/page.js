@@ -11,8 +11,8 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { CircleCheck, CircleMinus, ExternalLink, Info, OctagonAlert, Radio, TrendingDown, TriangleAlert } from "lucide-react";
-import { INDICATORS, SOURCES } from "@/data";
+import { CircleCheck, CircleMinus, Info, OctagonAlert, Radio, TrendingDown, TriangleAlert } from "lucide-react";
+import { INDICATORS } from "@/data";
 import {
   DAY_KEY,
   DRIFT_INDICATORS,
@@ -53,7 +53,6 @@ function StatusPill({ status }) {
 }
 
 /** The first NASA source of an indicator (its risk or hazard page). */
-const nasaSource = (ind) => SOURCES[(ind?.sourceIds ?? []).find((id) => id.startsWith("nasa")) ?? ""] ?? null;
 
 /** One value of a drift-tracked field for display: lapses get one decimal, the rest use their indicator's unit. */
 const fmtKey = (key, groupId, v) => (key === "reactionLapses" ? (Number.isFinite(v) ? String(Math.round(v * 10) / 10) : "—") : formatValue(groupId, v));
@@ -291,17 +290,10 @@ export default function Trends() {
               <ul className="mt-3 space-y-3">
                 {drifting.map((g) => {
                   const ind = byId[g.id];
-                  const src = nasaSource(ind);
                   return (
                     <li key={g.id}>
                       <p className="font-semibold">{ind?.name}</p>
                       <p>{ind?.briefAnswers?.prevention}</p>
-                      {src && (
-                        <a href={src.url} target="_blank" rel="noreferrer" className={`inline-flex items-center gap-1 rounded text-sm text-muted-foreground underline ${focusRing}`}>
-                          Source: {src.title}
-                          <ExternalLink className="size-3.5" aria-hidden="true" />
-                        </a>
-                      )}
                     </li>
                   );
                 })}

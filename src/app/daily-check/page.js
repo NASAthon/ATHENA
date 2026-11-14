@@ -3,8 +3,8 @@
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Check, ExternalLink, Eye, OctagonAlert, TriangleAlert, Volume2 } from "lucide-react";
-import { INDICATORS, SYMPTOMS, SOURCES, EMERGENCIES } from "@/data";
+import { Check, Eye, OctagonAlert, TriangleAlert, Volume2 } from "lucide-react";
+import { INDICATORS, SYMPTOMS, EMERGENCIES } from "@/data";
 import { RECORD_FIELDS, SYMPTOMS_FIELD, checkReading } from "@/lib/engine";
 import { useCrew } from "@/components/CrewProvider";
 import { useMissionData } from "@/components/MissionDataProvider";
@@ -359,14 +359,6 @@ function DailyCheck() {
                         )}
                         <p className="mt-3 text-sm text-muted-foreground">
                           {r.basisLabel}
-                          {r.source && (
-                            <>
-                              {" · "}
-                              <a href={r.source.url} target="_blank" rel="noreferrer" className={`rounded underline ${focusRing}`}>
-                                Source: {r.source.title}
-                              </a>
-                            </>
-                          )}
                         </p>
                       </li>
                     );
@@ -401,22 +393,6 @@ function DailyCheck() {
             {focused.personalBaselineOnly && (
               <p className="mt-3 text-muted-foreground">{focused.personalBaselineOnly}</p>
             )}
-            <h3 className="mt-3 font-bold">Sources</h3>
-            <ul className="mt-1 space-y-1">
-              {focused.sourceIds.map((sid) => (
-                <li key={sid}>
-                  <a
-                    href={SOURCES[sid].url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={`inline-flex items-center gap-1 rounded text-primary underline ${focusRing}`}
-                  >
-                    {SOURCES[sid].publisher}: {SOURCES[sid].title}
-                    <ExternalLink aria-hidden="true" className="size-3.5" />
-                  </a>
-                </li>
-              ))}
-            </ul>
             <p className="mt-3 text-sm text-muted-foreground">
               Ranges are general clinical reference ranges, not NASA flight standards. Not medical advice.
             </p>

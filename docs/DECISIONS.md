@@ -1,7 +1,7 @@
 # Decision Log
 
 Every locked choice and why. Entries are in the order they were made. **Index:**
-- **Product:** Originality · Body Map Required · Crew · Trends Over Single Readings · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
+- **Product:** Originality · Body Map Required · Crew · Trends Over Single Readings · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · No External Links · Design · First-Time Help · Checklist
 - **Data and content:** No Medicines or Diagnoses · Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
 - **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts · Logic Engine · Logic Engine Assumptions · Logic Tests · Mission Simulator · Storage Layer · Daily Record · Saving From the App · Mission Modes
 - **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
@@ -225,7 +225,7 @@ not less. Simplify the wording, not the facts.
 - Plain English everywhere. Explain any medical term in brackets the first time,
   e.g. "hypoxia (low oxygen in the body)". Use short sentences and everyday words.
 - Accuracy first: no oversimplifying that changes the meaning. Every fact traces
-  to a cited source, shown as a small "Source" link.
+  to a cited source in `docs/SOURCES.md` (not shown in the app; see No External Links).
 - Emergency steps: clear, ordered, plain-English actions (e.g. "Check if they
   respond", "Record heart rate and blood pressure", "Contact the flight surgeon")
   with a short "why" for each step. Labelled not medical advice.
@@ -547,7 +547,7 @@ Emergency first-response steps come from:
 Rules:
 - Write every step **in our own words** (plain English, with a short "why"). Never copy AHA text.
   CDC text is public domain, but still rewrite it for our style.
-- Cite each step's exact source page in the app and in `docs/SOURCES.md`.
+- Cite each step's exact source page in `docs/SOURCES.md` (and its `sourceId` in `src/data`).
 - Check every step against the live source page before use. If it can't be verified, leave it out.
 - No diagnoses and no medication instructions. Label steps "not medical advice" and always
   include when to contact the flight surgeon.
@@ -874,3 +874,20 @@ flight-surgeon summary uses its Earth-link delay and search can switch it. It's 
 
 Status:
 ACTIVE
+
+## No External Links
+
+The app shows **no external links**: no "Source" links, no links to NASA or other web pages.
+Astronauts can't open web pages in flight, so a link would be a dead end.
+- Sources stay documented in `docs/SOURCES.md` and as `sourceIds` in `src/data` (checked by
+  `npm run check:content`), so every health rule is still cited for the judges and reviewers.
+- Labels that say what a rule is based on stay in the app as plain text, e.g. "general clinical
+  reference range", "NASA states", "ATHENA's interpretation".
+- "Learn more" sections stay: they expand text stored in the app and work offline.
+- Links between ATHENA's own screens (e.g. "Open: emergency guide") are fine.
+
+Reason:
+Team decision (Isaac, 14 Nov): the app is used in space with no internet.
+
+Status:
+LOCKED

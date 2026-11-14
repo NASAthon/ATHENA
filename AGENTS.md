@@ -72,7 +72,9 @@ GitHub is the single source of truth, so always branch from the latest `main`.
   IndexedDB), JS rules engine, 2D SVG body map. No backend and no
   runtime internet dependency. No hosting or deployment work.
 - Priorities: hackathon speed, then NASA relevance, then demo quality, then simplicity. Prefer MVP solutions.
-- **Every health rule shown to users must cite its source URL.** NASA pages
+- **Every health rule must cite its source in `docs/SOURCES.md` (and its `sourceIds` in
+  `src/data`).** The app itself shows no source links or other external links: astronauts
+  can't open web pages in flight (`docs/DECISIONS.md` › No External Links). NASA pages
   are qualitative, so numeric thresholds come from general clinical reference
   ranges (`docs/DECISIONS.md` › Thresholds). Emergency steps use NASA where a NASA page
   gives them, otherwise AHA or CDC guidance in our own words (`docs/DECISIONS.md` › Emergency
@@ -149,7 +151,7 @@ may review and merge their own PR, but still go through the checks below.
    - it builds, `npm test` and `npm run check:content` pass, and it works offline (no external fonts,
      scripts or data: check the browser's network log shows only the app's own address);
    - it doesn't change the locked stack;
-   - every health rule cites a source;
+   - every health rule cites a source in `docs/SOURCES.md`, and the app shows no external links;
    - health text is accurate, sourced and in plain English, with a glance summary plus "Learn more";
    - the inclusive design checklist passes (colour isn't the only signal, tap targets are large,
      it works by keyboard, images have labels, contrast is OK);
