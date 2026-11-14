@@ -1,7 +1,2 @@
-export default function Home() {
-  return (
-    <main className="flex flex-1 items-center justify-center">
-      <h1 className="text-4xl font-semibold">NASAthon - Athena</h1>
-    </main>
-  );
-}
+// Home: the Today screen (same page as /today).
+export { default } from "./today/page";
