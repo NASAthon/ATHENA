@@ -42,6 +42,8 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Chidozie | Claude Code | PR #23 review: Crew page wired to stored data and the engine (scores, reasons, reminders, exams, Earth link) instead of copied mockup numbers; kept the demo-data panel; theme tokens and focus rings; `evaluateStored` shared with `useTodayEvaluation` | `src/app/crew/page.js`, `src/components/useTodayEvaluation.js`, `src/lib/crew.js` |
 | 14 Nov 2026 | Chidozie | Claude Code | Trends screen from the team design: SVG charts with drift bands, baseline window, drifting periods, day slider, ATHENA vs general-range comparison, what helps, when to tell the ground; `driftBand`/`trendSeries`/`driftPeriods` with tests | `src/app/trends/page.js`, `src/components/TrendChart.js`, `src/lib/engine/trends.js`, `docs/*` |
 | 14 Nov 2026 | Chidozie | Claude Code | PR #24 self-review fixes: charts worked out once (not on every slider step), explicit lapses formatting, single engine import; checked at 1280 and 768 px | `src/app/trends/page.js` |
+| 14 Nov 2026 | Team | AI design tool | Screen-design mockups for the 7 main pages, used as the design reference for building the app (see AI-generated media below) | none in the repo |
+| 14 Nov 2026 | Chidozie | Claude Code | Submission form answers: SI checkboxes and statement, NASA and partner link lists generated from `src/data/sources.js` | `docs/SUBMISSION.md`, `docs/judging.md` |
 
 ## AI-generated media
 
@@ -49,4 +51,4 @@ Each item needs a **visible "AI-generated" watermark** and must not use or modif
 
 | File | Tool | Watermarked? |
 |---|---|---|
-| | | |
+| 7 screen-design mockups (Today, Daily check, Reaction test, Body, Emergency, Crew status, Trends), 14 Nov | AI design tool (team to name it) | Not in the repo. Add a visible "AI-generated" watermark before using any of them in the slides, video or repo |
