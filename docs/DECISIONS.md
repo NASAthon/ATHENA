@@ -3,7 +3,7 @@
 Every locked choice and why. Entries are in the order they were made. **Index:**
 - **Product:** Originality · Body Map Required · Crew · Trends Over Single Readings · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
 - **Data and content:** No Medicines or Diagnoses · Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
-- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open) · Logic Engine · Logic Engine Assumptions · Logic Tests
+- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open) · Logic Engine · Logic Engine Assumptions · Logic Tests · Storage Layer
 - **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
 
 ## Frontend
@@ -693,3 +693,30 @@ use the real content in `src/data/`, so they also catch content and engine drift
 
 Status:
 ACTIVE
+
+---
+
+## Storage Layer
+
+How the locked Database decision is built (`src/lib/db/`). Use `await getDatabase()` from
+`@/lib/db`; never open sql.js directly.
+- **sql.js is loaded as a plain script** from `public/sql-wasm.js` (with `public/sql-wasm.wasm`),
+  both copied there by `npm install`. It isn't bundled, because its Node-only code paths break
+  browser builds. Still local files only, so it works offline.
+- **Saved to IndexedDB after every write**, as one stored copy of the SQLite file. Each write
+  runs in a transaction, so a failed write saves nothing. Without IndexedDB the app falls back
+  to memory (data lasts until reload).
+- **Tables:** `daily_record` (one row per astronaut per mission day; the record is stored as
+  JSON so its fields can change without a migration), `baseline` (fixed: one per astronaut and
+  kind, never overwritten except by "Reset data") and `meta` (schema version).
+- **Baselines are calculated once and stored:** `ensureMissionBaselines(astronautId, today)`
+  calculates each baseline the first time its window has ended, then only loads it. If no
+  indicator has enough readings yet, nothing is stored and it tries again next time.
+- **A damaged saved copy** is replaced by a fresh database rather than locking the crew out.
+
+Reason:
+Implements DECISIONS › Database and Baselines (fixed) with the smallest API the screens need.
+
+Status:
+ACTIVE
+

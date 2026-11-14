@@ -20,6 +20,7 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Chidozie | Claude Code | PR #9 fixes: moved region detail into `src/data`, status tokens, engine-aligned status names, crew-wide selection, samples for all 3 crew | `src/data/regions.js`, `src/components/CrewProvider.js`, `src/lib/sampleData.js` |
 | 14 Nov 2026 | Chidozie | Claude Code | Codebase audit and cleanup: home shows Today, region status order from the engine, daily check wired to the engine's record shape and red-limit check, AGENTS layout and test docs | `src/app/page.js`, `src/lib/regionStatus.js`, `src/app/daily-check/page.js`, `AGENTS.md` |
 | 14 Nov 2026 | Isaac | Claude | CHECKLIST §2 logic engine (baselines, 7-day average, drift z-score, statuses, alerts, red limits, health score, reaction scoring, reminders, search, regions, surgeon summary, calendar, Scenario Lab injection) reading all content from `src/data`; machine-readable `check` on each band; 82 unit tests; README drift design choice | `src/lib/engine/*`, `src/data/indicators.js`, `scripts/check-content.mjs`, `README.md`, `docs/*` |
+| 14 Nov 2026 | Isaac | Claude | Storage layer: sql.js database saved to IndexedDB after every write, daily records and fixed baselines (calculated once and stored), with tests against the real sql.js | `src/lib/db/*`, `scripts/copy-sqljs-wasm.mjs`, `.gitignore`, `AGENTS.md`, `docs/*` |
 
 ## AI-generated media
 

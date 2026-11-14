@@ -17,8 +17,8 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 - [ ] **M** Daily record defined: date, mission day, heart rate, blood pressure (two numbers), blood sugar, temperature, sleep hours, mood (1–5), reaction median, lapses, false starts, exercise minutes, symptoms, SpO2 (optional), radiation dose (optional) 🟡 Partial (PR #10): the engine assumes camelCase field names (`RECORD_FIELDS` in `src/lib/engine/indicators.js`); still to do: team confirms them, adds the date field and the database table
 - [ ] **M** Units chosen and shown everywhere (mg/dL or mmol/L, °C) 🟡 Partial (PR #7): units chosen in `src/data/indicators.js` (bpm, mmHg, mg/dL, °C, hours, 1–5, ms, minutes, %, mSv); still to do: show them on every screen
-- [ ] **M** Save and load daily records in the browser: SQLite via sql.js, saved to IndexedDB after every write, with the `.wasm` file bundled locally (`docs/DECISIONS.md` › Database)
-- [ ] **M** Save and load the two baselines
+- [ ] **M** Save and load daily records in the browser: SQLite via sql.js, saved to IndexedDB after every write, with the `.wasm` file bundled locally (`docs/DECISIONS.md` › Database) 🟡 Partial (PR #PRNUM): `saveDailyRecord`/`loadDailyRecords` in `src/lib/db/` (sql.js loaded from `public/`, IndexedDB after every write, tested); still to do: the daily check form calls it
+- [x] **M** Save and load the two baselines (`saveBaseline`/`loadMissionBaselines`/`ensureMissionBaselines` in `src/lib/db/database.js`) (PR #PRNUM)
 - [ ] **M** Mission simulator: 180 days for 3 crew (`docs/DECISIONS.md` › Crew):
   - **Commander Rivera:** pre-flight days, early adaptation, a settled period, then slow decline in sleep, reaction and mood from about week 12 (drift alert)
   - **Pilot Singh:** stays healthy (shows no false alarm)
@@ -33,7 +33,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 ## 2. Logic (plain functions with no screen code)
 
 - [x] **M** Baseline calculator: mean and standard deviation per indicator for a fixed window (`src/lib/engine/baseline.js`) (PR #10)
-- [ ] **M** Pre-flight baseline and in-flight baseline (for example mission days 21–35) both calculated once and stored 🟡 Partial (PR #10): calculated by `calculateMissionBaselines` (pre-flight days −30 to −1, in-flight 21–35); still to do: store them (§1 "Save and load the two baselines")
+- [x] **M** Pre-flight baseline and in-flight baseline (for example mission days 21–35) both calculated once and stored (calculated by `calculateMissionBaselines`, PR #10; stored once by `ensureMissionBaselines`, PR #PRNUM)
 - [x] **M** Seven-day average per indicator (`src/lib/engine/average.js`) (PR #10)
 - [x] **M** Health score 0–100 per astronaut (100 = perfect), with the change since yesterday and over 7 days (`docs/DECISIONS.md` › Health Score) (`src/lib/engine/healthScore.js`) (PR #10)
 - [x] **M** Z-score of the seven-day average against the in-flight baseline (`src/lib/engine/drift.js`) (PR #10)
@@ -153,7 +153,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 - [ ] **M** App loads and works with the network switched off
 - [ ] **M** No fonts, scripts or data fetched from the internet at run time 🟡 Partial (PR #3, PR #4): system fonts only and sql.js engine served locally; still to do: re-check once all screens exist
-- [ ] **M** Data survives closing and reopening the browser
+- [ ] **M** Data survives closing and reopening the browser 🟡 Partial (PR #PRNUM): the database is saved to IndexedDB after every write and reloaded on open (tested); still to do: check in the browser once screens save data
 - [ ] **S** Installable as an app (PWA) on a laptop or tablet
 
 ---
