@@ -67,7 +67,7 @@
   --accent: #1e293b;
   --accent-foreground: #f8fafc;
 
-  --destructive: #f87171;
+  --destructive: #ff7a6e; /* same red as --status-red: 4.65:1 on cards, 7.25:1 on the page (was #f87171, 4.27:1 on cards) */
 
   --border: #26334a;
   --input: #64748b; /* form-field borders: 3.9:1 on the page, 3.5:1 on cards (WCAG non-text contrast) */
@@ -116,4 +116,19 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Tap targets (DECISIONS.md › Inclusive Design: "at least 44×44 px, usable with gloves").
+   Text links (source links, "Back to crew", "Cancel") and "Learn more" toggles are given at
+   least 44 px of height without changing how they look. Buttons already meet this.
+   Found by the accessibility audit on 14 Nov 2026 (axe-core plus a tap-target check). */
+main a.underline,
+main a[class*="hover:underline"] {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}
+main summary {
+  min-height: 2.75rem;
+  line-height: 2.75rem;
 }
