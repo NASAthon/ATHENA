@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TriangleAlert } from "lucide-react";
 
 const navItems = [
   { href: "/", label: "Today" },
@@ -36,7 +37,7 @@ export default function Header() {
           href="/emergency"
           className="flex min-h-11 items-center gap-2 rounded-lg bg-red-700 px-4 font-semibold text-white hover:bg-red-600"
         >
-          <span aria-hidden="true">⚠</span> Emergency
+          <TriangleAlert aria-hidden="true" className="size-5" /> Emergency
         </Link>
       </div>
 
