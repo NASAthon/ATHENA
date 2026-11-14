@@ -1,6 +1,6 @@
 # ATHENA
 
-Autonomous Telehealth and Health Evaluation Network for Astronauts
+Autonomous Telecommunications and Health Evaluation Network for Astronauts
 
 ## Overview
 
