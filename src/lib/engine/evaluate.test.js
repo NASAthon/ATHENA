@@ -53,6 +53,9 @@ test("dangerous reading (Nakamura): red limit caps the score at 25 that day", ()
   assert.ok(today.health.score <= 25);
   const summary = buildSurgeonSummary({ astronaut: "Engineer Nakamura", evaluation: today, earthOneWayMinutes: 20 });
   assert.equal(summary.replyExpectedMinutes, 40);
+  const fromMode = buildSurgeonSummary({ astronaut: "Engineer Nakamura", evaluation: today, missionModeId: "mars" });
+  assert.equal(fromMode.replyText, "up to 40 minutes");
+  assert.ok(fromMode.lines.some((l) => l.includes("up to 40 minutes")));
   assert.ok(summary.lines.some((l) => l.includes("cdc.gov")));
 });
 
