@@ -19,7 +19,7 @@ in step with it when sources change. Check every link in an incognito window bef
 | Building SI/ML Into the Project | **No** | ATHENA has no AI or machine learning inside: it is a deterministic rules engine with z-score drift detection. |
 | Coding, Debugging, or Troubleshooting | **Yes** | Claude Code and other AI assistants helped write, test and review the app's code. |
 | Writing, Editing, or Translation | **Yes** | AI helped write and edit the docs and the plain-English health text (all facts traced to cited sources). |
-| Visual Design or Image Creation | **Yes** | The 7 screen-design mockups were made with an AI tool (see 1.3). |
+| Visual Design or Image Creation | **Yes** | The 7 screen-design mockups were made with Claude (see 1.3). |
 | Presentation, Video, or Audio | Team to decide | Tick only if AI is used for the slides, the 30-second video or any audio. |
 | Other Project-Related SI Use | No | |
 | None / Did not use SI | **No** | |
@@ -30,8 +30,8 @@ in step with it when sources change. Check every link in an incognito window bef
 > fully offline) is our team's own. We used AI coding assistants (Claude Code by Anthropic, and other AI chat
 > assistants) to speed up building: writing and debugging code, checking the NASA, CDC, ADA and AHA pages we cite,
 > testing our drift cut-off on simulated data, and editing plain-English text. Every health fact in the app links to
-> its source, and every AI-assisted change was reviewed by the team. Our screen-design mockups were made with an AI
-> design tool and are marked "AI-generated" wherever they appear. ATHENA itself contains no AI: its alerts come from
+> its source, and every AI-assisted change was reviewed by the team. Our screen-design mockups were made with Claude
+> (Anthropic) and are marked "AI-generated" wherever they appear. ATHENA itself contains no AI: its alerts come from
 > a deterministic, explainable rules engine. No NASA logos, flags or mission identifiers were used or generated.
 > A dated log of every AI use is in `docs/AI_USAGE.md` in our repository.
 
@@ -47,7 +47,7 @@ in step with it when sources change. Check every link in an incognito window bef
 
 | Item | Tool | Where it's used | Watermarked? |
 |---|---|---|---|
-| 7 screen-design mockups (Today, Daily check, Reaction test, Body, Emergency, Crew status, Trends) | AI design tool (team to name it) | Design reference for building the app; not in the repo | Add "AI-generated" before using any of them in the slides, video or repo |
+| 7 screen-design mockups (Today, Daily check, Reaction test, Body, Emergency, Crew status, Trends) | Claude (Anthropic) | Design reference for building the app; not in the repo | Add "AI-generated" before using any of them in the slides, video or repo |
 
 ---
 
@@ -154,13 +154,13 @@ Everything else we used: partner agencies, clinical guidance, code libraries and
 |---|---|
 | Claude Code by Anthropic (AI coding assistant) | https://www.anthropic.com/claude-code |
 | GitHub (code hosting; our public repository) | https://github.com/NASAthon/ATHENA |
-| AI design tool used for the mockups (team to add name and link) | (full URL) |
+| Claude by Anthropic (AI assistant used for the screen-design mockups) | https://www.anthropic.com/claude |
 
 ---
 
 ## Before you submit
 
-- [ ] Add the AI design tool's name and link (sections 1.3 and 3) and any AI used for the slides or video.
+- [ ] Add any AI used for the slides or video (sections 1 and 1.3).
 - [ ] Watermark every AI-made image or video frame that appears in the slides, video or repo.
 - [ ] Open every link above in an incognito window.
 - [ ] Paste the SI statement into the project description so judges can see it.
