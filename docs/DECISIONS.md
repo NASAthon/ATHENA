@@ -2,7 +2,7 @@
 
 Every locked choice and why. Entries are in the order they were made. **Index:**
 - **Product:** Originality · Crew · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
-- **Data and content:** Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
+- **Data and content:** No Medicines or Diagnoses · Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
 - **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open)
 - **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
 
@@ -497,8 +497,8 @@ with its exact URL in `docs/SOURCES.md`, and labelled "general clinical referenc
 range" in the app. If a value can't be verified, don't use it.
 
 Update (14 Nov): heart.org (AHA) blocks automated access, so blood pressure uses the
-**CDC** table (which is based on ACC/AHA guidelines). CPR technique stays **pending**
-(see Emergency Step Sources). Heart rate has no population range by design (see Heart Rate and SpO₂).
+**CDC** table (which is based on ACC/AHA guidelines). The CPR technique was read from AHA's
+page through a browser on 14 Nov. Heart rate has no population range by design (see Heart Rate and SpO₂).
 
 Status:
 LOCKED
@@ -547,6 +547,24 @@ Symptoms such as chest pain, fainting or breathlessness open the Emergency guide
 Reason:
 Team decision. It fits ATHENA's personal-baseline approach, and the allowed sources don't
 give a usable population range (AHA is blocked; the CDC notes SpO₂ is naturally lower at altitude).
+
+Status:
+LOCKED
+
+
+---
+
+## No Medicines or Diagnoses
+
+ATHENA never names a medicine to take, never gives a dose, and never states a diagnosis.
+It shows signs, plain-English first-response actions, and **when to contact the flight
+surgeon**, who makes every medical decision. Some sources list drugs and doses (e.g. the CDC
+altitude chapter); those parts are always left out. Food-based steps such as "15 g of fast
+sugar" (ADA 15-15 rule) are allowed. Wording says "may be" or "signs of", never "you have".
+
+Reason:
+Astronauts aren't doctors. A wrong medicine or dose, or a wrong self-diagnosis, could seriously
+harm a crew member. `npm run check:content` blocks dose patterns (e.g. "mg", "tablets of") in `src/data`.
 
 Status:
 LOCKED

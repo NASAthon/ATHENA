@@ -11,6 +11,7 @@ Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Age
 | 17 NASA risk pages + 5 hazard pages | URLs listed in `docs/BODY_MAP.md` | Body regions, affected systems, verified facts (e.g. bone loss 1–1.5%/month) | Yes | US Gov work; no NASA logos |
 | NASA Space Apps resources (submission and judging guides) | https://www.spaceappschallenge.org/resources/ | Rules, deadlines and judging criteria (`docs/judging.md`) | Official event material | Cite and link only |
 | CDC pages (blood pressure, heart attack, cardiac arrest, stroke, fever, hypothermia, sleep, glucose monitoring) | see tables below | Thresholds, measurement steps, emergency steps | No (clinical) | US Gov work, public domain; rewritten in our words |
+| American Heart Association: What is CPR | https://cpr.heart.org/en/resources/what-is-cpr | CPR rate, depth and technique | No (clinical) | Copyrighted: facts only, our own wording |
 | American Diabetes Association pages | see tables below | Glucose ranges, 15-15 rule | No (clinical) | Copyrighted: numbers only, our own wording |
 | Monitoring Radiation for Astronaut Health (CSA) | https://www.asc-csa.gc.ca/eng/news/articles/2026/2026-02-26-monitoring-radiation-astronaut-health.asp | Radiation monitoring context (CANS) | No (partner) | Cite and link only; check CSA notices |
 
@@ -47,7 +48,7 @@ All in `src/data/emergencies.js`. Where a source says "call 911", ATHENA says "c
 | Scenario | Status | Source | URL |
 |---|---|---|---|
 | Chest pain (heart attack signs) | Ready | CDC | https://www.cdc.gov/heart-disease/about/heart-attack.html |
-| Collapse (cardiac arrest) | Partial: CPR technique pending (only AHA states it, and heart.org blocks automated access) | CDC | https://www.cdc.gov/heart-disease/about/cardiac-arrest.html, https://www.cdc.gov/heart-disease/php/cardiac-arrest-response-plans/index.html |
+| Collapse (cardiac arrest) | Ready (CPR technique read from AHA in a browser, 14 Nov; rewritten in our words) | CDC, AHA | https://www.cdc.gov/heart-disease/about/cardiac-arrest.html, https://www.cdc.gov/heart-disease/php/cardiac-arrest-response-plans/index.html, https://cpr.heart.org/en/resources/what-is-cpr |
 | Stroke (BE FAST) | Ready | CDC | https://www.cdc.gov/stroke/signs-symptoms/index.html |
 | Low blood sugar (15-15 rule) | Ready | ADA | https://diabetes.org/living-with-diabetes/hypoglycemia-low-blood-glucose/symptoms-treatment |
 | Very high blood pressure | Ready | CDC | https://www.cdc.gov/high-blood-pressure/about/index.html |
@@ -58,7 +59,7 @@ All in `src/data/emergencies.js`. Where a source says "call 911", ATHENA says "c
 | Injury or blow to the head | Partial: concussion steps ready; bleeding and broken-bone first aid pending | CDC HEADS UP | https://www.cdc.gov/heads-up/response/index.html, https://www.cdc.gov/heads-up/signs-symptoms/index.html |
 | Mental health crisis | Ready | CDC | https://www.cdc.gov/suicide/prevention/index.html, https://www.cdc.gov/mental-health/living-with/index.html |
 
-No medication doses are included anywhere (the CDC altitude chapter lists drugs; ATHENA leaves medicines to the flight surgeon).
+**No medicines, doses or diagnoses anywhere** (`docs/DECISIONS.md` › No Medicines or Diagnoses); `npm run check:content` enforces it.
 
 ## Libraries and tools
 

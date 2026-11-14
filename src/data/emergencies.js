@@ -40,7 +40,7 @@ export const EMERGENCIES = [
   {
     id: "collapse",
     name: "Collapse, not responding (possible cardiac arrest)",
-    status: "partial",
+    status: "ready",
     priority: 1,
     glance: "Collapsed, not responding, not breathing normally: start CPR.",
     signs: [
@@ -54,9 +54,12 @@ export const EMERGENCIES = [
       { text: "Shout their name and shake their shoulders. Check if they are breathing normally.", why: "No response and no normal breathing are the signs of cardiac arrest.", sourceId: "cdc-cardiac-arrest" },
       { ...ESCALATE },
       { text: "Get the defibrillator (AED).", why: "A defibrillator should be available within 3 to 5 minutes of cardiac arrest.", sourceId: "cdc-cardiac-response" },
-      { text: "Start CPR and keep going until they respond or the flight surgeon advises otherwise.", why: "CPR by bystanders can double or triple the chance of survival.", sourceId: "cdc-cardiac-response" },
+      { text: "Start CPR: push hard and fast in the centre of the chest.", why: "Hands-only CPR keeps blood flowing and can double or triple the chance of survival.", sourceId: "aha-what-is-cpr" },
+      { text: "Aim for 100 to 120 pushes a minute, at least 5 cm deep but not more than 6 cm.", why: "This is the rate and depth the AHA recommends for adults.", sourceId: "aha-what-is-cpr" },
+      { text: "Let the chest come back up fully between pushes (don't lean on it), and keep pauses as short as possible.", why: "These are part of the AHA's five keys to high-quality CPR.", sourceId: "aha-what-is-cpr" },
+      { text: "In microgravity, brace yourself and the casualty first, using the position from crew training.", why: "Without gravity, pushing on the chest moves you both apart unless you're anchored.", sourceId: null, adaptation: true },
+      { text: "Keep going until they respond, the defibrillator tells you to stop, or the flight surgeon advises otherwise.", why: "Interruptions reduce blood flow to the brain and heart.", sourceId: "aha-what-is-cpr" },
     ],
-    pending: "CPR technique (hand position, rate and depth) is not added: it comes from the American Heart Association, whose site couldn't be verified automatically. CPR in microgravity also needs a restraint position; follow crew training.",
     risks: ["cardio"],
     keywords: ["collapse", "collapsed", "unconscious", "passed out", "not breathing", "no pulse", "cardiac arrest", "cpr", "unresponsive", "fainted"],
   },

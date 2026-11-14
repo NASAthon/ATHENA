@@ -85,6 +85,8 @@ GitHub is the single source of truth, so always branch from the latest `main`.
   emergency entry you add must include search keywords: synonyms, plain-English terms
   and symptoms, so search can find it.
 - **Measurement reminders** are also required (team decision). Lunar Surface Base is out of scope.
+- **No medicines, doses or diagnoses** anywhere in the app (`docs/DECISIONS.md` › No Medicines or Diagnoses).
+  Give signs, first-response actions and when to contact the flight surgeon.
 - Mark assumptions explicitly. Never present an assumption as an official NASA value.
 - The repo is **public**. No secrets, API keys, personal data, or anyone's
   photo, voice or likeness. Some participants may be under 18.

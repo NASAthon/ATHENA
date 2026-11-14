@@ -74,6 +74,16 @@ for (const s of SYMPTOMS) {
 
 for (const x of EXAMS) { const w = `exam ${x.id}`; src(x.sourceId, w); check(riskIds.has(x.risk), `${w}: unknown risk`); check(regionIds.has(x.region), `${w}: unknown region`); kw(x, w); }
 
+// No medicines or doses (docs/DECISIONS.md > No Medicines or Diagnoses).
+const textOf = (o) => JSON.stringify(o);
+const dose = /\b\d+(\.\d+)?\s?(mg|mcg|µg|ml|mL)\b(?!\s?\/)|\b(ibuprofen|acetaminophen|paracetamol|aspirin|dexamethasone|nifedipine|ondansetron|glucagon|bisphosphonate|insulin)\b|\btake \d+ (tablets|pills|capsules)\b/i;
+for (const [name, list] of Object.entries({ INDICATORS, EMERGENCIES, SYMPTOMS, REGIONS, RISKS, EXAMS })) {
+  for (const item of list) {
+    const m = textOf(item).match(dose);
+    if (m) errors.push(`${name} ${item.id}: mentions a medicine or dose ("${m[0]}"); not allowed`);
+  }
+}
+
 if (errors.length) { console.error(`Content check failed (${errors.length}):\n- ` + errors.join("\n- ")); process.exit(1); }
 const pending = [...INDICATORS, ...EMERGENCIES].filter((x) => x.pending).map((x) => x.id);
 console.log(`Content OK: ${HAZARDS.length} hazards, ${RISKS.length} risks, ${REGIONS.length} regions, ${INDICATORS.length} indicators, ${EMERGENCIES.length} emergencies, ${SYMPTOMS.length} symptoms, ${EXAMS.length} exams, ${Object.keys(SOURCES).length} sources.`);
