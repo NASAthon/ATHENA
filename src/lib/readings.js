@@ -65,3 +65,16 @@ export function latestRecordWith(id, records, today) {
   }
   return best;
 }
+
+// Record field → plain name for messages, e.g. "bpSystolic" → "Blood pressure: Top number (systolic)".
+const FIELD_NAME = Object.fromEntries(
+  Object.entries(RECORD_FIELDS).flatMap(([id, parts]) =>
+    Object.entries(parts).map(([part, field]) => {
+      const sub = byId[id]?.inputs?.find((f) => f.id === part)?.label;
+      return [field, sub ? `${byId[id].name}: ${sub}` : (byId[id]?.name ?? field)];
+    }),
+  ),
+);
+
+/** A validation message with its leading record field name made plain English. */
+export const plainFieldError = (message) => String(message).replace(/^(\w+)/, (field) => FIELD_NAME[field] ?? field);
