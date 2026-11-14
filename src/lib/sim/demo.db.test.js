@@ -5,6 +5,8 @@ import initSqlJs from "sql.js";
 import { openDatabase } from "../db/database.js";
 import { memoryPersistence } from "../db/persistence.js";
 import { evaluateMission } from "../engine/evaluate.js";
+import { examsDueOn, examsOverdue } from "../engine/calendar.js";
+import { loadExamResults } from "../checkIn.js";
 import { DEMO_TODAY, loadDemoMission, missionSummary, resetData, seedOnFirstRun } from "./demo.js";
 
 const SQL = await initSqlJs();
@@ -43,4 +45,18 @@ test("after Reset data the app stays empty, even on the next start, until Load d
 
   await loadDemoMission(reopened);
   assert.equal(missionSummary(reopened, CREW_IDS).today, DEMO_TODAY);
+});
+
+test("the demo mission comes with a realistic exam history: nothing overdue on the demo day", async () => {
+  const db = await openDatabase({ SQL, persistence: memoryPersistence() });
+  await loadDemoMission(db);
+  for (const id of CREW_IDS) {
+    const done = loadExamResults(db, id).map((r) => ({ examId: r.examId, day: r.missionDay }));
+    assert.ok(done.length > 0, id);
+    assert.deepEqual([...examsOverdue(done, DEMO_TODAY)], [], id);
+    // Exams due on the demo day itself are still to do.
+    for (const examId of examsDueOn(DEMO_TODAY)) assert.ok(!done.some((d) => d.examId === examId && d.day === DEMO_TODAY), examId);
+  }
+  await resetData(db);
+  assert.deepEqual(loadExamResults(db, "rivera"), []);
 });
