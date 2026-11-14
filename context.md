@@ -45,6 +45,8 @@
 
 ### Judging rubric (each scored 1–5)
 
+> Full official guide: **`judging.md`**. It covers the submission form fields, demo limits, the AI/SI policy, global eligibility, the judging timeline and the 10 global awards. If it differs from this summary, `judging.md` wins.
+
 | Criterion | What a 5 looks like |
 |---|---|
 | **Impact** | Addresses a significant real-world or spaceflight problem with wide reach and practical benefit |

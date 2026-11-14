@@ -4,7 +4,8 @@ Follow the shared agent workflow in `AGENTS.md`. Pull from GitHub first, then re
 the docs in this order:
 
 1. context.md (official event brief, plus the ATHENA product spec in Section 6.1)
-2. DECISONS.md
+2. judging.md (official submission and judging guide: deadlines, demo limits, AI rules, criteria)
+3. DECISONS.md
 
 Do not redesign the architecture.
 

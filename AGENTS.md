@@ -11,10 +11,15 @@ source of truth, so always work from the latest `main`.
       deliverables, judging rubric, challenge text, NASA data sources and the
       data caveat. Section 6.1 holds the ATHENA product spec: vision, MVP
       scope, demo flow and stack.
-   2. `DECISONS.md`: locked decisions. Do not reverse a LOCKED decision.
-   3. `docs/` (once it exists): plan, data model, sources, storyboard, AI log.
+   2. `judging.md`: the official Space Apps submission and judging guide. It
+      covers deadlines, the project page fields, demo limits, AI/SI rules, global
+      eligibility, the 1–5 judging criteria and the 10 global awards. Check work
+      against the criteria (Impact, Creativity, Validity, Relevance, Presentation).
+   3. `DECISONS.md`: locked decisions. Do not reverse a LOCKED decision.
+   4. `docs/` (once it exists): plan, data model, sources, storyboard, AI log.
 3. If two files conflict:
-   - Rules, deliverables, data and citations: the official sections of `context.md` win.
+   - Submission, demo, AI/SI rules and judging: `judging.md` wins.
+   - Challenge, data and citations: the official sections of `context.md` win.
    - Product scope and architecture: `DECISONS.md` wins, then `context.md` Section 6.1.
    - Anything still unclear: ask the team. Do not guess.
 
@@ -34,6 +39,10 @@ source of truth, so always work from the latest `main`.
 - Build only during the event (from 09:00, 14 Nov 2026). Do not import
   pre-existing project code.
 - Ask the team before any hard-to-reverse decision.
+- AI may speed up building but **must not generate the core idea**. AI-generated
+  media must never use or modify NASA logos, flags or mission identifiers, and
+  must carry a visible "AI-generated" watermark (`judging.md` 1C.6).
+- Cite every external library, tool, text and image used (`judging.md` 1C.8).
 
 ## 3. Before finishing a task
 
@@ -43,10 +52,16 @@ source of truth, so always work from the latest `main`.
 3. If you used a new data source, add it to `docs/SOURCES.md`.
 4. Commit small, focused changes with clear messages, `git pull --rebase`, then push.
 
-## 4. Submission checklist (from `context.md` Section 4)
+## 4. Submission checklist (full details in `judging.md` Sections 1C and 1E)
 
 - Project name and summary
-- Public demo: a video of 30 seconds or less, or a deck of 7 slides or fewer
-- Public link to the final project (repo or live app)
-- Detailed description with **at least one official NASA data source** identified
-- AI-usage disclosure plus credits for NASA data and any AI media
+- Public demo: a video of 30 seconds or less, or a deck of 7 slides or fewer.
+  Going over the limit **disqualifies** the project from global judging.
+- Public link to the final project (repo or live app). Test every link in an incognito window.
+- Detailed description: what it does, how it works, benefits, tools and languages
+- NASA data: **at least one official NASA resource** named
+- Partner data and references: all libraries, tools and partner (e.g. CSA) sources cited
+- AI/SI disclosure, plus visible watermarks on any AI media
+- Everything in English, and no under-18 likeness anywhere
+- Both confirmation boxes ticked, then **Submit for Judging** before **Sun 15 Nov, 23:59**
+  local time. Confirm with HackAthlone whether local pitching is earlier.

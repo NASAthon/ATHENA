@@ -124,4 +124,4 @@ AI-generated code was used to speed up the development process.
 
 ## For contributors and AI agents
 
-Start with [`context.md`](context.md), the official event brief, then follow the workflow in [`AGENTS.md`](AGENTS.md).
+Start with [`context.md`](context.md) (the official event brief) and [`judging.md`](judging.md) (the submission and judging guide), then follow the workflow in [`AGENTS.md`](AGENTS.md).
