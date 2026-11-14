@@ -16,7 +16,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 ## 1. Data and storage
 
 - [x] **M** Daily record defined: date, mission day, heart rate, blood pressure (two numbers), blood sugar, temperature, sleep hours, mood (1–5), reaction median, lapses, false starts, exercise minutes, symptoms, SpO2 (optional), radiation dose (optional) (PR #18: `src/lib/dailyRecord.js`, field names from the engine's `RECORD_FIELDS`, input limits from `src/data`, `validateRecord()`; all 625 simulated records pass)
-- [ ] **M** Units chosen and shown everywhere (mg/dL or mmol/L, °C) 🟡 Partial (PR #7, PR #8, PR #16, PR #19, PR #20): units on Today, daily check, reaction test, body cards and save errors; still to do: Trends (Emergency done in PR #NN)
+- [ ] **M** Units chosen and shown everywhere (mg/dL or mmol/L, °C) 🟡 Partial (PR #7, PR #8, PR #16, PR #19, PR #20): units on Today, daily check, reaction test, body cards and save errors; still to do: Trends (Emergency done in PR #22)
 - [x] **M** Save and load daily records in the browser: SQLite via sql.js, saved to IndexedDB after every write, with the `.wasm` file bundled locally (PR #14 storage, PR #17 app wiring, PR #19 saving from the Daily check and Reaction test, validated first)
 - [x] **M** Save and load the two baselines (`saveBaseline`/`loadMissionBaselines`/`ensureMissionBaselines` in `src/lib/db/database.js`) (PR #14)
 - [x] **M** Mission simulator: 180 days for 3 crew (`docs/DECISIONS.md` › Crew) (`src/lib/sim/simulator.js`, seeded; stories checked by the engine in `simulator.test.js`) (PR #15):
@@ -64,28 +64,28 @@ One line per designed page. A page is ticked when it's built and working in the 
 - [x] **M** Daily check: readings with units, "How to measure" panel with read-aloud, mood buttons, symptom tick boxes, streak (PR #8, PR #19)
 - [x] **M** Reaction test: 60 s panel with live counter, "Why this test", this run so far, result against your own normal (PR #16, PR #19)
 - [x] **M** Body: figure plus region list and region card with NASA risk and hazard (PR #9, PR #21)
-- [x] **M** Emergency: one step at a time with "why", read aloud, all steps, readings, not-medical-advice note (PR #NN)
+- [x] **M** Emergency: one step at a time with "why", read aloud, all steps, readings, not-medical-advice note (PR #22)
 - [ ] **M** Crew status: a card per astronaut (score, band, change, one-line reason, open or emergency button), reminders today, Earth link, demo controls 🟡 In progress (teammate); today the Crew page has the Load demo mission / Reset data panel (PR #17)
 - [ ] **M** Trends: 7-day average lines with pre-flight and in-flight bands, baseline window, drifting periods, day slider, "What to do this week", "When to tell the ground" 🟡 In progress (teammate)
 
 ### Layout
 
 - [x] **M** Navigation: Today, Trends, Body, Calendar, Summary (PR #6)
-- [x] **M** Search bar and an **Emergency** button on every screen (PR #6, PR #21, PR #NN: Emergency screen with all 13 guides)
+- [x] **M** Search bar and an **Emergency** button on every screen (PR #6, PR #21, PR #22: Emergency screen with all 13 guides)
 - [x] **M** Crew switcher, with the mission day and astronaut name always visible (PR #6, PR #9; real mission day from the stored mission: PR #17)
 - [x] **M** Alert banner area at the top of every screen (PR #20: `AlertBanner` in the header for the selected astronaut; red limits link to the emergency guide)
 - [x] **M** Dark theme dashboard (`docs/DECISIONS.md` › Design) (PR #4, PR #6)
 - [x] **M** Health score (0–100) shown prominently per astronaut, with a status icon and drop indicator (PR #20: Today screen, from the engine, with cap reason and bands)
 - [ ] **M** One colour scheme for status, used everywhere, always colour **plus** icon **plus** text label 🟡 Partial (PR #9, PR #20): status tokens with icon and label on the body map, Today and the alert banner; still to do: Trends
-- [ ] **M** Readable on a laptop and a tablet 🟡 Partial (PR #21): every built screen checked at 1280 px and 768 px wide in Chrome (no sideways scrolling, layout wraps); still to do: Trends (Emergency done in PR #NN)
+- [ ] **M** Readable on a laptop and a tablet 🟡 Partial (PR #21): every built screen checked at 1280 px and 768 px wide in Chrome (no sideways scrolling, layout wraps); still to do: Trends (Emergency done in PR #22)
 
 ### Inclusive design (`docs/DECISIONS.md` › Inclusive Design)
 
 - [ ] **M** Colour-blind-safe palette, text contrast at least 4.5:1 🟡 Partial (PR #8, PR #9): palette and status colours checked (text 5.8–17:1, form borders 3.5–3.9:1); still to do: chart colours (colour-blind check)
-- [ ] **M** Tap targets at least 44×44 px (usable with gloves); large text 🟡 Partial (PR #6, #8, #9, #16, #20): header (logo, crew picker and Earth-link source enlarged in PR #21), navigation, Today, daily check, reaction test, body page, search results, calendar and summary done; still to do: Trends (Emergency done in PR #NN)
-- [ ] **M** Full keyboard navigation and screen-reader labels (including the body figure) 🟡 Partial (PR #6, #8, #9, #16, #20): header, Today, daily check, reaction test, body figure, search (ARIA combobox: arrow keys, Enter, Escape, result count announced; PR #21), calendar and summary done; still to do: Trends (Emergency done in PR #NN)
-- [ ] **M** Respects "reduce motion"; no information shown only through animation 🟡 Partial (PR #21): global reduced-motion rule in `globals.css` stops animations and transitions; the reaction-test signal is also shown as text; still to do: check Trends (Emergency checked in PR #NN) when built
-- [x] **M** Health text in plain English: glance summary plus "Learn more" layer, medical terms explained in brackets (PR #8, #9, #20, PR #NN: emergency guides show the glance first, then each step with its "why", signs and "All steps at once")
+- [ ] **M** Tap targets at least 44×44 px (usable with gloves); large text 🟡 Partial (PR #6, #8, #9, #16, #20): header (logo, crew picker and Earth-link source enlarged in PR #21), navigation, Today, daily check, reaction test, body page, search results, calendar and summary done; still to do: Trends (Emergency done in PR #22)
+- [ ] **M** Full keyboard navigation and screen-reader labels (including the body figure) 🟡 Partial (PR #6, #8, #9, #16, #20): header, Today, daily check, reaction test, body figure, search (ARIA combobox: arrow keys, Enter, Escape, result count announced; PR #21), calendar and summary done; still to do: Trends (Emergency done in PR #22)
+- [ ] **M** Respects "reduce motion"; no information shown only through animation 🟡 Partial (PR #21): global reduced-motion rule in `globals.css` stops animations and transitions; the reaction-test signal is also shown as text; still to do: check Trends (Emergency checked in PR #22) when built
+- [x] **M** Health text in plain English: glance summary plus "Learn more" layer, medical terms explained in brackets (PR #8, #9, #20, PR #22: emergency guides show the glance first, then each step with its "why", signs and "All steps at once")
 
 ### Daily check
 
@@ -122,9 +122,9 @@ One line per designed page. A page is ticked when it's built and working in the 
 ### Alerts and guidance
 
 - [x] **M** Alert card: what is drifting, since when, likely hazard, what to do, when to tell the ground ("Why this alert?") (PR #20, PR #21: likely hazard from `likelyHazards` in `src/lib/engine/hazards.js`, with the NASA hazard page cited)
-- [x] **M** Red-limit and emergency screen: numbered first-response steps with a short "why" each, one step at a time with big controls (PR #NN: `/emergency?id=…`, opened from Today's red-limit card, the alert banner and search)
-- [x] **M** Emergency guidance works for **a crewmate** (pick the affected astronaut, follow steps, record vitals) (PR #NN: "Who needs help?", vitals saved to that astronaut's record with the red-limit check, flight-surgeon reply time shown)
-- [x] **S** Voice reads the first-response steps aloud (PR #8 daily check, PR #NN emergency steps: one step or all)
+- [x] **M** Red-limit and emergency screen: numbered first-response steps with a short "why" each, one step at a time with big controls (PR #22: `/emergency?id=…`, opened from Today's red-limit card, the alert banner and search)
+- [x] **M** Emergency guidance works for **a crewmate** (pick the affected astronaut, follow steps, record vitals) (PR #22: "Who needs help?", vitals saved to that astronaut's record with the red-limit check, flight-surgeon reply time shown)
+- [x] **S** Voice reads the first-response steps aloud (PR #8 daily check, PR #22 emergency steps: one step or all)
 
 ### Body figure (2D SVG; regions in `docs/BODY_MAP.md` and `src/data/regions.js`). Required: the brief asks for a clickable body figure
 
@@ -176,11 +176,11 @@ One line per designed page. A page is ticked when it's built and working in the 
 - [x] **M** Healthy data (Singh) produces no alert and a stable, high health score (checked in the app 14 Nov: "No alerts", score 100 Good, no banner)
 - [x] **M** Health score drops as Rivera declines and when a red limit is hit (checked in the app 14 Nov: Rivera 59 Alert, capped by escalation; Nakamura 25 Critical on the red limit)
 - [x] **M** One bad day produces no alert (PR #10 engine; checked in the app 14 Nov: a bad day for Singh (3.5 h sleep, mood 1, 20 min exercise) gave "watch" flags and score 96, no alert or banner. Note: the single low exercise day made exercise "drifting" (a one-indicator Note, by design not an alert); the exercise minimum spread may be worth tuning)
-- [x] **M** A dangerous reading (Nakamura) triggers the red-limit screen (PR #20, PR #NN: checked in the app 14 Nov: Today's red-limit link opens the very-high-BP guide with Nakamura picked; saving 186/118 there flags the red limit)
-- [ ] **M** Empty state (no data yet) looks sensible 🟡 Partial (PR #9, PR #10, PR #20): engine safe; Today, Daily check, Body, Calendar and Summary handle no stored data (PR #21); still to do: check Trends (Emergency checked in PR #NN)
+- [x] **M** A dangerous reading (Nakamura) triggers the red-limit screen (PR #20, PR #22: checked in the app 14 Nov: Today's red-limit link opens the very-high-BP guide with Nakamura picked; saving 186/118 there flags the red limit)
+- [ ] **M** Empty state (no data yet) looks sensible 🟡 Partial (PR #9, PR #10, PR #20): engine safe; Today, Daily check, Body, Calendar and Summary handle no stored data (PR #21); still to do: check Trends (Emergency checked in PR #22)
 - [x] **M** Reaction test run ten times in a row without breaking (checked 14 Nov on the production build: 10 back-to-back 60 s runs in guest mode, including false starts, missed signals, space bar and double taps; every run finished, no errors or blank results)
 - [x] **M** Search finds the right item for misspellings ("hart rate"), synonyms ("pulse") and symptoms ("chest pain") (PR #10, PR #21: checked in the search bar in Chrome)
-- [ ] **M** Whole app usable by keyboard only; status readable in greyscale 🟡 Partial (checked 14 Nov on every built page: all focusable controls have a visible focus style and a name, no click handlers on non-buttons, status readable in greyscale through icon and label); still to do: Trends (Emergency done in PR #NN)
+- [ ] **M** Whole app usable by keyboard only; status readable in greyscale 🟡 Partial (checked 14 Nov on every built page: all focusable controls have a visible focus style and a name, no click handlers on non-buttons, status readable in greyscale through icon and label); still to do: Trends (Emergency done in PR #22)
 - [ ] **M** Full demo rehearsed start to finish on the machine that will present it
 - [ ] **M** Someone outside the team tries it without instructions
 
