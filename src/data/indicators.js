@@ -6,12 +6,15 @@
 // basis: "clinical" = the number comes from the cited guideline;
 //        "design"   = an ATHENA design choice (tunable, not a clinical standard).
 // Mapping clinical categories onto our four levels is itself an ATHENA design choice.
+// input / inputs: plausibility limits for the entry form, to catch typing mistakes. They are
+// ATHENA design choices, NOT health thresholds.
 // These bands are red limits for single readings. Personal drift (z-score) is separate
 // (docs/DECISIONS.md > Drift Cut-off).
 
 export const INDICATORS = [
   {
     id: "heartRate",
+    input: { min: 20, max: 250, step: 1 },
     name: "Heart rate",
     unit: "bpm",
     core: true,
@@ -39,6 +42,10 @@ export const INDICATORS = [
   },
   {
     id: "bloodPressure",
+    inputs: [
+      { id: "systolic", label: "Top number (systolic)", min: 50, max: 260, step: 1 },
+      { id: "diastolic", label: "Bottom number (diastolic)", min: 30, max: 160, step: 1 },
+    ],
     name: "Blood pressure",
     unit: "mmHg",
     core: true,
@@ -83,6 +90,7 @@ export const INDICATORS = [
   },
   {
     id: "glucose",
+    input: { min: 20, max: 600, step: 1 },
     name: "Blood sugar (glucose)",
     unit: "mg/dL",
     core: true,
@@ -125,6 +133,7 @@ export const INDICATORS = [
   },
   {
     id: "temperature",
+    input: { min: 30, max: 45, step: 0.1 },
     name: "Body temperature",
     unit: "°C",
     core: true,
@@ -156,6 +165,7 @@ export const INDICATORS = [
   },
   {
     id: "sleep",
+    input: { min: 0, max: 24, step: 0.25 },
     name: "Sleep",
     unit: "hours",
     core: true,
@@ -187,6 +197,13 @@ export const INDICATORS = [
   },
   {
     id: "mood",
+    scale: [
+      { value: 1, label: "Very low" },
+      { value: 2, label: "Low" },
+      { value: 3, label: "Okay" },
+      { value: 4, label: "Good" },
+      { value: 5, label: "Very good" },
+    ],
     name: "Mood",
     unit: "1–5",
     core: true,
@@ -247,6 +264,7 @@ export const INDICATORS = [
   },
   {
     id: "exercise",
+    input: { min: 0, max: 600, step: 5 },
     name: "Exercise",
     unit: "minutes",
     core: false,
@@ -276,6 +294,7 @@ export const INDICATORS = [
   },
   {
     id: "spo2",
+    input: { min: 50, max: 100, step: 1 },
     name: "Blood oxygen (SpO₂)",
     unit: "%",
     core: false,

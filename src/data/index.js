@@ -10,3 +10,4 @@ export { INDICATORS } from "./indicators.js";
 export { EMERGENCIES } from "./emergencies.js";
 export { SYMPTOMS } from "./symptoms.js";
 export { EXAMS } from "./exams.js";
+export { MISSION_MODES, DEFAULT_MISSION_MODE } from "./missionModes.js";

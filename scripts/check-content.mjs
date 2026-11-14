@@ -1,7 +1,7 @@
 // Validates src/data: every id reference resolves, all 5 hazards and 17 risks exist,
 // every risk is on the body map, every item has search keywords.
 // Run: npm run check:content
-import { SOURCES, HAZARDS, RISKS, REGIONS, INDICATORS, EMERGENCIES, SYMPTOMS, EXAMS } from "../src/data/index.js";
+import { SOURCES, HAZARDS, RISKS, REGIONS, INDICATORS, EMERGENCIES, SYMPTOMS, EXAMS, MISSION_MODES, DEFAULT_MISSION_MODE } from "../src/data/index.js";
 
 const errors = [];
 const ids = (list) => new Set(list.map((x) => x.id));
@@ -73,6 +73,17 @@ for (const s of SYMPTOMS) {
 }
 
 for (const x of EXAMS) { const w = `exam ${x.id}`; src(x.sourceId, w); check(riskIds.has(x.risk), `${w}: unknown risk`); check(regionIds.has(x.region), `${w}: unknown region`); kw(x, w); }
+
+for (const m of MISSION_MODES) {
+  const w = `mission mode ${m.id}`;
+  m.sourceIds.forEach((s) => src(s, w)); kw(m, w);
+  if (m.earthDelay) src(m.earthDelay.sourceId, `${w} earthDelay`);
+}
+check(MISSION_MODES.some((m) => m.id === DEFAULT_MISSION_MODE), `unknown DEFAULT_MISSION_MODE "${DEFAULT_MISSION_MODE}"`);
+for (const i of INDICATORS) {
+  if (i.input) check(i.input.min < i.input.max, `indicator ${i.id}: input.min must be below input.max`);
+  if (i.inputs) i.inputs.forEach((f) => check(f.min < f.max, `indicator ${i.id} ${f.id}: min must be below max`));
+}
 
 // No medicines or doses (docs/DECISIONS.md > No Medicines or Diagnoses).
 const textOf = (o) => JSON.stringify(o);

@@ -69,19 +69,19 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 ### Inclusive design (`docs/DECISIONS.md` › Inclusive Design)
 
-- [ ] **M** Colour-blind-safe palette, text contrast at least 4.5:1
-- [ ] **M** Tap targets at least 44×44 px (usable with gloves); large text 🟡 Partial (PR #6): header and navigation done; still to do: every other screen
-- [ ] **M** Full keyboard navigation and screen-reader labels (including the body figure) 🟡 Partial (PR #6): header, nav (with current page) and crew switcher done; still to do: every other screen and the body figure
+- [ ] **M** Colour-blind-safe palette, text contrast at least 4.5:1 🟡 Partial (PR #8): space palette checked (text 6.5–17:1, form borders 3.5–3.9:1); still to do: status colours and chart colours
+- [ ] **M** Tap targets at least 44×44 px (usable with gloves); large text 🟡 Partial (PR #6, PR #8): header, navigation and daily check done; still to do: other screens
+- [ ] **M** Full keyboard navigation and screen-reader labels (including the body figure) 🟡 Partial (PR #6, PR #8): header, nav, crew switcher, mission mode and daily check done; still to do: other screens and the body figure
 - [ ] **M** Respects "reduce motion"; no information shown only through animation
-- [ ] **M** Health text in plain English: glance summary plus "Learn more" layer, medical terms explained in brackets (`docs/DECISIONS.md` › Content Style)
+- [ ] **M** Health text in plain English: glance summary plus "Learn more" layer, medical terms explained in brackets 🟡 Partial (PR #8): daily check side panel (glance, steps, Learn more, sources) reads from `src/data`; still to do: alerts, body cards, emergency screens (`docs/DECISIONS.md` › Content Style)
 
 ### Daily check
 
-- [ ] **M** Form for the six brief indicators, with units and sensible input limits
-- [ ] **M** "How to measure" help beside each field (how to take it, why it matters, what to do if abnormal)
-- [ ] **M** Mood as five large buttons, not a text box
-- [ ] **M** Symptom tick boxes and exercise minutes
-- [ ] **M** Save confirmation and today's result shown straight away
+- [x] **M** Form for the six brief indicators, with units and sensible input limits (PR #8)
+- [x] **M** "How to measure" help beside each field (how to take it, why it matters, what to do if abnormal) (PR #8)
+- [x] **M** Mood as five large buttons, not a text box (PR #8)
+- [x] **M** Symptom tick boxes and exercise minutes (PR #8; red-flag symptoms link to their emergency guide)
+- [ ] **M** Save confirmation and today's result shown straight away 🟡 Partial (PR #8): confirmation shown; still to do: store the record and show today's result (needs data layer and logic)
 - [ ] **M** Reminders: shows which measurements are still due today
 
 ### Reaction test
@@ -112,7 +112,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** Alert card: what is drifting, since when, likely hazard, what to do, when to tell the ground ("Why this alert?")
 - [ ] **M** Red-limit and emergency screen: numbered first-response steps with a short "why" each, one step at a time with big controls
 - [ ] **M** Emergency guidance works for **a crewmate** (pick the affected astronaut, follow steps, record vitals)
-- [ ] **S** Voice reads the first-response steps aloud
+- [ ] **S** Voice reads the first-response steps aloud 🟡 Partial (PR #8): "Read these steps aloud" on the daily check; still to do: emergency steps
 
 ### Body figure (2D SVG; regions in `docs/BODY_MAP.md` and `src/data/regions.js`). Required: the brief asks for a clickable body figure
 
@@ -125,8 +125,8 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 - [ ] **S** Mission calendar listing due and completed periodic exams
 - [ ] **S** One-page flight-surgeon summary, with "reply expected in about N minutes" (Earth Link delay)
-- [ ] **S** Earth Link: shows the current communication delay for the mission mode
-- [ ] **S** Mission mode switch: ISS, Lunar Gateway, Mars Transit
+- [ ] **S** Earth Link: shows the current communication delay for the mission mode 🟡 Partial (PR #8): header pill shows the sourced delay (Mars: up to 20 min one way); still to do: use it in the summary
+- [x] **S** Mission mode switch: ISS, Lunar Gateway, Mars Transit (PR #8; modes in `src/data/missionModes.js`)
 - [ ] **S** Check-in streak
 
 ---
