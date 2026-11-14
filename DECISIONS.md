@@ -145,7 +145,8 @@ with its licence recorded in `docs/SOURCES.md`.
   logos or insignia, no implied endorsement, no third-party-credited NASA images.
 - CSA and other agencies: cite and link only unless their terms allow reuse.
 - Clinical reference ranges: published facts, cited to their guideline.
-- Our own code: license the repo under an open licence (team to confirm MIT).
+- Our own repo: no licence file needed (it's a just-for-fun project). Licensing
+  only applies to the resources we use.
 
 Reason:
 Submission requires citing everything and having permission for copyrighted
@@ -159,7 +160,7 @@ LOCKED
 ## Local Judging
 
 Submission closes 10:30 Sun 15 Nov. Pitching from 11:30: 3-minute pitch plus
-2-minute Q&A. Plan the build so that it's finished well before 10:30.
+2-minute Q&A.
 
 Status:
 LOCKED
@@ -176,6 +177,38 @@ Out of scope: Lunar Surface Base mission mode.
 Reason:
 Emergency guidance and measurement guides are challenge requirements. Reminders are
 cheap and add value. Lunar base isn't worth the time.
+
+Status:
+LOCKED
+
+
+---
+
+## Content Style: Short and Generic
+
+All health info in the app (measurement guides, alerts, "Why this alert?",
+emergency steps) is **short, generic and plain-language**. Astronauts aren't
+doctors and won't have time to read detailed reports.
+- Aim for one line per point and about 3–5 steps per guide or emergency, readable at a glance.
+- No medical jargon without a plain explanation. No long reports.
+- Emergency steps stay **generic** (e.g. "Check responsiveness", "Record heart
+  rate and blood pressure", "Contact flight surgeon"), labelled illustrative
+  and not medical advice. No detailed clinical protocols.
+- A source link is still shown, but as a small "Source" link, not a block of text.
+
+Status:
+LOCKED
+
+---
+
+## Git Workflow: Branches and Review
+
+- Never push straight to `main` (except initial docs setup).
+- Each task gets a branch: `feature/<short-name>` or `fix/<short-name>`.
+- Push the branch and open a pull request.
+- **A different agent reviews the PR first** (see `AGENTS.md` › Reviewing a PR),
+  then it's merged into `main`.
+- No code freeze. Keep merging small, working changes until submission.
 
 Status:
 LOCKED

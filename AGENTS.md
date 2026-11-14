@@ -5,11 +5,12 @@ Gemini CLI (with `contextFileName: "AGENTS.md"`) load it automatically. Claude C
 through `CLAUDE.md`. For chat-only tools, start with: *"Read `AGENTS.md` in
 github.com/NASAthon/ATHENA first and follow it."*
 
-GitHub is the single source of truth, so always work from the latest `main`.
+GitHub is the single source of truth, so always branch from the latest `main`.
 
 ## 1. Before starting any task
 
-1. `git pull` to get the latest docs and code.
+1. `git checkout main && git pull`, then create a branch for the task:
+   `git checkout -b feature/<short-name>` (or `fix/<short-name>`). Never commit straight to `main`.
 2. Read these files in this order:
    1. `context.md`: the official event brief. It covers the rules, submission
       deliverables, judging rubric, challenge text, NASA data sources and the
@@ -40,6 +41,9 @@ GitHub is the single source of truth, so always work from the latest `main`.
   ranges. That is the one allowed exception to "official sources only" (see
   `DECISIONS.md` › Thresholds). Label them "general clinical reference range",
   never as NASA flight standards.
+- **Keep health content short, generic and plain-language.** Astronauts aren't doctors
+  and won't read detailed reports. Use one line per point and 3–5 steps per guide, with no
+  jargon and no long reports (`DECISIONS.md` › Content Style).
 - Track the 6 indicators the official challenge names (heart rate, blood pressure,
   blood glucose, body temperature, sleep hours, mood) before adding extras.
 - The challenge video adds two requirements (`context.md` Section 6.1):
@@ -76,7 +80,22 @@ GitHub is the single source of truth, so always work from the latest `main`.
 2. Log how AI was used in `docs/AI_USAGE.md` (required for submission). List
    any AI-generated image or media there, because it must be watermarked or credited.
 3. If you used a new data source, add it to `docs/SOURCES.md`.
-4. Commit small, focused changes with clear messages, `git pull --rebase`, then push.
+4. Commit small, focused changes with clear messages. Run `git pull --rebase origin main`,
+   push your branch, and open a pull request (`gh pr create`). Do **not** merge your own PR.
+
+## 3b. Reviewing a PR (done by a different agent than the author)
+
+1. Read the PR diff (`gh pr diff <number>`) against this file and `DECISIONS.md`.
+2. Check that:
+   - it builds and works offline;
+   - it doesn't change the locked stack;
+   - every health rule cites a source;
+   - health text is short and plain;
+   - new libraries, fonts and icons are open-licensed and listed in `docs/SOURCES.md`;
+   - it adds no secrets, NASA logos or likenesses;
+   - AI use is logged in `docs/AI_USAGE.md`.
+3. Leave comments on anything that fails. If it all passes, approve it and merge
+   (`gh pr merge <number> --squash --delete-branch`).
 
 ## 4. Submission checklist (full details in `judging.md` Sections 1C and 1E)
 

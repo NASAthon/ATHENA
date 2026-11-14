@@ -129,7 +129,7 @@ Planning should decide which of these are **must-have for the demo** versus **st
 - **Environments:** the video names spacecraft, space station and Moon surface base. Our Mission Modes (ISS, Lunar Gateway, Mars Transit) cover spacecraft and station. **Lunar Surface Base is out of scope** (time).
 - **Earth impact story:** the same tool could support healthcare in remote communities with limited access to health services. Use it in the pitch (Impact criterion, Galactic Impact award).
 
-> **Open question for the team:** the official NASA pages give no emergency or first-aid steps. Emergency guidance needs a source, so decide whether to cite published first-aid guidance (e.g. from a recognised health body) as another exception, like clinical ranges. Until then, keep emergency steps generic, label them illustrative, and say they are not medical advice.
+> **Decided:** all guidance is **short, generic and plain-language** (astronauts aren't doctors and have no time for detailed reports). Emergency steps stay generic, are labelled illustrative and are not medical advice. See `DECISIONS.md` › Content Style.
 
 **Innovation angles:** explainable AI, anomaly detection (rolling baseline + z-score), decision support, visual health insights, Earth-delay simulation.
 
