@@ -20,15 +20,13 @@ export default function Header() {
 
           <CrewSwitcher />
 
-          <Link
+            <Link
             href="/emergency"
             className={`flex min-h-12 items-center gap-2 rounded-lg bg-destructive px-4 font-semibold text-background hover:bg-destructive/90 ${focusRing}`}
           >
             <TriangleAlert aria-hidden="true" className="size-5" /> Emergency
           </Link>
         </div>
-
-        <MissionStatus />
 
         <nav aria-label="Main">
           <NavLinks />
