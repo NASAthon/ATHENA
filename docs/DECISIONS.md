@@ -592,6 +592,8 @@ of 38°C or above) or comes with red-flag symptoms. "Act" needs a streak or a dr
 - Sleep under 7 h on 3+ nights in a row → act
 - Mood 1–2 on 3+ days in a row → act
 - Reaction lapse = response slower than 500 ms, counted against the astronaut's own baseline
+- Reaction test result screen: "usual range" = baseline mean ± 1.5 SD (`REACTION_TYPICAL_SPREAD_SD`,
+  informational only; alerts still come from the 7-day average)
 - Exercise under 90 min → watch
 - Exam intervals: eye scan, heart ultrasound and samples every 30 days; fitness check every 14 days
 All are labelled `basis: "design"` in `src/data` and are tunable.

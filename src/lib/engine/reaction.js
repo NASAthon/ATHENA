@@ -66,3 +66,29 @@ export function reactionRecordFields(score) {
     reactionFalseStarts: score.falseStarts,
   };
 }
+
+/** Spread around the baseline mean that counts as "your usual range" for one test (ATHENA design choice). */
+export const REACTION_TYPICAL_SPREAD_SD = 1.5;
+
+/**
+ * Compares one reaction test with the astronaut's own in-flight baseline, for the result screen.
+ * Informational only: alerts come from the 7-day average and drift (DECISIONS › Trends Over Single Readings).
+ *
+ * @param {{ medianMs: number | null }} score From scoreReactionTest().
+ * @param {{ status: string, mean: number | null, sd: number | null } | null | undefined} baseline
+ *   The reactionMedianMs entry of an in-flight baseline (calculateMissionBaselines().inflight.indicators).
+ * @returns {{ usualMs: number, typicalLowMs: number, typicalHighMs: number, slower: boolean } | null}
+ *   Null when there's no usable baseline or no median.
+ */
+export function compareReactionToBaseline(score, baseline) {
+  if (!baseline || baseline.status !== "ok" || !Number.isFinite(baseline.mean) || !Number.isFinite(baseline.sd)) return null;
+  const spread = REACTION_TYPICAL_SPREAD_SD * baseline.sd;
+  const result = {
+    usualMs: Math.round(baseline.mean),
+    typicalLowMs: Math.round(baseline.mean - spread),
+    typicalHighMs: Math.round(baseline.mean + spread),
+    slower: false,
+  };
+  if (score?.medianMs == null) return Object.freeze({ ...result, slower: false });
+  return Object.freeze({ ...result, slower: score.medianMs > baseline.mean + spread });
+}

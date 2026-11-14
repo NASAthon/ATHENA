@@ -86,12 +86,12 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 ### Reaction test
 
-- [ ] **M** Start screen with one-line instructions
-- [ ] **M** Random wait of 2–5 seconds, signal, running millisecond counter
-- [ ] **M** Works with tap, click and space bar
-- [ ] **M** False start handled with "too early"
-- [ ] **M** Results screen: median, lapses, comparison with own baseline
-- [ ] **S** Guest mode so a judge can try it without changing the crew's data
+- [x] **M** Start screen with one-line instructions (PR #16)
+- [x] **M** Random wait of 2–5 seconds, signal, running millisecond counter (PR #16)
+- [x] **M** Works with tap, click and space bar (PR #16)
+- [x] **M** False start handled with "too early" (PR #16)
+- [x] **M** Results screen: median, lapses, comparison with own baseline (PR #16; scoring from the engine, baseline = the selected astronaut's simulated in-flight baseline)
+- [ ] **S** Guest mode so a judge can try it without changing the crew's data 🟡 Partial (PR #16): the test never saves anything yet, so a judge can already try it safely; still to do: a real guest mode once results are stored
 
 ### Trends
 
