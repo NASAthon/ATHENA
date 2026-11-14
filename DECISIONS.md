@@ -114,8 +114,10 @@ LOCKED
 ## Indicators
 
 Core (official challenge text): heart rate, blood pressure, blood glucose,
-body temperature, sleep hours, mood.
-Extra: HRV, SpO₂, respiration rate, activity level, radiation dose.
+body temperature, sleep hours, mood (1–5).
+Also recorded daily (from `CHECKLIST.md`): reaction test (median, lapses, false
+starts), exercise minutes, symptoms.
+Optional: SpO₂, radiation dose (and HRV and respiration rate if time allows).
 
 Reason:
 Judges score Relevance against the challenge text, so the core six come first.
@@ -291,6 +293,47 @@ microgravity, colour blindness, low vision):
 **Pitch angle:** "Built for an astronaut who is exhausted, stressed and isn't a
 doctor." This scores on Validity (usability) and Impact (the same design suits
 remote communities on Earth).
+
+Status:
+LOCKED
+
+
+---
+
+## Baselines
+
+**Fixed**, not rolling. Each astronaut has a pre-flight baseline and an in-flight
+baseline (e.g. mission days 21–35), each calculated once. Daily status = z-score of the
+7-day average against the in-flight baseline. Red limits are checked separately on every reading.
+
+Reason:
+A rolling baseline sinks along with a slowly declining astronaut and can stay green.
+Fixed catches slow decline, the key long-mission risk, and is simpler to explain.
+This replaces the earlier rolling 14-day idea.
+
+Status:
+LOCKED
+
+---
+
+## Crew
+
+3 simulated astronauts, 180-day mission, each with a demo role:
+- **Commander Rivera:** slow decline in sleep, reaction and mood from about week 12 (drift alert).
+- **Pilot Singh:** stays healthy (proves no false alarms).
+- **Engineer Nakamura:** sudden event (red-limit screen and crewmate emergency guidance).
+
+Status:
+LOCKED
+
+---
+
+## Checklist
+
+`CHECKLIST.md` is the single list of what to build and hand in, with M/S priorities.
+It merges the team's build checklist with the earlier plan. New features from the
+checklist: reaction-time test, mission calendar, flight-surgeon summary, check-in
+streak and voice read-aloud.
 
 Status:
 LOCKED

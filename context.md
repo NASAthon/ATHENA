@@ -107,14 +107,14 @@ Planning should decide which of these are **must-have for the demo** versus **st
 
 **Users:** astronauts (primary), flight surgeons, mission control.
 
-**Crew:** 3 simulated astronauts: Commander Rivera, Pilot Singh, Engineer Nakamura.
+**Crew:** 3 simulated astronauts over a 180-day mission (`DECISIONS.md` › Crew): **Commander Rivera** (slow decline from about week 12, causing a drift alert), **Pilot Singh** (stays healthy, so no false alarms), **Engineer Nakamura** (sudden event, triggering the red-limit screen and crewmate emergency guidance).
 
 **Monitoring targets:**
 - **Core (named in the official challenge text, must have):** heart rate, blood pressure, blood glucose, body temperature, sleep hours, mood
 - **Extra (our team's choice, not official requirements):** HRV, SpO₂, respiration rate, activity level, radiation dose
 
 **Feature targets:**
-- **Personalised baselines:** a rolling 14-day baseline per astronaut instead of generic thresholds. The 14-day window is our assumption.
+- **Personalised baselines:** **fixed** baselines per astronaut (pre-flight, plus in-flight days 21–35), calculated once, so slow decline shows as drift (`DECISIONS.md` › Baselines).
 - **Trend monitoring:** detect multi-day changes such as sleep deficit, vital-sign drift and radiation accumulation.
 - **Alerting:** deterministic, explainable decision-support alerts, each giving the trigger, contributing factors and recommended action.
 - **Mission modes:** ISS, Lunar Gateway, Mars Transit. This is our version of the environment context in idea 6 above.
@@ -137,29 +137,8 @@ Planning should decide which of these are **must-have for the demo** versus **st
 
 **Tech stack** (locked in `DECISIONS.md`): offline-first PWA. Next.js (JavaScript, static export) + Tailwind + ShadCN; SQLite in the browser (sql.js, saved to IndexedDB); JS rules engine + rolling-baseline/z-score trend detection; 2D SVG body map. No backend server. Everything runs onboard.
 
-**MVP scope** (team to confirm must-have vs stretch):
-- Dashboard with 3 astronauts
-- Personal baselines
-- Explainable alerts
-- **Emergency guidance (crewmate assessment)** (challenge requirement)
-- **Measurement guides: how to take it, why it matters, what to do** (challenge requirement)
-- **Measurement reminders** (team decision)
-- **Adaptive search, tolerant of typos and wrong terms** (team decision)
-- **Inclusive design for different knowledge and abilities** (team decision)
-- Scenario Lab
-- Earth Link
-- "Why this alert?" explanations
+**MVP scope, priorities and demo script:** see **`CHECKLIST.md`**.
 
-**Demo flow** (draft; the storyboard comes later):
-1. Hook: "Halfway to Mars, your crewmate collapses with chest pain." (the challenge's own scenario)
-2. Dashboard
-3. An astronaut on a warning, with the measurement guide and "Why this alert?"
-4. An astronaut in critical status, opening emergency guidance for a crewmate
-5. Scenario simulation
-6. Earth delay: why the crew can't wait for Earth
-7. Close: the same tool for remote communities on Earth
-
-**Local pitch:** 3 minutes plus 2 minutes of Q&A (Section 2). Expect Q&A on where thresholds and emergency steps come from, so have sources ready.
 
 > For judging, the official rubric in Section 4 (Impact, Creativity, Validity, Relevance, Presentation) replaces the informal "judging focus" list in the old `NASA_Challenge.md`.
 

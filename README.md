@@ -53,8 +53,9 @@ NASA hazard or risk), and what to do if the value is abnormal.
 
 ### Personal Health Baselines
 
-Each astronaut is evaluated against their own
-historical health data rather than generic thresholds.
+Each astronaut is evaluated against their own fixed
+pre-flight and in-flight baselines rather than generic thresholds,
+so slow decline over weeks is caught.
 
 ### Trend Detection
 
@@ -88,6 +89,16 @@ ATHENA is built for different levels of knowledge and different abilities:
 - Search that understands typos, everyday words and symptoms
 - Status shown with colour **plus** icons and labels (colour-blind friendly)
 - Large text and large buttons, high contrast, keyboard and screen-reader support
+
+### Reaction Test
+
+A quick daily reaction-time test (median, lapses and false starts) to spot
+fatigue and sleep loss, compared with the astronaut's own baseline.
+
+### Mission Calendar and Flight-Surgeon Summary
+
+Shows which periodic exams are due, plus a one-page summary to send to flight
+surgeons, with the expected reply time given the Earth communication delay.
 
 ### Adaptive Search
 
@@ -193,4 +204,4 @@ AI-generated code was used to speed up the development process.
 
 ## For contributors and AI agents
 
-Start with [`context.md`](context.md) (the official event brief) and [`judging.md`](judging.md) (the submission and judging guide), then follow the workflow in [`AGENTS.md`](AGENTS.md).
+Start with [`AGENTS.md`](AGENTS.md) (the workflow). It points to [`context.md`](context.md) (the official event brief), [`CHECKLIST.md`](CHECKLIST.md) (what to build), [`judging.md`](judging.md) (submission and judging) and [`DECISIONS.md`](DECISIONS.md).

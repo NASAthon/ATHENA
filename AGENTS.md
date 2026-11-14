@@ -16,12 +16,14 @@ GitHub is the single source of truth, so always branch from the latest `main`.
       deliverables, judging rubric, challenge text, NASA data sources and the
       data caveat. Section 6.1 holds the ATHENA product spec: vision, MVP
       scope, demo flow and stack.
-   2. `judging.md`: the official Space Apps submission and judging guide. It
+   2. `CHECKLIST.md`: what to build and hand in, with priorities (M = must, S = should).
+      Pick your task from here.
+   3. `judging.md`: the official Space Apps submission and judging guide. It
       covers deadlines, the project page fields, demo limits, AI/SI rules, global
       eligibility, the 1–5 judging criteria and the 10 global awards. Check work
       against the criteria (Impact, Creativity, Validity, Relevance, Presentation).
-   3. `DECISIONS.md`: locked decisions. Do not reverse a LOCKED decision.
-   4. `docs/`: `SOURCES.md` (every source used), `AI_USAGE.md` (AI log), and
+   4. `DECISIONS.md`: locked decisions. Do not reverse a LOCKED decision.
+   5. `docs/`: `SOURCES.md` (every source used), `AI_USAGE.md` (AI log), and
       plan, data model and storyboard files as they are added.
 3. If two files conflict:
    - Submission, demo, AI/SI rules and judging: `judging.md` wins.
@@ -83,11 +85,12 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 
 ## 3. Before finishing a task
 
-1. If you made or changed a decision, add it to `DECISIONS.md` with a reason.
-2. Log how AI was used in `docs/AI_USAGE.md` (required for submission). List
+1. Tick the items you completed in `CHECKLIST.md`.
+2. If you made or changed a decision, add it to `DECISIONS.md` with a reason.
+3. Log how AI was used in `docs/AI_USAGE.md` (required for submission). List
    any AI-generated image or media there, because it must be watermarked or credited.
-3. If you used a new data source, add it to `docs/SOURCES.md`.
-4. Commit small, focused changes with clear messages. Run `git pull --rebase origin main`,
+4. If you used a new data source, add it to `docs/SOURCES.md`.
+5. Commit small, focused changes with clear messages. Run `git pull --rebase origin main`,
    push your branch, and open a pull request (`gh pr create`). Ideally let another
    teammate's agent review and merge it (see 3b).
 
@@ -111,19 +114,7 @@ may review and merge their own PR, but still go through the checks below.
 3. Leave comments on anything that fails. If it all passes, approve it and merge
    (`gh pr merge <number> --squash --delete-branch`).
 
-## 4. Submission checklist (full details in `judging.md` Sections 1C and 1E)
+## 4. Build and submission checklist
 
-- Project name and summary
-- Public demo: a video of 30 seconds or less, or a deck of 7 slides or fewer.
-  Going over the limit **disqualifies** the project from global judging.
-- Public link to the final project: the GitHub repo (no hosting, see `DECISIONS.md`).
-  Test every link in an incognito window.
-- Detailed description: what it does, how it works, benefits, tools and languages
-- NASA data: **at least one official NASA resource** named
-- Partner data and references: all libraries, tools and partner (e.g. CSA) sources cited
-- AI/SI disclosure, plus visible watermarks on any AI media
-- Everything in English, and no under-18 likeness anywhere
-- Both confirmation boxes ticked, then **Submit for Judging** by **10:30 Sun 15 Nov**
-  (local deadline; the global portal closes at 23:59).
-- **Local pitch at 11:30:** 3-minute live pitch plus 2-minute Q&A. Prepare the pitch
-  and a working local demo.
+Everything to build and hand in is in **`CHECKLIST.md`** (sections 1–7, with M/S priorities).
+Pick tasks from it, and tick items off in your PR when they're done.
