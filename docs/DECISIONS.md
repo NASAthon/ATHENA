@@ -1013,6 +1013,10 @@ automatically through `saveCheckIn`. The crew only adds mood and symptoms, which
   1 first attempt in 12 elsewhere has a harmless glitch. A retry always reads cleanly, so a demo can't get stuck.
 - **No manual vital entry:** a failed sensor is retried. The simulation guarantees a clean retry,
   keeping the demo focused on sensor collection while the measurement guides remain available.
+- **Layout (PR #52, follows the Live Monitor mockup):** a scan bar with a progress bar, one tile per vital
+  showing its value and the sensor it came from, a "needs attention" strip with Retry for each failed sensor,
+  and "Your one-minute check": mood, then "Anything new today?" (No saves an empty symptom list; Yes opens the
+  symptom checklist).
 - **Accessible:** icon + label + colour for every scan state, a live status line for screen readers,
   44 px targets, and no pauses or spinner animation when "reduce motion" is on.
 

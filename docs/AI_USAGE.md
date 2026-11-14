@@ -62,6 +62,7 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Chidozie | Codex | Focused the public README on ATHENA: moved the full live URL and NASAthon members near the top, removed organiser/submission workflow text, and strengthened the sources and AI usage sections | `README.md`, `docs/*` |
 | 14 Nov 2026 | Chidozie | Codex | Desktop layout refinement: collapsible icon sidebar, compact header and page density, wider content grids, secondary panels collapsed by default, content-area alert banner and home/Today navigation state; verified locally in Chrome | `src/app/*`, `src/components/{AlertBanner,DesktopShell,DesktopSidebar,Header,MissionCommunications,NavLinks,PageShell}.js` |
 | 14 Nov 2026 | Isaac | Claude | Daily check: simulated sensor scan replaces typed vitals (read, validate and save after database confirmation, retry on failure, all readings labelled simulated); tests for the scan logic | `src/lib/sim/sensorScan.js`, `src/lib/sim/sensorScan.test.js`, `src/app/daily-check/page.js`, `docs/DECISIONS.md`, `docs/CHECKLIST.md` |
+| 14 Nov 2026 | Isaac | Claude | Daily check restyled to the Live Monitor mockup: scan bar with progress, one tile per vital, needs-attention strips, one-minute check with an "Anything new today?" gate; checked by rendering the page in headless Chrome with stubbed providers | `src/app/daily-check/page.js`, `docs/DECISIONS.md` |
 
 ## AI-generated media
 

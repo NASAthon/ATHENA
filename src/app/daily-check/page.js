@@ -53,24 +53,32 @@ const STEP_STYLE = {
   save_error: { label: "Not saved", Icon: TriangleAlert, colour: "var(--status-red)" },
 };
 
+/** Shorter labels for the narrow measurement tiles (same icons and colours). */
+const TILE_LABEL = { waiting: "Waiting", reading: "Reading…", checked: "Checked", saved: "Saved", invalid: "Failed", save_error: "Not saved" };
+
 /** Pause between sensors while scanning (none when the person asks for reduced motion). */
 const STEP_MS = 650;
 const prefersReducedMotion = () =>
   typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-/** "120 / 80 mmHg", "7.25 h": one scanned reading for display. */
-function readingText(r) {
-  const unit = byId[r.indicatorId].unit;
-  const vals = Object.values(r.parts).map((v) => formatValue(r.indicatorId, v));
-  return `${vals.join(" / ")} ${unit}`;
+/** "120 / 80", "7.25": one scanned reading's numbers for display (the unit is shown beside it). */
+function valueText(r) {
+  return Object.values(r.parts).map((v) => formatValue(r.indicatorId, v)).join(" / ");
 }
+
+/** One tile per vital, in scan order, each with the simulated sensor it comes from. */
+/** What a save of the one-minute check is called (its confirmation shows beside its button). */
+const CREW_INPUT = "Mood and symptoms";
+
+const TILES = SCAN_SENSORS.flatMap((sensor) => sensor.indicators.map((indicatorId) => ({ indicatorId, sensor })));
 
 function DailyCheck() {
   const [steps, setSteps] = useState({}); // sensorId → { state, result, attempt }
   const [scanning, setScanning] = useState(false);
   const [moodValue, setMoodValue] = useState(null);
   const [symptoms, setSymptoms] = useState([]);
+  const [newToday, setNewToday] = useState(null); // "Anything new today?": null until answered
   // `?guide=<indicator id>` (from search) opens that indicator's "How it's measured" guide.
   const guide = useSearchParams().get("guide");
   const guideId = guide && byId[guide] ? guide : null;
@@ -163,16 +171,17 @@ function DailyCheck() {
     setSteps((st) => ({ ...st, [sensorId]: { ...st[sensorId], state: saved ? "saved" : "save_error" } }));
   };
 
+  const clearOutcome = () => setSaveInfo(null);
   const toggleSymptom = (id) => {
-    setSaveInfo(null);
+    clearOutcome();
     setSymptoms((list) => (list.includes(id) ? list.filter((s) => s !== id) : [...list, id]));
   };
-  const clearOutcome = () => setSaveInfo(null);
 
   const saveCrewInput = () => {
-    const fields = { [SYMPTOMS_FIELD]: symptoms };
+    // "No, nothing new" saves an empty symptom list; "Yes" saves what was ticked.
+    const fields = newToday == null ? {} : { [SYMPTOMS_FIELD]: newToday ? symptoms : [] };
     if (moodValue != null) fields[RECORD_FIELDS.mood.value] = moodValue;
-    return persist(fields, "Mood and symptoms");
+    return persist(fields, CREW_INPUT);
   };
 
   const readAloud = () => {
@@ -184,103 +193,144 @@ function DailyCheck() {
 
   return (
     <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
-      <h1 className="flex flex-wrap items-baseline gap-x-2 text-xl font-bold">
-        Daily check{" "}
-        <span className="text-base font-normal text-muted-foreground">
-          | {member.name}
-          {today !== null && ` | Day ${today}`}
-        </span>
+      {/* Layout follows the Live Monitor mockup: a heading row, a scan bar, measurement tiles,
+          a "needs attention" strip for a failed sensor, and the crew's one-minute check. */}
+      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <h1 className="text-xl font-bold">
+          Daily check{" "}
+          <span className="text-base font-normal text-muted-foreground">
+            | {member.name}
+            {today !== null && ` | Day ${today}`}
+          </span>
+        </h1>
         <span className="rounded-full border border-dashed px-2.5 py-0.5 text-sm font-semibold" style={{ borderColor: "var(--status-nodata)", color: "var(--status-nodata)" }}>
-          Simulated sensors
+          Simulated sensor feed
         </span>
-      </h1>
-      <p className="mt-1 text-base text-muted-foreground">
-        ATHENA reads your vitals from your sensors, checks them and saves them for you. You only add your mood and any symptoms.
-      </p>
+        <span className="text-sm text-muted-foreground">
+          ATHENA reads your vitals from your sensors, checks them and saves them for you. You only add your mood and anything new.
+        </span>
+      </div>
 
       <div className="mt-2 grid gap-2 lg:grid-cols-[minmax(0,1fr)_380px]">
         <div className="space-y-2">
-          <section className={card} aria-labelledby="scan-heading">
-            <div className="flex flex-wrap items-center gap-2">
-              <h2 id="scan-heading" className="text-base font-bold">
-                Sensor scan
-              </h2>
-              <span className="text-sm text-muted-foreground">All readings are simulated for this demo.</span>
-              <button
-                type="button"
-                onClick={startScan}
-                disabled={!canSave || scanning}
-                className={`ml-auto inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-5 text-base font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 ${focusRing}`}
+          {/* Scan bar */}
+          <section className={`${card} flex flex-wrap items-center gap-3`} aria-labelledby="scan-heading">
+            <h2 id="scan-heading" className="sr-only">
+              Sensor scan
+            </h2>
+            <button
+              type="button"
+              onClick={startScan}
+              disabled={!canSave || scanning}
+              className={`inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-5 text-base font-bold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 ${focusRing}`}
+            >
+              <ScanLine aria-hidden="true" className="size-5" />
+              {scanning ? "Scanning…" : scanned.length > 0 ? "Scan again" : "Start sensor scan"}
+            </button>
+            <div className="min-w-48 flex-1">
+              <p role="status" aria-live="polite" className="text-sm">
+                {scanning
+                  ? `Scanning: ${scanned.length} of ${SCAN_SENSORS.length} sensors read.`
+                  : scanDone
+                    ? failed.length > 0
+                      ? `Scan finished. ${failed.length} ${failed.length === 1 ? "sensor needs" : "sensors need"} attention.`
+                      : unsaved.length > 0
+                        ? `Scan finished, but ${unsaved.length} ${unsaved.length === 1 ? "sensor was" : "sensors were"} not saved. Retry to save again.`
+                        : "Scan finished. Every reading passed its checks and was saved."
+                    : "Press Start sensor scan. It takes a few seconds and needs nothing from you."}
+              </p>
+              <div
+                role="progressbar"
+                aria-label="Sensors read"
+                aria-valuemin={0}
+                aria-valuemax={SCAN_SENSORS.length}
+                aria-valuenow={scanned.length}
+                className="mt-1 h-1.5 overflow-hidden rounded-full bg-muted"
               >
-                <ScanLine aria-hidden="true" className="size-5" />
-                {scanning ? "Scanning…" : scanned.length > 0 ? "Scan again" : "Start sensor scan"}
-              </button>
+                <div className="h-full rounded-full bg-primary transition-[width] motion-reduce:transition-none" style={{ width: `${(scanned.length / SCAN_SENSORS.length) * 100}%` }} />
+              </div>
             </div>
-
-            <ol className="mt-2 grid auto-rows-fr gap-2 md:grid-cols-2" aria-label="Sensors">
-              {SCAN_SENSORS.map((sensor) => {
-                const step = steps[sensor.id] ?? { state: "waiting" };
-                const { label, Icon, colour } = STEP_STYLE[step.state];
-                const shown = step.result?.readings.filter((r) => r.status !== "not_measured") ?? [];
-                const reason = step.result?.readings.find((r) => r.status === "invalid")?.reason;
-                return (
-                  <li key={sensor.id} className="flex flex-col gap-1 rounded-lg border bg-input/10 p-3" style={{ borderColor: step.state === "invalid" ? colour : "var(--border)" }}>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-semibold">{sensor.name}</span>
-                      <span className="flex items-center gap-1 rounded-full border px-2 py-0.5 text-sm" style={{ borderColor: colour, color: colour }}>
-                        <Icon aria-hidden="true" className={`size-4 ${step.state === "reading" ? "animate-spin motion-reduce:animate-none" : ""}`} />
-                        {label}
-                      </span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">Reads {sensor.detail}</p>
-                    {(["checked", "saved", "save_error"].includes(step.state)) && shown.length > 0 && (
-                      <ul className="mt-1 space-y-0.5">
-                        {shown.map((r) => (
-                          <li key={r.indicatorId} className="text-base">
-                            {byId[r.indicatorId].name}: <strong>{readingText(r)}</strong>{" "}
-                            <span className="text-sm text-muted-foreground">(simulated)</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    {(step.state === "invalid" || step.state === "save_error") && (
-                      <>
-                        <p className="text-sm">
-                          {step.state === "invalid" ? `${reason} Nothing from this sensor was saved.` : "The readings passed their checks, but the database did not confirm the save."}
-                        </p>
-                        <div className="mt-1 flex flex-wrap gap-2">
-                          <button type="button" onClick={() => retry(sensor.id)} disabled={scanning || step.state === "reading"} className={`inline-flex min-h-11 items-center gap-2 rounded-lg border border-input px-3 text-sm font-semibold hover:bg-accent disabled:opacity-50 ${focusRing}`}>
-                            <RotateCcw aria-hidden="true" className="size-4" /> Retry sensor
-                          </button>
-                        </div>
-                      </>
-                    )}
-                    <button type="button" onClick={() => setFocusId(sensor.indicators[0])} className={`mt-auto self-start rounded text-sm text-primary underline ${focusRing}`}>
-                      How it&apos;s measured
-                    </button>
-                  </li>
-                );
-              })}
-            </ol>
-
-            <p role="status" aria-live="polite" className="mt-2 text-sm text-muted-foreground">
-              {scanning
-                ? `Scanning: ${scanned.length} of ${SCAN_SENSORS.length} sensors read.`
-                : scanDone
-                  ? failed.length > 0
-                    ? `Scan finished. ${failed.length} ${failed.length === 1 ? "sensor needs" : "sensors need"} attention: retry the sensor.`
-                    : unsaved.length > 0
-                      ? `Scan finished, but ${unsaved.length} ${unsaved.length === 1 ? "sensor was" : "sensors were"} not saved. Retry to save again.`
-                      : "Scan finished. Every reading passed its checks and was saved."
-                  : "Press Start sensor scan. It takes a few seconds and needs nothing from you."}
-            </p>
+            <span className="text-sm text-muted-foreground">All readings are simulated for this demo.</span>
           </section>
 
-          <section className={card} aria-labelledby="mood-heading">
-            <h2 id="mood-heading" className="text-base font-bold">
+          {/* Needs attention: one strip per failed or unsaved sensor */}
+          {[...failed, ...unsaved].map((sensor) => {
+            const step = steps[sensor.id];
+            const reason = step.result?.readings.find((r) => r.status === "invalid")?.reason;
+            return (
+              <div key={sensor.id} role="alert" className="flex flex-wrap items-center gap-2 rounded-lg bg-accent px-3 py-2">
+                <TriangleAlert aria-hidden="true" className="size-5 shrink-0 self-start mt-0.5" style={{ color: step.state === "invalid" ? "var(--status-amber)" : "var(--status-red)" }} />
+                <span className="min-w-0 flex-1 basis-64 text-base">
+                  <strong>{sensor.name}:</strong>{" "}
+                  {step.state === "invalid" ? `${reason} Nothing from this sensor was saved.` : "the readings passed their checks, but the save wasn't confirmed."}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => retry(sensor.id)}
+                  disabled={scanning}
+                  className={`ml-auto inline-flex min-h-11 items-center gap-2 rounded-lg border border-input px-4 text-sm font-semibold hover:bg-background/40 disabled:opacity-50 ${focusRing}`}
+                >
+                  <RotateCcw aria-hidden="true" className="size-4" /> Retry sensor
+                </button>
+              </div>
+            );
+          })}
+
+          {/* Measurement tiles: one per vital, coloured by its sensor's state */}
+          <ol className="grid auto-rows-fr gap-2 sm:grid-cols-2 xl:grid-cols-3" aria-label="Vitals from your sensors">
+            {TILES.map(({ indicatorId, sensor }) => {
+              const step = steps[sensor.id] ?? { state: "waiting" };
+              const { Icon, colour } = STEP_STYLE[step.state];
+              const label = TILE_LABEL[step.state];
+              const reading = step.result?.readings.find((r) => r.indicatorId === indicatorId);
+              const hasValue = ["checked", "saved", "save_error"].includes(step.state) && reading?.status === "valid";
+              const notMeasured = reading?.status === "not_measured";
+              const highlight = step.state === "invalid" || step.state === "save_error";
+              return (
+                <li
+                  key={indicatorId}
+                  className="flex min-h-32 flex-col gap-1 rounded-xl border bg-card p-3"
+                  style={{ borderColor: highlight ? colour : "var(--border)" }}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-sm text-muted-foreground">{byId[indicatorId].name}</span>
+                    <span className="flex shrink-0 items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold" style={{ borderColor: colour, color: colour }}>
+                      <Icon aria-hidden="true" className={`size-3.5 ${step.state === "reading" ? "animate-spin motion-reduce:animate-none" : ""}`} />
+                      {label}
+                    </span>
+                  </div>
+                  <p className="text-xl font-bold">
+                    {hasValue ? valueText(reading) : "—"}{" "}
+                    <span className="text-sm font-normal text-muted-foreground">{byId[indicatorId].unit}</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {notMeasured ? `Not measured by the ${sensor.name.toLowerCase()} today` : `From ${sensor.name.toLowerCase()}${hasValue ? " (simulated)" : ""}`}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setFocusId(indicatorId)}
+                    className={`mt-auto self-start rounded text-sm text-primary underline ${focusRing}`}
+                  >
+                    How it&apos;s measured
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+
+          {/* The crew's one-minute check: only what no sensor can report */}
+          <section className={card} aria-labelledby="crew-check-heading">
+            <div className="flex flex-wrap items-baseline gap-x-3">
+              <h2 id="crew-check-heading" className="text-base font-bold">
+                Your one-minute check
+              </h2>
+              <span className="text-sm text-muted-foreground">Mood and anything new. Everything else comes from sensors.</span>
+            </div>
+
+            <h3 id="mood-heading" className="mt-2 font-semibold">
               How is your mood today?
-            </h2>
-            <p className="mt-1 text-muted-foreground">{mood.glance}</p>
+            </h3>
+            <p className="text-sm text-muted-foreground">{mood.glance}</p>
             <div className="mt-2 grid auto-rows-fr grid-cols-5 gap-2">
               {mood.scale.map(({ value, label }) => (
                 <button
@@ -303,11 +353,34 @@ function DailyCheck() {
                 </button>
               ))}
             </div>
-          </section>
-          <section className={card} aria-labelledby="symptoms-heading">
-            <h2 id="symptoms-heading" className="text-base font-bold">
-              Any of these today?
-            </h2>
+            <h3 id="new-heading" className="mt-3 font-semibold">
+              Anything new today?
+            </h3>
+            <div role="group" aria-labelledby="new-heading" className="mt-1 flex flex-wrap gap-2">
+              {[
+                [false, "No, nothing new"],
+                [true, "Yes, something's new"],
+              ].map(([value, text]) => (
+                <button
+                  key={text}
+                  type="button"
+                  aria-pressed={newToday === value}
+                  onClick={() => {
+                    setNewToday(value);
+                    clearOutcome();
+                  }}
+                  className={`min-h-11 rounded-lg border px-4 text-base ${focusRing} ${newToday === value ? "border-primary bg-primary/15 font-semibold" : "border-input bg-input/30 hover:bg-accent"}`}
+                >
+                  {text}
+                </button>
+              ))}
+            </div>
+
+            {newToday && (
+              <div className="mt-2" aria-labelledby="symptoms-heading" role="group">
+                <h3 id="symptoms-heading" className="font-semibold">
+                  Tick what you&apos;ve noticed
+                </h3>
             <div className="mt-2 grid auto-rows-fr gap-2 md:grid-cols-2 xl:grid-cols-3">
               {SYMPTOMS.map((s) => (
                 <label
@@ -351,26 +424,29 @@ function DailyCheck() {
                 </ul>
               </div>
             )}
+              </div>
+            )}
+
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={saveCrewInput}
+                disabled={!canSave || (moodValue == null && newToday == null)}
+                className={`min-h-11 rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 ${focusRing}`}
+              >
+                Save my one-minute check
+              </button>
+              <p role="status" className="flex items-center gap-2 font-semibold">
+                {saveInfo?.what === CREW_INPUT && (
+                  <>
+                    <Check aria-hidden="true" className="size-5" style={{ color: "var(--status-steady)" }} />
+                    {saveInfo.what} saved to {member.name}&apos;s record for day {saveInfo.day}. Check-in streak: {saveInfo.streak}{" "}
+                    {saveInfo.streak === 1 ? "day" : "days"}.
+                  </>
+                )}
+              </p>
+            </div>
           </section>
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={saveCrewInput}
-              disabled={!canSave}
-              className={`min-h-11 rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 ${focusRing}`}
-            >
-              Save mood and symptoms
-            </button>
-            <p role="status" className="flex items-center gap-2 font-semibold">
-              {saveInfo && (
-                <>
-                  <Check aria-hidden="true" className="size-5" style={{ color: "var(--status-steady)" }} />
-                  {saveInfo.what} saved to {member.name}&apos;s record for day {saveInfo.day}. Check-in streak: {saveInfo.streak}{" "}
-                  {saveInfo.streak === 1 ? "day" : "days"}.
-                </>
-              )}
-            </p>
-          </div>
           {status === "ready" && today === null && (
             <p className="text-muted-foreground">
               No mission data stored, so there&apos;s nothing to save to. Load the demo mission on the{" "}
