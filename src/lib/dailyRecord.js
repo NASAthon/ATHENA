@@ -9,7 +9,7 @@
 // Pure logic: no React, DOM, database or network. Runs in the browser and in `node --test`.
 
 import { CREW } from "./crew.js";
-import { SYMPTOMS } from "../data/index.js";
+import { INDICATORS, SYMPTOMS } from "../data/index.js";
 import { DAY_KEY, RECORD_FIELDS, SYMPTOMS_FIELD } from "./engine/indicators.js";
 
 /**
@@ -48,26 +48,43 @@ export const READING_FIELDS = Object.freeze(
 );
 
 /**
- * Input checks to catch typing mistakes (e.g. 640 instead of 64).
- * DESIGN CHOICE: these are NOT health thresholds and say nothing about whether a value
- * is healthy. Health limits live in src/data/indicators.js (bands) and the engine.
- * `integer: true` means whole numbers only.
+ * Limits for readings that src/data does not define (no `input`, `inputs` or `scale` there).
+ * DESIGN CHOICE, only to catch typing mistakes. Move them into src/data/indicators.js
+ * if the content owner adds input limits for these indicators.
  */
-export const INPUT_LIMITS = Object.freeze({
-  heartRate: { min: 20, max: 250 },
-  bpSystolic: { min: 50, max: 260 },
-  bpDiastolic: { min: 30, max: 160 },
-  glucose: { min: 20, max: 600 },
-  temperature: { min: 30, max: 44 },
-  sleepHours: { min: 0, max: 24 },
-  mood: { min: 1, max: 5, integer: true },
+const FALLBACK_LIMITS = Object.freeze({
   reactionMedianMs: { min: 100, max: 2000 },
   reactionLapses: { min: 0, max: 100, integer: true },
   reactionFalseStarts: { min: 0, max: 100, integer: true },
-  exerciseMinutes: { min: 0, max: 600 },
-  spo2: { min: 50, max: 100 },
   radiationMsv: { min: 0, max: 10000 },
 });
+
+/**
+ * Input checks to catch typing mistakes (e.g. 640 instead of 64), per record field.
+ * Taken from the input limits in src/data/indicators.js (`input`, `inputs` per part, or the
+ * mood `scale`), so they match the daily-check form. These are NOT health thresholds:
+ * whether a value is healthy is decided by the bands in src/data and the engine.
+ * `integer: true` means whole numbers only.
+ */
+export const INPUT_LIMITS = Object.freeze(buildInputLimits());
+
+function buildInputLimits() {
+  const limits = { ...FALLBACK_LIMITS };
+  for (const [indicatorId, fields] of Object.entries(RECORD_FIELDS)) {
+    const content = INDICATORS.find((i) => i.id === indicatorId);
+    if (!content) continue;
+    for (const [part, field] of Object.entries(fields)) {
+      const input = content.inputs?.find((x) => x.id === part) ?? (part === "value" ? content.input : null);
+      if (input) {
+        limits[field] = { min: input.min, max: input.max };
+      } else if (content.scale && part === "value") {
+        const values = content.scale.map((x) => x.value);
+        limits[field] = { min: Math.min(...values), max: Math.max(...values), integer: true };
+      }
+    }
+  }
+  return limits;
+}
 
 const CREW_IDS = new Set(CREW.map((c) => c.id));
 const SYMPTOM_IDS = new Set(SYMPTOMS.map((s) => s.id));
