@@ -249,8 +249,17 @@ Edge cases it must handle:
 How:
 - Each searchable item has a `keywords` list (synonyms, symptoms, plain-English
   terms, common misspellings), stored with the content data.
-- Use a small open-source fuzzy search library that runs in the browser, e.g.
-  MiniSearch (MIT) or Fuse.js (Apache-2.0). Record the choice in `docs/SOURCES.md`.
+- Use a small open-source fuzzy search library that runs in the browser. Record
+  the final choice in `docs/SOURCES.md`.
+
+Library options (team to choose):
+
+| Library | Licence | Strengths | Weaknesses |
+|---|---|---|---|
+| **MiniSearch** (suggested) | MIT | Small and fast; typo tolerance, prefix matching and field boosting; built-in "did you mean" suggestions (`autoSuggest`) | Synonyms must come from our `keywords` lists |
+| **Fuse.js** | Apache-2.0 | Very simple API; good fuzzy matching on short lists | Slower on larger data; no built-in prefix or auto-suggest |
+
+Both run fully offline, need no server and are free to use.
 - Rank results with emergency matches first when the query looks like a symptom.
 
 Status:
