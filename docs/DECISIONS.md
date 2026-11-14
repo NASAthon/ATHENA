@@ -992,3 +992,34 @@ destroy the live mission merely because an imported file is invalid.
 
 Status:
 ACTIVE
+
+---
+
+## Simulated Sensor Scan
+
+The Daily check no longer asks the crew to type their vitals. A **simulated sensor scan**
+(`src/lib/sim/sensorScan.js`) reads five generic sensors in turn (smart shirt, wrist sleep sensor,
+glucose sensor, thermometer, exercise equipment log), checks each value, and saves the valid ones
+automatically through `saveCheckIn`. The crew only adds mood and symptoms, which no sensor can report.
+
+- **Clearly simulated:** the page carries a "Simulated sensors" label, the scan says "All readings are
+  simulated for this demo", and every value is tagged "(simulated)". No brand names are used.
+- **Same data as every other screen:** values come from the seeded mission simulator for that
+  astronaut and day, so the scan agrees with Today, Trends, Body and Summary (Nakamura reads 186/118 on day 129).
+- **Validation before saving:** every part must be present and inside the indicator's input limits in
+  `src/data`, and blood pressure's top number must be above the bottom number. A failed sensor saves
+  nothing, so it can never overwrite stored data. The record is then validated again by `dailyRecord.js`.
+- **Sensor faults (simulated, ASSUMPTION):** Singh's shirt gives no signal on demo day 129, and about
+  1 first attempt in 12 elsewhere has a harmless glitch. A retry always reads cleanly, so a demo can't get stuck.
+- **No manual vital entry:** a failed sensor is retried. The simulation guarantees a clean retry,
+  keeping the demo focused on sensor collection while the measurement guides remain available.
+- **Accessible:** icon + label + colour for every scan state, a live status line for screen readers,
+  44 px targets, and no pauses or spinner animation when "reduce motion" is on.
+
+Reason:
+Typing nine values a day is unrealistic on a long mission (monitoring realism review): real crews
+wear sensors, and self-reported numbers are less reliable. The scan shows that workflow while keeping
+the data honest and labelled as simulated.
+
+Status:
+ACTIVE
