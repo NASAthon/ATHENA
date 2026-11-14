@@ -211,7 +211,8 @@ Deadlines: **local submission closes 10:30 Sun 15 Nov**, local pitching starts *
 - [ ] **M** Project description: what it does, how it works, benefits, tools and languages
 - [ ] **M** NASA data section: at least one official NASA resource named
 - [ ] **M** Partner data and references: all libraries, tools and partner (CSA, AEB) sources cited
-- [ ] **M** AI use declared, and any AI-generated media watermarked (`docs/AI_USAGE.md`)
+- [ ] **M** AI use declared, and any AI-generated media watermarked (`docs/AI_USAGE.md`) 🟡 Partial: SI checkboxes and project-page statement ready in `docs/SUBMISSION.md` › 1; AI-made mockups logged (made with Claude); still to do: watermark any AI image used in the slides, video or repo, paste the statement
+- [ ] **M** NASA Data and Partner Data fields: every resource as Link Text plus full URL 🟡 Partial: ready to paste in `docs/SUBMISSION.md` › 2 and 3; still to do: test each link in an incognito window
 - [ ] **M** Limits stated: simulated data, untested thresholds, not a diagnostic tool or medical advice
 - [ ] **M** Repo public with an up-to-date README, including "How to run" steps (no hosting)
 - [ ] **M** Every link tested in an incognito window; the app runs from the README steps on another machine

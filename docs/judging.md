@@ -61,10 +61,13 @@
      * **Audio:** Must acknowledge AI/SI generation in descriptive text and metadata.
      * **Code & Data:** Must acknowledge AI/SI generation in descriptive text and metadata.
    * *Note:* The form's dedicated SI checkbox/text field is for NASA internal data collection and is hidden from judges, **but judges WILL see and evaluate** your visible watermarks, credits, and descriptive disclosures inside your project.
+   * *Form options (select all that apply):* Ideation or Brainstorming · Research or Information Gathering · Data Analysis and Interpretation · Building SI/ML Into the Project · Coding, Debugging, or Troubleshooting · Writing, Editing, or Translation · Visual Design or Image Creation · Presentation, Video, or Audio · Other Project-Related SI Use · None / Did not use SI or SI tools. **Our answers: `docs/SUBMISSION.md` › 1.**
 7. **NASA Data:**
    * Specify the exact NASA datasets and resources used. **You must use at least one official NASA dataset/resource** to be eligible for Global Awards.
+   * The form asks to **list all** NASA data or resources used, each as **Link Text** (the resource's name) plus **Link URL** (the entire URL, e.g. `https://www.spaceappschallenge.org`). **Our list: `docs/SUBMISSION.md` › 2.**
 8. **Space Agency Partner Data and Other References:**
-   * Cite all external code libraries, open-source tools, text, images, and any 2026 Space Agency Partner datasets used (e.g., ESA, CSA, JAXA, ISRO, UK Space Agency, etc.). Ensure you have permission for any copyrighted material.
+   * Cite all external code libraries, open-source tools, text, images, and any 2026 Space Agency Partner datasets used (e.g., ESA, CSA, JAXA, ISRO, UK Space Agency, etc.), **even if they are open source or freely available**. Ensure you have permission for any copyrighted material. **All links must be publicly accessible.**
+   * Same format: **Link Text** (name of the data or resource) plus **Link URL** (entire URL). **Our list: `docs/SUBMISSION.md` › 3.**
 
 ---
 
