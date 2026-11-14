@@ -20,13 +20,13 @@ import {
   adviceForMode,
   classifyIndicator,
   driftBand,
+  driftKeyName,
   driftPeriods,
   evaluateMission,
   trendSeries,
 } from "@/lib/engine";
 import { STATUSES } from "@/lib/regionStatus";
 import { formatValue, unitOf } from "@/lib/readings";
-import { driftKeyName } from "@/lib/engine";
 import { MISSION_DAYS } from "@/lib/sim/simulator";
 import { useTodayEvaluation } from "@/components/useTodayEvaluation";
 import { useMissionMode } from "@/components/MissionModeProvider";
@@ -55,6 +55,9 @@ function StatusPill({ status }) {
 /** The first NASA source of an indicator (its risk or hazard page). */
 const nasaSource = (ind) => SOURCES[(ind?.sourceIds ?? []).find((id) => id.startsWith("nasa")) ?? ""] ?? null;
 
+/** One value of a drift-tracked field for display: lapses get one decimal, the rest use their indicator's unit. */
+const fmtKey = (key, groupId, v) => (key === "reactionLapses" ? (Number.isFinite(v) ? String(Math.round(v * 10) / 10) : "—") : formatValue(groupId, v));
+
 /** Start of the current drifting run that includes `day`, or null. */
 function driftingSince(periods, day) {
   return periods.find((p) => p.fromDay <= day && p.toDay >= day)?.fromDay ?? null;
@@ -69,6 +72,27 @@ export default function Trends() {
   const evaluations = useMemo(
     () => (state === "ready" && today >= 1 ? evaluateMission(records, baselines, 1, today) : []),
     [state, records, baselines, today],
+  );
+
+  // Series, drifting periods and bands depend only on the stored data, so they're worked out once,
+  // not on every slider step.
+  const charts = useMemo(
+    () =>
+      Object.fromEntries(
+        GROUPS.flatMap((g) => g.keys).map((key) => {
+          const series = trendSeries(evaluations, key);
+          return [
+            key,
+            {
+              series,
+              periods: driftPeriods(series),
+              preBand: driftBand(baselines?.preflight?.indicators?.[key], key),
+              inBand: driftBand(baselines?.inflight?.indicators?.[key], key),
+            },
+          ];
+        }),
+      ),
+    [evaluations, baselines],
   );
 
   if (state !== "ready" || evaluations.length === 0) {
@@ -96,20 +120,6 @@ export default function Trends() {
   const evaluation = evaluations[day - 1];
   const lastDay = Math.max(MISSION_DAYS.toDay, today);
 
-  const charts = Object.fromEntries(
-    GROUPS.flatMap((g) => g.keys).map((key) => {
-      const series = trendSeries(evaluations, key);
-      return [
-        key,
-        {
-          series,
-          periods: driftPeriods(series),
-          preBand: driftBand(baselines?.preflight?.indicators?.[key], key),
-          inBand: driftBand(baselines?.inflight?.indicators?.[key], key),
-        },
-      ];
-    }),
-  );
   const groupStatus = Object.fromEntries(evaluation.groups.map((g) => [g.group, g.status]));
   const drifting = GROUPS.filter((g) => groupStatus[g.id] === "drifting");
   const filter = picked.filter ?? (drifting.length > 0 ? "drifting" : "all");
@@ -201,7 +211,7 @@ export default function Trends() {
                   const point = c.series[day - 1];
                   const since = driftingSince(c.periods, day);
                   const unit = key === "reactionLapses" ? "lapses" : unitOf(g.id);
-                  const fmt = (v) => formatValue(key === "reactionLapses" ? "mood" : g.id, v);
+                  const fmt = (v) => fmtKey(key, g.id, v);
                   const normal = c.inBand ? `${fmt(c.inBand.mean)} ${unit}` : "not set yet";
                   const summary = `${point?.average != null ? `${fmt(point.average)} ${unit}` : "no 7-day average"} on day ${day} · your normal ${normal}${since ? ` · drifting since day ${since}` : ""}`;
                   return (
