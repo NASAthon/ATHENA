@@ -60,7 +60,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 - [x] **M** Navigation: Today, Trends, Body, Calendar, Summary (PR #6)
 - [ ] **M** Search bar and an **Emergency** button on every screen 🟡 Partial (PR #6): both shown on every screen; still to do: search logic and results (section 3 › Search) and the Emergency screen content
-- [ ] **M** Crew switcher, with the mission day and astronaut name always visible 🟡 Partial (PR #6, PR #9): switcher for all 3 crew, shared with every page (`CrewProvider`); still to do: real mission day from the simulator
+- [x] **M** Crew switcher, with the mission day and astronaut name always visible (PR #6, PR #9; real mission day from the stored mission: PR #17)
 - [ ] **M** Alert banner area at the top of every screen
 - [x] **M** Dark theme dashboard (`docs/DECISIONS.md` › Design) (PR #4, PR #6)
 - [ ] **M** Health score (0–100) shown prominently per astronaut, with a status icon and drop indicator

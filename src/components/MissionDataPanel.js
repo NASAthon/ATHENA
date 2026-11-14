@@ -25,7 +25,7 @@ export default function MissionDataPanel() {
     try {
       if (kind === "load") await loadDemo();
       else await reset();
-      setMessage(kind === "load" ? "Demo mission loaded: 3 astronauts, mission day 129." : "All data cleared. Nothing is stored now.");
+      setMessage(kind === "load" ? `Demo mission loaded for all ${CREW.length} astronauts.` : "All data cleared. Nothing is stored now.");
     } catch {
       setMessage("That didn't work. Details below.");
     }
@@ -61,7 +61,7 @@ export default function MissionDataPanel() {
                     : "No records"}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Baselines: {c?.preflight ? "pre-flight ✓" : "pre-flight —"} · {c?.inflight ? "in-flight ✓" : "in-flight —"}
+                  Baselines: pre-flight {c?.preflight ? "saved" : "not yet"} · in-flight {c?.inflight ? "saved" : "not yet"}
                 </p>
               </li>
             );
@@ -70,9 +70,9 @@ export default function MissionDataPanel() {
       )}
 
       {confirming ? (
-        <div role="group" aria-labelledby="confirm-text" className="mt-6 rounded-lg border border-amber-500/60 p-4">
+        <div role="group" aria-labelledby="confirm-text" className="mt-6 rounded-lg border p-4" style={{ borderColor: "var(--status-amber)" }}>
           <p id="confirm-text" className="flex items-start gap-2">
-            <TriangleAlert aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-amber-400" />
+            <TriangleAlert aria-hidden="true" className="mt-0.5 size-5 shrink-0" style={{ color: "var(--status-amber)" }} />
             {confirming === "reset"
               ? "Delete every stored record and baseline? This can't be undone. The app stays empty until you load the demo mission."
               : "Replace everything stored with the demo mission? Records entered so far will be deleted."}
@@ -82,7 +82,7 @@ export default function MissionDataPanel() {
               type="button"
               autoFocus
               onClick={() => act(confirming)}
-              className={`${button} ${confirming === "reset" ? "border-red-500 bg-red-600 text-white hover:bg-red-700" : "border-primary bg-primary text-primary-foreground"}`}
+              className={`${button} ${confirming === "reset" ? "border-destructive bg-destructive text-background hover:bg-destructive/90" : "border-primary bg-primary text-primary-foreground"}`}
             >
               <Check aria-hidden="true" className="size-4" />
               {confirming === "reset" ? "Yes, delete everything" : "Yes, replace with demo"}
@@ -97,7 +97,7 @@ export default function MissionDataPanel() {
           <button type="button" disabled={busy} onClick={onLoad} className={`${button} border-primary bg-primary text-primary-foreground`}>
             <RotateCcw aria-hidden="true" className="size-4" /> Load demo mission
           </button>
-          <button type="button" disabled={busy || !hasData} onClick={() => setConfirming("reset")} className={`${button} border-red-500/70 text-red-300 hover:bg-red-950/40`}>
+          <button type="button" disabled={busy || !hasData} onClick={() => setConfirming("reset")} className={`${button} border-destructive text-destructive hover:bg-destructive/15`}>
             <Trash2 aria-hidden="true" className="size-4" /> Reset data
           </button>
         </div>
@@ -107,7 +107,7 @@ export default function MissionDataPanel() {
         {message}
       </p>
       {error && (
-        <p role="alert" className="text-sm text-red-300">
+        <p role="alert" className="text-sm text-destructive">
           {error}
         </p>
       )}
