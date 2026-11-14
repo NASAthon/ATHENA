@@ -8,6 +8,8 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Chidozie | Claude Code | Base Next.js template (create-next-app, switched to system fonts, dark theme, static export) | `app/`, config files |
 | 14 Nov 2026 | Chidozie | Claude Code | Read and cross-checked all 17 NASA risk pages and 5 hazard pages to verify the body map | `docs/BODY_MAP.md` |
 | 14 Nov 2026 | Chidozie | Claude Code | Installed sql.js, MiniSearch and shadcn/ui; set up the dark theme, wasm copy script and licence scan | `package.json`, `components/`, `lib/`, `app/`, `scripts/` |
+| 14 Nov 2026 | Chidozie | Claude Code | PR #6: merged main, moved header and pages into `src/`, restored dark theme, swapped emoji for Lucide icon | `src/components/Header.js`, `src/app/*` |
+| 14 Nov 2026 | Chidozie | Claude Code | PR #6 review fixes: keyboard focus rings, current-page nav highlight, theme colour tokens, crew switcher | `src/components/*`, `src/lib/crew.js` |
 
 ## AI-generated media
 
