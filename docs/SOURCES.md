@@ -6,6 +6,8 @@ Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Age
 |---|---|---|---|---|
 | 5 Hazards of Human Spaceflight | https://www.nasa.gov/hrp/hazards/ | The five hazards | Yes | US Gov work; no NASA logos |
 | Risks of Human Spaceflight | https://www.nasa.gov/hrp/risks/ | 17 risks and the hazard-to-risk link | Yes | US Gov work; no NASA logos |
+| NASA Open Science Data Repository (OSDR) | https://osdr.nasa.gov/ | Real spaceflight biology data for inspiration and testing (named in the challenge video) | Yes | Check each dataset's licence before use |
+| Challenge video (Brazilian Space Agency) | https://www.youtube.com/watch?v=RERG3gEmdC8 | Challenge goals, emergency scenario, guidance requirements | Official challenge material | Cite and link only |
 | Monitoring Radiation for Astronaut Health (CSA) | https://www.asc-csa.gc.ca/eng/news/articles/2026/2026-02-26-monitoring-radiation-astronaut-health.asp | Radiation monitoring context (CANS) | No (partner) | Cite and link only; check CSA notices |
 
 ## Clinical reference ranges (thresholds only, see `DECISIONS.md` › Thresholds)

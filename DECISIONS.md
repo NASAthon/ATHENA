@@ -40,8 +40,9 @@ LOCKED
 
 ## Data Sources
 
-Use only the official resources listed in `context.md` Section 7.
-Do not use the extra sources in Section 9 for now.
+Use only the official resources listed in `context.md` Section 7. This
+includes NASA OSDR (https://osdr.nasa.gov/), which the official challenge video
+names. Do not use the extra sources in Section 9 for now.
 Exception: general clinical reference ranges for thresholds (see Thresholds).
 
 Reason:

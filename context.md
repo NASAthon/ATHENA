@@ -83,6 +83,7 @@
 - Dynamic charts showing indicators over time.
 - Colour coding to read status at a glance.
 - Don't assume astronauts know how to assess their health. Provide simple instructions and explanations of measurements, indicators and risks.
+- *(From the challenge video)* Give **emergency guidance** (e.g. a crewmate with chest pain who collapses mid-transit to Mars). For each measurement, explain how to take it, why it matters and what to do when it's abnormal. The challenge is authored by the **Brazilian Space Agency (AEB)**.
 
 ## 6. Our current idea (starting point, open to refinement during planning)
 
@@ -211,8 +212,14 @@ These are the **only** public data resources the organisers listed. Treat them a
   - Linked from it: ISS experiments list https://www.asc-csa.gc.ca/eng/iss/science/experiments.asp · "How does space affect the human body?" infographic https://www.asc-csa.gc.ca/eng/multimedia/search/image/watch/8056
 
 ### Challenge video
-- **YouTube video on this challenge:** https://www.youtube.com/watch?v=RERG3gEmdC8&t=111s
-  - The team has not summarised this yet and it could not be fetched automatically. If you can access it or a transcript, extract: recommended indicators, data sources, tips for teams, and what judges look for. Otherwise ask the team to paste the transcript (YouTube: "..." menu, then "Show transcript").
+- **YouTube video on this challenge:** https://www.youtube.com/watch?v=RERG3gEmdC8 ("2026 Challenge | Create Health Monitoring Software for Astronauts on Space Missions", NASA Space Apps Challenge channel, about 3 min)
+  - **Challenge author:** the **Brazilian Space Agency (AEB)**, presented by Rodrigo Leonardi, acting president of AEB. AEB is therefore a partner agency for this challenge and worth crediting in the pitch.
+  - **Opening scenario (useful for our pitch and demo):** *"Imagine you're halfway to Mars. Suddenly your crewmate feels a sharp pain in the chest and collapses. What's happening? What should you do?"* So the tool should support **emergency guidance**, including assessing **a crewmate**, not only yourself.
+  - **The ask:** software that helps astronauts assess their own health **and gives guidance on what to do in an emergency**. "Think outside the box."
+  - **"Astronauts are not doctors."** For every measurement the tool should explain: (1) **how to take it**, (2) **why it matters**, and (3) **what to do when a value doesn't look normal**.
+  - **Going further (optional):** remind the crew to take measurements; adapt to environments: spacecraft, space station, base on the Moon's surface.
+  - **Data to start from:** NASA's Human Research Program (risks to the body and relevant indicators), and **NASA's Open Science Data Repository (OSDR, https://osdr.nasa.gov/)**, which holds real spaceflight biology data, "for inspiration and to test your ideas". Because the official challenge video names OSDR, it counts as an **official source**, not an extra one.
+  - **Why it matters (Impact angle):** combines science, design, space habitation and code in a problem that could save lives on deep-space missions. It could also **inspire healthcare tools on Earth for remote communities or places with limited access to health services**.
 
 ## 8. CRITICAL data caveat — read before planning
 
@@ -230,7 +237,7 @@ This means our design must handle the gap honestly:
 
 These are likely useful for numeric ranges and spaceflight-specific context. Confirm each is accessible and appropriately licensed before using, and cite it explicitly.
 - NASA Human Research Roadmap: https://humanresearchroadmap.nasa.gov/
-- NASA Open Science Data Repository (OSDR): https://osdr.nasa.gov/
+- ~~NASA Open Science Data Repository (OSDR)~~: now official, because the challenge video names it (see Section 7, Challenge video).
 - NASA-STD-3001 (Space Flight Human-System Standard, Vol. 1 Crew Health) — search for the current version on nasa.gov; URL not verified.
 - NASA Human Integration Design Handbook — search for it on nasa.gov; URL not verified.
 - NASA Lifetime Surveillance of Astronaut Health (LSAH) — search for public documentation; URL not verified.
