@@ -3,7 +3,7 @@
 Every locked choice and why. Entries are in the order they were made. **Index:**
 - **Product:** Originality · Body Map Required · Crew · Trends Over Single Readings · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
 - **Data and content:** No Medicines or Diagnoses · Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
-- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open) · Logic Engine · Logic Engine Assumptions · Logic Tests · Mission Simulator · Storage Layer · Mission Modes
+- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open) · Logic Engine · Logic Engine Assumptions · Logic Tests · Mission Simulator · Storage Layer · Daily Record · Mission Modes
 - **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
 
 ## Frontend
@@ -775,3 +775,20 @@ difference between the modes for medical decisions, so it drives the advice.
 
 Status:
 ACTIVE (emphasis and advice wording tunable)
+
+
+---
+
+## Daily Record
+
+One record = one astronaut's daily check on one mission day, defined in `src/lib/dailyRecord.js`
+(Mercy, PR #18). Every part of ATHENA (form, engine, simulator, storage) uses this shape.
+- **Field names** come from the engine's `RECORD_FIELDS`; units are those in `src/data/indicators.js`.
+- **Any reading may be missing** (skipped measurement). Saving again on the same day replaces the record.
+- **`validateRecord()`** catches typing mistakes using the input limits in `src/data` (plus a few
+  design-choice fallbacks for reaction and radiation). These are not health thresholds.
+- **Dates:** mission day 1 is the day after launch; day 0 (launch day) has no check.
+  `LAUNCH_DATE` (2026-07-01) is an ASSUMPTION for the simulated mission.
+
+Status:
+LOCKED

@@ -27,6 +27,8 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Chidozie | Claude Code | PR #16 fixes: engine scoring, per-crew simulated baseline, text and source from `src/data`, theme tokens, lint fixes, `compareReactionToBaseline` helper and test | `src/app/reaction-test/page.js`, `src/lib/engine/reaction.js` |
 | 14 Nov 2026 | Isaac | Claude | Load demo mission / Reset data buttons on the Crew page, demo seeded on first run, shared mission day in the header (`MissionDataProvider`), tests against the real sql.js | `src/lib/sim/demo.js`, `src/components/MissionData*.js`, `src/components/CrewSwitcher.js`, `src/app/crew/page.js`, `src/app/layout.js`, `docs/*` |
 | 14 Nov 2026 | Chidozie | Claude Code | PR #17 review: theme tokens instead of hard-coded red/amber colours, words instead of ✓ symbols in the mission data panel | `src/components/MissionDataPanel.js` |
+| 14 Nov 2026 | Mercy | AI assistant | Daily record definition: field names from the engine, dates, input-limit validation and tests (PR #18) | `src/lib/dailyRecord.js`, `src/lib/dailyRecord.test.js` |
+| 14 Nov 2026 | Chidozie | Claude Code | PR #18 review: checked all simulated records pass validation; DECISIONS entry, checklist tick | `docs/*` |
 
 ## AI-generated media
 
