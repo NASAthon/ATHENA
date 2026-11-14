@@ -2,6 +2,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import { CrewProvider } from "@/components/CrewProvider";
 import { MissionDataProvider } from "@/components/MissionDataProvider";
+import { MissionModeProvider } from "@/components/MissionModeProvider";
 
 export const metadata = {
   title: "ATHENA",
@@ -14,8 +15,10 @@ export default function RootLayout({ children }) {
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
         <MissionDataProvider>
           <CrewProvider>
-            <Header />
-            {children}
+            <MissionModeProvider>
+              <Header />
+              {children}
+            </MissionModeProvider>
           </CrewProvider>
         </MissionDataProvider>
       </body>

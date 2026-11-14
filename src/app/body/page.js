@@ -1,38 +1,66 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useMemo, useState } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import BodyMap from "@/components/BodyMap";
 import RegionCard from "@/components/RegionCard";
 import { useCrew } from "@/components/CrewProvider";
-import { getRegionStatuses } from "@/lib/regionStatus";
-import { SAMPLE_CREW_STATUS } from "@/lib/sampleData";
+import { useTodayEvaluation } from "@/components/useTodayEvaluation";
+import { getRegionStatuses, regionInputFromEvaluation } from "@/lib/regionStatus";
+import { REGIONS } from "@/data";
+import { focusRing } from "@/lib/ui";
 
 // Body page (Mercy, PR #9): the body map plus the card for the selected region, for the
-// astronaut picked in the header. Each region is judged against that astronaut's own baseline.
-// TEMPORARY: simulated sample statuses until the mission simulator and logic engine are wired in.
-export default function Page() {
+// astronaut picked in the header. Statuses come from the logic engine's evaluation of the
+// astronaut's STORED data (the same as Today), each judged against their own baseline.
+// `?region=<id>` opens a region directly (used by search).
+function BodyPage() {
   const { crewId, member } = useCrew();
-  const statuses = getRegionStatuses(SAMPLE_CREW_STATUS[crewId]);
+  const { state, evaluation, records, baselines, today } = useTodayEvaluation();
+  const requested = useSearchParams().get("region");
+  const requestedId = REGIONS.some((r) => r.id === requested) ? requested : null;
 
-  // Open the worst region first, so the most important one is shown straight away.
+  const statuses = useMemo(
+    () =>
+      state === "ready" && evaluation
+        ? getRegionStatuses(regionInputFromEvaluation({ evaluation, records, baselines, today }))
+        : getRegionStatuses({ today }),
+    [state, evaluation, records, baselines, today],
+  );
+
+  // Open the region asked for in the link, otherwise the worst one, so the most important is shown first.
   const worstId = [...statuses].sort((a, b) => b.rank - a.rank)[0]?.id ?? null;
-  const [picked, setPicked] = useState({ crewId, regionId: worstId });
-  const selectedId = picked.crewId === crewId ? picked.regionId : worstId;
+  const defaultId = requestedId ?? worstId;
+  const [picked, setPicked] = useState({ crewId, requestedId, regionId: defaultId });
+  const stillValid = picked.crewId === crewId && picked.requestedId === requestedId;
+  const selectedId = stillValid ? picked.regionId : defaultId;
   const selected = statuses.find((s) => s.id === selectedId);
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
       <h1 className="text-3xl font-semibold">Body</h1>
-      <p className="mt-2 mb-6 text-muted-foreground">
-        {member.name} · sample data (simulated) · each region shows the worst status of the readings linked to it,
-        compared with {member.name.split(" ").pop()}&apos;s own normal
-      </p>
+      {state === "empty" ? (
+        <p className="mt-2 mb-6 text-muted-foreground">
+          No mission data stored yet, so every region shows &quot;No recent data&quot;. Load the demo mission on the{" "}
+          <Link href="/crew" className={`rounded text-primary underline ${focusRing}`}>
+            Crew page
+          </Link>
+          .
+        </p>
+      ) : (
+        <p className="mt-2 mb-6 text-muted-foreground">
+          {member.name}
+          {today != null && ` · mission day ${today}`} · simulated demo mission · each region shows the worst status of the
+          readings and recent symptoms linked to it, compared with {member.name.split(" ").pop()}&apos;s own normal
+        </p>
+      )}
       <div className="flex flex-wrap items-start gap-6">
         <div className="min-w-0 flex-[3_1_560px]">
           <BodyMap
             statuses={statuses}
             selectedId={selectedId}
-            onSelect={(regionId) => setPicked({ crewId, regionId })}
+            onSelect={(regionId) => setPicked({ crewId, requestedId, regionId })}
           />
         </div>
         <div className="min-w-0 flex-[2_1_340px]">
@@ -40,5 +68,13 @@ export default function Page() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6"><h1 className="text-3xl font-semibold">Body</h1></main>}>
+      <BodyPage />
+    </Suspense>
   );
 }

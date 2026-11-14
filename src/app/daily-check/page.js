@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Check, ExternalLink, Eye, OctagonAlert, TriangleAlert, Volume2 } from "lucide-react";
 import { INDICATORS, SYMPTOMS, SOURCES, EMERGENCIES } from "@/data";
@@ -81,7 +82,7 @@ function NumberInput({ id, label, unit, limits, value, onChange, onFocus }) {
 
 // A fresh form for each astronaut: switching crew in the header never carries one person's
 // readings over to another.
-export default function DailyCheckPage() {
+function DailyCheckForCrew() {
   const { crewId } = useCrew();
   return <DailyCheck key={crewId} />;
 }
@@ -90,7 +91,15 @@ function DailyCheck() {
   const [values, setValues] = useState({});
   const [moodValue, setMoodValue] = useState(null);
   const [symptoms, setSymptoms] = useState([]);
-  const [focusId, setFocusId] = useState("bloodPressure");
+  // `?guide=<indicator id>` (from search) opens that indicator's "How to measure" guide.
+  const guide = useSearchParams().get("guide");
+  const guideId = guide && byId[guide] ? guide : null;
+  const [focusId, setFocusId] = useState(guideId ?? "bloodPressure");
+  const [lastGuide, setLastGuide] = useState(guideId);
+  if (guideId !== lastGuide) {
+    setLastGuide(guideId);
+    if (guideId) setFocusId(guideId);
+  }
   const [result, setResult] = useState(null);
   const [saveInfo, setSaveInfo] = useState(null); // { day, streak } after a successful save
   const [errors, setErrors] = useState([]);
@@ -434,5 +443,13 @@ function DailyCheck() {
         </aside>
       </div>
     </main>
+  );
+}
+
+export default function DailyCheckPage() {
+  return (
+    <Suspense fallback={<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8"><h1 className="text-4xl font-bold">Daily check</h1></main>}>
+      <DailyCheckForCrew />
+    </Suspense>
   );
 }
