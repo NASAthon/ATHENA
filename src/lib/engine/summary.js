@@ -1,7 +1,26 @@
 // Flight-surgeon summary builder (docs/CHECKLIST.md › 2. Logic, S item "Summary builder").
 // Pure logic: no React, DOM, database or Node-only APIs. The one-page screen is CHECKLIST §3.
 
+import { INDICATORS } from "../../data/index.js";
+import { DRIFT_INDICATORS } from "./indicators.js";
 import { earthLink } from "./missionMode.js";
+
+const indicatorName = Object.fromEntries(INDICATORS.map((i) => [i.id, i.name]));
+const groupOfKey = Object.fromEntries(DRIFT_INDICATORS.map((d) => [d.key, d.group]));
+// Plain-English names for record fields that share one indicator (DECISIONS › Content Style).
+const PART_NAME = Object.freeze({ bpSystolic: "top number", bpDiastolic: "bottom number", reactionMedianMs: "median", reactionLapses: "lapses" });
+const LEVEL_TEXT = Object.freeze({ watch: "watch", act: "act", urgent: "red limit" });
+
+/**
+ * Plain-English name of a record field, e.g. "bpSystolic" → "Blood pressure (top number)".
+ *
+ * @param {string} key A drift-tracked record field.
+ * @returns {string}
+ */
+export function driftKeyName(key) {
+  const name = indicatorName[groupOfKey[key]] ?? key;
+  return PART_NAME[key] ? `${name} (${PART_NAME[key]})` : name;
+}
 
 /**
  * @typedef {Object} SurgeonSummary
@@ -72,11 +91,11 @@ export function buildSurgeonSummary({ astronaut, evaluation, missionModeId, eart
         (change.over7Days !== null ? `, ${signed(change.over7Days)} over 7 days` : ""),
     `Alert level: ${alert.level}${alert.alertSince !== null ? ` (since day ${alert.alertSince})` : ""}`,
     drifting.length > 0
-      ? `Drifting from in-flight baseline: ${drifting.map((d) => `${d.key} (z ${d.worryingZ?.toFixed(1)})`).join(", ")}`
-      : "Drifting from in-flight baseline: none",
+      ? `Drifting from own in-flight normal: ${drifting.map((d) => `${driftKeyName(d.key)} (drift score ${d.worryingZ?.toFixed(1)})`).join(", ")}`
+      : "Drifting from own in-flight normal: none",
     ...breaches.map(
       (b) =>
-        `${b.indicatorId}: ${b.label} (${b.level}), reading ${Object.values(b.values).join("/")}. ` +
+        `${indicatorName[b.indicatorId] ?? b.indicatorId}: ${b.label} (${LEVEL_TEXT[b.level] ?? b.level}), reading ${Object.values(b.values).join("/")}. ` +
         `${b.action} [${b.basisLabel}${b.source ? `; source: ${b.source}` : ""}]`,
     ),
     replyText !== null

@@ -817,3 +817,47 @@ Screens save through `useMissionData()` (`saveCheckIn`, `saveExamResult`), which
 
 Status:
 LOCKED
+
+---
+
+## Search Screen Behaviour
+
+How the locked Search decision is shown (`src/components/SearchBox.js`, `src/lib/searchLinks.js`).
+- **Header dropdown, no separate results page.** Results appear as you type (ARIA combobox: arrow keys,
+  Enter, Escape; the number of results is announced). Each result shows its title, type and one-line summary.
+- **Where results open:** emergency guides and symptoms with a guide → `/emergency?id=…`; measurement guides →
+  the Daily check with that guide open (`?guide=…`), or the Reaction test; body regions, NASA risks and hazards →
+  the Body page with that region open (`?region=…`); exams → Calendar; mission modes switch the mode.
+- **Never a dead end:** with no match it lists "Did you mean…?" words, the closest results for the first
+  suggestion, and always an "All emergency guides" shortcut.
+- **Engine change:** a query that matches a measurement's own keyword (e.g. "pulse" → heart rate) no longer
+  counts as a symptom, so it isn't sent to the cardiac-arrest guide first. "No pulse" still is.
+
+Status:
+ACTIVE
+
+---
+
+## Likely Hazard on Alerts
+
+The alert card names the **likely hazard** behind a drift alert: `likelyHazards()` in `src/lib/engine/hazards.js`
+groups the drifting indicators by the hazard each indicator's measurement guide names (`briefAnswers.hazardEffect`
+in `src/data/indicators.js`, which must start with a hazard name; `hazards.test.js` checks this). Shown as
+"ATHENA's interpretation of the NASA hazard page, not a diagnosis", with the NASA hazard page cited.
+
+Reason:
+CHECKLIST § Alerts asks for the likely hazard. Reusing the guide's hazard keeps one reviewed source.
+
+Status:
+ACTIVE
+
+---
+
+## Shared Mission Mode
+
+The mission mode chosen in the header is shared app-wide (`MissionModeProvider`, `useMissionMode()`), so the
+flight-surgeon summary uses its Earth-link delay and search can switch it. It isn't stored: it resets to the
+default mode on reload.
+
+Status:
+ACTIVE

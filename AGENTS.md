@@ -15,10 +15,10 @@ GitHub is the single source of truth, so always branch from the latest `main`.
     Import from `@/lib/engine`. Never put health logic in components. Tests sit next to each file (`*.test.js`).
   - `src/lib/regionStatus.js`: body-map display layer (labels, icons, colours, recent-symptom layer) on top of the engine's status order.
   - `src/lib/sim/`: the seeded mission simulator (`simulateAstronaut`, `simulateCrew`) and `loadDemoMission` / `resetData`.
-    Prefer it over `src/lib/sampleData.js` (hand-written SIMULATED statuses, kept until screens switch over). Always label simulated data in the UI.
+    It seeds the on-device database that every screen reads; `src/lib/sampleData.js` (hand-written SIMULATED statuses) is no longer used by any screen. Always label simulated data in the UI.
   - `src/components/CrewProvider.js`: the selected astronaut, shared by every page (`useCrew()`).
   - **Reading today's status:** `useTodayEvaluation()` (`src/components/useTodayEvaluation.js`) gives the selected
-    astronaut's engine evaluation from stored data (score, alert, red limits, statuses). Today and the alert banner use it.
+    astronaut's engine evaluation from stored data (score, alert, red limits, statuses). Today, the alert banner, Body and Summary use it.
   - **Saving:** use `useMissionData()` (`saveCheckIn`, `saveExamResult`) from `src/components/MissionDataProvider.js`.
     Never write to the database directly from a screen. Records are validated first (`src/lib/dailyRecord.js`).
 - `src/data/`: all health content (hazards, risks, body regions, indicators with thresholds and

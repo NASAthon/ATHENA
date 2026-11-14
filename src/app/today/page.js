@@ -20,7 +20,8 @@ import {
   TriangleAlert,
 } from "lucide-react";
 import { INDICATORS, EMERGENCIES } from "@/data";
-import { DRIFT_CUTOFF, ESCALATION_DAYS, RECORD_FIELDS, SCORE_BANDS, SCORE_CAPS, dueMeasurements } from "@/lib/engine";
+import { DRIFT_CUTOFF, ESCALATION_DAYS, SCORE_BANDS, SCORE_CAPS, dueMeasurements, hazardForIndicator, likelyHazards } from "@/lib/engine";
+import { readingFor } from "@/lib/readings";
 import { STATUSES } from "@/lib/regionStatus";
 import { useTodayEvaluation } from "@/components/useTodayEvaluation";
 import { focusRing } from "@/lib/ui";
@@ -46,26 +47,6 @@ const CAP_REASON = {
   [SCORE_CAPS.escalated]: "the drift alert has been escalated",
   [SCORE_CAPS.alert]: "a drift alert is active",
 };
-
-const round = (v, unit) => (unit === "ms" || unit === "mmHg" || unit === "bpm" || unit === "minutes" ? Math.round(v) : Math.round(v * 10) / 10);
-
-/** Today's value and the in-flight "your normal" for one content indicator, with its unit. */
-function readingFor(id, record, baselines) {
-  const fields = RECORD_FIELDS[id];
-  const unit = id === "mood" ? "/ 5" : (byId[id]?.unit ?? ""); // mood is a 1–5 scale
-  const inflight = baselines?.inflight?.indicators ?? {};
-  const fmt = (keys, src) => {
-    const vals = keys.map((k) => src(k));
-    if (vals.some((v) => v === null || v === undefined || !Number.isFinite(v))) return null;
-    return vals.map((v) => round(v, unit)).join(" / ");
-  };
-  const keys = id === "reaction" ? [fields.median] : Object.values(fields);
-  return {
-    unit,
-    value: record ? fmt(keys, (k) => record[k]) : null,
-    normal: fmt(keys, (k) => (inflight[k]?.status === "ok" ? inflight[k].mean : null)),
-  };
-}
 
 function StatusPill({ status, label }) {
   const s = STATUSES[status] ?? STATUSES.no_data;
@@ -145,7 +126,9 @@ export default function Today() {
   const band = health.band ? BAND_STYLE[health.band] : null;
   const redLimits = limitBreaches.filter((b) => b.redLimit);
   const otherFlags = limitBreaches.filter((b) => !b.redLimit);
-  const driftingNames = groups.filter((g) => g.status === "drifting").map((g) => byId[g.group]?.name ?? g.group);
+  const driftingIds = groups.filter((g) => g.status === "drifting").map((g) => g.group);
+  const driftingNames = driftingIds.map((id) => byId[id]?.name ?? id);
+  const hazards = likelyHazards(driftingIds);
   const due = dueMeasurements(record, today).map((id) => (id === "symptoms" ? "Symptoms" : byId[id]?.name ?? id));
 
   const alertTitle = {
@@ -265,6 +248,30 @@ export default function Today() {
               {alertTitle}
             </h2>
             <p className="mt-3 text-lg">Drifting: {driftingNames.join(", ")}.</p>
+            {hazards.length > 0 && (
+              <div className="mt-2 text-lg">
+                <p>
+                  Likely hazard: <span className="font-semibold">{hazards[0].name}</span>
+                  {hazards.length > 1 && <span className="text-muted-foreground"> (also {hazards.slice(1).map((h) => h.name).join(", ")})</span>}
+                </p>
+                <ul className="mt-1 list-disc pl-5 text-base text-muted-foreground">
+                  {hazards[0].indicatorIds.map((id) => (
+                    <li key={id}>
+                      {byId[id]?.name}: {hazardForIndicator(id)?.effect}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  ATHENA&apos;s interpretation of the NASA hazard page, not a diagnosis.{" "}
+                  {hazards[0].source && (
+                    <a href={hazards[0].source.url} target="_blank" rel="noreferrer" className={`inline-flex items-center gap-1 rounded underline ${focusRing}`}>
+                      Source: {hazards[0].source.title}
+                      <ExternalLink className="size-3.5" aria-hidden="true" />
+                    </a>
+                  )}
+                </p>
+              </div>
+            )}
             <p className="mt-2 text-lg">{alertNext}</p>
             <details className="mt-5 border-t border-border pt-4">
               <summary className={`flex min-h-11 cursor-pointer items-center rounded text-lg font-semibold ${focusRing}`}>

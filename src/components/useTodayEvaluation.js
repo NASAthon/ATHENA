@@ -19,6 +19,7 @@ import { DAY_KEY, IN_FLIGHT_WINDOW, evaluateMission } from "@/lib/engine";
  *   evaluation: Object | null,   // DayEvaluation for today (src/lib/engine/evaluate.js)
  *   record: Object | null,       // today's stored record, if any
  *   baselines: Object | null,    // stored { preflight, inflight } baselines
+ *   records: Object[],           // all stored daily records for this astronaut
  * }}
  */
 export function useTodayEvaluation() {
@@ -26,7 +27,7 @@ export function useTodayEvaluation() {
   const { db, status, today, version } = useMissionData();
 
   return useMemo(() => {
-    const base = { today, member, evaluation: null, record: null, baselines: null };
+    const base = { today, member, evaluation: null, record: null, baselines: null, records: [] };
     if (status === "loading" || !db) return { ...base, state: "loading" };
     if (today === null) return { ...base, state: "empty" };
 
@@ -36,7 +37,7 @@ export function useTodayEvaluation() {
     const fromDay = Math.min(IN_FLIGHT_WINDOW.toDay + 1, today);
     const evaluation = evaluateMission(records, baselines, fromDay, today).at(-1) ?? null;
     const record = records.find((r) => r[DAY_KEY] === today) ?? null;
-    return { ...base, state: "ready", evaluation, record, baselines };
+    return { ...base, state: "ready", evaluation, record, baselines, records };
     // version changes after every save, so the evaluation is recalculated.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [db, status, today, crewId, member, version]);

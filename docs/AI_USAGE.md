@@ -34,6 +34,9 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Izabela | AI assistant | Today page design: health score card, alert card with "Why this alert?", indicator cards (PR #20) | `src/app/today/page.js` |
 | 14 Nov 2026 | Chidozie | Claude Code | PR #20 fixes: Today wired to stored data and the engine for the selected astronaut, red-limit card, reminders, alert banner on every screen, theme tokens | `src/app/today/page.js`, `src/components/useTodayEvaluation.js`, `src/components/AlertBanner.js` |
 | 14 Nov 2026 | Chidozie | Claude Code | Read NASA Tempus Pro, ARCHeR and Standard Measures pages; wrote the existing-tools note | `docs/EXISTING_TOOLS.md` |
+| 14 Nov 2026 | Chidozie | Claude Code | Search dropdown (typos, symptoms first, "did you mean", emergency shortcut), likely hazard on the alert card, body map on engine data, reduced motion, Calendar and Flight-surgeon summary screens, shared mission mode; checked in Chrome at laptop and tablet widths | `src/components/SearchBox.js`, `src/lib/searchLinks.js`, `src/lib/engine/hazards.js`, `src/lib/readings.js`, `src/app/body`, `src/app/calendar`, `src/app/summary`, `src/app/today`, `docs/*` |
+| 14 Nov 2026 | Chidozie | Claude Code | PR #21 review fixes: body page default region after a full load, plain-English flight-surgeon text (`driftKeyName`) with a test, search keeps the arrow-key choice in view, AGENTS wording | `src/app/body/page.js`, `src/lib/engine/summary.js`, `src/lib/engine/summary.test.js`, `src/components/SearchBox.js`, `AGENTS.md` |
+| 14 Nov 2026 | Chidozie | Claude Code (Chrome) | CHECKLIST §6 testing on the production build: reaction test ×10, one bad day in the app, keyboard focus and greyscale check | `docs/CHECKLIST.md` |
 
 ## AI-generated media
 

@@ -4,6 +4,7 @@ import CrewSwitcher from "@/components/CrewSwitcher";
 import MissionStatus from "@/components/MissionStatus";
 import NavLinks from "@/components/NavLinks";
 import AlertBanner from "@/components/AlertBanner";
+import SearchBox from "@/components/SearchBox";
 import { focusRing } from "@/lib/ui";
 
 export default function Header() {
@@ -11,21 +12,11 @@ export default function Header() {
     <header className="border-b border-border bg-card">
       <div className="mx-auto max-w-7xl space-y-3 px-4 py-4">
         <div className="flex flex-wrap items-center gap-3">
-          <Link href="/" className={`rounded-md text-2xl font-bold tracking-[0.3em] ${focusRing}`}>
+          <Link href="/" className={`inline-flex min-h-11 items-center rounded-md text-2xl font-bold tracking-[0.3em] ${focusRing}`}>
             ATHENA
           </Link>
 
-          <div className="min-w-[14rem] flex-1">
-            <label htmlFor="search" className="sr-only">
-              Search
-            </label>
-            <input
-              id="search"
-              type="search"
-              placeholder="Search readings, symptoms, guides (e.g. dizzy, BP, can't sleep)"
-              className={`min-h-12 w-full rounded-lg border border-input bg-input/30 px-4 text-base placeholder:text-muted-foreground ${focusRing}`}
-            />
-          </div>
+          <SearchBox />
 
           <CrewSwitcher />
 

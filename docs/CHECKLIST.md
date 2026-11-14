@@ -59,20 +59,20 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 ### Layout
 
 - [x] **M** Navigation: Today, Trends, Body, Calendar, Summary (PR #6)
-- [ ] **M** Search bar and an **Emergency** button on every screen 🟡 Partial (PR #6): both shown on every screen; still to do: search logic and results (section 3 › Search) and the Emergency screen content
+- [ ] **M** Search bar and an **Emergency** button on every screen 🟡 Partial (PR #6, PR #21): both on every screen, and search shows results as you type; still to do: the Emergency screen content
 - [x] **M** Crew switcher, with the mission day and astronaut name always visible (PR #6, PR #9; real mission day from the stored mission: PR #17)
 - [x] **M** Alert banner area at the top of every screen (PR #20: `AlertBanner` in the header for the selected astronaut; red limits link to the emergency guide)
 - [x] **M** Dark theme dashboard (`docs/DECISIONS.md` › Design) (PR #4, PR #6)
 - [x] **M** Health score (0–100) shown prominently per astronaut, with a status icon and drop indicator (PR #20: Today screen, from the engine, with cap reason and bands)
 - [ ] **M** One colour scheme for status, used everywhere, always colour **plus** icon **plus** text label 🟡 Partial (PR #9, PR #20): status tokens with icon and label on the body map, Today and the alert banner; still to do: Trends
-- [ ] **M** Readable on a laptop and a tablet
+- [ ] **M** Readable on a laptop and a tablet 🟡 Partial (PR #21): every built screen checked at 1280 px and 768 px wide in Chrome (no sideways scrolling, layout wraps); still to do: Trends and Emergency screens
 
 ### Inclusive design (`docs/DECISIONS.md` › Inclusive Design)
 
 - [ ] **M** Colour-blind-safe palette, text contrast at least 4.5:1 🟡 Partial (PR #8, PR #9): palette and status colours checked (text 5.8–17:1, form borders 3.5–3.9:1); still to do: chart colours (colour-blind check)
-- [ ] **M** Tap targets at least 44×44 px (usable with gloves); large text 🟡 Partial (PR #6, #8, #9, #16, #20): header, navigation, Today, daily check, reaction test and body page done; still to do: Trends, search and emergency screens
-- [ ] **M** Full keyboard navigation and screen-reader labels (including the body figure) 🟡 Partial (PR #6, #8, #9, #16, #20): header, Today, daily check, reaction test and body figure done; still to do: Trends, search and emergency screens
-- [ ] **M** Respects "reduce motion"; no information shown only through animation
+- [ ] **M** Tap targets at least 44×44 px (usable with gloves); large text 🟡 Partial (PR #6, #8, #9, #16, #20): header (logo, crew picker and Earth-link source enlarged in PR #21), navigation, Today, daily check, reaction test, body page, search results, calendar and summary done; still to do: Trends and emergency screens
+- [ ] **M** Full keyboard navigation and screen-reader labels (including the body figure) 🟡 Partial (PR #6, #8, #9, #16, #20): header, Today, daily check, reaction test, body figure, search (ARIA combobox: arrow keys, Enter, Escape, result count announced; PR #21), calendar and summary done; still to do: Trends and emergency screens
+- [ ] **M** Respects "reduce motion"; no information shown only through animation 🟡 Partial (PR #21): global reduced-motion rule in `globals.css` stops animations and transitions; the reaction-test signal is also shown as text; still to do: check Trends and emergency screens when built
 - [ ] **M** Health text in plain English: glance summary plus "Learn more" layer, medical terms explained in brackets 🟡 Partial (PR #8, #9, #20): daily check panel, body cards, and Today's alert card with "Why this alert?"; still to do: emergency screens
 
 ### Daily check
@@ -103,13 +103,13 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 ### Search
 
-- [ ] **M** Results as you type; finds content despite typos, everyday words and symptoms
-- [ ] **M** No match: "Did you mean…?", closest results and the emergency shortcut, never a dead end
-- [ ] **M** Symptom-like queries (e.g. "chest pain") show emergency guidance first
+- [x] **M** Results as you type; finds content despite typos, everyday words and symptoms (PR #10, PR #21: `SearchBox` in the header; checked in Chrome with "hart rate", "pulse", "temprature", "oxy", "cant sleep")
+- [x] **M** No match: "Did you mean…?", closest results and the emergency shortcut, never a dead end (PR #21)
+- [x] **M** Symptom-like queries (e.g. "chest pain") show emergency guidance first (PR #10, PR #21; a measurement's own keyword such as "pulse" no longer counts as a symptom)
 
 ### Alerts and guidance
 
-- [ ] **M** Alert card: what is drifting, since when, likely hazard, what to do, when to tell the ground ("Why this alert?") 🟡 Partial (PR #20): Today's alert card shows what is drifting, since when, what to do, when to tell the ground and "Why this alert?"; still to do: likely hazard (from `src/data` risks/hazards)
+- [x] **M** Alert card: what is drifting, since when, likely hazard, what to do, when to tell the ground ("Why this alert?") (PR #20, PR #21: likely hazard from `likelyHazards` in `src/lib/engine/hazards.js`, with the NASA hazard page cited)
 - [ ] **M** Red-limit and emergency screen: numbered first-response steps with a short "why" each, one step at a time with big controls
 - [ ] **M** Emergency guidance works for **a crewmate** (pick the affected astronaut, follow steps, record vitals)
 - [ ] **S** Voice reads the first-response steps aloud 🟡 Partial (PR #8): "Read these steps aloud" on the daily check; still to do: emergency steps
@@ -117,14 +117,14 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 ### Body figure (2D SVG; regions in `docs/BODY_MAP.md` and `src/data/regions.js`). Required: the brief asks for a clickable body figure
 
 - [x] **M** Outline with the eight clickable regions from `docs/BODY_MAP.md` (PR #9)
-- [ ] **M** Region colour (plus icon and label) from the region mapper 🟡 Partial (PR #9): status colour, icon and label per region, per crew member against their own baseline; still to do: real data from the logic engine instead of the simulated sample
+- [x] **M** Region colour (plus icon and label) from the region mapper (PR #9, PR #21: from the engine's evaluation of stored data via `regionInputFromEvaluation`; checked in Chrome for all 3 crew)
 - [x] **M** Card on click: function, status, risk, hazard, advice, "last checked" date (PR #9; text from `src/data/regions.js`)
 - [x] **S** Fallback: region tiles if the drawing takes too long (PR #9: the accessible region list beside the figure)
 
 ### Calendar, summary, extras
 
-- [ ] **S** Mission calendar listing due and completed periodic exams
-- [ ] **S** One-page flight-surgeon summary, with "reply expected in about N minutes" (Earth Link delay) 🟡 Partial (PR #10, PR #12): `buildSurgeonSummary` in `src/lib/engine/summary.js` builds the text with the mode's reply time; still to do: the screen
+- [x] **S** Mission calendar listing due and completed periodic exams (PR #21: `/calendar`, overdue, due today, next 30 days, "Mark done today" saves with `saveExamResult`)
+- [x] **S** One-page flight-surgeon summary, with "reply expected in about N minutes" (Earth Link delay) (PR #10, PR #12, PR #21: `/summary` screen with copyable text; mission mode now shared app-wide)
 - [x] **S** Earth Link: shows the current communication delay for the mission mode (PR #8 header pill; sourced delays for all three modes and the summary's reply time PR #12)
 - [x] **S** Mission mode switch: ISS, Lunar Gateway, Mars Transit (PR #8; modes in `src/data/missionModes.js`)
 - [x] **S** Check-in streak (PR #19: shown after saving the Daily check)
@@ -163,12 +163,12 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [x] **M** Fresh browser: load demo mission, Rivera's alert appears in the expected week (checked in the app 14 Nov: Today shows Rivera's alert since day 100, escalated by day 129)
 - [x] **M** Healthy data (Singh) produces no alert and a stable, high health score (checked in the app 14 Nov: "No alerts", score 100 Good, no banner)
 - [x] **M** Health score drops as Rivera declines and when a red limit is hit (checked in the app 14 Nov: Rivera 59 Alert, capped by escalation; Nakamura 25 Critical on the red limit)
-- [ ] **M** One bad day produces no alert 🟡 Partial (PR #10): passes at engine level (`evaluate.test.js`); still to do: check in the app
+- [x] **M** One bad day produces no alert (PR #10 engine; checked in the app 14 Nov: a bad day for Singh (3.5 h sleep, mood 1, 20 min exercise) gave "watch" flags and score 96, no alert or banner. Note: the single low exercise day made exercise "drifting" (a one-indicator Note, by design not an alert); the exercise minimum spread may be worth tuning)
 - [ ] **M** A dangerous reading (Nakamura) triggers the red-limit screen 🟡 Partial (PR #20): Today shows a red-limit card and the banner links to the emergency guide; still to do: the step-by-step emergency screen
-- [ ] **M** Empty state (no data yet) looks sensible 🟡 Partial (PR #9, PR #10, PR #20): engine safe; Today and Daily check point to the Crew page when nothing is stored; still to do: check Trends and emergency screens
-- [ ] **M** Reaction test run ten times in a row without breaking
-- [ ] **M** Search finds the right item for misspellings ("hart rate"), synonyms ("pulse") and symptoms ("chest pain") 🟡 Partial (PR #10): passes on the real content (`search.test.js`); still to do: check in the search bar
-- [ ] **M** Whole app usable by keyboard only; status readable in greyscale
+- [ ] **M** Empty state (no data yet) looks sensible 🟡 Partial (PR #9, PR #10, PR #20): engine safe; Today, Daily check, Body, Calendar and Summary handle no stored data (PR #21); still to do: check Trends and emergency screens
+- [x] **M** Reaction test run ten times in a row without breaking (checked 14 Nov on the production build: 10 back-to-back 60 s runs in guest mode, including false starts, missed signals, space bar and double taps; every run finished, no errors or blank results)
+- [x] **M** Search finds the right item for misspellings ("hart rate"), synonyms ("pulse") and symptoms ("chest pain") (PR #10, PR #21: checked in the search bar in Chrome)
+- [ ] **M** Whole app usable by keyboard only; status readable in greyscale 🟡 Partial (checked 14 Nov on every built page: all focusable controls have a visible focus style and a name, no click handlers on non-buttons, status readable in greyscale through icon and label); still to do: Trends and Emergency screens
 - [ ] **M** Full demo rehearsed start to finish on the machine that will present it
 - [ ] **M** Someone outside the team tries it without instructions
 

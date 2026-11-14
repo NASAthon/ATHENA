@@ -52,3 +52,13 @@ test("no match gives 'did you mean' and the emergency shortcut, never a dead end
 test("rejects duplicate ids", () => {
   assert.throws(() => buildSearchIndex([{ id: "a", type: "indicator", title: "A" }, { id: "a", type: "indicator", title: "B" }]), TypeError);
 });
+
+test("a measurement's own keyword isn't treated as a symptom ('pulse' is heart rate; 'no pulse' is still an emergency)", () => {
+  const index = buildContentSearchIndex();
+  const pulse = search(index, "pulse");
+  assert.equal(pulse.symptomLike, false);
+  assert.ok(pulse.results.slice(0, 3).some((h) => h.id === "indicator:heartRate"));
+  const noPulse = search(index, "no pulse");
+  assert.equal(noPulse.symptomLike, true);
+  assert.equal(noPulse.results[0].id, "emergency:collapse");
+});
