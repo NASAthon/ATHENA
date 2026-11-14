@@ -48,6 +48,7 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Isaac | Claude | Removed every external link and source link from the app (astronauts can't open web pages in flight); sources stay in `docs/SOURCES.md`; new LOCKED decisions No External Links and Quick Reference Only (removed the Daily check and region card "Learn more" sections) | `src/app/*/page.js`, `src/components/RegionCard.js`, `src/components/EmergencyVitals.js`, `AGENTS.md`, `docs/*` |
 | 14 Nov 2026 | Isaac | Claude | Compact layout: page content (cards, headings, buttons, spacing) one size step smaller so more fits on screen; tap targets kept at 44 px or more | `src/app/*/page.js`, `src/components/{BodyMap,EmergencyVitals,MissionDataPanel,RegionCard,PageShell}.js` |
 | 14 Nov 2026 | Isaac | Claude | Equal-size cards: repeated cards and option boxes in a grid share one row height (`auto-rows-fr`); Today's indicator cards share a minimum height with the footer line pinned to the bottom | `src/app/{today,crew,calendar,emergency,scenario-lab,daily-check}/page.js`, `src/components/MissionDataPanel.js` |
+| 14 Nov 2026 | Isaac | Claude | Crew page: removed the "Reminders today" and "Earth link" boxes (team choice; the same information is on Today, Calendar, Emergency, Summary and Trends) | `src/app/crew/page.js`, `docs/CHECKLIST.md` |
 
 ## AI-generated media
 
