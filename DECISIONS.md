@@ -184,17 +184,27 @@ LOCKED
 
 ---
 
-## Content Style: Short and Generic
+## Content Style: Accurate, Plain English, Layered
 
 All health info in the app (measurement guides, alerts, "Why this alert?",
-emergency steps) is **short, generic and plain-language**. Astronauts aren't
-doctors and won't have time to read detailed reports.
-- Aim for one line per point and about 3–5 steps per guide or emergency, readable at a glance.
-- No medical jargon without a plain explanation. No long reports.
-- Emergency steps stay **generic** (e.g. "Check responsiveness", "Record heart
-  rate and blood pressure", "Contact flight surgeon"), labelled illustrative
-  and not medical advice. No detailed clinical protocols.
-- A source link is still shown, but as a small "Source" link, not a block of text.
+emergency steps) must be **as accurate and informative as possible, written in
+plain English**. Astronauts aren't doctors, so give them more understanding,
+not less. Simplify the wording, not the facts.
+- **Layered:** a glanceable summary first, then "Learn more" for the full
+  plain-English explanation. Nobody has to read a report to act, but the detail
+  is there when they need it.
+  - **Glance (always visible):** status, a one-line meaning, the next action.
+    E.g. "Heart rate high: 118 bpm (your normal ~65). Sit down and rest 5 min, then re-measure."
+  - **Learn more (on tap):** what the measurement is, how to take it properly,
+    why it matters in space (linked to the NASA hazard or risk), what's normal,
+    what can cause it, what to do and when to escalate to the flight surgeon.
+- Plain English everywhere. Explain any medical term in brackets the first time,
+  e.g. "hypoxia (low oxygen in the body)". Use short sentences and everyday words.
+- Accuracy first: no oversimplifying that changes the meaning. Every fact traces
+  to a cited source, shown as a small "Source" link.
+- Emergency steps: clear, ordered, plain-English actions (e.g. "Check if they
+  respond", "Record heart rate and blood pressure", "Contact the flight surgeon")
+  with a short "why" for each step. Labelled not medical advice.
 
 Status:
 LOCKED
