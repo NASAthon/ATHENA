@@ -2,7 +2,7 @@
 
 Ready-to-paste answers for the Space Apps project page (`docs/judging.md` › 1C). Rules for each field are in
 `docs/judging.md`; this file holds **our answers**. Every link is the full URL, as the form asks.
-The NASA and clinical tables are generated from `src/data/sources.js` (the sources the app cites), so keep them
+The NASA and clinical tables are generated from `src/data/sources.js` (the sources behind the app's health content), so keep them
 in step with it when sources change. Check every link in an incognito window before submitting.
 
 ---
@@ -29,8 +29,9 @@ in step with it when sources change. Check every link in an incognito window bef
 > **Use of AI.** The ATHENA concept (personal-baseline drift detection, guidance for astronauts who aren't doctors,
 > fully offline) is our team's own. We used AI coding assistants (Claude Code by Anthropic, and other AI chat
 > assistants) to speed up building: writing and debugging code, checking the NASA, CDC, ADA and AHA pages we cite,
-> testing our drift cut-off on simulated data, and editing plain-English text. Every health fact in the app links to
-> its source, and every AI-assisted change was reviewed by the team. Our screen-design mockups were made with Claude
+> testing our drift cut-off on simulated data, and editing plain-English text. Every health fact in the app is traced
+> to a cited source, listed in `docs/SOURCES.md` in our repository (the app shows no web links, because astronauts
+> can't open web pages in flight), and every AI-assisted change was reviewed by the team. Our screen-design mockups were made with Claude
 > (Anthropic) and are marked "AI-generated" wherever they appear. ATHENA itself contains no AI: its alerts come from
 > a deterministic, explainable rules engine. No NASA logos, flags or mission identifiers were used or generated.
 > A dated log of every AI use is in `docs/AI_USAGE.md` in our repository.
