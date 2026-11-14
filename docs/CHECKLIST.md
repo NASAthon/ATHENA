@@ -143,7 +143,7 @@ One line per designed page. A page is ticked when it's built and working in the 
 ### Calendar, summary, extras
 
 - [x] **S** Mission calendar listing due and completed periodic exams (PR #21: `/calendar`, overdue, due today, next 30 days, "Mark done today" saves with `saveExamResult`)
-- [x] **S** One-page flight-surgeon summary, with "reply expected in about N minutes" (Earth Link delay) (PR #10, PR #12, PR #21: `/summary` screen with copyable text; mission mode now shared app-wide)
+- [x] **S** One-page flight-surgeon summary, with "reply expected in about N minutes" (Earth Link delay) (PR #10, PR #12, PR #21: `/summary` screen; "Send to Earth" button (simulated send, shows the reply time; replaced "Copy text" in PR #34); mission mode now shared app-wide)
 - [x] **S** Earth Link: shows the current communication delay for the mission mode (PR #8; header pill removed, delay shown on the Emergency, Summary and Trends pages; sourced delays for all three modes and the summary's reply time PR #12)
 - [x] **S** Mission mode switch: ISS, Lunar Gateway, Mars Transit (PR #8; modes in `src/data/missionModes.js`)
 - [x] **S** Check-in streak (PR #19: shown after saving the Daily check)

@@ -38,7 +38,7 @@ const ICONS = { CircleCheck, CircleMinus, Info, OctagonAlert, TrendingDown, Mess
 // Groups in the order of the design: the ones that show slow decline first.
 const ORDER = ["sleep", "reaction", "mood", "heartRate", "bloodPressure", "glucose", "temperature", "exercise", "spo2"];
 const GROUPS = ORDER.map((id) => ({ id, keys: DRIFT_INDICATORS.filter((d) => d.group === id).map((d) => d.key) })).filter((g) => g.keys.length);
-const card = "rounded-xl border border-border bg-card p-4";
+const card = "rounded-xl border border-border bg-card p-3";
 const GENERIC_LABEL = { normal: "Normal", watch: "Watch", act: "Act", urgent: "Red limit" };
 
 function StatusPill({ status }) {
@@ -94,9 +94,9 @@ export default function Trends() {
 
   if (state !== "ready" || evaluations.length === 0) {
     return (
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-5">
-        <h1 className="text-3xl font-bold">Trends</h1>
-        <p className="mt-4 text-base text-muted-foreground">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4">
+        <h1 className="text-2xl font-bold">Trends</h1>
+        <p className="mt-3 text-base text-muted-foreground">
           {state === "loading" ? (
             "Opening the mission data…"
           ) : (
@@ -138,11 +138,11 @@ export default function Trends() {
   const link = adviceForMode(modeId).earthLink;
 
   return (
-    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-5">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4">
+      <div className="flex flex-wrap items-end justify-between gap-3">
         <div className="min-w-0 flex-[1_1_480px]">
-          <h1 className="text-3xl font-bold">
-            Trends <span className="text-xl font-normal text-muted-foreground">· {member.name}</span>
+          <h1 className="text-2xl font-bold">
+            Trends <span className="text-lg font-normal text-muted-foreground">· {member.name}</span>
           </h1>
           <p className="mt-2 text-base text-muted-foreground">
             Each line is the 7-day average. The gap between the two bands is expected adaptation to space; leaving the blue
@@ -151,17 +151,26 @@ export default function Trends() {
         </div>
         <div className="w-full max-w-sm">
           <label htmlFor="trend-day" className="block font-semibold">
-            Mission day {day} <span className="font-normal text-muted-foreground">(drag to move through the mission)</span>
+            Day {day} <span className="font-normal text-muted-foreground">(drag to move through the mission)</span>
           </label>
-          <input
-            id="trend-day"
-            type="range"
-            min={1}
-            max={today}
-            value={day}
-            onChange={(e) => setPicked((p) => ({ ...p, day: Number(e.target.value) }))}
-            className={`mt-3 h-11 w-full cursor-pointer accent-primary ${focusRing}`}
-          />
+          {/* Straight bar with an arrowhead at each end, pointing outwards (styles: .day-slider in globals.css). */}
+          <div className="mt-2 flex items-center text-muted-foreground">
+            <svg aria-hidden="true" width="10" height="14" viewBox="0 0 10 14" className="shrink-0">
+              <path d="M0 7 L10 0 L10 14 Z" fill="currentColor" />
+            </svg>
+            <input
+              id="trend-day"
+              type="range"
+              min={1}
+              max={today}
+              value={day}
+              onChange={(e) => setPicked((p) => ({ ...p, day: Number(e.target.value) }))}
+              className={`day-slider h-11 min-w-0 flex-1 cursor-pointer ${focusRing}`}
+            />
+            <svg aria-hidden="true" width="10" height="14" viewBox="0 0 10 14" className="shrink-0">
+              <path d="M10 7 L0 0 L0 14 Z" fill="currentColor" />
+            </svg>
+          </div>
           <div className="flex justify-between text-sm text-muted-foreground">
             <span>day 1</span>
             <span>today, day {today}</span>
@@ -169,8 +178,8 @@ export default function Trends() {
         </div>
       </div>
 
-      <div role="group" aria-label="Show indicators" className="mt-4 flex flex-wrap gap-2">
-        {[{ id: "drifting", label: `Drifting (${drifting.length})` }, ...GROUPS.map((g) => ({ id: g.id, label: byId[g.id]?.name ?? g.id })), { id: "all", label: "All" }].map((c) => (
+      <div role="group" aria-label="Show indicators" className="mt-3 flex flex-wrap gap-2">
+        {[{ id: "all", label: "All" }, { id: "drifting", label: `Drifting (${drifting.length})` }, ...GROUPS.map((g) => ({ id: g.id, label: byId[g.id]?.name ?? g.id }))].map((c) => (
           <button
             key={c.id}
             type="button"
@@ -183,8 +192,8 @@ export default function Trends() {
         ))}
       </div>
 
-      <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(0,1.2fr)]">
-        <div className="space-y-4">
+      <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,3fr)_minmax(0,1.2fr)]">
+        <div className="space-y-3">
           {visible.length === 0 && (
             <section className={card}>
               <p className="flex items-center gap-2 text-base">
@@ -198,7 +207,7 @@ export default function Trends() {
             return (
               <section key={g.id} className={card} aria-labelledby={`trend-${g.id}`}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
-                  <h2 id={`trend-${g.id}`} className="text-xl font-bold">
+                  <h2 id={`trend-${g.id}`} className="text-lg font-bold">
                     {byId[g.id]?.name ?? g.id}
                   </h2>
                   <StatusPill status={status} />
@@ -212,7 +221,7 @@ export default function Trends() {
                   const normal = c.inBand ? `${fmt(c.inBand.mean)} ${unit}` : "not set yet";
                   const summary = `${point?.average != null ? `${fmt(point.average)} ${unit}` : "no 7-day average"} on day ${day} · your normal ${normal}${since ? ` · drifting since day ${since}` : ""}`;
                   return (
-                    <div key={key} className="mt-4">
+                    <div key={key} className="mt-3">
                       {g.keys.length > 1 && <h3 className="font-semibold">{driftKeyName(key)}</h3>}
                       <p className="mt-1" style={since ? { color: "var(--status-amber)" } : undefined}>
                         {since && <TrendingDown className="mr-1 inline size-4 align-text-bottom" aria-hidden="true" />}
@@ -239,7 +248,7 @@ export default function Trends() {
           })}
         </div>
 
-        <aside className="space-y-4">
+        <aside className="space-y-3">
           <section className={card} aria-labelledby="compare-heading">
             <h2 id="compare-heading" className="text-lg font-bold">
               ATHENA vs one-size-fits-all
@@ -248,7 +257,7 @@ export default function Trends() {
               Day {day}. A general range judges one reading against everyone&apos;s limits. ATHENA compares the 7-day average
               with {member.name.split(" ").pop()}&apos;s own normal, so a slow decline can&apos;t hide inside a range that looks fine.
             </p>
-            <table className="mt-4 w-full text-left">
+            <table className="mt-3 w-full text-left">
               <thead>
                 <tr className="text-sm text-muted-foreground">
                   <th scope="col" className="pb-2 font-normal">Indicator</th>
@@ -281,7 +290,7 @@ export default function Trends() {
           </section>
 
           {drifting.length > 0 && (
-            <section className="rounded-xl border-2 p-4" style={{ borderColor: "var(--status-amber)" }} aria-labelledby="helps-heading">
+            <section className="rounded-xl border-2 p-3" style={{ borderColor: "var(--status-amber)" }} aria-labelledby="helps-heading">
               <h2 id="helps-heading" className="text-lg font-bold">
                 What helps
               </h2>
@@ -314,7 +323,7 @@ export default function Trends() {
                     : "No drift alert on this day. Nothing to send."}
             </p>
             {link && <p className="mt-2 text-muted-foreground">Reply from Earth expected {link.replyText}.</p>}
-            <Link href="/summary" className={`mt-4 inline-flex min-h-11 items-center rounded-lg border border-input px-4 font-semibold hover:bg-accent ${focusRing}`}>
+            <Link href="/summary" className={`mt-3 inline-flex min-h-11 items-center rounded-lg border border-input px-4 font-semibold hover:bg-accent ${focusRing}`}>
               Open the flight-surgeon summary
             </Link>
           </section>

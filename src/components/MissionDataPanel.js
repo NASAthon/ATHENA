@@ -9,7 +9,7 @@ import { useMissionData } from "@/components/MissionDataProvider";
 import { CREW } from "@/lib/crew";
 import { focusRing } from "@/lib/ui";
 
-const card = "rounded-xl border border-border bg-card p-4";
+const card = "rounded-xl border border-border bg-card p-3";
 const button = `inline-flex min-h-11 items-center gap-2 rounded-lg border px-4 font-medium disabled:opacity-50 ${focusRing}`;
 
 export default function MissionDataPanel() {
@@ -45,15 +45,15 @@ export default function MissionDataPanel() {
           ? "Opening the database…"
           : today === null
             ? "No mission data stored."
-            : `Today is mission day ${today}.`}
+            : `Today is day ${today}.`}
       </p>
 
       {status !== "loading" && status !== "error" && (
-        <ul className="mt-4 grid auto-rows-fr gap-2 sm:grid-cols-3">
+        <ul className="mt-3 grid auto-rows-fr gap-2 sm:grid-cols-3">
           {CREW.map((member) => {
             const c = crew.find((x) => x.id === member.id);
             return (
-              <li key={member.id} className="rounded-lg border border-border px-4 py-3">
+              <li key={member.id} className="rounded-lg border border-border px-4 py-2">
                 <p className="font-medium">{member.name}</p>
                 <p className="text-sm text-muted-foreground">
                   {c && c.records > 0
@@ -70,7 +70,7 @@ export default function MissionDataPanel() {
       )}
 
       {confirming ? (
-        <div role="group" aria-labelledby="confirm-text" className="mt-4 rounded-lg border p-4" style={{ borderColor: "var(--status-amber)" }}>
+        <div role="group" aria-labelledby="confirm-text" className="mt-3 rounded-lg border p-3" style={{ borderColor: "var(--status-amber)" }}>
           <p id="confirm-text" className="flex items-start gap-2">
             <TriangleAlert aria-hidden="true" className="mt-0.5 size-5 shrink-0" style={{ color: "var(--status-amber)" }} />
             {confirming === "reset"
@@ -93,7 +93,7 @@ export default function MissionDataPanel() {
           </div>
         </div>
       ) : (
-        <div className="mt-4 flex flex-wrap gap-3">
+        <div className="mt-3 flex flex-wrap gap-3">
           <button type="button" disabled={busy} onClick={onLoad} className={`${button} border-primary bg-primary text-primary-foreground`}>
             <RotateCcw aria-hidden="true" className="size-4" /> Load demo mission
           </button>
@@ -103,7 +103,7 @@ export default function MissionDataPanel() {
         </div>
       )}
 
-      <p aria-live="polite" className="mt-4 min-h-6 text-sm">
+      <p aria-live="polite" className="mt-3 min-h-6 text-sm">
         {message}
       </p>
       {error && (

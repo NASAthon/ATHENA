@@ -27,7 +27,7 @@ const reaction = INDICATORS.find((i) => i.id === "reaction");
 const now = () => performance.now();
 const randomWaitMs = () => 2000 + Math.random() * 3000; // random wait of 2 to 5 seconds
 
-const card = "rounded-xl border border-border bg-card p-4";
+const card = "rounded-xl border border-border bg-card p-3";
 
 // A fresh test for each astronaut: switching crew in the header starts over.
 export default function ReactionTestPage() {
@@ -184,7 +184,7 @@ function ReactionTest() {
       setSavedRun(saved.ok);
       setSaveMessage(
         saved.ok
-          ? `Saved to ${member.name}'s record for mission day ${today}.`
+          ? `Saved to ${member.name}'s record for day ${today}.`
           : `Not saved: ${saved.errors.join(" ")}`,
       );
     } catch (e) {
@@ -193,13 +193,13 @@ function ReactionTest() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-5">
-      <h1 className="text-3xl font-bold">Reaction test</h1>
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4">
+      <h1 className="text-2xl font-bold">Reaction test</h1>
       <p className="mt-2 text-base text-muted-foreground">
         Step 1 of 3 · {RUN_SECONDS} seconds · tap the panel or press the space
         bar as soon as it lights up
       </p>
-      <label className="mt-4 inline-flex min-h-11 cursor-pointer items-center gap-3 rounded-lg border border-input px-4 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring">
+      <label className="mt-3 inline-flex min-h-11 cursor-pointer items-center gap-3 rounded-lg border border-input px-4 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring">
         <input
           type="checkbox"
           checked={guest}
@@ -216,7 +216,7 @@ function ReactionTest() {
         </span>
       </label>
 
-      <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1fr)_360px]">
         <div>
           <button
             type="button"
@@ -225,14 +225,14 @@ function ReactionTest() {
             onClick={(e) => {
               if (e.detail === 0) handleTap(); // keyboard activation
             }}
-            className={`flex min-h-72 w-full select-none flex-col items-center justify-center rounded-3xl border p-4 text-center md:min-h-[26rem] ${focusRing} ${
+            className={`flex min-h-72 w-full select-none flex-col items-center justify-center rounded-3xl border p-3 text-center md:min-h-[26rem] ${focusRing} ${
               phase === "signal" ? "text-background" : "border-border bg-card"
             }`}
             style={phase === "signal" ? { background: "var(--status-amber)", borderColor: "var(--status-amber)" } : undefined}
           >
             {phase === "idle" && (
               <>
-                <span className="text-2xl font-bold">Start</span>
+                <span className="text-xl font-bold">Start</span>
                 <span className="mt-3 text-base text-muted-foreground">
                   Tap here or press the space bar. The test runs {RUN_SECONDS}{" "}
                   seconds.
@@ -241,7 +241,7 @@ function ReactionTest() {
             )}
             {phase === "waiting" && (
               <>
-                <span className="text-2xl font-bold">Wait…</span>
+                <span className="text-xl font-bold">Wait…</span>
                 <span className="mt-3 text-base text-muted-foreground">
                   Do not tap until the panel lights up.
                 </span>
@@ -249,7 +249,7 @@ function ReactionTest() {
             )}
             {phase === "signal" && (
               <>
-                <span className="text-xl font-bold tracking-[0.3em]">
+                <span className="text-lg font-bold tracking-[0.3em]">
                   TAP NOW
                 </span>
                 <span className="my-4 text-8xl font-bold tabular-nums md:text-9xl">
@@ -259,7 +259,7 @@ function ReactionTest() {
               </>
             )}
             {phase === "done" && (
-              <span className="text-2xl font-bold">Test finished</span>
+              <span className="text-xl font-bold">Test finished</span>
             )}
           </button>
 
@@ -301,14 +301,14 @@ function ReactionTest() {
           </p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           <aside className={card}>
             <p className="text-sm uppercase tracking-wider text-muted-foreground">
               Why this test
             </p>
             <p className="mt-3 text-base">{reaction.glance}</p>
-            <p className="mt-4 text-muted-foreground">{reaction.whyItMatters}</p>
-            <p className="mt-4 text-muted-foreground">
+            <p className="mt-3 text-muted-foreground">{reaction.whyItMatters}</p>
+            <p className="mt-3 text-muted-foreground">
               Your result is only compared with {member.name}&apos;s own normal (their stored in-flight baseline; demo data is simulated).
             </p>
           </aside>
@@ -338,14 +338,14 @@ function ReactionTest() {
       </div>
 
       {phase === "done" && (
-        <section className={`${card} mt-4`} aria-labelledby="result-title">
-          <h2 id="result-title" className="text-xl font-bold">
+        <section className={`${card} mt-3`} aria-labelledby="result-title">
+          <h2 id="result-title" className="text-lg font-bold">
             Result
           </h2>
-          <div className="mt-4 grid gap-4 md:grid-cols-4">
+          <div className="mt-3 grid gap-3 md:grid-cols-4">
             <div>
               <p className="text-muted-foreground">Median reaction time</p>
-              <p className="mt-1 text-3xl font-bold" style={slower ? { color: "var(--status-amber)" } : undefined}>
+              <p className="mt-1 text-2xl font-bold" style={slower ? { color: "var(--status-amber)" } : undefined}>
                 {med === null ? "—" : `${med} ms`}
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -356,14 +356,14 @@ function ReactionTest() {
             </div>
             <div>
               <p className="text-muted-foreground">Lapses (over {LAPSE_THRESHOLD_MS} ms)</p>
-              <p className="mt-1 text-3xl font-bold">{lapses}</p>
+              <p className="mt-1 text-2xl font-bold">{lapses}</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 {usualLapses === null ? "No baseline yet" : `Your normal: about ${usualLapses} per test`}
               </p>
             </div>
             <div>
               <p className="text-muted-foreground">False starts</p>
-              <p className="mt-1 text-3xl font-bold">{falseStarts}</p>
+              <p className="mt-1 text-2xl font-bold">{falseStarts}</p>
               <p className="mt-1 text-sm text-muted-foreground">Tapping before the light. Not tracked as a trend.</p>
             </div>
             <div>
@@ -372,10 +372,10 @@ function ReactionTest() {
                   ? "Slower than your normal today. One slow day is not a concern: ATHENA looks at your 7-day average."
                   : "In line with your normal today."}
               </p>
-              <div className="mt-4 flex flex-wrap gap-3">
+              <div className="mt-3 flex flex-wrap gap-3">
                 <Link
                   href="/daily-check"
-                  className={`flex min-h-12 items-center rounded-xl bg-primary px-4 text-base font-semibold text-primary-foreground hover:bg-primary/90 ${focusRing}`}
+                  className={`flex min-h-11 items-center rounded-xl bg-primary px-4 text-base font-semibold text-primary-foreground hover:bg-primary/90 ${focusRing}`}
                 >
                   Continue to readings
                 </Link>
@@ -384,7 +384,7 @@ function ReactionTest() {
                     type="button"
                     onClick={saveResult}
                     disabled={savedRun || dataStatus !== "ready" || today === null || score.validTrials === 0}
-                    className={`min-h-12 rounded-xl border border-primary px-4 text-base font-semibold text-primary hover:bg-accent disabled:opacity-50 ${focusRing}`}
+                    className={`min-h-11 rounded-xl border border-primary px-4 text-base font-semibold text-primary hover:bg-accent disabled:opacity-50 ${focusRing}`}
                   >
                     {savedRun ? "Saved" : <>Save to {member.name}&apos;s record</>}
                   </button>
@@ -392,7 +392,7 @@ function ReactionTest() {
                 <button
                   type="button"
                   onClick={start}
-                  className={`min-h-12 rounded-xl border border-input px-4 text-base hover:bg-accent ${focusRing}`}
+                  className={`min-h-11 rounded-xl border border-input px-4 text-base hover:bg-accent ${focusRing}`}
                 >
                   Try again
                 </button>
