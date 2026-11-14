@@ -41,9 +41,10 @@ GitHub is the single source of truth, so always branch from the latest `main`.
   ranges. That is the one allowed exception to "official sources only" (see
   `DECISIONS.md` › Thresholds). Label them "general clinical reference range",
   never as NASA flight standards.
-- **Keep health content short, generic and plain-language.** Astronauts aren't doctors
-  and won't read detailed reports. Use one line per point and 3–5 steps per guide, with no
-  jargon and no long reports (`DECISIONS.md` › Content Style).
+- **Health content: accurate, informative and in plain English.** Astronauts aren't doctors,
+  so give them more understanding, but simply. Simplify the words, not the facts.
+  Show a glanceable summary first, with a "Learn more" layer for the full plain-English
+  detail. Explain medical terms in brackets (`DECISIONS.md` › Content Style).
 - Track the 6 indicators the official challenge names (heart rate, blood pressure,
   blood glucose, body temperature, sleep hours, mood) before adding extras.
 - The challenge video adds two requirements (`context.md` Section 6.1):
@@ -95,7 +96,7 @@ may review and merge their own PR, but still go through the checks below.
    - it builds and works offline;
    - it doesn't change the locked stack;
    - every health rule cites a source;
-   - health text is short and plain;
+   - health text is accurate, sourced and in plain English, with a glance summary plus "Learn more";
    - new libraries, fonts and icons are open-licensed and listed in `docs/SOURCES.md`;
    - it adds no secrets, NASA logos or likenesses;
    - AI use is logged in `docs/AI_USAGE.md`.
