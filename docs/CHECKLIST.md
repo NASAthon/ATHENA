@@ -49,7 +49,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [x] **M** Region mapper: indicator-to-body-region table and worst-status function (table: `src/data/regions.js`; worst-status function: `src/lib/engine/regions.js`; UI version with recent-symptom layer: `src/lib/regionStatus.js`) (PR #7, PR #9, PR #10)
 - [x] **S** Calendar scheduler: which periodic exams are due on a given mission day (`src/lib/engine/calendar.js, exams from src/data/exams.js`) (PR #10)
 - [x] **S** Summary builder for the flight-surgeon report (`src/lib/engine/summary.js; Earth delay passed in`) (PR #10)
-- [x] **S** Mission mode changes which hazards and advice are shown (ISS, Lunar Gateway, Mars Transit; no Lunar Surface Base) (`src/lib/engine/missionMode.js`; delays, emphasis and advice in `src/data/missionModes.js`) (PR #8, PR #PRNUM)
+- [x] **S** Mission mode changes which hazards and advice are shown (ISS, Lunar Gateway, Mars Transit; no Lunar Surface Base) (`src/lib/engine/missionMode.js`; delays, emphasis and advice in `src/data/missionModes.js`) (PR #8, PR #11)
 - [ ] **S** Scenario Lab: inject radiation, fatigue, sleep loss or hypoxia into the data and watch the alerts react 🟡 Partial (PR #10): injection in `src/lib/engine/scenarios.js` (demo effect sizes); still to do: the screen (§3)
 
 ---
@@ -124,8 +124,8 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 ### Calendar, summary, extras
 
 - [ ] **S** Mission calendar listing due and completed periodic exams
-- [ ] **S** One-page flight-surgeon summary, with "reply expected in about N minutes" (Earth Link delay) 🟡 Partial (PR #10, PR #PRNUM): `buildSurgeonSummary` in `src/lib/engine/summary.js` builds the text with the mode's reply time; still to do: the screen
-- [x] **S** Earth Link: shows the current communication delay for the mission mode (PR #8 header pill; sourced delays for all three modes and the summary's reply time PR #PRNUM)
+- [ ] **S** One-page flight-surgeon summary, with "reply expected in about N minutes" (Earth Link delay) 🟡 Partial (PR #10, PR #11): `buildSurgeonSummary` in `src/lib/engine/summary.js` builds the text with the mode's reply time; still to do: the screen
+- [x] **S** Earth Link: shows the current communication delay for the mission mode (PR #8 header pill; sourced delays for all three modes and the summary's reply time PR #11)
 - [x] **S** Mission mode switch: ISS, Lunar Gateway, Mars Transit (PR #8; modes in `src/data/missionModes.js`)
 - [ ] **S** Check-in streak
 
