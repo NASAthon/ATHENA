@@ -25,7 +25,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
   - **Engineer Nakamura:** a sudden event (red-limit screen and crewmate emergency guidance, e.g. chest pain)
 - [ ] **M** Simulator adds realistic day-to-day noise and one or two harmless bad days
 - [ ] **M** "Load demo mission" and "Reset data" buttons work
-- [ ] **M** Every indicator, guide and emergency entry has a `keywords` list (synonyms, plain-English terms, symptoms, common misspellings) for search
+- [x] **M** Every indicator, guide and emergency entry has a `keywords` list (synonyms, plain-English terms, symptoms, common misspellings) for search (PR #7)
 - [ ] **S** Store periodic exam results and the check-in streak
 
 ---
@@ -41,7 +41,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** Drift cut-off of **z = 3.5** (`docs/DECISIONS.md` › Drift Cut-off) written in the README as a design choice
 - [ ] **M** Alert level: 1 drifting = note, 2 or more = alert, no recovery after 14 more days = tell crew and ground (linked indicators count once; `docs/DECISIONS.md` › Drift Cut-off)
 - [ ] **M** Red-limit check on every new reading, independent of baselines
-- [ ] **M** Red limits taken from a published source and cited (general clinical reference ranges, `docs/DECISIONS.md` › Thresholds)
+- [x] **M** Red limits taken from a published source and cited (general clinical reference ranges, `docs/DECISIONS.md` › Thresholds) (PR #7; heart rate and SpO₂ use personal baselines by design)
 - [ ] **M** Reaction scoring: median, lapses over 500 ms, false starts
 - [ ] **M** Handles missing days without crashing or false alerts
 - [ ] **M** Search index: offline fuzzy search over all content (typos, prefixes, synonyms, symptoms; `docs/DECISIONS.md` › Search). Library: **MiniSearch** (MIT)
@@ -133,18 +133,18 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 ## 4. Content and research
 
-- [ ] **M** Open the NASA HRP pages for **all 5 hazards and all 17 risks**; note key points with links
-- [ ] **M** NASA data map: hazard → risk → body system → indicator → countermeasure, each entry with its source URL
-- [ ] **M** Guidance card text for each indicator, answering the brief's five questions: can it be measured in space, why it matters, how hazards affect it, when to escalate, what action helps
-- [ ] **M** "How to measure" steps for each indicator, in plain English
-- [ ] **M** Emergency guide text in plain English (NASA steps first, otherwise AHA or CDC in our own words, each cited; `docs/DECISIONS.md` › Emergency Step Sources) covering the hazards (`docs/DECISIONS.md` › Data Map Coverage): chest pain/collapse first, then the rest
-- [ ] **M** Search keywords for every item (synonyms, symptoms, misspellings)
-- [ ] **M** Advice wording checked: modest, no diagnoses, no medication instructions
-- [ ] **M** Source list with links in `docs/SOURCES.md` (NASA HRP, NASA OSDR, Canadian Space Agency, clinical ranges, libraries)
-- [ ] **M** Every resource used is open source, openly licensed or public domain, with no NASA logos (`docs/DECISIONS.md` › Licensing)
-- [ ] **M** Every figure in the app or pitch traced to a source, or removed
-- [ ] **S** Write every region card from `docs/BODY_MAP.md` (verified 14 Nov; linked to its hazards and risks)
-- [ ] **S** List of periodic exams and how often
+- [x] **M** Open the NASA HRP pages for **all 5 hazards and all 17 risks**; note key points with links (PR #7; `docs/BODY_MAP.md`, `src/data/risks.js`)
+- [x] **M** NASA data map: hazard → risk → body system → indicator → countermeasure, each entry with its source URL (PR #7; `src/data/`)
+- [x] **M** Guidance card text for each indicator, answering the brief's five questions: can it be measured in space, why it matters, how hazards affect it, when to escalate, what action helps (PR #7; `briefAnswers` in `src/data/indicators.js`)
+- [x] **M** "How to measure" steps for each indicator, in plain English (PR #7)
+- [x] **M** Emergency guide text in plain English (NASA steps first, otherwise AHA or CDC in our own words, each cited; `docs/DECISIONS.md` › Emergency Step Sources) covering the hazards (`docs/DECISIONS.md` › Data Map Coverage): chest pain/collapse first, then the rest (PR #7: all 13 guides ready: chest pain, collapse with CPR, stroke, low blood sugar, very high BP, hypothermia, decompression, hypoxia, radiation, head injury, severe bleeding, suspected broken bone, mental health crisis)
+- [x] **M** Search keywords for every item (synonyms, symptoms, misspellings) (PR #7; checked by `npm run check:content`)
+- [x] **M** Advice wording checked: modest, no diagnoses, no medication instructions (PR #7)
+- [x] **M** Source list with links in `docs/SOURCES.md` (NASA HRP, NASA OSDR, Canadian Space Agency, clinical ranges, libraries) (PR #7)
+- [ ] **M** Every resource used is open source, openly licensed or public domain, with no NASA logos (`docs/DECISIONS.md` › Licensing) 🟡 Partial (PR #7): all content and packages so far checked; still to do: re-check at submission
+- [ ] **M** Every figure in the app or pitch traced to a source, or removed 🟡 Partial (PR #7): every number in `src/data` has a source or `basis: "design"`; still to do: the pitch and the final UI
+- [x] **S** Write every region card from `docs/BODY_MAP.md` (verified 14 Nov; linked to its hazards and risks) (PR #7; `src/data/regions.js`)
+- [ ] **S** List of periodic exams and how often 🟡 Partial (PR #7): 5 exams from NASA pages in `src/data/exams.js`; intervals are design choices because NASA doesn't state them
 - [ ] **S** Short note on existing tools and what ATHENA adds
 
 ---

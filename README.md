@@ -184,7 +184,7 @@ from the NASA Human Research Program's official resources, including the
 [5 Hazards of Human Spaceflight](https://www.nasa.gov/hrp/hazards/) and
 [Risks of Human Spaceflight](https://www.nasa.gov/hrp/risks/). The challenge was authored by the Brazilian Space Agency (AEB). Partner context
 comes from the [Canadian Space Agency](https://www.asc-csa.gc.ca/eng/news/articles/2026/2026-02-26-monitoring-radiation-astronaut-health.asp).
-The full list is in [`docs/SOURCES.md`](docs/SOURCES.md).
+The full list is in [`docs/SOURCES.md`](docs/SOURCES.md), and the licences of all open-source packages are in [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md).
 
 Numeric thresholds are general clinical reference ranges, not NASA flight
 standards. Astronaut data in the app is simulated.
