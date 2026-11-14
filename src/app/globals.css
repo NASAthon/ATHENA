@@ -1,6 +1,11 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
+
+/* Dark space theme only (DECISIONS.md › Design; palette by Izabela, PR #8). <html class="dark"> in layout.js.
+   System fonts only, so nothing is fetched online. */
 
 @theme inline {
   --color-background: var(--background);
@@ -28,11 +33,18 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
 }
 
 :root,
 .dark {
-  
+
   --background: #0d131f;
   --foreground: #f1f5f9;
   --card: #151e2e;
@@ -40,11 +52,9 @@
   --popover: #151e2e;
   --popover-foreground: #f1f5f9;
 
-  
   --primary: #6ec4ff;
   --primary-foreground: #071324;
 
-  
   --secondary: #1e293b;
   --secondary-foreground: #f8fafc;
   --muted: #182234;
@@ -52,14 +62,19 @@
   --accent: #1e293b;
   --accent-foreground: #f8fafc;
 
- 
   --destructive: #f87171;
 
-
   --border: #26334a;
-  --input: #111827;
+  --input: #64748b; /* form-field borders: 3.9:1 on the page, 3.5:1 on cards (WCAG non-text contrast) */
   --ring: #6ec4ff;
   --radius: 0.75rem;
+
+  /* Chart colours for Trends (tune for colour-blind safety when charts are built). */
+  --chart-1: #6ec4ff;
+  --chart-2: #a78bfa;
+  --chart-3: #34d399;
+  --chart-4: #fbbf24;
+  --chart-5: #f87171;
 }
 
 @layer base {

@@ -352,6 +352,10 @@ LOCKED
 ## Design
 
 - **Dark theme** app/dashboard. Theme options (e.g. light mode) are a **future feature**, not in scope.
+- Palette: Izabela's dark "space" theme (PR #8), set as shadcn tokens in `src/app/globals.css`.
+  Components use tokens only (`bg-card`, `text-muted-foreground`, `bg-destructive`), never raw hex colours.
+  Checked contrast: body text 17:1, muted text 6.5–7.3:1, form-field borders 3.5–3.9:1, Emergency button 6.7:1.
+- Form input limits (`input` in `src/data/indicators.js`) only catch typing mistakes. They're design choices, not health thresholds.
 - Status uses **icons** (plus colour and a text label) so critical vs OK is obvious at a glance.
 
 Status:
