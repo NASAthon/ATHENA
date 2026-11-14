@@ -42,6 +42,7 @@ LOCKED
 
 Use only the official resources listed in `context.md` Section 7.
 Do not use the extra sources in Section 9 for now.
+Exception: general clinical reference ranges for thresholds (see Thresholds).
 
 Reason:
 Team decision to stay within the data we were given.
@@ -88,3 +89,44 @@ LOCKED
 
 Status:
 ACTIVE
+
+
+---
+
+## Thresholds
+
+Numeric watch/act/contact-surgeon bands use general, widely published clinical
+reference ranges, labelled "general clinical reference range" in the UI and
+cited in `docs/SOURCES.md`. NASA pages give the qualitative link from each
+hazard to its risks, body systems and indicators, with source URLs.
+
+Reason:
+The official NASA resources contain no numeric thresholds. This is the only
+exception to "official sources only".
+
+Status:
+LOCKED
+
+---
+
+## Indicators
+
+Core (official challenge text): heart rate, blood pressure, blood glucose,
+body temperature, sleep hours, mood.
+Extra: HRV, SpO₂, respiration rate, activity level, radiation dose.
+
+Reason:
+Judges score Relevance against the challenge text, so the core six come first.
+
+Status:
+LOCKED
+
+---
+
+## File Naming
+
+The decision log is `DECISIONS.md` (renamed from the misspelt `DECISONS.md`).
+`CLAUDE.md` only imports `AGENTS.md`, and all workflow rules live in `AGENTS.md`.
+
+Status:
+LOCKED

@@ -1,8 +1,8 @@
 # NASA Space Apps Challenge 2026 — Project Context & Planning Brief
 
-> **How to use this file:** Paste it into Claude Code (or save it as `context.md` in the repo root and tell Claude Code to read it first). It contains everything needed to plan our project: event rules, submission requirements, the judging rubric, our chosen challenge, our current idea, and every data link we were given.
+> **Status: PLAN APPROVED. We are in the BUILD phase.** Write application code following `AGENTS.md` and `DECISIONS.md`. The architecture is locked, so do not re-plan it or propose a different stack.
 >
-> **Your task right now is PLANNING ONLY. Do not write application code yet.** See Section 10 for exactly what to produce.
+> This file holds the event rules, submission requirements, judging rubric, the challenge, our concept (Section 6.1) and every data link we were given. Section 10 is the original planning brief, kept for reference.
 
 ---
 
@@ -13,8 +13,8 @@
 - There is also a **global judging** round for submissions, so quality, polish and clear NASA-data provenance matter.
 - Team name / GitHub org: `<TEAM NAME — fill in>`
 - Team size: `<N members, max 6 — fill in>`
-- Skills and preferred stack: `<fill in, e.g. React/TypeScript/Python/mobile — fill in>`
-- Local submission deadline: `<confirm with organisers — fill in>`
+- Skills and preferred stack: JavaScript (no TypeScript). Stack is locked in `DECISIONS.md`.
+- Submission deadline: **Sun 15 Nov 2026, 23:59** (local time, global portal). Confirm with HackAthlone whether local pitching is earlier.
 
 ## 2. Event facts
 
@@ -106,9 +106,9 @@ Planning should decide which of these are **must-have for the demo** versus **st
 
 **Crew:** 3 simulated astronauts: Commander Rivera, Pilot Singh, Engineer Nakamura.
 
-**Monitoring targets** (our team's choice, *not* official challenge requirements; the official text in Section 5 names blood pressure, heart rate, blood sugar, body temperature, sleep hours and mood):
-- Heart rate, HRV, SpO₂, temperature, respiration rate, blood pressure
-- Sleep quality, activity level, radiation dose
+**Monitoring targets:**
+- **Core (named in the official challenge text, must have):** heart rate, blood pressure, blood glucose, body temperature, sleep hours, mood
+- **Extra (our team's choice, not official requirements):** HRV, SpO₂, respiration rate, activity level, radiation dose
 
 **Feature targets:**
 - **Personalised baselines:** a rolling 14-day baseline per astronaut instead of generic thresholds. The 14-day window is our assumption.
@@ -121,7 +121,7 @@ Planning should decide which of these are **must-have for the demo** versus **st
 
 **Innovation angles:** explainable AI, anomaly detection (rolling baseline + z-score), decision support, visual health insights, Earth-delay simulation.
 
-**Tech stack** (locked in `DECISONS.md`): offline-first PWA. Next.js (JavaScript, static export) + Tailwind + ShadCN; SQLite in the browser (sql.js, saved to IndexedDB); JS rules engine + rolling-baseline/z-score trend detection; 2D SVG body map. No backend server. Everything runs onboard.
+**Tech stack** (locked in `DECISIONS.md`): offline-first PWA. Next.js (JavaScript, static export) + Tailwind + ShadCN; SQLite in the browser (sql.js, saved to IndexedDB); JS rules engine + rolling-baseline/z-score trend detection; 2D SVG body map. No backend server. Everything runs onboard.
 
 **MVP scope** (product spec, from the earlier `ATHENA_MASTER_SPEC.md`):
 - Dashboard with 3 astronauts
@@ -218,13 +218,13 @@ These are the **only** public data resources the organisers listed. Treat them a
 
 This means our design must handle the gap honestly:
 - **Qualitative NASA content is our core data.** The hazard → risk → affected system → indicator → countermeasure mapping must be built from these pages, with each mapping entry carrying its source URL. This is where NASA provenance (the *Relevance* criterion) is demonstrated.
-- **Numeric thresholds will need a different source.** Use standard, widely published clinical reference ranges (for resting heart rate, blood pressure, fasting glucose, body temperature, sleep duration, and so on). Label them clearly as "general clinical reference ranges", not NASA flight standards. Where a NASA or space-agency source gives a spaceflight-specific value, use it and cite it.
+- **Numeric thresholds will need a different source.** (Team decision, see `DECISIONS.md` › Thresholds: this is the **only** exception to "official sources only".) Use standard, widely published clinical reference ranges (for resting heart rate, blood pressure, fasting glucose, body temperature, sleep duration, and so on). Label them clearly as "general clinical reference ranges", not NASA flight standards. Where a NASA or space-agency source gives a spaceflight-specific value, use it and cite it.
 - **Be transparent in the UI and the write-up:** thresholds are illustrative for a hackathon prototype, are **not medical advice**, and would need validation by flight surgeons before any real use.
 - Any extra data we choose to add (see Section 9) must be an official, publicly accessible source with a clear licence, and must be named in the submission.
 
 ## 9. Additional public sources worth checking (NOT in the official list — verify before relying on them)
 
-> **On hold:** the team decided to use only the official Section 7 resources for now (see `DECISONS.md`, Data Sources). Do not use these sources unless that decision changes.
+> **On hold:** the team decided to use only the official Section 7 resources for now (see `DECISIONS.md`, Data Sources). Do not use these sources unless that decision changes.
 
 These are likely useful for numeric ranges and spaceflight-specific context. Confirm each is accessible and appropriately licensed before using, and cite it explicitly.
 - NASA Human Research Roadmap: https://humanresearchroadmap.nasa.gov/
@@ -235,7 +235,9 @@ These are likely useful for numeric ranges and spaceflight-specific context. Con
 - Other agencies' public pages (ESA, JAXA) — look for astronaut health and countermeasure explainers; mind each site's data-use terms.
 - Published clinical guidelines for general reference ranges (e.g. WHO, AHA, ADA, CDC sleep guidance) — cite directly.
 
-## 10. What I want from you now (planning phase — no application code yet)
+## 10. Original planning brief (DONE, kept for reference only; do not re-run it)
+
+> The plan is approved and the stack is locked in `DECISIONS.md`. Ignore the "recommend a stack" and "do not implement" instructions below. The useful parts still apply: the `docs/` files listed here (create them as needed) and the constraints at the end.
 
 Read this whole file. If you can access the web, open the linked NASA pages (start with the Risks page and the Standard Measures page) to extract accurate details. Then produce the following, in Markdown, and save them to a `docs/` folder in the repo:
 
@@ -257,7 +259,7 @@ Read this whole file. If you can access the web, open the linked NASA pages (sta
 7. A short list of **open questions** for the team (stack, deadline, who owns what) that you need answered before writing code.
 
 ### Constraints to respect throughout
-- **Do not start implementing until I approve the plan.**
+- ~~Do not start implementing until I approve the plan.~~ Plan approved.
 - Hackathon time is tight. Favour a working, polished vertical slice over breadth.
 - Every health rule shown to the user should cite its source.
 - The repo will be **public**, so don't commit secrets, personal data, or anyone's photo or likeness (some participants may be under 18).

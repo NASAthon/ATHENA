@@ -1,7 +1,11 @@
 # Agent Workflow (all AI agents: Claude Code, Codex, Cursor, Copilot, etc.)
 
-Every agent working in this repo follows this workflow. GitHub is the single
-source of truth, so always work from the latest `main`.
+**This is the entry point for every agent.** Codex, Cursor, Copilot, Windsurf and
+Gemini CLI (with `contextFileName: "AGENTS.md"`) load it automatically. Claude Code loads it
+through `CLAUDE.md`. For chat-only tools, start with: *"Read `AGENTS.md` in
+github.com/NASAthon/ATHENA first and follow it."*
+
+GitHub is the single source of truth, so always work from the latest `main`.
 
 ## 1. Before starting any task
 
@@ -15,12 +19,13 @@ source of truth, so always work from the latest `main`.
       covers deadlines, the project page fields, demo limits, AI/SI rules, global
       eligibility, the 1–5 judging criteria and the 10 global awards. Check work
       against the criteria (Impact, Creativity, Validity, Relevance, Presentation).
-   3. `DECISONS.md`: locked decisions. Do not reverse a LOCKED decision.
-   4. `docs/` (once it exists): plan, data model, sources, storyboard, AI log.
+   3. `DECISIONS.md`: locked decisions. Do not reverse a LOCKED decision.
+   4. `docs/`: `SOURCES.md` (every source used), `AI_USAGE.md` (AI log), and
+      plan, data model and storyboard files as they are added.
 3. If two files conflict:
    - Submission, demo, AI/SI rules and judging: `judging.md` wins.
    - Challenge, data and citations: the official sections of `context.md` win.
-   - Product scope and architecture: `DECISONS.md` wins, then `context.md` Section 6.1.
+   - Product scope and architecture: `DECISIONS.md` wins, then `context.md` Section 6.1.
    - Anything still unclear: ask the team. Do not guess.
 
 ## 2. While working
@@ -30,9 +35,13 @@ source of truth, so always work from the latest `main`.
   IndexedDB), JS rules engine, 2D SVG body map. No backend and no
   runtime internet dependency.
 - Priorities: hackathon speed, then NASA relevance, then demo quality, then simplicity. Prefer MVP solutions.
-- **Every health rule shown to users must cite its source URL.** Label
-  numeric thresholds that are not from NASA as "general clinical reference
-  ranges", not NASA flight standards (see `context.md` Section 8).
+- **Every health rule shown to users must cite its source URL.** NASA pages
+  are qualitative, so numeric thresholds come from general clinical reference
+  ranges. That is the one allowed exception to "official sources only" (see
+  `DECISIONS.md` › Thresholds). Label them "general clinical reference range",
+  never as NASA flight standards.
+- Track the 6 indicators the official challenge names (heart rate, blood pressure,
+  blood glucose, body temperature, sleep hours, mood) before adding extras.
 - Mark assumptions explicitly. Never present an assumption as an official NASA value.
 - The repo is **public**. No secrets, API keys, personal data, or anyone's
   photo, voice or likeness. Some participants may be under 18.
@@ -46,7 +55,7 @@ source of truth, so always work from the latest `main`.
 
 ## 3. Before finishing a task
 
-1. If you made or changed a decision, add it to `DECISONS.md` with a reason.
+1. If you made or changed a decision, add it to `DECISIONS.md` with a reason.
 2. Log how AI was used in `docs/AI_USAGE.md` (required for submission). List
    any AI-generated image or media there, because it must be watermarked or credited.
 3. If you used a new data source, add it to `docs/SOURCES.md`.

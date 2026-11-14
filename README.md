@@ -116,6 +116,27 @@ No backend server and no internet connection needed at runtime.
 
 ---
 
+## NASA Data and Credits
+
+ATHENA's link from each hazard to its risks, body systems and indicators is built
+from the NASA Human Research Program's official resources, including the
+[5 Hazards of Human Spaceflight](https://www.nasa.gov/hrp/hazards/) and
+[Risks of Human Spaceflight](https://www.nasa.gov/hrp/risks/). Partner context
+comes from the [Canadian Space Agency](https://www.asc-csa.gc.ca/eng/news/articles/2026/2026-02-26-monitoring-radiation-astronaut-health.asp).
+The full list is in [`docs/SOURCES.md`](docs/SOURCES.md).
+
+Numeric thresholds are general clinical reference ranges, not NASA flight
+standards. Astronaut data in the app is simulated.
+
+---
+
+## Disclaimer
+
+ATHENA is a hackathon prototype and **not medical advice**. Thresholds are
+illustrative and would need validation by flight surgeons before any real use.
+
+---
+
 ## AI Usage Disclosure
 
 AI-generated code was used to speed up the development process.
