@@ -65,7 +65,7 @@ One line per designed page. A page is ticked when it's built and working in the 
 - [x] **M** Reaction test: 60 s panel with live counter, "Why this test", this run so far, result against your own normal (PR #16, PR #19)
 - [x] **M** Body: figure plus region list and region card with NASA risk and hazard (PR #9, PR #21)
 - [x] **M** Emergency: one step at a time with "why", read aloud, all steps, readings, not-medical-advice note (PR #22)
-- [x] **M** Crew status: a card per astronaut (score, band, change, one-line reason, open or emergency button), reminders today, Earth link, demo controls (PR #23: design by the team; cards, reminders and Earth link from the engine, schedulers and mission mode; real Load demo mission / Reset data panel and a Scenario Lab link)
+- [x] **M** Crew status: a card per astronaut (score, band, change, one-line reason, open or emergency button), demo controls (PR #23: design by the team; cards from the engine; real Load demo mission / Reset data panel and a Scenario Lab link. Reminders and Earth link boxes removed by team choice in PR #33: due measurements are on Today, exams on Calendar, the delay on Emergency, Summary and Trends)
 - [x] **M** Trends: 7-day average lines with pre-flight and in-flight bands, baseline window, drifting periods, day slider, "What to do this week", "When to tell the ground" (PR #24: plain SVG charts; "What helps" uses each indicator's NASA countermeasures instead of the mockup's placeholder list)
 
 ### Layout
@@ -135,7 +135,7 @@ One line per designed page. A page is ticked when it's built and working in the 
 
 ### Demo polish (14 Nov)
 
-- [x] **S** Demo mission includes a realistic exam history, so the calendar and crew reminders aren't falsely "overdue" (PR #26: `demoExamResults`)
+- [x] **S** Demo mission includes a realistic exam history, so the calendar and Today's reminders aren't falsely "overdue" (PR #26: `demoExamResults`)
 - [x] **S** Reaction test result compares with the astronaut's stored in-flight baseline (the same one the engine uses), not a re-run of the simulator (PR #26)
 - [x] **S** Mission mode remembered after a reload (PR #26: stored on the device)
 - [x] **S** One low exercise day no longer counts as drift (PR #26: exercise minimum spread 5 → 10 min, DECISIONS › Logic Engine Assumptions)
@@ -144,7 +144,7 @@ One line per designed page. A page is ticked when it's built and working in the 
 
 - [x] **S** Mission calendar listing due and completed periodic exams (PR #21: `/calendar`, overdue, due today, next 30 days, "Mark done today" saves with `saveExamResult`)
 - [x] **S** One-page flight-surgeon summary, with "reply expected in about N minutes" (Earth Link delay) (PR #10, PR #12, PR #21: `/summary` screen with copyable text; mission mode now shared app-wide)
-- [x] **S** Earth Link: shows the current communication delay for the mission mode (PR #8; header pill removed, delay shown on the Crew and Summary pages; sourced delays for all three modes and the summary's reply time PR #12)
+- [x] **S** Earth Link: shows the current communication delay for the mission mode (PR #8; header pill removed, delay shown on the Emergency, Summary and Trends pages; sourced delays for all three modes and the summary's reply time PR #12)
 - [x] **S** Mission mode switch: ISS, Lunar Gateway, Mars Transit (PR #8; modes in `src/data/missionModes.js`)
 - [x] **S** Check-in streak (PR #19: shown after saving the Daily check)
 
