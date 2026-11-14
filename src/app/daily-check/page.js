@@ -79,7 +79,14 @@ function NumberInput({ id, label, unit, limits, value, onChange, onFocus }) {
   );
 }
 
-export default function DailyCheck() {
+// A fresh form for each astronaut: switching crew in the header never carries one person's
+// readings over to another.
+export default function DailyCheckPage() {
+  const { crewId } = useCrew();
+  return <DailyCheck key={crewId} />;
+}
+
+function DailyCheck() {
   const [values, setValues] = useState({});
   const [moodValue, setMoodValue] = useState(null);
   const [symptoms, setSymptoms] = useState([]);
@@ -94,13 +101,20 @@ export default function DailyCheck() {
   const focused = byId[focusId];
   const redFlags = SYMPTOMS.filter((s) => s.redFlag && symptoms.includes(s.id));
 
+  // Any edit after saving clears the result and the "Saved…" message (the edit isn't saved yet).
+  const clearOutcome = () => {
+    setResult(null);
+    setSaveInfo(null);
+    setErrors([]);
+  };
+
   const setValue = (key) => (value) => {
     setValues((v) => ({ ...v, [key]: value }));
-    setResult(null);
+    clearOutcome();
   };
 
   const toggleSymptom = (id) => {
-    setResult(null);
+    clearOutcome();
     setSymptoms((list) => (list.includes(id) ? list.filter((s) => s !== id) : [...list, id]));
   };
 
@@ -200,7 +214,7 @@ export default function DailyCheck() {
                   onFocus={() => setFocusId("mood")}
                   onClick={() => {
                     setMoodValue(value);
-                    setResult(null);
+                    clearOutcome();
                   }}
                   className={`min-h-20 rounded-lg border px-2 py-3 text-center ${focusRing} ${
                     moodValue === value

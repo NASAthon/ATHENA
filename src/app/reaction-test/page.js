@@ -31,12 +31,19 @@ const randomWaitMs = () => 2000 + Math.random() * 3000; // random wait of 2 to 5
 
 const card = "rounded-2xl border border-border bg-card p-6";
 
-export default function ReactionTest() {
+// A fresh test for each astronaut: switching crew in the header starts over.
+export default function ReactionTestPage() {
+  const { crewId } = useCrew();
+  return <ReactionTest key={crewId} />;
+}
+
+function ReactionTest() {
   const { crewId, member } = useCrew();
   const { status: dataStatus, today, saveCheckIn } = useMissionData();
   // Guest mode (for judges): the run is never saved to the crew's records.
   const [guest, setGuest] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
+  const [savedRun, setSavedRun] = useState(false); // this run is already saved
   // The astronaut's own in-flight baseline (simulated mission, DECISIONS › Baselines).
   const baseline = useMemo(() => {
     const records = simulateAstronaut(crewId).filter((r) => r.missionDay <= IN_FLIGHT_WINDOW.toDay);
@@ -94,6 +101,7 @@ export default function ReactionTest() {
     setTimes([]);
     setFalseStarts(0);
     setSaveMessage("");
+    setSavedRun(false);
     setNotice("");
     setSecondsLeft(RUN_SECONDS);
     endAt.current = now() + RUN_SECONDS * 1000;
@@ -176,6 +184,7 @@ export default function ReactionTest() {
   const saveResult = async () => {
     try {
       const saved = await saveCheckIn(crewId, reactionRecordFields(score));
+      setSavedRun(saved.ok);
       setSaveMessage(
         saved.ok
           ? `Saved to ${member.name}'s record for mission day ${today}.`
@@ -392,10 +401,10 @@ export default function ReactionTest() {
                   <button
                     type="button"
                     onClick={saveResult}
-                    disabled={dataStatus !== "ready" || today === null || score.validTrials === 0}
+                    disabled={savedRun || dataStatus !== "ready" || today === null || score.validTrials === 0}
                     className={`min-h-14 rounded-xl border border-primary px-6 text-lg font-semibold text-primary hover:bg-accent disabled:opacity-50 ${focusRing}`}
                   >
-                    Save to {member.name}&apos;s record
+                    {savedRun ? "Saved" : <>Save to {member.name}&apos;s record</>}
                   </button>
                 )}
                 <button
