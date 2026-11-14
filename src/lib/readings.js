@@ -13,6 +13,9 @@ export const unitOf = (id) => (id === "mood" ? "/ 5" : (byId[id]?.unit ?? ""));
 const WHOLE_UNITS = new Set(["ms", "mmHg", "bpm", "minutes"]);
 const round = (v, unit) => (WHOLE_UNITS.has(unit) ? Math.round(v) : Math.round(v * 10) / 10);
 
+/** One value rounded for display in an indicator's unit (whole numbers for ms, mmHg, bpm, minutes). */
+export const formatValue = (id, value) => (Number.isFinite(value) ? String(round(value, unitOf(id))) : "—");
+
 /** Record fields shown for an indicator (the reaction test shows its median only). */
 export const displayKeys = (id) => {
   const fields = RECORD_FIELDS[id];

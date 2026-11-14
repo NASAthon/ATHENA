@@ -22,3 +22,4 @@ export * from "./calendar.js";
 export * from "./scenarios.js";
 export * from "./missionMode.js";
 export * from "./hazards.js";
+export * from "./trends.js";
