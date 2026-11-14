@@ -94,7 +94,7 @@ LOCKED
 - The README must keep clear "How to run" steps so judges can run it locally.
 - Demo on localhost: `npm run build`, serve the static output, then install as a PWA.
 - 30-second video "offline moment": turn Wi-Fi off on camera, reload, and trigger
-  a Scenario Lab event. The alert still fires.
+  an alert (a dangerous reading, or a Scenario Lab event if built). The alert still fires.
 - README screenshots go in `docs/screenshots/`.
 
 Status:
@@ -425,7 +425,8 @@ LOCKED
 
 ## Originality
 
-ATHENA's original angle: it **catches the slow decline that fixed thresholds miss**,
+ATHENA's original angle: it **catches the slow decline that generic one-size-fits-all thresholds miss**
+(by comparing each astronaut with their own baseline),
 is **built for astronauts who aren't doctors**, and **works fully offline**. Every
 feature and the pitch should support this line.
 

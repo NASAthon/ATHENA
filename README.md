@@ -12,8 +12,8 @@ detect emerging risks, understand long-term trends,
 and receive guidance even when communication with Earth
 is delayed.
 
-**What makes ATHENA different:** it catches the slow decline that fixed
-thresholds miss, it's built for astronauts who aren't doctors, and it works
+**What makes ATHENA different:** it catches the slow decline that generic
+one-size-fits-all thresholds miss, it's built for astronauts who aren't doctors, and it works
 fully offline.
 
 ---
@@ -32,7 +32,7 @@ ATHENA provides:
 - Continuous health monitoring
 - Personalized baselines
 - Explainable alerts
-- Treatment recommendations
+- Recommended actions (no diagnoses or medication instructions)
 - Emergency guidance, including for a crewmate
 - Plain-language measurement guides (astronauts are not doctors)
 - Mission-specific health guidance

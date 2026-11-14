@@ -111,7 +111,7 @@ Planning should decide which of these are **must-have for the demo** versus **st
 
 **Monitoring targets:**
 - **Core (named in the official challenge text, must have):** heart rate, blood pressure, blood glucose, body temperature, sleep hours, mood
-- **Extra (our team's choice, not official requirements):** HRV, SpO₂, respiration rate, activity level, radiation dose
+- **Also recorded daily:** reaction test, exercise minutes, symptoms. **Optional:** SpO₂, radiation dose (HRV, respiration rate if time allows). See `DECISIONS.md` › Indicators.
 
 **Feature targets:**
 - **Personalised baselines:** **fixed** baselines per astronaut (pre-flight, plus in-flight days 21–35), calculated once, so slow decline shows as drift (`DECISIONS.md` › Baselines).
@@ -133,7 +133,7 @@ Planning should decide which of these are **must-have for the demo** versus **st
 
 > **Decided:** all guidance is **accurate and informative, in plain English**: astronauts aren't doctors, so simplify the wording, not the facts. Show a glanceable summary first and a "Learn more" layer with the full explanation. Emergency steps are clear and ordered, each with a short "why", and labelled not medical advice. See `DECISIONS.md` › Content Style.
 
-**What makes ATHENA original (our pitch line):** ATHENA **catches the slow decline that fixed thresholds miss**, is **built for astronauts who aren't doctors**, and **works fully offline**. See `DECISIONS.md` › Originality.
+**What makes ATHENA original (our pitch line):** ATHENA **catches the slow decline that generic one-size-fits-all thresholds miss** (by comparing each astronaut with their own baseline), is **built for astronauts who aren't doctors**, and **works fully offline**. See `DECISIONS.md` › Originality.
 
 **Innovation angles:** explainable alerts, personal fixed baselines + z-score drift detection, 0–100 health score, decision support, Earth-delay simulation.
 

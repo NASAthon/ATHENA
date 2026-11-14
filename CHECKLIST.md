@@ -91,7 +91,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** One chart per indicator across the mission (chart library to be chosen later; must be open-licensed)
 - [ ] **M** Shaded bands for pre-flight normal and in-flight normal
 - [ ] **M** Drifting periods visibly marked
-- [ ] **M** Side-by-side view: ATHENA status against a fixed-threshold status (the "stays green" comparison)
+- [ ] **M** Side-by-side view: ATHENA status against a generic-threshold status (the "stays green" comparison)
 - [ ] **M** Day slider or fast-forward to move through the mission
 
 ### Search
@@ -173,7 +173,7 @@ Deadlines: **local submission closes 10:30 Sun 15 Nov**, local pitching starts *
 
 ### Demo and pitch
 
-- [ ] **M** Demo script:
+- [ ] **M** Live pitch demo script (the global 30-second video follows `judging.md` 1D pacing instead):
   1. Hook: "Halfway to Mars, your crewmate collapses with chest pain."
   2. Problem (30 s)
   3. A judge takes the reaction test
