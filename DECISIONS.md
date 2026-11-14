@@ -206,7 +206,9 @@ LOCKED
 - Never push straight to `main` (except initial docs setup).
 - Each task gets a branch: `feature/<short-name>` or `fix/<short-name>`.
 - Push the branch and open a pull request.
-- **A different agent reviews the PR first** (see `AGENTS.md` › Reviewing a PR),
+- **Ideally another teammate's agent reviews the PR first** (a different person, even
+  if everyone uses Claude). If no one is free, the author may self-review and merge
+  using the same checks (see `AGENTS.md` › Reviewing a PR),
   then it's merged into `main`.
 - No code freeze. Keep merging small, working changes until submission.
 
