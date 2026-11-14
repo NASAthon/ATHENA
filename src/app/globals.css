@@ -40,6 +40,11 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-status-red: var(--status-red);
+  --color-status-amber: var(--status-amber);
+  --color-status-adapted: var(--status-adapted);
+  --color-status-steady: var(--status-steady);
+  --color-status-nodata: var(--status-nodata);
 }
 
 :root,
@@ -75,6 +80,14 @@
   --chart-3: #34d399;
   --chart-4: #fbbf24;
   --chart-5: #f87171;
+
+  /* Status colours (Mercy, PR #9): used everywhere for health status, always with an icon and a text
+     label (DECISIONS.md › Inclusive Design). Contrast as text: 5.8–9.9:1 on page, card and accent. */
+  --status-red: #ff7a6e;
+  --status-amber: #f5b041;
+  --status-adapted: #b4aeff;
+  --status-steady: #6fb7ff;
+  --status-nodata: #a3aec2;
 }
 
 @layer base {
