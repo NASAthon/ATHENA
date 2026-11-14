@@ -228,4 +228,4 @@ Open http://localhost:3000. For the offline production build, run `npm run build
 
 ## For contributors and AI agents
 
-Start with [`AGENTS.md`](AGENTS.md) (the workflow). It points to [`context.md`](context.md) (the official event brief), [`CHECKLIST.md`](CHECKLIST.md) (what to build), [`judging.md`](judging.md) (submission and judging) and [`DECISIONS.md`](DECISIONS.md).
+Start with [`AGENTS.md`](AGENTS.md) (the workflow). It points to [`docs/context.md`](docs/context.md) (the official event brief), [`docs/CHECKLIST.md`](docs/CHECKLIST.md) (what to build), [`docs/judging.md`](docs/judging.md) (submission and judging) and [`docs/DECISIONS.md`](docs/DECISIONS.md).

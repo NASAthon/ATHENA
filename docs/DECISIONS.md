@@ -40,7 +40,7 @@ LOCKED
 
 ## Data Sources
 
-Use only the official resources listed in `context.md` Section 7. This
+Use only the official resources listed in `docs/context.md` Section 7. This
 includes NASA OSDR (https://osdr.nasa.gov/), which the official challenge video
 names. Do not use the extra sources in Section 9 for now.
 Exceptions: general clinical reference ranges for thresholds (see Thresholds), and
@@ -124,7 +124,7 @@ LOCKED
 
 Core (official challenge text): heart rate, blood pressure, blood glucose,
 body temperature, sleep hours, mood (1–5).
-Also recorded daily (from `CHECKLIST.md`): reaction test (median, lapses, false
+Also recorded daily (from `docs/CHECKLIST.md`): reaction test (median, lapses, false
 starts), exercise minutes, symptoms.
 Optional: SpO₂, radiation dose (and HRV and respiration rate if time allows).
 
@@ -138,8 +138,10 @@ LOCKED
 
 ## File Naming
 
-The decision log is `DECISIONS.md` (renamed from the misspelt `DECISONS.md`).
+The decision log is `docs/DECISIONS.md` (renamed from the misspelt `DECISONS.md`).
 `CLAUDE.md` only imports `AGENTS.md`, and all workflow rules live in `AGENTS.md`.
+Layout: `AGENTS.md`, `CLAUDE.md` and `README.md` stay at the root (tools and GitHub require it);
+all other docs live in `docs/`; app code lives in `src/` (Next.js `src/app`), with `@/*` → `./src/*`.
 
 Status:
 LOCKED
@@ -161,7 +163,7 @@ with its licence recorded in `docs/SOURCES.md`.
 
 Reason:
 Submission requires citing everything and having permission for copyrighted
-material (`judging.md` 1C.8). Open licences remove the risk.
+material (`docs/judging.md` 1C.8). Open licences remove the risk.
 
 Status:
 LOCKED
@@ -339,7 +341,7 @@ LOCKED
 
 ## Checklist
 
-`CHECKLIST.md` is the single list of what to build and hand in, with M/S priorities.
+`docs/CHECKLIST.md` is the single list of what to build and hand in, with M/S priorities.
 It merges the team's build checklist with the earlier plan. New features from the
 checklist: reaction-time test, mission calendar, flight-surgeon summary, check-in
 streak and voice read-aloud.
@@ -421,7 +423,7 @@ LOCKED
 
 ## Demo and Pitch
 
-Follows the recommendations in `judging.md` 1D.
+Follows the recommendations in `docs/judging.md` 1D.
 - **Global:** a 30-second video using the recommended pacing.
 - **Local (11:30):** a short presentation **plus a live demo** of the app in 3 minutes,
   followed by 2 minutes of Q&A.
@@ -446,7 +448,7 @@ LOCKED
 
 ## Roles
 
-No fixed roles. Each teammate picks `CHECKLIST.md` tasks they're comfortable with.
+No fixed roles. Each teammate picks `docs/CHECKLIST.md` tasks they're comfortable with.
 Say which item you're taking, and work on its own branch to avoid clashes.
 
 Status:

@@ -1,6 +1,6 @@
 # AI Usage Log
 
-Required for submission (`judging.md` 1C.6). AI may speed up building but must **not** generate the core idea. Log each meaningful use and keep entries short.
+Required for submission (`docs/judging.md` 1C.6). AI may speed up building but must **not** generate the core idea. Log each meaningful use and keep entries short.
 
 | Date / time | Who | Tool | What it helped with | Files |
 |---|---|---|---|---|
