@@ -64,9 +64,9 @@ function CrewCard({ member, result, onOpen }) {
   if (result.state !== "ready" || !result.evaluation) {
     return (
       <article className="flex flex-col rounded-3xl border border-border bg-card p-3">
-        <h2 className="text-lg font-bold">{member.name}</h2>
+        <h2 className="text-base font-bold">{member.name}</h2>
         <p className="text-muted-foreground">{member.role}</p>
-        <p className="mt-3 flex-1 text-base text-muted-foreground">No data stored yet. Load the demo mission below.</p>
+        <p className="mt-2 flex-1 text-base text-muted-foreground">No data stored yet. Load the demo mission below.</p>
       </article>
     );
   }
@@ -77,9 +77,9 @@ function CrewCard({ member, result, onOpen }) {
   const WeekIcon = week === null || week === 0 ? Minus : week < 0 ? ArrowDown : ArrowUp;
   return (
     <article className="flex flex-col rounded-3xl border-2 bg-card p-3" style={{ borderColor: health.band === "good" ? "var(--border)" : band.colour }}>
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-2">
         <div>
-          <h2 className="text-lg font-bold">{member.name}</h2>
+          <h2 className="text-base font-bold">{member.name}</h2>
           <p className="text-muted-foreground">{member.role}</p>
         </div>
         <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-semibold" style={{ borderColor: band.colour, color: band.colour }}>
@@ -87,7 +87,7 @@ function CrewCard({ member, result, onOpen }) {
           {health.label ?? "No score"}
         </span>
       </div>
-      <div className="mt-3 flex items-center gap-3">
+      <div className="mt-2 flex items-center gap-2">
         <span className="text-8xl font-bold leading-none" style={{ color: band.colour }}>
           {health.score ?? "—"}
         </span>
@@ -99,11 +99,11 @@ function CrewCard({ member, result, onOpen }) {
           </p>
         </div>
       </div>
-      <p className="mt-3 flex-1 text-base">{info.text}</p>
+      <p className="mt-2 flex-1 text-base">{info.text}</p>
       <Link
         href={info.href}
         onClick={onOpen}
-        className={`mt-3 flex min-h-11 items-center justify-center rounded-xl px-4 text-center text-base font-semibold ${focusRing} ${
+        className={`mt-2 flex min-h-11 items-center justify-center rounded-xl px-4 text-center text-base font-semibold ${focusRing} ${
           info.urgent ? "bg-destructive text-background hover:bg-destructive/90" : "border border-input hover:bg-accent"
         }`}
       >
@@ -126,27 +126,27 @@ export default function Crew() {
   );
 
   return (
-    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4">
-      <h1 className="text-2xl font-bold">Crew status</h1>
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
+      <h1 className="text-xl font-bold">Crew status</h1>
       <p className="mt-2 text-base text-muted-foreground">
         {mode.name}
-        {today !== null && ` · Day ${today}`} · each score compares the astronaut with their own normal · simulated demo mission
+        {today !== null && ` | Day ${today}`} | each score compares the astronaut with their own normal | simulated demo mission
       </p>
 
       {status === "loading" ? (
-        <p className="mt-3 text-base text-muted-foreground">Opening the mission data…</p>
+        <p className="mt-2 text-base text-muted-foreground">Opening the mission data…</p>
       ) : (
-        <div className="mt-3 grid auto-rows-fr gap-3 lg:grid-cols-3">
+        <div className="mt-2 grid auto-rows-fr gap-2 lg:grid-cols-3">
           {CREW.map((m) => (
             <CrewCard key={m.id} member={m} result={results?.[m.id] ?? { state: "empty" }} onOpen={() => setCrewId(m.id)} />
           ))}
         </div>
       )}
 
-      <section className="mt-3 rounded-xl border border-dashed border-border p-3" aria-labelledby="demo-heading">
-        <div className="flex flex-wrap items-center justify-between gap-3">
+      <section className="mt-2 rounded-xl border border-dashed border-border p-3" aria-labelledby="demo-heading">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h2 id="demo-heading" className="text-lg font-bold">
+            <h2 id="demo-heading" className="text-base font-bold">
               Demo controls
             </h2>
             <p className="text-muted-foreground">All crew data is simulated. Reload the demo mission, clear it, or try events in the Scenario Lab.</p>
@@ -155,7 +155,7 @@ export default function Crew() {
             <FlaskConical className="size-5" aria-hidden="true" /> Scenario Lab
           </Link>
         </div>
-        <div className="mt-3">
+        <div className="mt-2">
           <MissionDataPanel />
         </div>
       </section>

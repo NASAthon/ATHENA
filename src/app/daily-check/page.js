@@ -147,19 +147,19 @@ function DailyCheck() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4">
-      <h1 className="text-2xl font-bold">Daily check</h1>
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
+      <h1 className="text-xl font-bold">Daily check</h1>
       <p className="mt-2 text-base text-muted-foreground">
         Skip anything you can&apos;t measure today. Tap a box to see how to measure it.
       </p>
 
-      <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <div className="space-y-3">
+      <div className="mt-2 grid gap-2 lg:grid-cols-[minmax(0,1fr)_380px]">
+        <div className="space-y-2">
           <section className={card} aria-labelledby="readings-heading">
-            <h2 id="readings-heading" className="text-lg font-bold">
+            <h2 id="readings-heading" className="text-base font-bold">
               Readings
             </h2>
-            <div className="mt-3 grid gap-3 md:grid-cols-2">
+            <div className="mt-2 grid gap-2 md:grid-cols-2">
               {FORM_ORDER.map((id) => {
                 const ind = byId[id];
                 const title = ind.optional ? `${ind.name} (optional)` : ind.name;
@@ -167,7 +167,7 @@ function DailyCheck() {
                   return (
                     <fieldset key={id} className="md:col-span-2" onFocus={() => setFocusId(id)}>
                       <legend className="font-semibold">{title}</legend>
-                      <div className="grid gap-3 md:grid-cols-2">
+                      <div className="grid gap-2 md:grid-cols-2">
                         {ind.inputs.map((f) => (
                           <NumberInput
                             key={f.id}
@@ -202,11 +202,11 @@ function DailyCheck() {
           </section>
 
           <section className={card} aria-labelledby="mood-heading">
-            <h2 id="mood-heading" className="text-lg font-bold">
+            <h2 id="mood-heading" className="text-base font-bold">
               How is your mood today?
             </h2>
             <p className="mt-1 text-muted-foreground">{mood.glance}</p>
-            <div className="mt-3 grid auto-rows-fr grid-cols-5 gap-3">
+            <div className="mt-2 grid auto-rows-fr grid-cols-5 gap-2">
               {mood.scale.map(({ value, label }) => (
                 <button
                   key={value}
@@ -217,13 +217,13 @@ function DailyCheck() {
                     setMoodValue(value);
                     clearOutcome();
                   }}
-                  className={`min-h-14 rounded-lg border px-2 py-2 text-center ${focusRing} ${
+                  className={`min-h-12 rounded-lg border px-2 py-2 text-center ${focusRing} ${
                     moodValue === value
                       ? "border-primary bg-primary/15"
                       : "border-input bg-input/30 hover:bg-accent"
                   }`}
                 >
-                  <span className="block text-lg font-bold">{value}</span>
+                  <span className="block text-base font-bold">{value}</span>
                   <span className="block text-sm text-muted-foreground">{label}</span>
                 </button>
               ))}
@@ -231,14 +231,14 @@ function DailyCheck() {
           </section>
 
           <section className={card} aria-labelledby="symptoms-heading">
-            <h2 id="symptoms-heading" className="text-lg font-bold">
+            <h2 id="symptoms-heading" className="text-base font-bold">
               Any of these today?
             </h2>
-            <div className="mt-3 grid auto-rows-fr gap-3 md:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-2 grid auto-rows-fr gap-2 md:grid-cols-2 xl:grid-cols-3">
               {SYMPTOMS.map((s) => (
                 <label
                   key={s.id}
-                  className="flex min-h-11 cursor-pointer items-center gap-3 rounded-lg border border-input bg-input/30 px-4 hover:bg-accent has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring"
+                  className="flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-input bg-input/30 px-4 hover:bg-accent has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring"
                 >
                   <input
                     type="checkbox"
@@ -258,12 +258,12 @@ function DailyCheck() {
             </div>
 
             {redFlags.length > 0 && (
-              <div role="alert" className="mt-3 rounded-lg border-2 border-destructive p-3">
+              <div role="alert" className="mt-2 rounded-lg border-2 border-destructive p-3">
                 <p className="flex items-center gap-2 text-base font-bold">
                   <TriangleAlert aria-hidden="true" className="size-5 text-destructive" />
                   Urgent: open the emergency guide now
                 </p>
-                <ul className="mt-3 space-y-2">
+                <ul className="mt-2 space-y-2">
                   {redFlags.map((s) => (
                     <li key={s.id}>
                       <Link
@@ -279,7 +279,7 @@ function DailyCheck() {
             )}
           </section>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={save}
@@ -326,16 +326,16 @@ function DailyCheck() {
 
           {result && (
             <section className={card} aria-labelledby="result-heading">
-              <h2 id="result-heading" className="text-lg font-bold">
+              <h2 id="result-heading" className="text-base font-bold">
                 Today&apos;s result
               </h2>
               {result.length === 0 ? (
-                <p className="mt-3 flex items-center gap-2 text-base">
+                <p className="mt-2 flex items-center gap-2 text-base">
                   <Check aria-hidden="true" className="size-5" style={{ color: "var(--status-steady)" }} />
                   No flags on today&apos;s readings. Trends are checked against your own baseline over the coming days.
                 </p>
               ) : (
-                <ul className="mt-3 space-y-3">
+                <ul className="mt-2 space-y-2">
                   {result.map((r) => {
                     const { label, Icon, colour } = LEVEL_STYLE[r.level];
                     return (
@@ -352,12 +352,12 @@ function DailyCheck() {
                         {r.emergencyId && (
                           <Link
                             href={`/emergency?id=${r.emergencyId}`}
-                            className={`mt-3 inline-flex min-h-11 items-center rounded-lg bg-destructive px-4 font-semibold text-background hover:bg-destructive/90 ${focusRing}`}
+                            className={`mt-2 inline-flex min-h-11 items-center rounded-lg bg-destructive px-4 font-semibold text-background hover:bg-destructive/90 ${focusRing}`}
                           >
                             Open: {emergencyName[r.emergencyId]}
                           </Link>
                         )}
-                        <p className="mt-3 text-sm text-muted-foreground">
+                        <p className="mt-2 text-sm text-muted-foreground">
                           {r.basisLabel}
                         </p>
                       </li>
@@ -365,26 +365,26 @@ function DailyCheck() {
                   })}
                 </ul>
               )}
-              <p className="mt-3 text-sm text-muted-foreground">Not medical advice. The flight surgeon makes every medical decision.</p>
+              <p className="mt-2 text-sm text-muted-foreground">Not medical advice. The flight surgeon makes every medical decision.</p>
             </section>
           )}
         </div>
 
         <aside className={`${card} h-fit lg:sticky lg:top-4`} aria-live="polite">
           <p className="text-sm uppercase tracking-wider text-muted-foreground">How to measure</p>
-          <h2 className="mt-3 text-lg font-bold">{focused.name}</h2>
+          <h2 className="mt-2 text-base font-bold">{focused.name}</h2>
           <p className="mt-1 text-muted-foreground">{focused.glance}</p>
 
           {focused.howToMeasure.length > 0 && (
-            <ol className="mt-3 list-decimal space-y-3 pl-5 text-base">
+            <ol className="mt-2 list-decimal space-y-2 pl-5 text-base">
               {focused.howToMeasure.map((s) => (
                 <li key={s.step}>{s.step}</li>
               ))}
             </ol>
           )}
-          {focused.spaceNote && <p className="mt-3 text-muted-foreground">{focused.spaceNote}</p>}
+          {focused.spaceNote && <p className="mt-2 text-muted-foreground">{focused.spaceNote}</p>}
 
-          <p className="mt-3 text-sm text-muted-foreground">
+          <p className="mt-2 text-sm text-muted-foreground">
             Ranges are general clinical reference ranges, not NASA flight standards. Not medical advice.
           </p>
 
@@ -392,7 +392,7 @@ function DailyCheck() {
             <button
               type="button"
               onClick={readAloud}
-              className={`mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-input hover:bg-accent ${focusRing}`}
+              className={`mt-2 flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-input hover:bg-accent ${focusRing}`}
             >
               <Volume2 aria-hidden="true" className="size-5" />
               Read these steps aloud
@@ -406,7 +406,7 @@ function DailyCheck() {
 
 export default function DailyCheckPage() {
   return (
-    <Suspense fallback={<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4"><h1 className="text-2xl font-bold">Daily check</h1></main>}>
+    <Suspense fallback={<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3"><h1 className="text-xl font-bold">Daily check</h1></main>}>
       <DailyCheckForCrew />
     </Suspense>
   );

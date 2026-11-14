@@ -50,6 +50,7 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Isaac | Claude | Equal-size cards: repeated cards and option boxes in a grid share one row height (`auto-rows-fr`); Today's indicator cards share a minimum height with the footer line pinned to the bottom | `src/app/{today,crew,calendar,emergency,scenario-lab,daily-check}/page.js`, `src/components/MissionDataPanel.js` |
 | 14 Nov 2026 | Isaac | Claude | Crew page: removed the "Reminders today" and "Earth link" boxes (team choice; the same information is on Today, Calendar, Emergency, Summary and Trends) | `src/app/crew/page.js`, `docs/CHECKLIST.md` |
 | 14 Nov 2026 | Isaac | Claude | Page tidy: "Day N" wording, no Back to crew on Today, second compact pass, shorter symptom names, Trends All button first and arrow-ended day slider, Summary "Send to Earth" (simulated) instead of Copy text | `src/app/*`, `src/components/*`, `src/data/symptoms.js`, `src/app/globals.css`, `docs/CHECKLIST.md` |
+| 14 Nov 2026 | Isaac | Claude | Page tidy 2: "|" separators, "Page | Name | Day N" headings, Today flags on indicator cards (no separate box), Trends day number box and fewer filters, Body page fits the screen, centred nav, third compact pass, "Stroke signs" symptom name | `src/app/*`, `src/components/*`, `src/data/symptoms.js` |
 
 ## AI-generated media
 

@@ -48,9 +48,9 @@ export default function CalendarPage() {
 
   if (status === "loading" || today === null) {
     return (
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-4">
-        <h1 className="text-2xl font-bold">Mission calendar</h1>
-        <p className="mt-3 text-base text-muted-foreground">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-3">
+        <h1 className="text-xl font-bold">Mission calendar</h1>
+        <p className="mt-2 text-base text-muted-foreground">
           {status === "loading" ? (
             "Opening the mission data…"
           ) : (
@@ -99,27 +99,27 @@ export default function CalendarPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-4">
-      <h1 className="text-2xl font-bold">
-        Mission calendar <span className="text-lg font-normal text-muted-foreground">· {member.name} · Day {today}</span>
+    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-3">
+      <h1 className="text-xl font-bold">
+        Mission calendar <span className="text-base font-normal text-muted-foreground">| {member.name} | Day {today}</span>
       </h1>
       <p className="mt-2 text-base text-muted-foreground">
         Periodic exams named on NASA risk pages. How often they repeat in flight is an ATHENA design choice: NASA doesn&apos;t state it.
       </p>
 
-      <section className="mt-3" aria-labelledby="exams-heading">
-        <h2 id="exams-heading" className="text-lg font-bold">
+      <section className="mt-2" aria-labelledby="exams-heading">
+        <h2 id="exams-heading" className="text-base font-bold">
           Exams
         </h2>
-        <ul className="mt-3 grid auto-rows-fr gap-3 md:grid-cols-2">
+        <ul className="mt-2 grid auto-rows-fr gap-2 md:grid-cols-2">
           {rows.map(({ exam, state, dueDay, next, last }) => {
             const info = examById[exam.id];
             const s = EXAM_STATUS[state];
             const needsDoing = state === "overdue" || state === "due";
             return (
               <li key={exam.id} className={card} style={needsDoing ? { borderColor: s.colour } : undefined}>
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <h3 className="text-lg font-semibold">{info.name}</h3>
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <h3 className="text-base font-semibold">{info.name}</h3>
                   <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-semibold" style={{ borderColor: s.colour, color: s.colour }}>
                     <s.Icon className="size-4" aria-hidden="true" />
                     {s.label}
@@ -128,15 +128,15 @@ export default function CalendarPage() {
                 <p className="mt-2">{info.why}</p>
                 <p className="mt-2 text-muted-foreground">
                   Every {exam.everyDays} days
-                  {state === "overdue" && ` · was due on day ${dueDay}`}
-                  {last !== null ? ` · last done on day ${last}` : " · not done yet this mission"} · next due day {next}
+                  {state === "overdue" && ` | was due on day ${dueDay}`}
+                  {last !== null ? ` | last done on day ${last}` : " | not done yet this mission"} | next due day {next}
                 </p>
                 {needsDoing && (
                   <button
                     type="button"
                     onClick={() => markDone(exam.id)}
                     disabled={saving !== null || status === "busy"}
-                    className={`mt-3 inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-4 font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60 ${focusRing}`}
+                    className={`mt-2 inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-4 font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60 ${focusRing}`}
                   >
                     <CircleCheck className="size-5" aria-hidden="true" />
                     {saving === exam.id ? "Saving…" : `Mark done today (day ${today})`}
@@ -147,21 +147,21 @@ export default function CalendarPage() {
           })}
         </ul>
         {error && (
-          <p role="alert" className="mt-3 font-semibold" style={{ color: "var(--status-red)" }}>
+          <p role="alert" className="mt-2 font-semibold" style={{ color: "var(--status-red)" }}>
             Couldn&apos;t save: {error}
           </p>
         )}
       </section>
 
-      <div className="mt-4 grid gap-3 md:grid-cols-2">
+      <div className="mt-3 grid gap-2 md:grid-cols-2">
         <section className={card} aria-labelledby="upcoming-heading">
-          <h2 id="upcoming-heading" className="text-lg font-bold">
+          <h2 id="upcoming-heading" className="text-base font-bold">
             Next {LOOK_AHEAD_DAYS} days
           </h2>
           {upcoming.length === 0 ? (
             <p className="mt-2 text-muted-foreground">No exams due.</p>
           ) : (
-            <ul className="mt-3 space-y-2">
+            <ul className="mt-2 space-y-2">
               {upcoming.map(({ day, ids }) => (
                 <li key={day} className="flex flex-wrap gap-x-3">
                   <span className="w-20 shrink-0 font-semibold">Day {day}</span>
@@ -174,10 +174,10 @@ export default function CalendarPage() {
 
         {notInFlight.length > 0 && (
           <section className={card} aria-labelledby="ground-heading">
-            <h2 id="ground-heading" className="text-lg font-bold">
+            <h2 id="ground-heading" className="text-base font-bold">
               Done on the ground
             </h2>
-            <ul className="mt-3 space-y-3">
+            <ul className="mt-2 space-y-2">
               {notInFlight.map((e) => (
                 <li key={e.id}>
                   <p className="font-semibold">{e.name}</p>
@@ -191,7 +191,7 @@ export default function CalendarPage() {
         )}
       </div>
 
-      <p className="mt-3 text-muted-foreground">Demo mission: all data on this screen is simulated. Not medical advice.</p>
+      <p className="mt-2 text-muted-foreground">Demo mission: all data on this screen is simulated. Not medical advice.</p>
     </main>
   );
 }

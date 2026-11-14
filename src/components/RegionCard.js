@@ -46,10 +46,10 @@ export default function RegionCard({ status }) {
   const main = status.reasons[0];
 
   return (
-    <section aria-labelledby="region-card-title" className="flex flex-col gap-3 rounded-xl border bg-card p-3">
+    <section aria-labelledby="region-card-title" className="flex flex-col gap-2 rounded-xl border bg-card p-3">
       {/* Glance */}
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <h2 id="region-card-title" className="text-lg font-semibold">
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <h2 id="region-card-title" className="text-base font-semibold">
           {status.name}
         </h2>
         <span
