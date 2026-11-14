@@ -1,5 +1,6 @@
 import "./globals.css";
 import Header from "@/components/Header";
+import DesktopShell from "@/components/DesktopShell";
 import { CrewProvider } from "@/components/CrewProvider";
 import { MissionDataProvider } from "@/components/MissionDataProvider";
 import { MissionModeProvider } from "@/components/MissionModeProvider";
@@ -17,7 +18,7 @@ export default function RootLayout({ children }) {
           <CrewProvider>
             <MissionModeProvider>
               <Header />
-              {children}
+              <DesktopShell>{children}</DesktopShell>
             </MissionModeProvider>
           </CrewProvider>
         </MissionDataProvider>

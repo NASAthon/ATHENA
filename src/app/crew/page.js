@@ -88,7 +88,7 @@ function CrewCard({ member, result, onOpen }) {
         </span>
       </div>
       <div className="mt-2 flex items-center gap-2">
-        <span className="text-8xl font-bold leading-none" style={{ color: band.colour }}>
+        <span className="text-7xl font-bold leading-none 2xl:text-8xl" style={{ color: band.colour }}>
           {health.score ?? "—"}
         </span>
         <div>
@@ -143,10 +143,13 @@ export default function Crew() {
         </div>
       )}
 
-      <section className="mt-2 rounded-xl border border-dashed border-border p-3" aria-labelledby="demo-heading">
-        <div className="flex flex-wrap items-center justify-between gap-2">
+      <details className="mt-2 rounded-xl border border-dashed border-border p-3">
+        <summary className={`flex min-h-11 cursor-pointer items-center font-bold ${focusRing}`}>
+          Demo and backup controls
+        </summary>
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h2 id="demo-heading" className="text-base font-bold">
+            <h2 className="text-base font-bold">
               Demo controls
             </h2>
             <p className="text-muted-foreground">All crew data is simulated. Reload the demo mission, clear it, or try events in the Scenario Lab.</p>
@@ -158,7 +161,7 @@ export default function Crew() {
         <div className="mt-2">
           <MissionDataPanel />
         </div>
-      </section>
+      </details>
     </main>
   );
 }

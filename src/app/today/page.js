@@ -65,7 +65,7 @@ function IndicatorCard({ id, group, record, baselines, flag }) {
   const { unit, value, normal } = readingFor(id, record, baselines);
   const readingOnly = id === "radiation";
   return (
-    <article className="flex min-h-32 flex-col rounded-xl border border-border bg-card p-3" style={flag ? { borderColor: "var(--status-amber)" } : undefined}>
+    <article className="flex min-h-32 flex-col rounded-xl border border-border bg-card p-3 xl:min-h-28" style={flag ? { borderColor: "var(--status-amber)" } : undefined}>
       <div className="flex items-start justify-between gap-2">
         <h3 className="text-base text-muted-foreground">{byId[id].name}</h3>
         {readingOnly ? <StatusPill status="no_data" label="Reading only" /> : <StatusPill status={group?.status ?? "no_data"} />}
@@ -175,7 +175,7 @@ export default function Today() {
           ) : (
             <>
               <div className="mt-2 flex flex-wrap items-center gap-2">
-                <span className="text-8xl font-bold leading-none" style={{ color: band.colour }}>
+                <span className="text-7xl font-bold leading-none 2xl:text-8xl" style={{ color: band.colour }}>
                   {health.score}
                 </span>
                 <span

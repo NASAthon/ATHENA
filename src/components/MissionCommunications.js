@@ -203,8 +203,10 @@ export default function MissionCommunications({ astronautId, astronautName, miss
       <p role="status" aria-live="polite" className="mt-2 min-h-6 text-sm text-muted-foreground">{notice}</p>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
 
-      <div className="mt-2 border-t border-border pt-2">
-        <h3 className="font-semibold">Communication history | {astronautName}</h3>
+      <details className="mt-2 border-t border-border pt-2">
+        <summary className={`flex min-h-11 cursor-pointer items-center font-semibold ${focusRing}`}>
+          Communication history | {astronautName} ({messages.length})
+        </summary>
         {messages.length === 0 ? (
           <p className="mt-1 text-sm text-muted-foreground">No simulated reports sent for this astronaut.</p>
         ) : (
@@ -214,7 +216,7 @@ export default function MissionCommunications({ astronautId, astronautName, miss
             ))}
           </ol>
         )}
-      </div>
+      </details>
     </section>
   );
 }
@@ -270,8 +272,10 @@ function CurrentTransmission({ message, state, speed }) {
 function IncidentTimeline({ events }) {
   const visible = events.slice(0, 10);
   return (
-    <section className="mt-2 rounded-lg border border-border p-3" aria-labelledby="incident-timeline-heading">
-      <h3 id="incident-timeline-heading" className="font-semibold">Incident timeline</h3>
+    <details className="mt-2 rounded-lg border border-border p-3">
+      <summary className={`flex min-h-11 cursor-pointer items-center font-semibold ${focusRing}`}>
+        Incident timeline ({visible.length})
+      </summary>
       <p className="mt-1 text-sm text-muted-foreground">Meaningful alert, red-limit, recovery and Earth-link events; routine days are omitted.</p>
       {visible.length === 0 ? (
         <p className="mt-2 text-sm text-muted-foreground">No incident events recorded.</p>
@@ -288,7 +292,7 @@ function IncidentTimeline({ events }) {
           ))}
         </ol>
       )}
-    </section>
+    </details>
   );
 }
 

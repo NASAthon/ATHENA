@@ -138,11 +138,11 @@ export default function Page() {
   const fromDayValid = Number.isInteger(form.fromDay) && form.fromDay >= FIRST_DAY && form.fromDay <= MISSION_DAYS.toDay;
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-3">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
       <h1 className="flex items-center gap-2 text-lg font-semibold">
         <FlaskConical aria-hidden="true" className="size-8" /> Scenario Lab
       </h1>
-      <p className="mt-2 mb-6 text-muted-foreground">
+      <p className="mt-2 mb-2 text-muted-foreground">
         {member.name} | simulated mission | inject an event and watch ATHENA&apos;s alerts react. This works on a copy:
         nothing here changes the crew&apos;s records.
       </p>
@@ -156,7 +156,7 @@ export default function Page() {
       >
         <fieldset className="md:col-span-2">
           <legend className="font-semibold">Event</legend>
-          <div className="mt-2 grid auto-rows-fr gap-2 sm:grid-cols-2">
+          <div className="mt-2 grid auto-rows-fr gap-2 sm:grid-cols-2 xl:grid-cols-5">
             {SCENARIOS.map((s) => (
               <label
                 key={s.id}

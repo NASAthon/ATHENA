@@ -10,8 +10,8 @@ import { appPathname } from "@/lib/basePath";
 
 const nameOf = Object.fromEntries(INDICATORS.map((i) => [i.id, i.name]));
 
-// Alert banner at the top of every screen (CHECKLIST › Layout) for the astronaut selected in the
-// header: red limits first, then drift alerts. Hidden on Today, which shows the full alert card.
+// Alert banner at the top of the main content for the astronaut selected in the header: red limits
+// first, then drift alerts. Hidden on Today, which shows the full alert card.
 export default function AlertBanner() {
   const pathname = appPathname(usePathname());
   const { state, member, evaluation } = useTodayEvaluation();
@@ -32,21 +32,23 @@ export default function AlertBanner() {
   const emergencyId = red.find((r) => r.emergencyId)?.emergencyId;
 
   return (
-    <div role="status" className="mx-auto mt-3 flex max-w-7xl flex-wrap items-center gap-3 rounded-lg border-2 px-4 py-2" style={{ borderColor: colour }}>
-      <Icon className="size-5 shrink-0" style={{ color: colour }} aria-hidden="true" />
-      <p className="flex-1 font-semibold">{text}</p>
-      {emergencyId ? (
-        <Link
-          href={`/emergency?id=${emergencyId}`}
-          className={`inline-flex min-h-11 items-center rounded-lg bg-destructive px-4 font-semibold text-background hover:bg-destructive/90 ${focusRing}`}
-        >
-          Open emergency guide
-        </Link>
-      ) : (
-        <Link href="/today" className={`inline-flex min-h-11 items-center rounded-lg border border-input px-4 hover:bg-accent ${focusRing}`}>
-          See today
-        </Link>
-      )}
+    <div className="px-4">
+      <div role="status" className="mx-auto mt-3 flex max-w-7xl flex-wrap items-center gap-3 rounded-lg border-2 px-4 py-2" style={{ borderColor: colour }}>
+        <Icon className="size-5 shrink-0" style={{ color: colour }} aria-hidden="true" />
+        <p className="flex-1 font-semibold">{text}</p>
+        {emergencyId ? (
+          <Link
+            href={`/emergency?id=${emergencyId}`}
+            className={`inline-flex min-h-11 items-center rounded-lg bg-destructive px-4 font-semibold text-background hover:bg-destructive/90 ${focusRing}`}
+          >
+            Open emergency guide
+          </Link>
+        ) : (
+          <Link href="/today" className={`inline-flex min-h-11 items-center rounded-lg border border-input px-4 hover:bg-accent ${focusRing}`}>
+            See today
+          </Link>
+        )}
+      </div>
     </div>
   );
 }

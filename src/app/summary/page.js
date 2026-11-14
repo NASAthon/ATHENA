@@ -31,7 +31,7 @@ export default function SummaryPage() {
   const { modeId, mode } = useMissionMode();
   if (state !== "ready" || !evaluation) {
     return (
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-3">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
         <h1 className="text-xl font-bold">Flight-surgeon summary</h1>
         <p className="mt-2 text-base text-muted-foreground">
           {state === "loading" ? (
@@ -60,7 +60,7 @@ export default function SummaryPage() {
   const evaluations = evaluateMission(records, baselines, Math.min(IN_FLIGHT_WINDOW.toDay + 1, today), today);
 
   return (
-    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-3">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
       <h1 className="text-xl font-bold">Flight-surgeon summary</h1>
       <p className="mt-2 text-base text-muted-foreground">
         {member.name} | Day {today} | {mode.name}. One page for the flight surgeon on the ground.
@@ -144,11 +144,13 @@ export default function SummaryPage() {
         </section>
       )}
 
-      <section className={`${card} mt-2`} aria-labelledby="message-heading">
-        <h2 id="message-heading" className="text-base font-bold">Current report snapshot</h2>
+      <details className={`${card} mt-2`}>
+        <summary className={`flex min-h-11 cursor-pointer items-center font-bold ${focusRing}`}>
+          Current report snapshot
+        </summary>
         <p className="mt-1 text-sm text-muted-foreground">Sending stores this exact report. Later health changes do not alter message history.</p>
         <pre className="mt-2 overflow-x-auto rounded-lg border border-border bg-background p-3 text-sm whitespace-pre-wrap">{summary.lines.join("\n")}</pre>
-      </section>
+      </details>
 
       <MissionCommunications
         astronautId={member.id}
