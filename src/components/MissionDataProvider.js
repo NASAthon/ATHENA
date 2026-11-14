@@ -9,6 +9,7 @@ import { getDatabase } from "@/lib/db";
 import { loadDemoMission, missionSummary, resetData, seedOnFirstRun } from "@/lib/sim/demo";
 import { saveCheckIn, saveExamResult } from "@/lib/checkIn";
 import { CREW } from "@/lib/crew";
+import { COMMUNICATION_CLOCK_KEY, serialiseCommunicationClock } from "@/lib/communications";
 
 const CREW_IDS = CREW.map((member) => member.id);
 const MissionDataContext = createContext(null);
@@ -79,6 +80,12 @@ export function MissionDataProvider({ children }) {
       // Today's check-in for one astronaut (Daily check and Reaction test both use this).
       saveCheckIn: (astronautId, fields) => run((d) => saveCheckIn(d, astronautId, summary.today, fields)),
       saveExamResult: (astronautId, examId, note) => run((d) => saveExamResult(d, astronautId, examId, summary.today, note)),
+      saveCommunication: (message, clock) =>
+        run((d) => d.saveCommunication(message, { clock: serialiseCommunicationClock(clock) })),
+      saveCommunicationClock: (clock) => run((d) => d.setMeta(COMMUNICATION_CLOCK_KEY, serialiseCommunicationClock(clock))),
+      exportBackup: () => db?.exportBackup() ?? null,
+      importBackup: (bytes) => run((d) => d.importBackup(bytes)),
+      recoveryNotice: db?.recoveryNotice ?? null,
     }),
     [db, status, error, summary, version, run],
   );

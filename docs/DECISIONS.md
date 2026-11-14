@@ -3,7 +3,7 @@
 Every locked choice and why. Entries are in the order they were made. **Index:**
 - **Product:** Originality · Body Map Required · Crew · Trends Over Single Readings · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · No External Links · Quick Reference Only · Design · First-Time Help · Checklist
 - **Data and content:** No Medicines or Diagnoses · Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
-- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts · Logic Engine · Logic Engine Assumptions · Logic Tests · Mission Simulator · Storage Layer · Daily Record · Saving From the App · Mission Modes
+- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts · Logic Engine · Logic Engine Assumptions · Logic Tests · Mission Simulator · Storage Layer · Daily Record · Saving From the App · Mission Modes · Mission Communications · Write Durability · Operational History and Report Changes · Offline Backup and Recovery
 - **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
 
 ## Frontend
@@ -905,3 +905,86 @@ and know what to do.
 
 Status:
 LOCKED
+
+---
+
+## Mission Communications
+
+The Flight-Surgeon Summary includes an entirely offline simulation of sending an immutable
+health-report snapshot to Earth and receiving a predefined acknowledgement. Nothing leaves the
+device and every reply is labelled "Simulation only — not a real flight surgeon response."
+
+- The report is built by the existing `buildSurgeonSummary()` health-engine function. The
+  communication layer adds the astronaut id, mission mode and transmission timestamp, but no
+  health interpretation of its own.
+- A deterministic delay is chosen inside each mode's sourced range: 60% through a bounded range
+  (ISS and Gateway), or 70% of a maximum-only range (Mars). The UI shows both the simulated delay
+  and the sourced range, and never presents the maximum as an exact delay.
+- Status is derived from persisted simulated time: queued, transmitting, delivered to Earth,
+  awaiting Earth response, response in transit, response received. Earth processing is a
+  5-s simulated demo interval; queued and delivered each have a 1-s simulated interval.
+- Clock speeds are 1×, 60× and 720×. Fast demo (720×) is the default so a Mars round trip can be
+  shown during the pitch. Changing speed re-anchors the clock without changing simulated time.
+- Messages and the clock are stored in the existing on-device SQLite/IndexedDB database. Message
+  status is calculated from immutable timestamps rather than stored as mutable UI state, avoiding
+  duplicate replies or stale status after reload. Reset and Load demo mission clear message history.
+- Replies have only three deterministic categories (normal, drift, urgent). They acknowledge the
+  existing ATHENA result and repeat that the crew should continue onboard monitoring/guidance or
+  follow the existing emergency procedure. They add no diagnosis, medicine or treatment.
+
+Reason:
+Shows why onboard autonomy matters when Earth cannot reply immediately, while staying fully
+offline and keeping the existing health engine as the source of truth.
+
+Status:
+LOCKED
+
+---
+
+## Write Durability
+
+All SQLite writes are serialised in invocation order before the whole database is exported to
+IndexedDB. Each write keeps a pre-write snapshot; if persistence fails after SQLite commits, the
+in-memory database is restored to that snapshot. A failed write does not block later queued writes.
+
+Reason:
+Concurrent exports could otherwise finish out of order and persist stale data. A failed IndexedDB
+save could also leave the visible in-memory mission different from what would return after reload.
+
+Status:
+LOCKED
+
+---
+
+## Operational History and Report Changes
+
+The Summary derives a concise incident timeline from the existing health-engine evaluations and
+immutable communications. It records alert transitions, recovery, red-limit events, health-band
+changes and Earth-link state, while omitting routine daily noise. No second health-event store is
+created. Each transmitted report also snapshots a plain-English comparison with the preceding
+report (score, alert, drift and new reading concerns). Earth receipt acknowledgement is derived
+from the persisted simulated clock and does not imply a real transmission.
+
+Reason:
+A single operational sequence and explicit changes help crew and ground understand what changed
+without duplicating or weakening the engine as the source of truth.
+
+Status:
+ACTIVE
+
+---
+
+## Offline Backup and Recovery
+
+Mission data can be exported as a local SQLite backup and restored through `MissionDataProvider`.
+Restore validates SQLite integrity, required ATHENA tables and the schema version, migrates older
+compatible backups, and persists the candidate before replacing the live database. Invalid files
+or failed persistence leave the current database unchanged. If startup detects a damaged saved
+database, ATHENA opens safely with a fresh database and shows a recovery notice.
+
+Reason:
+An offline-only mission tool needs a recovery path that does not depend on a server and must never
+destroy the live mission merely because an imported file is invalid.
+
+Status:
+ACTIVE

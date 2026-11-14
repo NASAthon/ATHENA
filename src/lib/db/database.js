@@ -12,7 +12,13 @@ import { calculateMissionBaselines, IN_FLIGHT_WINDOW, PRE_FLIGHT_WINDOW } from "
 import { DAY_KEY, DRIFT_INDICATOR_KEYS } from "../engine/indicators.js";
 
 /** Bump when the tables change; older saved databases are migrated by `migrate()`. */
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
+
+const REQUIRED_BACKUP_COLUMNS = Object.freeze({
+  meta: Object.freeze(["key", "value"]),
+  daily_record: Object.freeze(["astronaut_id", "mission_day", "record", "updated_at"]),
+  baseline: Object.freeze(["astronaut_id", "kind", "indicator", "status", "mean", "sd", "n", "skipped", "from_day", "to_day", "computed_at"]),
+});
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS meta (
@@ -43,6 +49,23 @@ CREATE TABLE IF NOT EXISTS baseline (
   computed_at  TEXT    NOT NULL,
   PRIMARY KEY (astronaut_id, kind, indicator)
 );
+-- Immutable snapshots sent through the simulated Earth link. Status is derived from
+-- the persisted simulated clock and these phase durations, so it cannot become stale
+-- while the Summary page is closed.
+CREATE TABLE IF NOT EXISTS communication_message (
+  id                  TEXT PRIMARY KEY,
+  astronaut_id        TEXT    NOT NULL,
+  mission_mode_id     TEXT    NOT NULL,
+  mission_day         INTEGER NOT NULL,
+  report_json         TEXT    NOT NULL,
+  response_json       TEXT    NOT NULL,
+  sent_at             TEXT    NOT NULL,
+  sent_sim_ms         INTEGER NOT NULL,
+  one_way_delay_ms    INTEGER NOT NULL,
+  queue_delay_ms      INTEGER NOT NULL,
+  delivery_hold_ms    INTEGER NOT NULL,
+  earth_processing_ms INTEGER NOT NULL
+);
 `;
 
 /**
@@ -71,6 +94,7 @@ export async function openDatabase({ SQL, persistence, now = () => new Date().to
   }
   const saved = await persistence.load();
   let db = null;
+  let recoveryNotice = null;
   if (saved && saved.length > 0) {
     try {
       db = new SQL.Database(saved);
@@ -79,10 +103,12 @@ export async function openDatabase({ SQL, persistence, now = () => new Date().to
       // A damaged saved copy must not lock the crew out of the app: start a fresh one.
       db?.close();
       db = null;
+      recoveryNotice = "The saved database was damaged, so ATHENA opened a fresh database. Restore a known-good backup or load the demo mission.";
     }
   }
   db ??= new SQL.Database();
   const athena = new AthenaDatabase(db, persistence, now);
+  athena.recoveryNotice = recoveryNotice;
   await athena.migrate();
   return athena;
 }
@@ -97,6 +123,10 @@ export class AthenaDatabase {
     this.db = db;
     this.persistence = persistence;
     this.now = now;
+    // All writes export the whole SQLite file. Keep them strictly ordered so a slower
+    // IndexedDB save can never finish after a newer one and restore stale bytes.
+    this.writeTail = Promise.resolve();
+    this.recoveryNotice = null;
   }
 
   /** Creates tables and records the schema version. Saves afterwards. */
@@ -111,6 +141,67 @@ export class AthenaDatabase {
     await this.persistence.save(this.db.export());
   }
 
+  /** Returns a standalone SQLite backup without changing the live database. */
+  exportBackup() {
+    return new Uint8Array(this.db.export());
+  }
+
+  /**
+   * Validates and restores an ATHENA SQLite backup atomically. The live database is
+   * replaced only after the candidate has passed integrity/schema checks and persisted.
+   */
+  importBackup(bytes) {
+    if (!(bytes instanceof Uint8Array) || bytes.length === 0) {
+      return Promise.reject(new TypeError("importBackup: choose a non-empty ATHENA SQLite backup."));
+    }
+    const operation = this.writeTail.then(() => this.#performImport(bytes));
+    this.writeTail = operation.catch(() => {});
+    return operation;
+  }
+
+  async #performImport(bytes) {
+    const Database = this.db.constructor;
+    let candidate;
+    try {
+      candidate = new Database(bytes);
+      const integrity = candidate.exec("PRAGMA integrity_check");
+      if (integrity[0]?.values?.[0]?.[0] !== "ok") throw new Error("SQLite integrity check failed.");
+      const tables = new Set(
+        (candidate.exec("SELECT name FROM sqlite_master WHERE type = 'table'")[0]?.values ?? []).map((row) => row[0]),
+      );
+      for (const required of ["meta", "daily_record", "baseline"]) {
+        if (!tables.has(required)) throw new Error(`Missing ATHENA table: ${required}.`);
+      }
+      const versionResult = candidate.exec("SELECT value FROM meta WHERE key = 'schema_version'");
+      const version = Number(versionResult[0]?.values?.[0]?.[0] ?? 0);
+      if (!Number.isInteger(version) || version < 1 || version > SCHEMA_VERSION) {
+        throw new Error(`Unsupported ATHENA backup schema version: ${version || "unknown"}.`);
+      }
+      if (candidate.exec("SELECT name FROM sqlite_master WHERE type IN ('trigger', 'view')")[0]?.values?.length > 0) {
+        throw new Error("ATHENA backups cannot contain triggers or views.");
+      }
+      for (const [table, requiredColumns] of Object.entries(REQUIRED_BACKUP_COLUMNS)) {
+        const columns = new Set((candidate.exec(`PRAGMA table_info(${table})`)[0]?.values ?? []).map((row) => row[1]));
+        for (const column of requiredColumns) {
+          if (!columns.has(column)) throw new Error(`Table ${table} is missing column ${column}.`);
+        }
+      }
+      if (version >= 2 && !tables.has("communication_message")) {
+        throw new Error("Missing ATHENA table: communication_message.");
+      }
+      candidate.exec(SCHEMA);
+      candidate.run("INSERT OR REPLACE INTO meta (key, value) VALUES ('schema_version', ?)", [String(SCHEMA_VERSION)]);
+      await this.persistence.save(candidate.export());
+    } catch (error) {
+      candidate?.close();
+      throw new Error(`This backup could not be restored: ${error instanceof Error ? error.message : String(error)}`);
+    }
+    const previous = this.db;
+    this.db = candidate;
+    this.recoveryNotice = null;
+    previous.close();
+  }
+
   /**
    * Runs `fn` inside a transaction and saves once afterwards. If `fn` throws, nothing is
    * written and nothing is saved.
@@ -119,7 +210,19 @@ export class AthenaDatabase {
    * @param {() => T} fn
    * @returns {Promise<T>}
    */
-  async write(fn) {
+  write(fn) {
+    if (typeof fn !== "function") return Promise.reject(new TypeError("write: fn must be a function."));
+    const operation = this.writeTail.then(() => this.#performWrite(fn));
+    // A failed write must not poison the queue: later writes still get their turn.
+    this.writeTail = operation.catch(() => {});
+    return operation;
+  }
+
+  async #performWrite(fn) {
+    // sql.js must commit before it can export. Keep a byte-for-byte snapshot so a failed
+    // persistence save also restores the in-memory database to its previous state.
+    const before = this.db.export();
+    const Database = this.db.constructor;
     this.db.exec("BEGIN");
     let result;
     try {
@@ -129,8 +232,14 @@ export class AthenaDatabase {
       this.db.exec("ROLLBACK");
       throw error;
     }
-    await this.save();
-    return result;
+    try {
+      await this.save();
+      return result;
+    } catch (error) {
+      this.db.close();
+      this.db = new Database(before);
+      throw error;
+    }
   }
 
   // ---- Meta ------------------------------------------------------------------------
@@ -272,6 +381,65 @@ export class AthenaDatabase {
     return result;
   }
 
+  // ---- Mission communications ------------------------------------------------------
+
+  /**
+   * Stores one immutable simulated Earth-link message. Reusing an id fails rather than
+   * replacing the original report snapshot.
+   *
+   * @param {Object} message Shape created by src/lib/communications.js.
+   */
+  async saveCommunication(message, { clock = null } = {}) {
+    assertCommunication(message);
+    await this.write(() => {
+      this.db.run(
+        `INSERT INTO communication_message
+         (id, astronaut_id, mission_mode_id, mission_day, report_json, response_json,
+          sent_at, sent_sim_ms, one_way_delay_ms, queue_delay_ms, delivery_hold_ms, earth_processing_ms)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          message.id,
+          message.astronautId,
+          message.missionModeId,
+          message.missionDay,
+          JSON.stringify(message.report),
+          JSON.stringify(message.response),
+          message.sentAt,
+          message.sentSimMs,
+          message.oneWayDelayMs,
+          message.queueDelayMs,
+          message.deliveryHoldMs,
+          message.earthProcessingMs,
+        ],
+      );
+      if (clock !== null) {
+        this.db.run("INSERT OR REPLACE INTO meta (key, value) VALUES ('communications_clock', ?)", [String(clock)]);
+      }
+    });
+  }
+
+  /** @param {string} astronautId @returns {Array<Object>} Newest first. */
+  loadCommunications(astronautId) {
+    assertId(astronautId);
+    return this.query(
+      "SELECT * FROM communication_message WHERE astronaut_id = ? ORDER BY sent_sim_ms DESC, id DESC",
+      [astronautId],
+    ).map((row) => ({
+      id: row.id,
+      astronautId: row.astronaut_id,
+      missionModeId: row.mission_mode_id,
+      missionDay: row.mission_day,
+      report: JSON.parse(row.report_json),
+      response: JSON.parse(row.response_json),
+      sentAt: row.sent_at,
+      sentSimMs: row.sent_sim_ms,
+      oneWayDelayMs: row.one_way_delay_ms,
+      queueDelayMs: row.queue_delay_ms,
+      deliveryHoldMs: row.delivery_hold_ms,
+      earthProcessingMs: row.earth_processing_ms,
+    }));
+  }
+
   /**
    * CHECKLIST §2: "Pre-flight baseline and in-flight baseline … both calculated once and
    * stored". Calculates each baseline from the stored records the first time its window
@@ -303,6 +471,7 @@ export class AthenaDatabase {
     await this.write(() => {
       this.db.run("DELETE FROM daily_record");
       this.db.run("DELETE FROM baseline");
+      this.db.run("DELETE FROM communication_message");
     });
   }
 
@@ -331,4 +500,21 @@ export class AthenaDatabase {
 /** @param {unknown} id */
 function assertId(id) {
   if (typeof id !== "string" || id.length === 0) throw new TypeError("An astronaut id (non-empty string) is required.");
+}
+
+function assertCommunication(message) {
+  if (!message || typeof message !== "object") throw new TypeError("saveCommunication: message is required.");
+  for (const key of ["id", "astronautId", "missionModeId", "sentAt"]) {
+    if (typeof message[key] !== "string" || message[key].length === 0) {
+      throw new TypeError(`saveCommunication: ${key} must be a non-empty string.`);
+    }
+  }
+  for (const key of ["missionDay", "sentSimMs", "oneWayDelayMs", "queueDelayMs", "deliveryHoldMs", "earthProcessingMs"]) {
+    if (!Number.isInteger(message[key]) || message[key] < 0) {
+      throw new TypeError(`saveCommunication: ${key} must be a non-negative whole number.`);
+    }
+  }
+  if (!message.report || typeof message.report !== "object" || !message.response || typeof message.response !== "object") {
+    throw new TypeError("saveCommunication: report and response snapshots are required.");
+  }
 }

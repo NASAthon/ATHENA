@@ -54,6 +54,8 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Isaac | Claude | Emergency page tidy: one-line intro, smaller heading icons, guide cards and crew buttons in the site-wide card/button style | `src/app/emergency/page.js` |
 | 14 Nov 2026 | Isaac | Claude | Emergency guide layout: one-row crew picker, larger current step with Back/Next as the main controls, vitals in a collapsible section, signs first in the side column, compact flight-surgeon card | `src/app/emergency/page.js` |
 | 14 Nov 2026 | Isaac | Claude | Drop-downs: filled white downward triangle on every select and collapsible section (flips when open) | `src/app/globals.css` |
+| 14 Nov 2026 | Chidozie | Codex | Mission communications simulation: immutable report queue, deterministic two-way delays and responses, persistent simulated clock/history, accessible Summary UI, tests; serialised database writes with persistence-failure rollback | `src/lib/communications*`, `src/lib/db/*`, `src/components/MissionCommunications.js`, `src/app/summary/page.js`, `docs/*` |
+| 14 Nov 2026 | Chidozie | Codex | Engineering improvements to PR #45: derived incident timeline, report change comparison, simulated Earth receipt acknowledgement, validated offline database backup/restore, corruption recovery notice and tests | `src/lib/{communications,incidentTimeline}*`, `src/lib/db/*`, `src/components/{MissionCommunications,MissionDataPanel,MissionDataProvider}.js`, `src/app/summary/page.js`, `docs/*` |
 
 ## AI-generated media
 
