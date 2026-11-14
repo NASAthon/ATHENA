@@ -9,7 +9,7 @@
 import Link from "next/link";
 import { CircleCheck, OctagonAlert, Radio, TriangleAlert } from "lucide-react";
 import { INDICATORS } from "@/data";
-import { DRIFT_INDICATORS, buildSurgeonSummary, driftKeyName, earthLink, likelyHazards } from "@/lib/engine";
+import { DRIFT_INDICATORS, IN_FLIGHT_WINDOW, buildSurgeonSummary, driftKeyName, earthLink, evaluateMission, likelyHazards } from "@/lib/engine";
 import { useTodayEvaluation } from "@/components/useTodayEvaluation";
 import { useMissionMode } from "@/components/MissionModeProvider";
 import MissionCommunications from "@/components/MissionCommunications";
@@ -27,7 +27,7 @@ const ALERT_TEXT = {
 };
 
 export default function SummaryPage() {
-  const { state, today, member, evaluation } = useTodayEvaluation();
+  const { state, today, member, evaluation, records, baselines } = useTodayEvaluation();
   const { modeId, mode } = useMissionMode();
   if (state !== "ready" || !evaluation) {
     return (
@@ -57,6 +57,7 @@ export default function SummaryPage() {
   const urgent = red.length > 0 || summary.alertLevel === "escalated";
   const statusColour = red.length > 0 ? "var(--status-red)" : summary.alertLevel === "none" ? "var(--status-steady)" : "var(--status-amber)";
   const StatusIcon = red.length > 0 ? OctagonAlert : summary.alertLevel === "none" ? CircleCheck : TriangleAlert;
+  const evaluations = evaluateMission(records, baselines, Math.min(IN_FLIGHT_WINDOW.toDay + 1, today), today);
 
   return (
     <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-3">
@@ -155,6 +156,7 @@ export default function SummaryPage() {
         missionDay={today}
         missionModeId={modeId}
         report={summary}
+        evaluations={evaluations}
       />
 
       <p className="mt-2 text-muted-foreground">Demo mission: all data on this screen is simulated. Not medical advice.</p>

@@ -9,6 +9,8 @@ import {
   Radio,
   Satellite,
   Send,
+  ShieldCheck,
+  TriangleAlert,
 } from "lucide-react";
 import { MISSION_MODES } from "@/data";
 import { useMissionData } from "@/components/MissionDataProvider";
@@ -17,6 +19,7 @@ import {
   COMMUNICATION_STATUSES,
   COMMUNICATION_SPEEDS,
   changeCommunicationSpeed,
+  compareReportSnapshots,
   communicationDelay,
   communicationState,
   createCommunicationClock,
@@ -25,6 +28,7 @@ import {
   parseCommunicationClock,
   simulatedNow,
 } from "@/lib/communications";
+import { buildIncidentTimeline } from "@/lib/incidentTimeline";
 import { focusRing } from "@/lib/ui";
 
 const modeName = Object.fromEntries(MISSION_MODES.map((m) => [m.id, m.name]));
@@ -54,7 +58,7 @@ function delayText(ms) {
   return `${Math.round(seconds / 60)} min`;
 }
 
-export default function MissionCommunications({ astronautId, astronautName, missionDay, missionModeId, report }) {
+export default function MissionCommunications({ astronautId, astronautName, missionDay, missionModeId, report, evaluations = [] }) {
   const { db, status: dataStatus, version, saveCommunication, saveCommunicationClock } = useMissionData();
   const [clock, setClock] = useState(null);
   const [realNow, setRealNow] = useState(() => Date.now());
@@ -86,6 +90,8 @@ export default function MissionCommunications({ astronautId, astronautName, miss
   const current = messages.find((message) => communicationState(message, simNow).status.id !== "received") ?? messages[0] ?? null;
   const currentState = current ? communicationState(current, simNow) : null;
   const delay = communicationDelay(missionModeId);
+  const reportChanges = compareReportSnapshots(report, messages[0]?.report ?? null);
+  const timeline = buildIncidentTimeline({ evaluations, messages, simulatedNowMs: simNow });
 
   async function changeSpeed(speed) {
     if (!clock) return;
@@ -111,6 +117,7 @@ export default function MissionCommunications({ astronautId, astronautName, miss
       missionModeId,
       missionDay,
       report,
+      previousReport: messages[0]?.report ?? null,
       sentAt: new Date(now).toISOString(),
       sentSimMs: anchored.simulatedNowMs,
     });
@@ -174,9 +181,24 @@ export default function MissionCommunications({ astronautId, astronautName, miss
         </label>
       </div>
 
+      <div className="mt-2 rounded-lg border border-border p-3">
+        <h3 className="font-semibold">Changes since the last transmitted report</h3>
+        {messages.length === 0 ? (
+          <p className="mt-1 text-sm text-muted-foreground">This will be the first report for {astronautName}.</p>
+        ) : reportChanges.length === 0 ? (
+          <p className="mt-1 text-sm text-muted-foreground">No reportable score, alert, drift or reading changes.</p>
+        ) : (
+          <ul className="mt-1 list-disc space-y-1 pl-5 text-sm">
+            {reportChanges.map((change) => <li key={change}>{change}</li>)}
+          </ul>
+        )}
+      </div>
+
       {current && currentState && (
         <CurrentTransmission message={current} state={currentState} speed={clock?.speed ?? 1} />
       )}
+
+      <IncidentTimeline events={timeline} />
 
       <p role="status" aria-live="polite" className="mt-2 min-h-6 text-sm text-muted-foreground">{notice}</p>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
@@ -211,6 +233,13 @@ function CurrentTransmission({ message, state, speed }) {
       <p className="mt-1 text-sm text-muted-foreground">
         {state.status.id === "received" ? "Round trip complete." : `${remaining} remaining at ${speed}× simulation speed.`}
       </p>
+      <p className="mt-2 flex items-start gap-2 text-sm font-medium">
+        {state.deliveryAcknowledged ? (
+          <><ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" /> Earth receipt acknowledged in the simulation.</>
+        ) : (
+          <><Hourglass className="mt-0.5 size-4 shrink-0" aria-hidden="true" /> Earth has not received the report yet. Continue ATHENA&apos;s onboard guidance while waiting.</>
+        )}
+      </p>
       <ol className="mt-2 grid gap-1 text-xs sm:grid-cols-3" aria-label="Communication stages">
         {STATUS_ORDER.map((status, index) => {
           const stage = index < currentIndex ? "Complete" : index === currentIndex ? "Current" : "Waiting";
@@ -238,6 +267,31 @@ function CurrentTransmission({ message, state, speed }) {
   );
 }
 
+function IncidentTimeline({ events }) {
+  const visible = events.slice(0, 10);
+  return (
+    <section className="mt-2 rounded-lg border border-border p-3" aria-labelledby="incident-timeline-heading">
+      <h3 id="incident-timeline-heading" className="font-semibold">Incident timeline</h3>
+      <p className="mt-1 text-sm text-muted-foreground">Meaningful alert, red-limit, recovery and Earth-link events; routine days are omitted.</p>
+      {visible.length === 0 ? (
+        <p className="mt-2 text-sm text-muted-foreground">No incident events recorded.</p>
+      ) : (
+        <ol className="mt-2 space-y-2">
+          {visible.map((item, index) => (
+            <li key={`${item.type}-${item.day}-${item.messageId ?? index}`} className="grid grid-cols-[auto_1fr] gap-2 rounded-lg border border-border p-2">
+              {item.severity >= 3 ? <TriangleAlert className="mt-0.5 size-5 text-destructive" aria-hidden="true" /> : <CircleCheck className="mt-0.5 size-5 text-primary" aria-hidden="true" />}
+              <div>
+                <p className="font-semibold">Day {item.day} | {item.title}</p>
+                <p className="text-sm text-muted-foreground">{item.detail}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  );
+}
+
 function HistoryItem({ message, state }) {
   const Icon = STATUS_ICON[state.status.id] ?? Radio;
   return (
@@ -253,6 +307,14 @@ function HistoryItem({ message, state }) {
       </p>
       {state.status.id === "received" && (
         <p className="mt-2"><span className="font-semibold">Simulated response:</span> {message.response.text}</p>
+      )}
+      {message.report.changesSincePrevious?.length > 0 && (
+        <details className="mt-2">
+          <summary className={`min-h-11 cursor-pointer rounded py-2 font-medium ${focusRing}`}>Changes in this report</summary>
+          <ul className="list-disc space-y-1 pl-5 text-sm">
+            {message.report.changesSincePrevious.map((change) => <li key={change}>{change}</li>)}
+          </ul>
+        </details>
       )}
       <details className="mt-2">
         <summary className={`min-h-11 cursor-pointer rounded py-2 font-medium ${focusRing}`}>Report snapshot</summary>

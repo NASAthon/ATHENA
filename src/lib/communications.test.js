@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   COMMUNICATION_STATUSES,
   changeCommunicationSpeed,
+  compareReportSnapshots,
   communicationDelay,
   communicationState,
   createCommunicationClock,
@@ -82,6 +83,21 @@ test("reports and simulated responses are immutable snapshots", () => {
   assert.match(m.response.simulationLabel, /Simulation only/);
 });
 
+test("report comparison explains score, alert, drift and new reading changes", () => {
+  const changes = compareReportSnapshots(
+    report({ score: 59, alertLevel: "alert", drifting: [{ key: "sleepHours" }], limitBreaches: [{ indicatorId: "temperature", level: "urgent", label: "High" }] }),
+    report({ score: 78, alertLevel: "note", drifting: [{ key: "mood" }], limitBreaches: [] }),
+  );
+  assert.deepEqual(changes, [
+    "Health score: 78 → 59",
+    "Alert level: note → alert",
+    "New drift: Sleep",
+    "Drift resolved: Mood",
+    "New reading concern: Body temperature — High",
+  ]);
+  assert.deepEqual(compareReportSnapshots(report(), null), []);
+});
+
 test("urgent and normal reports get deterministic replies without new treatment advice", () => {
   const urgent = message({ id: "urgent", report: report({ alertLevel: "escalated" }) });
   const normal = message({ id: "normal", report: report({ alertLevel: "none", drifting: [] }) });
@@ -90,4 +106,3 @@ test("urgent and normal reports get deterministic replies without new treatment 
   assert.equal(normal.response.category, "normal");
   assert.match(normal.response.text, /routine monitoring/);
 });
-

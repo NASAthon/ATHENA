@@ -2,6 +2,8 @@
 // or network. The UI persists messages and the clock through MissionDataProvider.
 
 import { getMissionMode } from "./engine/missionMode.js";
+import { driftKeyName } from "./engine/summary.js";
+import { INDICATORS } from "../data/index.js";
 
 export const COMMUNICATION_CLOCK_KEY = "communications_clock";
 
@@ -17,6 +19,7 @@ export const DELIVERY_HOLD_MS = 1000;
 export const EARTH_PROCESSING_MS = 5000;
 
 const SPEED_VALUES = new Set(COMMUNICATION_SPEEDS.map((s) => s.multiplier));
+const indicatorName = Object.fromEntries(INDICATORS.map((item) => [item.id, item.name]));
 
 export const COMMUNICATION_STATUSES = Object.freeze({
   queued: Object.freeze({ id: "queued", label: "Queued" }),
@@ -86,7 +89,7 @@ export function serialiseCommunicationClock(clock) {
 }
 
 /** Creates the immutable report and deterministic simulated response snapshots. */
-export function createCommunicationMessage({ id, astronautId, missionModeId, missionDay, report, sentAt, sentSimMs }) {
+export function createCommunicationMessage({ id, astronautId, missionModeId, missionDay, report, previousReport = null, sentAt, sentSimMs }) {
   if (typeof id !== "string" || id.length === 0) throw new TypeError("A message id is required.");
   if (typeof astronautId !== "string" || astronautId.length === 0) throw new TypeError("An astronaut id is required.");
   if (!Number.isInteger(missionDay) || missionDay < 1) throw new TypeError("Mission day must be a positive whole number.");
@@ -98,6 +101,7 @@ export function createCommunicationMessage({ id, astronautId, missionModeId, mis
     astronautId,
     missionModeId: delay.modeId,
     transmittedAt: String(sentAt),
+    changesSincePrevious: compareReportSnapshots(report, previousReport),
   });
   const response = simulatedSurgeonResponse(reportSnapshot);
   return Object.freeze({
@@ -114,6 +118,32 @@ export function createCommunicationMessage({ id, astronautId, missionModeId, mis
     deliveryHoldMs: DELIVERY_HOLD_MS,
     earthProcessingMs: EARTH_PROCESSING_MS,
   });
+}
+
+/**
+ * Plain-English, deterministic changes between two immutable report snapshots.
+ * Empty on the first transmission so the UI never invents a comparison.
+ */
+export function compareReportSnapshots(current, previous) {
+  if (!current || typeof current !== "object") throw new TypeError("A current report is required.");
+  if (!previous || typeof previous !== "object") return Object.freeze([]);
+  const changes = [];
+  if (numberOrNull(current.score) !== numberOrNull(previous.score)) {
+    changes.push(`Health score: ${valueText(previous.score)} → ${valueText(current.score)}`);
+  }
+  if (current.alertLevel !== previous.alertLevel) {
+    changes.push(`Alert level: ${previous.alertLevel ?? "unknown"} → ${current.alertLevel ?? "unknown"}`);
+  }
+  const previousDrift = new Set((previous.drifting ?? []).map((item) => item.key));
+  const currentDrift = new Set((current.drifting ?? []).map((item) => item.key));
+  for (const key of currentDrift) if (!previousDrift.has(key)) changes.push(`New drift: ${driftKeyName(key)}`);
+  for (const key of previousDrift) if (!currentDrift.has(key)) changes.push(`Drift resolved: ${driftKeyName(key)}`);
+  const breachKey = (item) => `${item.indicatorId}:${item.level}:${item.label}`;
+  const previousBreaches = new Set((previous.limitBreaches ?? []).map(breachKey));
+  for (const breach of current.limitBreaches ?? []) {
+    if (!previousBreaches.has(breachKey(breach))) changes.push(`New reading concern: ${indicatorName[breach.indicatorId] ?? breach.indicatorId} — ${breach.label}`);
+  }
+  return Object.freeze(changes);
 }
 
 export function simulatedSurgeonResponse(report) {
@@ -161,9 +191,18 @@ export function communicationState(message, simNowMs) {
     phaseStart,
     phaseEnd,
     earthArrival,
+    deliveryAcknowledged: simNowMs >= earthArrival,
     responseStart,
     responseArrival,
   });
+}
+
+function numberOrNull(value) {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function valueText(value) {
+  return numberOrNull(value) === null ? "not available" : String(value);
 }
 
 export function formatCommunicationDuration(simulatedMs, speed = 1) {

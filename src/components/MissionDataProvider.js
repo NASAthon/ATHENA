@@ -83,6 +83,9 @@ export function MissionDataProvider({ children }) {
       saveCommunication: (message, clock) =>
         run((d) => d.saveCommunication(message, { clock: serialiseCommunicationClock(clock) })),
       saveCommunicationClock: (clock) => run((d) => d.setMeta(COMMUNICATION_CLOCK_KEY, serialiseCommunicationClock(clock))),
+      exportBackup: () => db?.exportBackup() ?? null,
+      importBackup: (bytes) => run((d) => d.importBackup(bytes)),
+      recoveryNotice: db?.recoveryNotice ?? null,
     }),
     [db, status, error, summary, version, run],
   );

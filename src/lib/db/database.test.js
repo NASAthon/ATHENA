@@ -38,6 +38,46 @@ test("every write is saved, and data survives reopening (closing the app)", asyn
   ]);
 });
 
+test("validated backups replace the database atomically and invalid files leave it unchanged", async () => {
+  const source = await open();
+  await source.saveDailyRecord("rivera", { missionDay: 12, mood: 4 });
+  const backup = source.exportBackup();
+  assert.ok(backup instanceof Uint8Array);
+
+  const target = await open();
+  await target.saveDailyRecord("singh", { missionDay: 3, mood: 2 });
+  await target.importBackup(backup);
+  assert.deepEqual(target.loadDailyRecords("rivera"), [{ missionDay: 12, mood: 4 }]);
+  assert.deepEqual(target.loadDailyRecords("singh"), []);
+
+  await assert.rejects(target.importBackup(new Uint8Array([1, 2, 3])), /could not be restored/);
+  assert.deepEqual(target.loadDailyRecords("rivera"), [{ missionDay: 12, mood: 4 }]);
+});
+
+test("a failed backup persistence keeps the live database unchanged", async () => {
+  const base = memoryPersistence();
+  let failNext = false;
+  const persistence = {
+    load: base.load,
+    clear: base.clear,
+    async save(bytes) {
+      if (failNext) {
+        failNext = false;
+        throw new Error("disk full");
+      }
+      await base.save(bytes);
+    },
+  };
+  const target = await open(persistence);
+  await target.saveDailyRecord("singh", { missionDay: 3, mood: 2 });
+  const source = await open();
+  await source.saveDailyRecord("rivera", { missionDay: 12, mood: 4 });
+  failNext = true;
+  await assert.rejects(target.importBackup(source.exportBackup()), /disk full/);
+  assert.deepEqual(target.loadDailyRecords("singh"), [{ missionDay: 3, mood: 2 }]);
+  assert.deepEqual(target.loadDailyRecords("rivera"), []);
+});
+
 test("concurrent writes are serialised and the newest persisted file wins", async () => {
   const base = memoryPersistence();
   let active = 0;
@@ -205,6 +245,7 @@ test("a damaged saved copy doesn't lock the crew out", async () => {
   const persistence = memoryPersistence();
   persistence.bytes = new Uint8Array([1, 2, 3, 4, 5]);
   const db = await open(persistence);
+  assert.match(db.recoveryNotice, /damaged/);
   await db.saveDailyRecord("rivera", { missionDay: 1, mood: 4 });
   assert.equal(db.loadDailyRecords("rivera").length, 1);
 });

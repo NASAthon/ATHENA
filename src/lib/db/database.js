@@ -14,6 +14,12 @@ import { DAY_KEY, DRIFT_INDICATOR_KEYS } from "../engine/indicators.js";
 /** Bump when the tables change; older saved databases are migrated by `migrate()`. */
 export const SCHEMA_VERSION = 2;
 
+const REQUIRED_BACKUP_COLUMNS = Object.freeze({
+  meta: Object.freeze(["key", "value"]),
+  daily_record: Object.freeze(["astronaut_id", "mission_day", "record", "updated_at"]),
+  baseline: Object.freeze(["astronaut_id", "kind", "indicator", "status", "mean", "sd", "n", "skipped", "from_day", "to_day", "computed_at"]),
+});
+
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS meta (
   key   TEXT PRIMARY KEY,
@@ -88,6 +94,7 @@ export async function openDatabase({ SQL, persistence, now = () => new Date().to
   }
   const saved = await persistence.load();
   let db = null;
+  let recoveryNotice = null;
   if (saved && saved.length > 0) {
     try {
       db = new SQL.Database(saved);
@@ -96,10 +103,12 @@ export async function openDatabase({ SQL, persistence, now = () => new Date().to
       // A damaged saved copy must not lock the crew out of the app: start a fresh one.
       db?.close();
       db = null;
+      recoveryNotice = "The saved database was damaged, so ATHENA opened a fresh database. Restore a known-good backup or load the demo mission.";
     }
   }
   db ??= new SQL.Database();
   const athena = new AthenaDatabase(db, persistence, now);
+  athena.recoveryNotice = recoveryNotice;
   await athena.migrate();
   return athena;
 }
@@ -117,6 +126,7 @@ export class AthenaDatabase {
     // All writes export the whole SQLite file. Keep them strictly ordered so a slower
     // IndexedDB save can never finish after a newer one and restore stale bytes.
     this.writeTail = Promise.resolve();
+    this.recoveryNotice = null;
   }
 
   /** Creates tables and records the schema version. Saves afterwards. */
@@ -129,6 +139,67 @@ export class AthenaDatabase {
   /** Writes the whole database to persistence. Called after every write (DECISIONS › Database). */
   async save() {
     await this.persistence.save(this.db.export());
+  }
+
+  /** Returns a standalone SQLite backup without changing the live database. */
+  exportBackup() {
+    return new Uint8Array(this.db.export());
+  }
+
+  /**
+   * Validates and restores an ATHENA SQLite backup atomically. The live database is
+   * replaced only after the candidate has passed integrity/schema checks and persisted.
+   */
+  importBackup(bytes) {
+    if (!(bytes instanceof Uint8Array) || bytes.length === 0) {
+      return Promise.reject(new TypeError("importBackup: choose a non-empty ATHENA SQLite backup."));
+    }
+    const operation = this.writeTail.then(() => this.#performImport(bytes));
+    this.writeTail = operation.catch(() => {});
+    return operation;
+  }
+
+  async #performImport(bytes) {
+    const Database = this.db.constructor;
+    let candidate;
+    try {
+      candidate = new Database(bytes);
+      const integrity = candidate.exec("PRAGMA integrity_check");
+      if (integrity[0]?.values?.[0]?.[0] !== "ok") throw new Error("SQLite integrity check failed.");
+      const tables = new Set(
+        (candidate.exec("SELECT name FROM sqlite_master WHERE type = 'table'")[0]?.values ?? []).map((row) => row[0]),
+      );
+      for (const required of ["meta", "daily_record", "baseline"]) {
+        if (!tables.has(required)) throw new Error(`Missing ATHENA table: ${required}.`);
+      }
+      const versionResult = candidate.exec("SELECT value FROM meta WHERE key = 'schema_version'");
+      const version = Number(versionResult[0]?.values?.[0]?.[0] ?? 0);
+      if (!Number.isInteger(version) || version < 1 || version > SCHEMA_VERSION) {
+        throw new Error(`Unsupported ATHENA backup schema version: ${version || "unknown"}.`);
+      }
+      if (candidate.exec("SELECT name FROM sqlite_master WHERE type IN ('trigger', 'view')")[0]?.values?.length > 0) {
+        throw new Error("ATHENA backups cannot contain triggers or views.");
+      }
+      for (const [table, requiredColumns] of Object.entries(REQUIRED_BACKUP_COLUMNS)) {
+        const columns = new Set((candidate.exec(`PRAGMA table_info(${table})`)[0]?.values ?? []).map((row) => row[1]));
+        for (const column of requiredColumns) {
+          if (!columns.has(column)) throw new Error(`Table ${table} is missing column ${column}.`);
+        }
+      }
+      if (version >= 2 && !tables.has("communication_message")) {
+        throw new Error("Missing ATHENA table: communication_message.");
+      }
+      candidate.exec(SCHEMA);
+      candidate.run("INSERT OR REPLACE INTO meta (key, value) VALUES ('schema_version', ?)", [String(SCHEMA_VERSION)]);
+      await this.persistence.save(candidate.export());
+    } catch (error) {
+      candidate?.close();
+      throw new Error(`This backup could not be restored: ${error instanceof Error ? error.message : String(error)}`);
+    }
+    const previous = this.db;
+    this.db = candidate;
+    this.recoveryNotice = null;
+    previous.close();
   }
 
   /**

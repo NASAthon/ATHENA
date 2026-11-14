@@ -3,7 +3,7 @@
 Every locked choice and why. Entries are in the order they were made. **Index:**
 - **Product:** Originality · Body Map Required · Crew · Trends Over Single Readings · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · No External Links · Quick Reference Only · Design · First-Time Help · Checklist
 - **Data and content:** No Medicines or Diagnoses · Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
-- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts · Logic Engine · Logic Engine Assumptions · Logic Tests · Mission Simulator · Storage Layer · Daily Record · Saving From the App · Mission Modes · Mission Communications · Write Durability
+- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts · Logic Engine · Logic Engine Assumptions · Logic Tests · Mission Simulator · Storage Layer · Daily Record · Saving From the App · Mission Modes · Mission Communications · Write Durability · Operational History and Report Changes · Offline Backup and Recovery
 - **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
 
 ## Frontend
@@ -953,3 +953,38 @@ save could also leave the visible in-memory mission different from what would re
 
 Status:
 LOCKED
+
+---
+
+## Operational History and Report Changes
+
+The Summary derives a concise incident timeline from the existing health-engine evaluations and
+immutable communications. It records alert transitions, recovery, red-limit events, health-band
+changes and Earth-link state, while omitting routine daily noise. No second health-event store is
+created. Each transmitted report also snapshots a plain-English comparison with the preceding
+report (score, alert, drift and new reading concerns). Earth receipt acknowledgement is derived
+from the persisted simulated clock and does not imply a real transmission.
+
+Reason:
+A single operational sequence and explicit changes help crew and ground understand what changed
+without duplicating or weakening the engine as the source of truth.
+
+Status:
+ACTIVE
+
+---
+
+## Offline Backup and Recovery
+
+Mission data can be exported as a local SQLite backup and restored through `MissionDataProvider`.
+Restore validates SQLite integrity, required ATHENA tables and the schema version, migrates older
+compatible backups, and persists the candidate before replacing the live database. Invalid files
+or failed persistence leave the current database unchanged. If startup detects a damaged saved
+database, ATHENA opens safely with a fresh database and shows a recovery notice.
+
+Reason:
+An offline-only mission tool needs a recovery path that does not depend on a server and must never
+destroy the live mission merely because an imported file is invalid.
+
+Status:
+ACTIVE
