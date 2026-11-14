@@ -37,7 +37,7 @@ const card = "rounded-xl border border-border bg-card p-3";
 const BAND_STYLE = {
   good: { Icon: CircleCheck, colour: "var(--status-steady)" },
   watch: { Icon: Eye, colour: "var(--status-amber)" },
-  alert: { Icon: TriangleAlert, colour: "var(--status-red)" },
+  alert: { Icon: TriangleAlert, colour: "var(--status-orange)" },
   critical: { Icon: OctagonAlert, colour: "var(--status-red)" },
 };
 
