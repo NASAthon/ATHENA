@@ -374,10 +374,10 @@ function ReactionTest() {
               </p>
               <div className="mt-2 flex flex-wrap gap-2">
                 <Link
-                  href="/daily-check"
+                  href="/today#one-minute-check"
                   className={`flex min-h-11 items-center rounded-xl bg-primary px-4 text-base font-semibold text-primary-foreground hover:bg-primary/90 ${focusRing}`}
                 >
-                  Continue to readings
+                  Back to Today
                 </Link>
                 {!guest && (
                   <button

@@ -1023,4 +1023,45 @@ wear sensors, and self-reported numbers are less reliable. The scan shows that w
 the data honest and labelled as simulated.
 
 Status:
+SUPERSEDED by Always-On Live Monitoring (the Daily check and the scan were removed)
+
+---
+
+## Always-On Live Monitoring
+
+The Daily check page is gone. Vitals arrive from a **simulated always-on sensor feed**
+(`src/lib/live/stream.js`, one reading per minute from a generic "smart shirt": heart rate, blood
+pressure, SpO₂, breathing, skin temperature) and ATHENA evaluates every new minute on its own.
+
+- **Everywhere at once:** a mission clock (`src/lib/live/clock.js`, `LiveProvider`) always runs, with no
+  Play button. Every page shows a "Live | Day N | HH:MM" chip and a live alert bar; the Live Monitor shows
+  the last 60 minutes per astronaut; Today shows each vital's live value and today's average so far; Crew
+  shows each astronaut's live state. At midnight the day rolls up into the stored daily records.
+- **States (rules, ASSUMPTION for the demo, tunable in `RULES`):** *stable*; *fluctuating* (outside the
+  astronaut's own band for 2+ minutes, not sustained); *deteriorating* (the 15-minute average outside the
+  band for 20+ minutes; back to stable after 15 minutes inside); *critical* (any reading in a red limit
+  from `checkReading`, held 60 minutes); *no data* (sensor not worn 5+ minutes; missing data is unknown,
+  never "fine"). A single spike is ignored. Exercise minutes and a 15-minute recovery are left out.
+- **Own normal:** the band is centred on the stored in-flight baseline where one exists (defaults
+  otherwise). Heart rate and SpO₂ still have no fixed red limits (unchanged, LOCKED).
+- **Extra check:** when heart rate, SpO₂ or blood pressure first deteriorates, ATHENA asks for a cuff
+  blood-pressure reading on Today (not when the astronaut is already critical).
+- **Crew input left:** the one-minute check on Today (mood, "Anything new today?" and the symptom list,
+  red-flag symptoms link to their emergency guide). Sleep, glucose, temperature and exercise come from the
+  simulated daily roll-up. "How rested you feel" from the mockup was left out: the record has no field for it.
+- **Confidence:** sensor wear over the last 60 minutes (High, Medium, Low), shown with the health score.
+- **Scripted demo day 129 (simulated):** Rivera's SpO₂ slides and heart rate rises (deteriorating, extra
+  check); Nakamura has an ignored spike, then blood pressure reaches a red limit and he reports chest pain;
+  Singh exercises, then takes the shirt off (no data, lower confidence); a crew-wide solar particle event
+  at 18:30. The Crew page has presenter-only controls: 1×, 10×, 60×, Pause, "Jump to next event" and the
+  coming-up list. In flight the clock simply runs in real time.
+- **Clearly simulated:** "Simulated sensor feed" on the Live Monitor and demo labels on every screen.
+- **Accessible:** state = icon + label + colour, charts are decorative with the value as text, 44 px
+  targets, the live dot stops pulsing with "reduce motion".
+
+Reason:
+Real crews wear sensors continuously; a once-a-day form misses changes during the day. The live feed
+shows ATHENA evaluating autonomously and turning stable, fluctuating and severe conditions into alerts.
+
+Status:
 ACTIVE

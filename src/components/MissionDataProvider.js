@@ -10,6 +10,7 @@ import { loadDemoMission, missionSummary, resetData, seedOnFirstRun } from "@/li
 import { saveCheckIn, saveExamResult } from "@/lib/checkIn";
 import { CREW } from "@/lib/crew";
 import { COMMUNICATION_CLOCK_KEY, serialiseCommunicationClock } from "@/lib/communications";
+import { LIVE_CLOCK_KEY, rollOverDay } from "@/lib/live/clock";
 
 const CREW_IDS = CREW.map((member) => member.id);
 const MissionDataContext = createContext(null);
@@ -77,12 +78,17 @@ export function MissionDataProvider({ children }) {
       version,
       loadDemo: () => run((d) => loadDemoMission(d)),
       reset: () => run((d) => resetData(d)),
-      // Today's check-in for one astronaut (Daily check and Reaction test both use this).
+      // Today's check-in for one astronaut (Today's one-minute check, extra check and Reaction test use this).
       saveCheckIn: (astronautId, fields) => run((d) => saveCheckIn(d, astronautId, summary.today, fields)),
       saveExamResult: (astronautId, examId, note) => run((d) => saveExamResult(d, astronautId, examId, summary.today, note)),
       saveCommunication: (message, clock) =>
         run((d) => d.saveCommunication(message, { clock: serialiseCommunicationClock(clock) })),
       saveCommunicationClock: (clock) => run((d) => d.setMeta(COMMUNICATION_CLOCK_KEY, serialiseCommunicationClock(clock))),
+      // Live monitoring: midnight roll-up to the next mission day, and saving the live clock.
+      // The clock is saved without refreshing every screen (it changes every few seconds).
+      rollOverDay: (newDay) => run((d) => rollOverDay(d, CREW_IDS, newDay)),
+      saveLiveClock: (json) => db?.setMeta(LIVE_CLOCK_KEY, json),
+      getLiveClock: () => db?.getMeta(LIVE_CLOCK_KEY) ?? null,
       exportBackup: () => db?.exportBackup() ?? null,
       importBackup: (bytes) => run((d) => d.importBackup(bytes)),
       recoveryNotice: db?.recoveryNotice ?? null,

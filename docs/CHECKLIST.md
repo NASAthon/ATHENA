@@ -91,14 +91,15 @@ One line per designed page. A page is ticked when it's built and working in the 
 - [x] **M** Respects "reduce motion"; no information shown only through animation (PR #21, PR #24): global reduced-motion rule in `globals.css` stops animations and transitions; the reaction-test signal is also shown as text; Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
 - [x] **M** Health text in plain English: quick reference (status, meaning, what to do; no "Learn more" layer, DECISIONS › Quick Reference Only), medical terms explained in brackets (PR #8, #9, #20, PR #22: emergency guides show the glance first, then each step with its "why", signs and "All steps at once")
 
-### Daily check
+### Daily check (replaced by live monitoring, PR #54)
 
-- [x] **M** Form for the six brief indicators, with units and sensible input limits (PR #8; PR #51: numeric vitals now come from a simulated sensor scan, validated against the same limits and saved automatically; failed sensors are retried rather than entered manually)
-- [x] **M** "How to measure" help beside each field (how to take it, why it matters, what to do if abnormal) (PR #8; PR #51: retained as a reference guide beside the simulated scan)
-- [x] **M** Mood as five large buttons, not a text box (PR #8)
-- [x] **M** Symptom tick boxes and exercise minutes (PR #8; red-flag symptoms link to their emergency guide)
-- [x] **M** Save confirmation and today's result shown straight away (PR #8, PR #13, PR #19: saved to the astronaut's record, "Today's result" from the engine using the previous days, check-in streak)
-- [x] **M** Reminders: shows which measurements are still due today (PR #20: "Still due today" on the Today screen, from the engine's `dueMeasurements`)
+- [x] **M** Vitals with units and input limits (PR #8; PR #51 sensor scan; PR #54: the Daily check page is removed; vitals come from the simulated always-on sensor feed, evaluated every minute, Live Monitor at `/live`)
+- [x] **M** "How to measure" help (PR #8; PR #54: on the Live Monitor, `?guide=` from search and each tile, with read-aloud)
+- [x] **M** Mood as five large buttons, not a text box (PR #8; PR #54: in Today's one-minute check)
+- [x] **M** Symptom tick boxes (PR #8; PR #54: "Anything new today?" in Today's one-minute check; red-flag symptoms link to their emergency guide)
+- [x] **M** Save confirmation (PR #8, PR #13, PR #19; PR #54: one-minute check and cuff extra check confirm on Today)
+- [x] **M** Reminders: shows which measurements are still due today (PR #20; PR #54: only mood, anything new and reaction time, since sensors cover the rest)
+- [x] **M** Live monitoring (PR #54): stable, fluctuating, deteriorating, critical and no-data states with rules; live alert bar and chip on every page; live values and today's average on Today; confidence on the health score; extra-check request; presenter demo controls on Crew
 
 ### Reaction test
 

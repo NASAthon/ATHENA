@@ -46,6 +46,7 @@ export async function loadDemoMission(db, { today = DEMO_TODAY, seed = DEMO_SEED
   }
   await db.setMeta("today", String(today));
   await db.setMeta("demo_seed", String(seed));
+  await db.setMeta("live_clock", ""); // the live feed restarts at 08:00 on the demo day
   return { today, crew: Object.keys(crew) };
 }
 

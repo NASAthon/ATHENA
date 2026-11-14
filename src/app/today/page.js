@@ -2,7 +2,9 @@
 
 // Today (design by Izabela, PR #20). Everything shown is the selected astronaut's STORED data
 // evaluated by the logic engine: health score, alert level, red limits, per-indicator status
-// against their OWN in-flight baseline, and what is still due today.
+// against their OWN in-flight baseline, and what is still due today. Heart rate, blood pressure
+// and SpO₂ also show the live smart-shirt value and today's average so far (simulated feed,
+// docs/DECISIONS.md › Always-On Live Monitoring); the one-minute check replaces the Daily check.
 
 import Link from "next/link";
 import {
@@ -10,7 +12,6 @@ import {
   ArrowUp,
   CircleCheck,
   CircleMinus,
-  ClipboardList,
   Eye,
   Info,
   Minus,
@@ -23,6 +24,11 @@ import { DRIFT_CUTOFF, ESCALATION_DAYS, SCORE_BANDS, SCORE_CAPS, dueMeasurements
 import { readingFor } from "@/lib/readings";
 import { STATUSES } from "@/lib/regionStatus";
 import { useTodayEvaluation } from "@/components/useTodayEvaluation";
+import { useLive } from "@/components/LiveProvider";
+import { useCrew } from "@/components/CrewProvider";
+import ExtraCheck from "@/components/ExtraCheck";
+import OneMinuteCheck from "@/components/OneMinuteCheck";
+import { LiveStateBadge } from "@/components/LiveUI";
 import { focusRing } from "@/lib/ui";
 
 const byId = Object.fromEntries(INDICATORS.map((i) => [i.id, i]));
@@ -61,7 +67,15 @@ function StatusPill({ status, label }) {
   );
 }
 
-function IndicatorCard({ id, group, record, baselines, flag }) {
+const LIVE_IDS = new Set(["heartRate", "bloodPressure", "spo2"]);
+
+function averageText(id, avg) {
+  if (!avg) return null;
+  if (id === "bloodPressure") return `${Math.round(avg.bpSystolic)}/${Math.round(avg.bpDiastolic)}`;
+  return String(Math.round(avg[id]));
+}
+
+function IndicatorCard({ id, group, record, baselines, flag, live }) {
   const { unit, value, normal } = readingFor(id, record, baselines);
   const readingOnly = id === "radiation";
   return (
@@ -73,6 +87,21 @@ function IndicatorCard({ id, group, record, baselines, flag }) {
       <p className="mt-2 text-xl font-bold">
         {value ?? "—"} {value && <span className="text-base font-normal text-muted-foreground">{unit}</span>}
       </p>
+      {live && (
+        <div className="mt-1 text-sm">
+          <p className="flex flex-wrap items-center gap-x-2">
+            <span className="font-semibold">Now {live.text}</span>
+            <span className="inline-flex items-center gap-1" style={{ color: "var(--status-live)" }}>
+              <span aria-hidden="true" className="size-2 rounded-full bg-current motion-safe:animate-pulse" />
+              live
+            </span>
+            {live.state !== "stable" && <LiveStateBadge state={live.state} size="sm" />}
+          </p>
+          <p className="text-muted-foreground">
+            Today&apos;s average so far: {averageText(id, live.averageSoFar) ?? "—"} {live.averageSoFar && unit}
+          </p>
+        </div>
+      )}
       {flag && (
         <p className="mt-1 flex items-center gap-1 text-sm font-semibold" style={{ color: "var(--status-amber)" }}>
           <TriangleAlert className="size-4 shrink-0" aria-hidden="true" />
@@ -104,6 +133,9 @@ function Change({ value, label }) {
 
 export default function Today() {
   const { state, today, member, evaluation, record, baselines } = useTodayEvaluation();
+  const live = useLive();
+  const { crewId } = useCrew();
+  const snap = live.active ? live.crew[crewId] : null;
 
   if (state !== "ready") {
     return (
@@ -135,7 +167,11 @@ export default function Today() {
   const driftingIds = groups.filter((g) => g.status === "drifting").map((g) => g.group);
   const driftingNames = driftingIds.map((id) => byId[id]?.name ?? id);
   const hazards = likelyHazards(driftingIds);
-  const due = dueMeasurements(record, today).map((id) => (id === "symptoms" ? "Symptoms" : byId[id]?.name ?? id));
+  // Sensors cover the vitals now, so only what a person must give is still due.
+  const due = dueMeasurements(record, today)
+    .filter((id) => ["mood", "symptoms", "reaction"].includes(id))
+    .map((id) => (id === "symptoms" ? "Anything new today" : byId[id]?.name ?? id));
+  const request = snap?.request && snap.overall !== "critical" ? snap.request : null;
 
   const alertTitle = {
     note: "One indicator is drifting from your normal",
@@ -143,7 +179,7 @@ export default function Today() {
     escalated: "Drift alert not recovered: tell the crew and the ground",
   }[alert.level];
   const alertNext = {
-    note: "Keep doing your daily check. One drifting indicator is a note, not an alert.",
+    note: "Keep doing your one-minute check. One drifting indicator is a note, not an alert.",
     alert: `Follow the advice for each indicator below. If it hasn't recovered after ${ESCALATION_DAYS} more days, ATHENA will ask you to tell the crew and the ground.`,
     escalated: "Tell the crew and send the summary to the flight surgeon.",
   }[alert.level];
@@ -156,13 +192,11 @@ export default function Today() {
             Today <span className="text-base font-normal text-muted-foreground">| {member.name} | Day {today}</span>
           </h1>
         </div>
-        <Link
-          href="/daily-check"
-          className={`flex min-h-11 items-center gap-2 rounded-xl bg-primary px-4 text-base font-semibold text-primary-foreground hover:bg-primary/90 ${focusRing}`}
-        >
-          <ClipboardList className="size-5" aria-hidden="true" />
-          Start today&apos;s check
-        </Link>
+        {snap && (
+          <p className="text-sm text-muted-foreground">
+            Live picture: <LiveStateBadge state={snap.overall} size="sm" /> | sensors: {snap.sensor}
+          </p>
+        )}
       </div>
 
       <div className="mt-2 grid gap-2 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
@@ -196,6 +230,15 @@ export default function Today() {
                 </p>
               )}
             </>
+          )}
+          {snap && (
+            <p className="mt-2 text-sm">
+              <span className="font-semibold">Confidence: {snap.confidence.level}</span>
+              <span className="text-muted-foreground">
+                {" "}
+                | {snap.confidence.level === "High" ? "all sensors worn" : snap.sensor.toLowerCase()}
+              </span>
+            </p>
           )}
           <p className="mt-2 text-sm text-muted-foreground">
             {SCORE_BANDS.map((b, i) => `${b.label} ${b.min}–${i === 0 ? 100 : SCORE_BANDS[i - 1].min - 1}`).join(" | ")}
@@ -287,6 +330,16 @@ export default function Today() {
         )}
       </div>
 
+      {request && (
+        <div className="mt-2">
+          <ExtraCheck key={`${crewId}-${today}-${request.minute}`} request={request} />
+        </div>
+      )}
+
+      <div className="mt-2">
+        <OneMinuteCheck record={record} />
+      </div>
+
       {due.length > 0 && (
         <section className={`${card} mt-2`} aria-labelledby="due-heading">
           <h2 id="due-heading" className="text-base font-bold">
@@ -297,8 +350,8 @@ export default function Today() {
             <Link href="/reaction-test" className={`inline-flex min-h-11 items-center rounded-lg border border-input px-4 hover:bg-accent ${focusRing}`}>
               Reaction test
             </Link>
-            <Link href="/daily-check" className={`inline-flex min-h-11 items-center rounded-lg border border-input px-4 hover:bg-accent ${focusRing}`}>
-              Daily check
+            <Link href="#one-minute-check" className={`inline-flex min-h-11 items-center rounded-lg border border-input px-4 hover:bg-accent ${focusRing}`}>
+              One-minute check
             </Link>
           </div>
         </section>
@@ -311,12 +364,12 @@ export default function Today() {
 
       <div className="mt-2 grid auto-rows-fr gap-2 md:grid-cols-3">
         {MAIN.map((id) => (
-          <IndicatorCard key={id} id={id} group={groupById[id]} record={record} baselines={baselines} flag={flagById[id]} />
+          <IndicatorCard key={id} id={id} group={groupById[id]} record={record} baselines={baselines} flag={flagById[id]} live={LIVE_IDS.has(id) ? snap?.measures[id] : null} />
         ))}
       </div>
       <div className="mt-2 grid auto-rows-fr gap-2 md:grid-cols-2 xl:grid-cols-4">
         {EXTRAS.map((id) => (
-          <IndicatorCard key={id} id={id} group={groupById[id]} record={record} baselines={baselines} flag={flagById[id]} />
+          <IndicatorCard key={id} id={id} group={groupById[id]} record={record} baselines={baselines} flag={flagById[id]} live={LIVE_IDS.has(id) ? snap?.measures[id] : null} />
         ))}
       </div>
 
