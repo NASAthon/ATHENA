@@ -9,7 +9,7 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 
 **Repo layout:**
 - **Root:** `AGENTS.md`, `CLAUDE.md` and `README.md` (they must stay at the root, because agents and GitHub look for them there), plus config files.
-- `docs/`: all project context for agents (`context.md`, `CHECKLIST.md`, `DECISIONS.md`, `judging.md`, `SOURCES.md`, `AI_USAGE.md`, `BODY_MAP.md`).
+- `docs/`: all project context for agents (`context.md`, `CHECKLIST.md`, `DECISIONS.md`, `judging.md`, `SOURCES.md`, `AI_USAGE.md`, `BODY_MAP.md`, `EXISTING_TOOLS.md`).
 - `src/`: all app code (`src/app/` pages, `src/components/`, `src/lib/`). Import with `@/`, e.g. `@/lib/utils`.
   - `src/lib/engine/`: **all health logic** (baselines, drift, alerts, red limits, health score, search, and so on).
     Import from `@/lib/engine`. Never put health logic in components. Tests sit next to each file (`*.test.js`).

@@ -16,6 +16,7 @@ Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Age
 | American Heart Association: What is CPR | https://cpr.heart.org/en/resources/what-is-cpr | CPR rate, depth and technique | No (clinical) | Copyrighted: facts only, our own wording |
 | AHA and American Red Cross 2024 First Aid Guidelines | https://cpr.heart.org/en/resuscitation-science/2024-first-aid-guidelines | Bleeding and fracture first aid (read in a browser, 14 Nov) | No (clinical) | Copyrighted: facts only, our own wording |
 | American Diabetes Association pages | see tables below | Glucose ranges, 15-15 rule | No (clinical) | Copyrighted: numbers only, our own wording |
+| Tempus Pro, ARCHeR, Spaceflight Standard Measures | https://www.nasa.gov/reference/tempus-pro/, https://www.nasa.gov/reference/archer/, https://www.nasa.gov/reference/standard-measures/ | Existing tools and what ATHENA adds (`docs/EXISTING_TOOLS.md`) | Yes | US Gov work; no NASA logos |
 | Monitoring Radiation for Astronaut Health (CSA) | https://www.asc-csa.gc.ca/eng/news/articles/2026/2026-02-26-monitoring-radiation-astronaut-health.asp | Radiation monitoring context (CANS) | No (partner) | Cite and link only; check CSA notices |
 
 ## Clinical reference ranges (thresholds only, see `docs/DECISIONS.md` › Thresholds and › Red-Limit Sources)

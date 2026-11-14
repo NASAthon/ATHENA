@@ -144,8 +144,8 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** Every resource used is open source, openly licensed or public domain, with no NASA logos (`docs/DECISIONS.md` › Licensing) 🟡 Partial (PR #7): all content and packages so far checked; still to do: re-check at submission
 - [ ] **M** Every figure in the app or pitch traced to a source, or removed 🟡 Partial (PR #7): every number in `src/data` has a source or `basis: "design"`; still to do: the pitch and the final UI
 - [x] **S** Write every region card from `docs/BODY_MAP.md` (verified 14 Nov; linked to its hazards and risks) (PR #7; `src/data/regions.js`)
-- [ ] **S** List of periodic exams and how often 🟡 Partial (PR #7): 5 exams from NASA pages in `src/data/exams.js`; intervals are design choices because NASA doesn't state them
-- [ ] **S** Short note on existing tools and what ATHENA adds
+- [x] **S** List of periodic exams and how often (PR #7: 5 exams from NASA pages in `src/data/exams.js`; NASA doesn't state in-flight frequencies, so intervals are labelled `basis: "design"`)
+- [x] **S** Short note on existing tools and what ATHENA adds (`docs/EXISTING_TOOLS.md`: Tempus Pro, ARCHeR, Standard Measures from the official NASA pages)
 
 ---
 
