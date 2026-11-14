@@ -134,7 +134,7 @@ A visual astronaut self-assessment tool with these building blocks:
 
 **Innovation angles:** explainable alerts, personal fixed baselines + z-score drift detection, 0–100 health score, decision support, Earth-delay simulation.
 
-**Tech stack** (locked in `docs/DECISIONS.md`): offline-first PWA. Next.js (JavaScript, static export) + Tailwind + ShadCN; SQLite in the browser (sql.js, saved to IndexedDB); JS rules engine + fixed-baseline z-score drift detection (z ≥ 3.5 in the worrying direction; `docs/DECISIONS.md` › Drift Cut-off); 2D SVG body map. No backend server. Everything runs onboard.
+**Tech stack** (locked in `docs/DECISIONS.md`): offline-first web app run on the laptop (not a PWA). Next.js (JavaScript, static export) + Tailwind + ShadCN; SQLite in the browser (sql.js, saved to IndexedDB); JS rules engine + fixed-baseline z-score drift detection (z ≥ 3.5 in the worrying direction; `docs/DECISIONS.md` › Drift Cut-off); 2D SVG body map. No backend server. Everything runs onboard.
 
 **MVP scope, priorities and demo script:** see **`docs/CHECKLIST.md`**.
 

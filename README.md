@@ -168,7 +168,7 @@ Every answer cites its source: NASA pages, or clinical guidelines for thresholds
 
 ### Works Offline
 
-ATHENA is an offline-first Progressive Web App. After the first load it runs
+ATHENA is an offline-first web app that runs on the laptop itself. It runs
 with no internet connection, as it would onboard a spacecraft.
 
 ---
@@ -176,7 +176,7 @@ with no internet connection, as it would onboard a spacecraft.
 ## Technology
 
 App:
-- Next.js (JavaScript, static export) as an offline-first PWA
+- Next.js (JavaScript, static export), run on the laptop and fully offline
 - TailwindCSS
 - ShadCN
 

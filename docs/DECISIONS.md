@@ -8,11 +8,13 @@ Every locked choice and why. Entries are in the order they were made. **Index:**
 
 ## Frontend
 
-Next.js (JavaScript, static export) as an offline-first PWA, with Tailwind and ShadCN.
+Next.js (JavaScript, static export), offline-first, with Tailwind and ShadCN. It runs from
+the laptop it's installed on (`localhost`), so it needs no internet, as it would onboard a spacecraft.
+**Not a PWA:** no installable app or service worker (team decision 14 Nov). We don't host it, so
+there's nothing to install from or cache.
 
 Reason:
-Fast development. A service worker caches the app, so after the first load
-it runs with no internet, as it would onboard a spacecraft.
+Fast development, and fully offline without extra machinery.
 
 Status:
 LOCKED
@@ -101,7 +103,7 @@ LOCKED
 - **No hosting.** We won't deploy the app anywhere, so we can focus on building
   a good app. The public GitHub repo is the official "final project" link.
 - The README must keep clear "How to run" steps so judges can run it locally.
-- Demo on localhost: `npm run build`, serve the static output, then install as a PWA.
+- Demo on localhost: `npm run build`, then serve the static output (or `npm run dev`).
 - 30-second video "offline moment": turn Wi-Fi off on camera, reload, and trigger
   an alert (a dangerous reading, or a Scenario Lab event if built). The alert still fires.
 - README screenshots go in `docs/screenshots/`.

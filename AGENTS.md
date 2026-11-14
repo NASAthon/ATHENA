@@ -67,7 +67,7 @@ GitHub is the single source of truth, so always branch from the latest `main`.
   - Before adding any other package, check its licence, add it to `docs/SOURCES.md`, and run
     `npm run licenses` to refresh `THIRD_PARTY_LICENSES.md`.
 
-- **Do not redesign the architecture.** Stack: offline-first PWA,
+- **Do not redesign the architecture.** Stack: offline-first web app run on the laptop (not a PWA),
   Next.js (JavaScript) + Tailwind + ShadCN, SQLite in the browser (sql.js +
   IndexedDB), JS rules engine, 2D SVG body map. No backend and no
   runtime internet dependency. No hosting or deployment work.

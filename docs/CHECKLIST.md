@@ -154,7 +154,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [x] **M** App loads and works with the network switched off (checked 14 Nov on the production build: every file, the database engine and the demo data come from the device; first run seeds the mission with no internet. Repeat with Wi-Fi off in the final rehearsal)
 - [x] **M** No fonts, scripts or data fetched from the internet at run time (checked 14 Nov: build scan plus all 10 pages loaded with 0 external requests; system fonts only. Re-check new screens in PR review)
 - [x] **M** Data survives closing and reopening the browser (PR #14 storage, PR #17 app wiring; checked in the app 14 Nov: reset stays empty and loaded data stays loaded after reload)
-- [ ] **S** Installable as an app (PWA) on a laptop or tablet
+- [x] **S** ~~Installable as an app (PWA) on a laptop or tablet~~ Dropped (team decision 14 Nov): we don't host the app, so there's nothing to install; it runs from the laptop
 
 ---
 
