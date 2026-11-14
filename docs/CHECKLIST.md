@@ -153,7 +153,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 - [ ] **M** App loads and works with the network switched off
 - [ ] **M** No fonts, scripts or data fetched from the internet at run time 🟡 Partial (PR #3, PR #4): system fonts only and sql.js engine served locally; still to do: re-check once all screens exist
-- [ ] **M** Data survives closing and reopening the browser 🟡 Partial (PR #14): the database is saved to IndexedDB after every write and reloaded on open (tested); still to do: check in the browser once screens save data
+- [x] **M** Data survives closing and reopening the browser (PR #14 storage, PR #17 app wiring; checked in the app 14 Nov: reset stays empty and loaded data stays loaded after reload)
 - [ ] **S** Installable as an app (PWA) on a laptop or tablet
 
 ---
