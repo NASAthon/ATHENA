@@ -6,8 +6,6 @@ the docs in this order:
 1. context.md (official event brief: rules, rubric, NASA data, data caveat)
 2. ATHENA_MASTER_SPEC.md
 3. DECISONS.md
-4. Project_Context.md
-5. NASA_Challenge.md
 
 Do not redesign the architecture.
 

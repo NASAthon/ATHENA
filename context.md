@@ -94,6 +94,35 @@ A visual astronaut self-assessment tool with these building blocks:
 
 Planning should decide which of these are **must-have for the demo** versus **stretch goals**.
 
+### 6.1 ATHENA: our chosen concept (merged from the earlier `Project_Context.md` and `NASA_Challenge.md`)
+
+**ATHENA** stands for Autonomous Telehealth and Health Evaluation Network for Astronauts. It is an onboard health monitoring and decision-support system for astronauts.
+
+**Problem framing:** Deep-space crews face communication delays of 5–40 minutes from Earth, so medical decision-making must be autonomous.
+
+**Users:** astronauts (primary), flight surgeons, mission control.
+
+**Crew:** 3 simulated astronauts: Commander Rivera, Pilot Singh, Engineer Nakamura.
+
+**Monitoring targets** (our team's choice, *not* official challenge requirements; the official text in Section 5 names blood pressure, heart rate, blood sugar, body temperature, sleep hours and mood):
+- Heart rate, HRV, SpO₂, temperature, respiration rate, blood pressure
+- Sleep quality, activity level, radiation dose
+
+**Feature targets:**
+- **Personalised baselines:** a rolling 14-day baseline per astronaut instead of generic thresholds. The 14-day window is our assumption.
+- **Trend monitoring:** detect multi-day changes such as sleep deficit, vital-sign drift and radiation accumulation.
+- **Alerting:** deterministic, explainable decision-support alerts, each giving the trigger, contributing factors and recommended action.
+- **Mission modes:** ISS, Lunar Gateway, Mars Transit. This is our version of the environment context in idea 6 above.
+- **Scenario Lab:** simulate radiation, fatigue, sleep deprivation, hypoxia and multi-factor events.
+- **Earth Link:** visualise the communication delay to mission control.
+- **AI assistant:** answers questions like "What caused this warning?" or "Am I fit for EVA tomorrow?"
+
+**Innovation angles:** explainable AI, anomaly detection (Isolation Forest), decision support, visual health insights, Earth-delay simulation.
+
+**Tech stack** (locked in `DECISONS.md`): Next.js + Tailwind + ShadCN, FastAPI (Python), SQLite, rule engine + Isolation Forest + LLM chat, 2D SVG body map.
+
+> For judging, the official rubric in Section 4 (Impact, Creativity, Validity, Relevance, Presentation) replaces the informal "judging focus" list in the old `NASA_Challenge.md`.
+
 ## 7. Data and resources we were given (the full official list)
 
 These are the **only** public data resources the organisers listed. Treat them as our official NASA/partner sources and cite them in the app, README and submission.

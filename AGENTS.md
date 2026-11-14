@@ -12,9 +12,7 @@ source of truth, so always work from the latest `main`.
       data caveat. It is the **source of truth for rules and data**.
    2. `ATHENA_MASTER_SPEC.md`: product vision, MVP scope, demo flow.
    3. `DECISONS.md`: locked decisions. Do not reverse a LOCKED decision.
-   4. `Project_Context.md`: problem, users, core features, tech stack.
-   5. `NASA_Challenge.md`: challenge summary and feature targets.
-   6. `docs/` (once it exists): plan, data model, sources, storyboard, AI log.
+   4. `docs/` (once it exists): plan, data model, sources, storyboard, AI log.
 3. If two files conflict:
    - Rules, deliverables, data and citations: `context.md` wins.
    - Product scope and architecture: `ATHENA_MASTER_SPEC.md` and `DECISONS.md` win.
