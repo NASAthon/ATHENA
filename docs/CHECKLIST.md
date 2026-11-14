@@ -65,7 +65,7 @@ One line per designed page. A page is ticked when it's built and working in the 
 - [x] **M** Reaction test: 60 s panel with live counter, "Why this test", this run so far, result against your own normal (PR #16, PR #19)
 - [x] **M** Body: figure plus region list and region card with NASA risk and hazard (PR #9, PR #21)
 - [x] **M** Emergency: one step at a time with "why", read aloud, all steps, readings, not-medical-advice note (PR #22)
-- [ ] **M** Crew status: a card per astronaut (score, band, change, one-line reason, open or emergency button), reminders today, Earth link, demo controls 🟡 In progress (teammate); today the Crew page has the Load demo mission / Reset data panel (PR #17)
+- [x] **M** Crew status: a card per astronaut (score, band, change, one-line reason, open or emergency button), reminders today, Earth link, demo controls (PR #23: design by the team; cards, reminders and Earth link from the engine, schedulers and mission mode; real Load demo mission / Reset data panel and a Scenario Lab link)
 - [ ] **M** Trends: 7-day average lines with pre-flight and in-flight bands, baseline window, drifting periods, day slider, "What to do this week", "When to tell the ground" 🟡 In progress (teammate)
 
 ### Layout

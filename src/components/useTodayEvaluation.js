@@ -22,6 +22,25 @@ import { DAY_KEY, IN_FLIGHT_WINDOW, evaluateMission } from "@/lib/engine";
  *   records: Object[],           // all stored daily records for this astronaut
  * }}
  */
+/**
+ * One astronaut's evaluation for today from STORED data (no React). Used by useTodayEvaluation and
+ * by the Crew page, which shows every astronaut at once.
+ *
+ * @param {Object} db The opened database (useMissionData().db).
+ * @param {string} crewId
+ * @param {number} today Today's mission day.
+ * @returns {{ state: "empty" | "ready", evaluation: Object | null, record: Object | null, baselines: Object | null, records: Object[] }}
+ */
+export function evaluateStored(db, crewId, today) {
+  const records = db.loadDailyRecords(crewId);
+  if (records.length === 0) return { state: "empty", evaluation: null, record: null, baselines: null, records: [] };
+  const baselines = db.loadMissionBaselines(crewId);
+  const fromDay = Math.min(IN_FLIGHT_WINDOW.toDay + 1, today);
+  const evaluation = evaluateMission(records, baselines, fromDay, today).at(-1) ?? null;
+  const record = records.find((r) => r[DAY_KEY] === today) ?? null;
+  return { state: "ready", evaluation, record, baselines, records };
+}
+
 export function useTodayEvaluation() {
   const { crewId, member } = useCrew();
   const { db, status, today, version } = useMissionData();
@@ -30,14 +49,7 @@ export function useTodayEvaluation() {
     const base = { today, member, evaluation: null, record: null, baselines: null, records: [] };
     if (status === "loading" || !db) return { ...base, state: "loading" };
     if (today === null) return { ...base, state: "empty" };
-
-    const records = db.loadDailyRecords(crewId);
-    if (records.length === 0) return { ...base, state: "empty" };
-    const baselines = db.loadMissionBaselines(crewId);
-    const fromDay = Math.min(IN_FLIGHT_WINDOW.toDay + 1, today);
-    const evaluation = evaluateMission(records, baselines, fromDay, today).at(-1) ?? null;
-    const record = records.find((r) => r[DAY_KEY] === today) ?? null;
-    return { ...base, state: "ready", evaluation, record, baselines, records };
+    return { ...base, ...evaluateStored(db, crewId, today) };
     // version changes after every save, so the evaluation is recalculated.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [db, status, today, crewId, member, version]);
