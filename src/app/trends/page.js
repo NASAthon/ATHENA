@@ -52,8 +52,6 @@ function StatusPill({ status }) {
   );
 }
 
-/** The first NASA source of an indicator (its risk or hazard page). */
-
 /** One value of a drift-tracked field for display: lapses get one decimal, the rest use their indicator's unit. */
 const fmtKey = (key, groupId, v) => (key === "reactionLapses" ? (Number.isFinite(v) ? String(Math.round(v * 10) / 10) : "—") : formatValue(groupId, v));
 
