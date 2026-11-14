@@ -40,6 +40,8 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Chidozie | Claude Code | Emergency screen: guide list, one step at a time with "why" and sources, crewmate picker, record vitals with the red-limit check, read aloud, note the time, flight-surgeon reply time; shared plain-English field errors | `src/app/emergency/page.js`, `src/components/EmergencyVitals.js`, `src/lib/readings.js`, `docs/*` |
 | 14 Nov 2026 | Chidozie | Claude Code | PR #22 self-review fixes: links to guides for symptoms reported today (e.g. chest pain from the BP guide), keyboard focus kept after the last step, no self-link in the vitals result | `src/app/emergency/page.js`, `src/components/EmergencyVitals.js` |
 | 14 Nov 2026 | Chidozie | Claude Code | PR #23 review: Crew page wired to stored data and the engine (scores, reasons, reminders, exams, Earth link) instead of copied mockup numbers; kept the demo-data panel; theme tokens and focus rings; `evaluateStored` shared with `useTodayEvaluation` | `src/app/crew/page.js`, `src/components/useTodayEvaluation.js`, `src/lib/crew.js` |
+| 14 Nov 2026 | Chidozie | Claude Code | Trends screen from the team design: SVG charts with drift bands, baseline window, drifting periods, day slider, ATHENA vs general-range comparison, what helps, when to tell the ground; `driftBand`/`trendSeries`/`driftPeriods` with tests | `src/app/trends/page.js`, `src/components/TrendChart.js`, `src/lib/engine/trends.js`, `docs/*` |
+| 14 Nov 2026 | Chidozie | Claude Code | PR #24 self-review fixes: charts worked out once (not on every slider step), explicit lapses formatting, single engine import; checked at 1280 and 768 px | `src/app/trends/page.js` |
 
 ## AI-generated media
 

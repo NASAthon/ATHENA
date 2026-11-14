@@ -3,7 +3,7 @@
 Every locked choice and why. Entries are in the order they were made. **Index:**
 - **Product:** Originality · Body Map Required · Crew · Trends Over Single Readings · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
 - **Data and content:** No Medicines or Diagnoses · Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
-- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open) · Logic Engine · Logic Engine Assumptions · Logic Tests · Mission Simulator · Storage Layer · Daily Record · Saving From the App · Mission Modes
+- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts · Logic Engine · Logic Engine Assumptions · Logic Tests · Mission Simulator · Storage Layer · Daily Record · Saving From the App · Mission Modes
 - **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
 
 ## Frontend
@@ -417,10 +417,18 @@ LOCKED
 
 ## Charts
 
-No chart library chosen yet; it will be decided when the Trends screen is built. It must be open-licensed.
+**Plain SVG, no chart library** (`src/components/TrendChart.js`, numbers from `src/lib/engine/trends.js`).
+- The in-flight "normal" band is drawn exactly at the drift cut-off (`driftBand`: mean ± 3.5 × s × √(1/7 + 1/m),
+  worrying side only), so leaving the band is the same thing the engine calls drifting. The pre-flight band uses
+  the same formula, so the gap between the bands shows expected adaptation.
+- Colours are the checked status tokens, and every coloured area also has a text label; each chart has a
+  screen-reader description.
+
+Reason:
+No new dependency to licence, check or bundle offline; full control over accessibility; the charts are simple.
 
 Status:
-OPEN
+LOCKED
 
 ---
 
