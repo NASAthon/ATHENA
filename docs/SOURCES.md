@@ -20,4 +20,8 @@ Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Age
 
 | Name | Use | Licence |
 |---|---|---|
+| Next.js | App framework (static export) | MIT |
+| React | UI library | MIT |
+| Tailwind CSS | Styling | MIT |
+| ESLint + eslint-config-next | Linting (dev only) | MIT |
 | MiniSearch | Offline fuzzy search (typos, prefixes, synonyms) | MIT. https://github.com/lucaong/minisearch |

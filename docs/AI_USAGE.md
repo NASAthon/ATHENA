@@ -5,6 +5,7 @@ Required for submission (`judging.md` 1C.6). AI may speed up building but must *
 | Date / time | Who | Tool | What it helped with | Files |
 |---|---|---|---|---|
 | 14 Nov 2026 | Team | Claude Code | Repo docs and agent workflow setup | `*.md` |
+| 14 Nov 2026 | Chidozie | Claude Code | Base Next.js template (create-next-app, switched to system fonts, dark theme, static export) | `app/`, config files |
 
 ## AI-generated media
 

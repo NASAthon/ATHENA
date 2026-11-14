@@ -212,6 +212,20 @@ AI-generated code was used to speed up the development process.
 
 ---
 
+## How to Run
+
+Requires Node.js 20 or newer (tested on Node 24).
+
+```bash
+npm install
+npm run dev
+```
+
+Open http://localhost:3000. For the offline production build, run `npm run build`
+(static files are written to `out/`), then serve them with e.g. `npx serve out`.
+
+---
+
 ## For contributors and AI agents
 
 Start with [`AGENTS.md`](AGENTS.md) (the workflow). It points to [`context.md`](context.md) (the official event brief), [`CHECKLIST.md`](CHECKLIST.md) (what to build), [`judging.md`](judging.md) (submission and judging) and [`DECISIONS.md`](DECISIONS.md).

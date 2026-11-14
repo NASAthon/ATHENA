@@ -33,6 +33,13 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 
 ## 2. While working
 
+- **Base template already exists:** a basic Next.js 16 app (JavaScript, App Router,
+  Tailwind, static export, dark theme) in `app/`. **Build on top of it; don't re-create
+  the project.** The "NASAthon - Athena" text in `app/page.js` is only there to prove
+  the site runs on localhost. Whoever pushes real code can replace or remove it.
+- Run it with `npm install`, then `npm run dev`, and open http://localhost:3000. `npm run build` creates the
+  static export in `out/`.
+
 - **Do not redesign the architecture.** Stack: offline-first PWA,
   Next.js (JavaScript) + Tailwind + ShadCN, SQLite in the browser (sql.js +
   IndexedDB), JS rules engine, 2D SVG body map. No backend and no
@@ -118,3 +125,13 @@ may review and merge their own PR, but still go through the checks below.
 
 Everything to build and hand in is in **`CHECKLIST.md`** (sections 1–7, with M/S priorities).
 Pick tasks from it, and tick items off in your PR when they're done.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
