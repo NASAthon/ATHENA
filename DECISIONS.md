@@ -80,15 +80,16 @@ LOCKED
 
 ## Hosting and Demo
 
-- Hosting is optional. The public GitHub repo is the official "final project" link.
+- **No hosting.** We won't deploy the app anywhere, so we can focus on building
+  a good app. The public GitHub repo is the official "final project" link.
+- The README must keep clear "How to run" steps so judges can run it locally.
 - Demo on localhost: `npm run build`, serve the static output, then install as a PWA.
 - 30-second video "offline moment": turn Wi-Fi off on camera, reload, and trigger
   a Scenario Lab event. The alert still fires.
 - README screenshots go in `docs/screenshots/`.
-- Optional: a free static deploy (e.g. Vercel Hobby) near the end, so judges get a live link.
 
 Status:
-ACTIVE
+LOCKED
 
 
 ---

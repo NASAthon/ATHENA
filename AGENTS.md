@@ -33,7 +33,7 @@ GitHub is the single source of truth, so always work from the latest `main`.
 - **Do not redesign the architecture.** Stack: offline-first PWA,
   Next.js (JavaScript) + Tailwind + ShadCN, SQLite in the browser (sql.js +
   IndexedDB), JS rules engine, 2D SVG body map. No backend and no
-  runtime internet dependency.
+  runtime internet dependency. No hosting or deployment work.
 - Priorities: hackathon speed, then NASA relevance, then demo quality, then simplicity. Prefer MVP solutions.
 - **Every health rule shown to users must cite its source URL.** NASA pages
   are qualitative, so numeric thresholds come from general clinical reference
@@ -66,7 +66,8 @@ GitHub is the single source of truth, so always work from the latest `main`.
 - Project name and summary
 - Public demo: a video of 30 seconds or less, or a deck of 7 slides or fewer.
   Going over the limit **disqualifies** the project from global judging.
-- Public link to the final project (repo or live app). Test every link in an incognito window.
+- Public link to the final project: the GitHub repo (no hosting, see `DECISIONS.md`).
+  Test every link in an incognito window.
 - Detailed description: what it does, how it works, benefits, tools and languages
 - NASA data: **at least one official NASA resource** named
 - Partner data and references: all libraries, tools and partner (e.g. CSA) sources cited
