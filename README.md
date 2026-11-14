@@ -2,6 +2,19 @@
 
 Autonomous Telecommunications and Health Evaluation Network for Astronauts
 
+## Live Demo
+
+**[https://nasathon.github.io/ATHENA/](https://nasathon.github.io/ATHENA/)**
+
+## Team
+
+**NASAthon**
+
+- Chidozie Onyejelem
+- Isaac Adeniji
+- Mercy Olasehinde
+- Izabela Heczková
+
 ## Overview
 
 ATHENA is a health monitoring and decision-support platform
@@ -205,14 +218,16 @@ No backend server and no internet connection needed at runtime.
 
 ---
 
-## NASA Data and Credits
+## Sources and References
 
 ATHENA's link from each hazard to its risks, body systems and indicators is built
 from the NASA Human Research Program's official resources, including the
 [5 Hazards of Human Spaceflight](https://www.nasa.gov/hrp/hazards/) and
-[Risks of Human Spaceflight](https://www.nasa.gov/hrp/risks/). The challenge was authored by the Brazilian Space Agency (AEB). Partner context
-comes from the [Canadian Space Agency](https://www.asc-csa.gc.ca/eng/news/articles/2026/2026-02-26-monitoring-radiation-astronaut-health.asp).
-The full list is in [`docs/SOURCES.md`](docs/SOURCES.md), and the licences of all open-source packages are in [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md).
+[Risks of Human Spaceflight](https://www.nasa.gov/hrp/risks/).
+
+The complete NASA and clinical reference list is in
+[`docs/SOURCES.md`](docs/SOURCES.md). Open-source package licences are recorded in
+[`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md).
 
 Numeric thresholds are general clinical reference ranges, not NASA flight
 standards. Astronaut data in the app is simulated.
@@ -228,18 +243,10 @@ illustrative and would need validation by flight surgeons before any real use.
 
 ## AI Usage Disclosure
 
-AI-generated code was used to speed up the development process.
-
----
-
-## Team
-
-**NASAthon**, competing at HackAthlone (NASA Space Apps Challenge 2026)
-
-- Chidozie Onyejelem
-- Isaac Adeniji
-- Mercy Olasehinde
-- Izabela Heczková
+The ATHENA concept is the team's own. AI coding assistants were used to speed up
+implementation, testing, research checks and documentation. ATHENA itself does not use AI;
+health evaluations come from its deterministic rules engine. The full dated disclosure is in
+[`docs/AI_USAGE.md`](docs/AI_USAGE.md).
 
 ---
 
@@ -247,7 +254,7 @@ AI-generated code was used to speed up the development process.
 
 ### Hosted evaluation copy
 
-Judges can open the hosted evaluation copy without installing packages:
+Open the hosted evaluation copy without installing packages:
 
 **[https://nasathon.github.io/ATHENA/](https://nasathon.github.io/ATHENA/)**
 
@@ -265,9 +272,3 @@ npm run dev
 
 Open http://localhost:3000. For the offline production build, run `npm run build`
 (static files are written to `out/`), then serve them with e.g. `npx serve out`.
-
----
-
-## For contributors and AI agents
-
-Start with [`AGENTS.md`](AGENTS.md) (the workflow). It points to [`docs/context.md`](docs/context.md) (the official event brief), [`docs/CHECKLIST.md`](docs/CHECKLIST.md) (what to build), [`docs/judging.md`](docs/judging.md) (submission and judging) and [`docs/DECISIONS.md`](docs/DECISIONS.md).

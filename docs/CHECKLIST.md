@@ -231,7 +231,7 @@ Deadlines: **local submission closes 10:30 Sun 15 Nov**, local pitching starts *
 - [ ] **M** AI use declared, and any AI-generated media watermarked (`docs/AI_USAGE.md`) 🟡 Partial: SI checkboxes and project-page statement ready in `docs/SUBMISSION.md` › 1; AI-made mockups logged (made with Claude); still to do: watermark any AI image used in the slides, video or repo, paste the statement
 - [ ] **M** NASA Data and Partner Data fields: every resource as Link Text plus full URL 🟡 Partial: ready to paste in `docs/SUBMISSION.md` › 2 and 3; still to do: test each link in an incognito window
 - [ ] **M** Limits stated: simulated data, untested thresholds, not a diagnostic tool or medical advice
-- [x] **M** Repo public with an up-to-date README, hosted evaluation link and local "How to run" steps (PRs #46, #47 and #48)
+- [x] **M** Repo public with an up-to-date README, hosted evaluation link and local "How to run" steps (PRs #46, #47, #48 and #49)
 - [ ] **M** Every link tested in an incognito window; the app runs from the README steps on another machine
 - [ ] **M** Everything in English; no under-18 likeness anywhere
 - [ ] **M** All 4 members confirmed at HackAthlone (none waitlisted)
