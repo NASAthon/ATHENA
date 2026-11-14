@@ -56,6 +56,7 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Isaac | Claude | Drop-downs: filled white downward triangle on every select and collapsible section (flips when open) | `src/app/globals.css` |
 | 14 Nov 2026 | Chidozie | Codex | Mission communications simulation: immutable report queue, deterministic two-way delays and responses, persistent simulated clock/history, accessible Summary UI, tests; serialised database writes with persistence-failure rollback | `src/lib/communications*`, `src/lib/db/*`, `src/components/MissionCommunications.js`, `src/app/summary/page.js`, `docs/*` |
 | 14 Nov 2026 | Chidozie | Codex | Engineering improvements to PR #45: derived incident timeline, report change comparison, simulated Earth receipt acknowledgement, validated offline database backup/restore, corruption recovery notice and tests | `src/lib/{communications,incidentTimeline}*`, `src/lib/db/*`, `src/components/{MissionCommunications,MissionDataPanel,MissionDataProvider}.js`, `src/app/summary/page.js`, `docs/*` |
+| 14 Nov 2026 | Chidozie | Codex | GitHub Pages evaluation deployment: environment-specific base path, sql.js/WASM public paths, static deployment workflow, local/hosted path tests and hosting documentation | `next.config.mjs`, `.github/workflows/pages.yml`, `src/lib/basePath*`, `src/lib/db/index.js`, `src/components/{NavLinks,AlertBanner}.js`, `docs/*`, `README.md`, `AGENTS.md` |
 
 ## AI-generated media
 

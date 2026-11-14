@@ -10,6 +10,7 @@
 
 import { openDatabase } from "./database.js";
 import { indexedDbPersistence, memoryPersistence } from "./persistence.js";
+import { publicAssetPath } from "../basePath.js";
 
 export { AthenaDatabase, openDatabase, SCHEMA_VERSION } from "./database.js";
 export { indexedDbPersistence, memoryPersistence } from "./persistence.js";
@@ -21,7 +22,7 @@ export { indexedDbPersistence, memoryPersistence } from "./persistence.js";
  * @param {{ scriptPath?: string, wasmPath?: string }} [options]
  * @returns {Promise<Object>} The initialised sql.js module.
  */
-export function loadSqlJs({ scriptPath = "/sql-wasm.js", wasmPath = "/sql-wasm.wasm" } = {}) {
+export function loadSqlJs({ scriptPath = publicAssetPath("sql-wasm.js"), wasmPath = publicAssetPath("sql-wasm.wasm") } = {}) {
   if (typeof window === "undefined" || typeof document === "undefined") {
     return Promise.reject(new Error("loadSqlJs only runs in the browser."));
   }

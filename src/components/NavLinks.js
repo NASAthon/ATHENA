@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { focusRing } from "@/lib/ui";
+import { appPathname } from "@/lib/basePath";
 
 // Main navigation: the checklist screens plus Izabela's additions (PR #8).
 const navItems = [
@@ -18,7 +19,7 @@ const navItems = [
 ];
 
 export default function NavLinks() {
-  const pathname = usePathname();
+  const pathname = appPathname(usePathname());
 
   return (
     <ul className="flex flex-wrap justify-center gap-2">
