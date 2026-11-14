@@ -7,6 +7,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getDatabase } from "@/lib/db";
 import { loadDemoMission, missionSummary, resetData, seedOnFirstRun } from "@/lib/sim/demo";
+import { saveCheckIn, saveExamResult } from "@/lib/checkIn";
 import { CREW } from "@/lib/crew";
 
 const CREW_IDS = CREW.map((member) => member.id);
@@ -52,9 +53,10 @@ export function MissionDataProvider({ children }) {
       setStatus("busy");
       setError(null);
       try {
-        await action(db);
+        const result = await action(db);
         refresh(db);
         setStatus("ready");
+        return result;
       } catch (e) {
         setError(e instanceof Error ? e.message : String(e));
         setStatus("ready");
@@ -74,6 +76,9 @@ export function MissionDataProvider({ children }) {
       version,
       loadDemo: () => run((d) => loadDemoMission(d)),
       reset: () => run((d) => resetData(d)),
+      // Today's check-in for one astronaut (Daily check and Reaction test both use this).
+      saveCheckIn: (astronautId, fields) => run((d) => saveCheckIn(d, astronautId, summary.today, fields)),
+      saveExamResult: (astronautId, examId, note) => run((d) => saveExamResult(d, astronautId, examId, summary.today, note)),
     }),
     [db, status, error, summary, version, run],
   );

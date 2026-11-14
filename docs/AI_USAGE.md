@@ -29,6 +29,8 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Chidozie | Claude Code | PR #17 review: theme tokens instead of hard-coded red/amber colours, words instead of ✓ symbols in the mission data panel | `src/components/MissionDataPanel.js` |
 | 14 Nov 2026 | Mercy | AI assistant | Daily record definition: field names from the engine, dates, input-limit validation and tests (PR #18) | `src/lib/dailyRecord.js`, `src/lib/dailyRecord.test.js` |
 | 14 Nov 2026 | Chidozie | Claude Code | PR #18 review: checked all simulated records pass validation; DECISIONS entry, checklist tick | `docs/*` |
+| 14 Nov 2026 | Chidozie | Claude Code | Saving from the app (PR #19): Daily check and Reaction test save to storage (validated), streak, exam results storage, guest mode, tests | `src/lib/checkIn.js`, `src/app/daily-check/page.js`, `src/app/reaction-test/page.js`, `src/components/MissionDataProvider.js` |
+| 14 Nov 2026 | Chidozie | Claude Code | PR #19 review fixes: clear "Saved" after edits, fresh form/test per astronaut, reaction result can't be saved twice | `src/app/daily-check/page.js`, `src/app/reaction-test/page.js` |
 
 ## AI-generated media
 

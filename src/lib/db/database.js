@@ -146,6 +146,15 @@ export class AthenaDatabase {
     await this.write(() => this.db.run("INSERT OR REPLACE INTO meta (key, value) VALUES (?, ?)", [key, String(value)]));
   }
 
+  /**
+   * Deletes every meta entry whose key starts with `prefix` (e.g. "exams:" on Reset data).
+   * @param {string} prefix
+   */
+  async deleteMetaPrefix(prefix) {
+    if (typeof prefix !== "string" || prefix.length === 0) throw new TypeError("deleteMetaPrefix: prefix must be a non-empty string.");
+    await this.write(() => this.db.run("DELETE FROM meta WHERE substr(key, 1, ?) = ?", [prefix.length, prefix]));
+  }
+
   // ---- Daily records ---------------------------------------------------------------
 
   /**

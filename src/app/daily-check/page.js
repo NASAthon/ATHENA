@@ -5,6 +5,9 @@ import Link from "next/link";
 import { Check, ExternalLink, Eye, OctagonAlert, TriangleAlert, Volume2 } from "lucide-react";
 import { INDICATORS, SYMPTOMS, SOURCES, EMERGENCIES } from "@/data";
 import { RECORD_FIELDS, SYMPTOMS_FIELD, checkReading } from "@/lib/engine";
+import { useCrew } from "@/components/CrewProvider";
+import { useMissionData } from "@/components/MissionDataProvider";
+import { checkInStreak } from "@/lib/checkIn";
 import { focusRing } from "@/lib/ui";
 
 // Daily check (layout and design by Izabela, PR #8).
@@ -25,6 +28,17 @@ const LEVEL_STYLE = {
   act: { label: "Act", Icon: TriangleAlert, colour: "var(--status-amber)" },
   watch: { label: "Watch", Icon: Eye, colour: "var(--status-amber)" },
 };
+
+// Record field → plain name for error messages, e.g. "bpSystolic" → "Blood pressure (top number)".
+const FIELD_NAME = Object.fromEntries(
+  Object.entries(RECORD_FIELDS).flatMap(([id, parts]) =>
+    Object.entries(parts).map(([part, field]) => {
+      const sub = byId[id]?.inputs?.find((f) => f.id === part)?.label;
+      return [field, sub ? `${byId[id].name}: ${sub}` : (byId[id]?.name ?? field)];
+    }),
+  ),
+);
+const plainError = (message) => message.replace(/^(\w+)/, (field) => FIELD_NAME[field] ?? field);
 
 // Turns the form into the engine's daily record (src/lib/engine/indicators.js › RECORD_FIELDS),
 // so the form and the logic engine always use the same field names.
@@ -65,23 +79,42 @@ function NumberInput({ id, label, unit, limits, value, onChange, onFocus }) {
   );
 }
 
-export default function DailyCheck() {
+// A fresh form for each astronaut: switching crew in the header never carries one person's
+// readings over to another.
+export default function DailyCheckPage() {
+  const { crewId } = useCrew();
+  return <DailyCheck key={crewId} />;
+}
+
+function DailyCheck() {
   const [values, setValues] = useState({});
   const [moodValue, setMoodValue] = useState(null);
   const [symptoms, setSymptoms] = useState([]);
   const [focusId, setFocusId] = useState("bloodPressure");
   const [result, setResult] = useState(null);
+  const [saveInfo, setSaveInfo] = useState(null); // { day, streak } after a successful save
+  const [errors, setErrors] = useState([]);
+  const { crewId, member } = useCrew();
+  const { db, status, today, saveCheckIn } = useMissionData();
+  const canSave = status === "ready" && today !== null;
 
   const focused = byId[focusId];
   const redFlags = SYMPTOMS.filter((s) => s.redFlag && symptoms.includes(s.id));
 
+  // Any edit after saving clears the result and the "Saved…" message (the edit isn't saved yet).
+  const clearOutcome = () => {
+    setResult(null);
+    setSaveInfo(null);
+    setErrors([]);
+  };
+
   const setValue = (key) => (value) => {
     setValues((v) => ({ ...v, [key]: value }));
-    setResult(null);
+    clearOutcome();
   };
 
   const toggleSymptom = (id) => {
-    setResult(null);
+    clearOutcome();
     setSymptoms((list) => (list.includes(id) ? list.filter((s) => s !== id) : [...list, id]));
   };
 
@@ -92,10 +125,24 @@ export default function DailyCheck() {
     window.speechSynthesis.speak(new SpeechSynthesisUtterance(`${focused.name}. ${steps}`));
   };
 
-  // Checks today's readings with the logic engine's red-limit check (bands in src/data).
-  // Storage comes with the data layer (CHECKLIST section 1). Until then, nothing is saved.
-  const save = () => {
-    setResult(checkReading(toRecord(values, moodValue, symptoms)));
+  // Saves today's readings to the selected astronaut's stored record (validated first,
+  // src/lib/dailyRecord.js), then checks them with the engine's red-limit check, using the
+  // previous days for the streak bands.
+  const save = async () => {
+    setErrors([]);
+    setResult(null);
+    setSaveInfo(null);
+    try {
+      const saved = await saveCheckIn(crewId, toRecord(values, moodValue, symptoms));
+      if (!saved.ok) {
+        setErrors(saved.errors);
+        return;
+      }
+      setResult(checkReading(saved.record, saved.history));
+      setSaveInfo({ day: today, streak: checkInStreak(db.loadDailyRecords(crewId), today) });
+    } catch (e) {
+      setErrors([`Couldn't save: ${e instanceof Error ? e.message : String(e)}`]);
+    }
   };
 
   return (
@@ -167,7 +214,7 @@ export default function DailyCheck() {
                   onFocus={() => setFocusId("mood")}
                   onClick={() => {
                     setMoodValue(value);
-                    setResult(null);
+                    clearOutcome();
                   }}
                   className={`min-h-20 rounded-lg border px-2 py-3 text-center ${focusRing} ${
                     moodValue === value
@@ -235,20 +282,46 @@ export default function DailyCheck() {
             <button
               type="button"
               onClick={save}
-              className={`min-h-14 rounded-lg bg-primary px-8 text-lg font-semibold text-primary-foreground hover:bg-primary/90 ${focusRing}`}
+              disabled={!canSave}
+              className={`min-h-14 rounded-lg bg-primary px-8 text-lg font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 ${focusRing}`}
             >
               Save today&apos;s check
             </button>
             <Link href="/today" className={`rounded text-primary underline ${focusRing}`}>
               Cancel
             </Link>
-            {result && (
-              <p role="status" className="flex items-center gap-2 font-semibold">
-                <Check aria-hidden="true" className="size-5" />
-                Checked (demo: not stored yet)
-              </p>
-            )}
+            <p role="status" className="flex items-center gap-2 font-semibold">
+              {saveInfo && (
+                <>
+                  <Check aria-hidden="true" className="size-5" style={{ color: "var(--status-steady)" }} />
+                  Saved to {member.name}&apos;s record for mission day {saveInfo.day}. Check-in streak: {saveInfo.streak}{" "}
+                  {saveInfo.streak === 1 ? "day" : "days"}.
+                </>
+              )}
+            </p>
           </div>
+          {status === "ready" && today === null && (
+            <p className="text-muted-foreground">
+              No mission data stored, so there&apos;s nothing to save to. Load the demo mission on the{" "}
+              <Link href="/crew" className={`rounded text-primary underline ${focusRing}`}>
+                Crew page
+              </Link>
+              .
+            </p>
+          )}
+          {errors.length > 0 && (
+            <div role="alert" className="rounded-lg border-2 border-destructive p-4">
+              <p className="flex items-center gap-2 font-semibold">
+                <TriangleAlert aria-hidden="true" className="size-5 text-destructive" />
+                Not saved. Please check:
+              </p>
+              <ul className="mt-2 list-disc space-y-1 pl-6">
+                {errors.map((e) => (
+                  <li key={e}>{plainError(e)}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {result && (
             <section className={card} aria-labelledby="result-heading">

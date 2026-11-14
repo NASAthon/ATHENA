@@ -3,7 +3,7 @@
 Every locked choice and why. Entries are in the order they were made. **Index:**
 - **Product:** Originality · Body Map Required · Crew · Trends Over Single Readings · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
 - **Data and content:** No Medicines or Diagnoses · Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
-- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open) · Logic Engine · Logic Engine Assumptions · Logic Tests · Mission Simulator · Storage Layer · Daily Record · Mission Modes
+- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open) · Logic Engine · Logic Engine Assumptions · Logic Tests · Mission Simulator · Storage Layer · Daily Record · Saving From the App · Mission Modes
 - **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
 
 ## Frontend
@@ -789,6 +789,27 @@ One record = one astronaut's daily check on one mission day, defined in `src/lib
   design-choice fallbacks for reaction and radiation). These are not health thresholds.
 - **Dates:** mission day 1 is the day after launch; day 0 (launch day) has no check.
   `LAUNCH_DATE` (2026-07-01) is an ASSUMPTION for the simulated mission.
+
+Status:
+LOCKED
+
+
+---
+
+## Saving From the App
+
+Screens save through `useMissionData()` (`saveCheckIn`, `saveExamResult`), which calls `src/lib/checkIn.js`.
+- **One record per astronaut per day.** The Daily check and the Reaction test both add to today's
+  record. Fields left empty keep what's already stored today, so neither overwrites the other.
+- **Validated before saving** with `validateRecord()` (Daily Record). If it fails, nothing is saved
+  and the errors are shown in plain English (indicator names, not code field names).
+- **Today's result** runs the engine's red-limit check with the previous 7 days of stored records,
+  so streak bands (e.g. 3+ nights of short sleep) work.
+- **Check-in streak:** consecutive days with at least one reading, ending today (or yesterday);
+  launch day neither counts nor breaks it. Worked out from stored records, not stored separately.
+- **Exam results:** stored per astronaut in the meta table (`exams:<id>`); "Reset data" clears them.
+  The screen to enter them comes with the mission calendar.
+- **Guest mode** (reaction test): for judges; the run is never saved.
 
 Status:
 LOCKED
