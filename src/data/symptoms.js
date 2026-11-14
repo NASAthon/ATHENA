@@ -9,7 +9,7 @@ export const SYMPTOMS = [
     keywords: ["short of breath", "breathless", "can't breathe", "cant breathe", "breathing hard", "out of breath"] },
   { id: "fainting", name: "Fainting or near-fainting", redFlag: true, emergencyId: "collapse", regions: ["heart"], indicators: ["bloodPressure", "heartRate"], sourceId: "nasa-risk-cardio",
     keywords: ["faint", "fainted", "passed out", "blacked out", "light-headed", "lightheaded"] },
-  { id: "face-arm-speech", name: "Stroke signs (face, arm, speech)", redFlag: true, emergencyId: "stroke", regions: ["brain"], indicators: [], sourceId: "cdc-stroke",
+  { id: "face-arm-speech", name: "Stroke signs", redFlag: true, emergencyId: "stroke", regions: ["brain"], indicators: [], sourceId: "cdc-stroke",
     keywords: ["face droop", "slurred speech", "arm weakness", "numb one side", "can't speak", "stroke"] },
   { id: "confusion", name: "Confusion", redFlag: false, emergencyId: "hypoxia", regions: ["brain", "lungs"], indicators: ["spo2", "glucose"], sourceId: "nasa-risk-hypoxia",
     keywords: ["confused", "confusion", "foggy", "can't think", "disoriented", "brain fog"] },

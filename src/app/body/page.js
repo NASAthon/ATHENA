@@ -40,24 +40,24 @@ function BodyPage() {
   const selected = statuses.find((s) => s.id === selectedId);
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-4">
-      <h1 className="text-xl font-semibold">Body</h1>
-      {state === "empty" ? (
-        <p className="mt-2 mb-6 text-muted-foreground">
+    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-3">
+      <h1 className="text-xl font-bold">
+        Body{" "}
+        <span className="text-base font-normal text-muted-foreground">
+          | {member.name}
+          {today != null && ` | Day ${today}`}
+        </span>
+      </h1>
+      {state === "empty" && (
+        <p className="mt-2 text-muted-foreground">
           No mission data stored yet, so every region shows &quot;No recent data&quot;. Load the demo mission on the{" "}
           <Link href="/crew" className={`rounded text-primary underline ${focusRing}`}>
             Crew page
           </Link>
           .
         </p>
-      ) : (
-        <p className="mt-2 mb-6 text-muted-foreground">
-          {member.name}
-          {today != null && ` · Day ${today}`} · simulated demo mission · each region shows the worst status of the
-          readings and recent symptoms linked to it, compared with {member.name.split(" ").pop()}&apos;s own normal
-        </p>
       )}
-      <div className="flex flex-wrap items-start gap-3">
+      <div className="mt-2 flex flex-wrap items-start gap-2">
         <div className="min-w-0 flex-[3_1_560px]">
           <BodyMap
             statuses={statuses}
@@ -75,7 +75,7 @@ function BodyPage() {
 
 export default function Page() {
   return (
-    <Suspense fallback={<main className="mx-auto w-full max-w-6xl flex-1 px-4 py-4"><h1 className="text-xl font-semibold">Body</h1></main>}>
+    <Suspense fallback={<main className="mx-auto w-full max-w-6xl flex-1 px-4 py-3"><h1 className="text-lg font-semibold">Body</h1></main>}>
       <BodyPage />
     </Suspense>
   );

@@ -27,7 +27,7 @@ const indicatorName = Object.fromEntries(INDICATORS.map((i) => [i.id, i.name]));
 const symptomById = Object.fromEntries(SYMPTOMS.map((s) => [s.id, s]));
 const GUIDES_BY_PRIORITY = [...EMERGENCIES].sort((a, b) => a.priority - b.priority);
 const card = "rounded-xl border border-border bg-card p-3";
-const bigButton = `inline-flex min-h-14 items-center justify-center gap-2 rounded-xl px-4 text-lg font-semibold ${focusRing}`;
+const bigButton = `inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-4 text-base font-semibold ${focusRing}`;
 
 function speak(text) {
   if (typeof window === "undefined" || !window.speechSynthesis) return;
@@ -45,23 +45,23 @@ const NotAdvice = () => (
 /** The list of guides (no ?id). */
 function GuideList() {
   return (
-    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-4">
-      <h1 className="flex items-center gap-3 text-2xl font-bold">
+    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-3">
+      <h1 className="flex items-center gap-2 text-xl font-bold">
         <OctagonAlert className="size-9" aria-hidden="true" style={{ color: "var(--status-red)" }} />
         Emergency guides
       </h1>
       <div className="mt-2 text-base">
         <NotAdvice />
       </div>
-      <p className="mt-3 text-base">Pick what you see. Not sure? Type the symptom in the search bar (e.g. &ldquo;can&apos;t breathe&rdquo;).</p>
-      <ul className="mt-3 grid auto-rows-fr gap-3 md:grid-cols-2">
+      <p className="mt-2 text-base">Pick what you see. Not sure? Type the symptom in the search bar (e.g. &ldquo;can&apos;t breathe&rdquo;).</p>
+      <ul className="mt-2 grid auto-rows-fr gap-2 md:grid-cols-2">
         {GUIDES_BY_PRIORITY.map((g) => (
           <li key={g.id}>
             <Link
               href={`/emergency?id=${g.id}`}
-              className={`flex h-full min-h-14 flex-col justify-center rounded-xl border-2 border-border bg-card px-4 py-2 hover:bg-accent ${focusRing}`}
+              className={`flex h-full min-h-12 flex-col justify-center rounded-xl border-2 border-border bg-card px-4 py-2 hover:bg-accent ${focusRing}`}
             >
-              <span className="flex items-center gap-2 text-lg font-semibold">
+              <span className="flex items-center gap-2 text-base font-semibold">
                 <OctagonAlert className="size-5 shrink-0" aria-hidden="true" style={{ color: "var(--status-red)" }} />
                 {g.name}
               </span>
@@ -101,20 +101,20 @@ function Guide({ guide }) {
   const noteTime = () => setTimes((t) => [...t, new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })]);
 
   return (
-    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
       <Link href="/emergency" className={`inline-flex min-h-11 items-center gap-1 rounded text-primary hover:underline ${focusRing}`}>
         <ArrowLeft className="size-4" aria-hidden="true" /> All emergency guides
       </Link>
-      <h1 className="mt-2 flex items-start gap-3 text-2xl font-bold">
+      <h1 className="mt-2 flex items-start gap-2 text-xl font-bold">
         <OctagonAlert className="mt-1 size-9 shrink-0" aria-hidden="true" style={{ color: "var(--status-red)" }} />
         {guide.name}
       </h1>
-      <p className="mt-2 text-lg">{guide.glance}</p>
+      <p className="mt-2 text-base">{guide.glance}</p>
 
       {/* Who needs help: works for yourself or a crewmate. Also switches the whole app to them. */}
-      <fieldset className="mt-3">
+      <fieldset className="mt-2">
         <legend className="text-base font-semibold">Who needs help?</legend>
-        <div className="mt-2 flex flex-wrap gap-3">
+        <div className="mt-2 flex flex-wrap gap-2">
           {CREW.map((m) => {
             const selected = m.id === crewId;
             return (
@@ -134,16 +134,16 @@ function Guide({ guide }) {
       </fieldset>
 
       {redLimits.length > 0 && (
-        <p className="mt-3 flex flex-wrap items-center gap-2 rounded-lg border-2 px-4 py-2 text-base font-semibold" style={{ borderColor: "var(--status-red)" }}>
+        <p className="mt-2 flex flex-wrap items-center gap-2 rounded-lg border-2 px-4 py-2 text-base font-semibold" style={{ borderColor: "var(--status-red)" }}>
           <OctagonAlert className="size-5" aria-hidden="true" style={{ color: "var(--status-red)" }} />
           {member.name} today: {redLimits.map((r) => `${indicatorName[r.indicatorId]}: ${r.label}`).join("; ")}
         </p>
       )}
 
       {related.length > 0 && (
-        <div className="mt-3 rounded-lg border-2 border-border px-4 py-2">
+        <div className="mt-2 rounded-lg border-2 border-border px-4 py-2">
           <p className="text-base font-semibold">Also reported today by {member.name}:</p>
-          <ul className="mt-2 flex flex-wrap gap-3">
+          <ul className="mt-2 flex flex-wrap gap-2">
             {related.map((s) => (
               <li key={s.id}>
                 <Link
@@ -159,19 +159,19 @@ function Guide({ guide }) {
         </div>
       )}
 
-      <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-        <div className="space-y-3">
+      <div className="mt-2 grid gap-2 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+        <div className="space-y-2">
           {/* The step */}
           <section aria-labelledby="step-heading" className="rounded-xl border-2 p-3" style={{ borderColor: "var(--status-red)" }}>
             {finished ? (
               <div aria-live="polite">
-                <h2 id="step-heading" ref={stepHeading} tabIndex={-1} className="rounded text-xl font-bold outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <h2 id="step-heading" ref={stepHeading} tabIndex={-1} className="rounded text-lg font-bold outline-none focus-visible:ring-2 focus-visible:ring-ring">
                   All {total} steps done
                 </h2>
-                <p className="mt-3 text-lg">
+                <p className="mt-2 text-base">
                   Stay with {member.name}, keep recording their vitals, and follow the flight surgeon&apos;s advice.
                 </p>
-                <div className="mt-3 flex flex-wrap gap-3">
+                <div className="mt-2 flex flex-wrap gap-2">
                   <Link href="/summary" className={`${bigButton} bg-primary text-primary-foreground hover:bg-primary/90`}>
                     Summary for the flight surgeon
                   </Link>
@@ -182,7 +182,7 @@ function Guide({ guide }) {
               </div>
             ) : (
               <>
-                <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-base font-semibold text-muted-foreground">
                     Step {step + 1} of {total}
                   </p>
@@ -193,16 +193,16 @@ function Guide({ guide }) {
                   </ol>
                 </div>
                 <div aria-live="polite">
-                  <h2 id="step-heading" ref={stepHeading} tabIndex={-1} className="mt-3 rounded text-xl font-bold leading-snug outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                  <h2 id="step-heading" ref={stepHeading} tabIndex={-1} className="mt-2 rounded text-lg font-bold leading-snug outline-none focus-visible:ring-2 focus-visible:ring-ring">
                     {current.text}
                   </h2>
-                  <p className="mt-3 text-lg">
+                  <p className="mt-2 text-base">
                     <span className="font-semibold">Why: </span>
                     {current.why}
                   </p>
                 </div>
                 {current.adaptation && (
-                  <p className="mt-3 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                  <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                     <span className="rounded border border-dashed border-border px-1.5 py-0.5">ATHENA&apos;s adaptation for spaceflight</span>
                   </p>
                 )}
@@ -210,12 +210,12 @@ function Guide({ guide }) {
                   <button
                     type="button"
                     onClick={() => router.push(`/emergency?id=${current.nextEmergencyId}`)}
-                    className={`${bigButton} mt-3 w-full bg-destructive text-background hover:bg-destructive/90`}
+                    className={`${bigButton} mt-2 w-full bg-destructive text-background hover:bg-destructive/90`}
                   >
                     <TriangleAlert className="size-5" aria-hidden="true" /> Switch to: {guideById[current.nextEmergencyId].name}
                   </button>
                 )}
-                <div className="mt-3 grid grid-cols-2 gap-3">
+                <div className="mt-2 grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => (step === 1 ? goTo(0) : setStep(Math.max(0, step - 1)))}
@@ -228,7 +228,7 @@ function Guide({ guide }) {
                     {step + 1 === total ? "Done" : "Next step"} <ArrowRight className="size-5" aria-hidden="true" />
                   </button>
                 </div>
-                <div className="mt-3 flex flex-wrap gap-3">
+                <div className="mt-2 flex flex-wrap gap-2">
                   <button
                     type="button"
                     onClick={() => speak(`Step ${step + 1}. ${current.text} Why: ${current.why}`)}
@@ -247,14 +247,14 @@ function Guide({ guide }) {
               </>
             )}
             {times.length > 0 && (
-              <p role="status" className="mt-3 text-base">
+              <p role="status" className="mt-2 text-base">
                 Times noted: {times.join(", ")}
               </p>
             )}
           </section>
 
           <section aria-labelledby="vitals-heading" className={card}>
-            <h2 id="vitals-heading" className="text-lg font-bold">
+            <h2 id="vitals-heading" className="text-base font-bold">
               Record vitals
             </h2>
             <div className="mt-2">
@@ -263,28 +263,28 @@ function Guide({ guide }) {
           </section>
         </div>
 
-        <aside className="space-y-3">
+        <aside className="space-y-2">
           <section aria-labelledby="ground-heading" className="rounded-xl border-2 p-3" style={{ borderColor: "var(--status-amber)" }}>
-            <h2 id="ground-heading" className="flex items-center gap-2 text-lg font-bold">
+            <h2 id="ground-heading" className="flex items-center gap-2 text-base font-bold">
               <Radio className="size-5" aria-hidden="true" /> Contact the flight surgeon
             </h2>
-            <p className="mt-3 text-base">
+            <p className="mt-2 text-base">
               {mode.name}: reply expected <span className="font-semibold">{link ? link.replyText : "after an unknown delay"}</span>.
             </p>
             <p className="mt-2">{advice.glance}</p>
             <p className="mt-2 text-sm text-muted-foreground">
               {advice.basisLabel}
             </p>
-            <Link href="/summary" className={`mt-3 inline-flex min-h-11 items-center rounded-lg border border-input px-4 font-semibold hover:bg-accent ${focusRing}`}>
+            <Link href="/summary" className={`mt-2 inline-flex min-h-11 items-center rounded-lg border border-input px-4 font-semibold hover:bg-accent ${focusRing}`}>
               Open the summary to send
             </Link>
           </section>
 
           <section aria-labelledby="signs-heading" className={card}>
-            <h2 id="signs-heading" className="text-lg font-bold">
+            <h2 id="signs-heading" className="text-base font-bold">
               Signs to look for
             </h2>
-            <ul className="mt-3 list-disc space-y-1 pl-5 text-base">
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-base">
               {guide.signs.map((s) => (
                 <li key={s}>{s}</li>
               ))}
@@ -293,7 +293,7 @@ function Guide({ guide }) {
 
           <details className={card}>
             <summary className={`flex min-h-11 cursor-pointer items-center rounded text-base font-semibold ${focusRing}`}>All steps at once</summary>
-            <ol className="mt-3 list-decimal space-y-3 pl-5">
+            <ol className="mt-2 list-decimal space-y-2 pl-5">
               {guide.steps.map((s, i) => (
                 <li key={i}>
                   <button type="button" onClick={() => goTo(i)} className={`min-h-11 rounded text-left underline-offset-2 hover:underline ${focusRing}`}>
@@ -305,7 +305,7 @@ function Guide({ guide }) {
             <button
               type="button"
               onClick={() => speak(guide.steps.map((s, i) => `Step ${i + 1}. ${s.text}`).join(" "))}
-              className={`mt-3 inline-flex min-h-11 items-center gap-2 rounded-lg border border-input px-4 hover:bg-accent ${focusRing}`}
+              className={`mt-2 inline-flex min-h-11 items-center gap-2 rounded-lg border border-input px-4 hover:bg-accent ${focusRing}`}
             >
               <Volume2 className="size-5" aria-hidden="true" /> Read all steps aloud
             </button>
@@ -329,7 +329,7 @@ function EmergencyPage() {
 
 export default function Page() {
   return (
-    <Suspense fallback={<main className="mx-auto w-full max-w-5xl flex-1 px-4 py-4"><h1 className="text-2xl font-bold">Emergency guides</h1></main>}>
+    <Suspense fallback={<main className="mx-auto w-full max-w-5xl flex-1 px-4 py-3"><h1 className="text-xl font-bold">Emergency guides</h1></main>}>
       <EmergencyPage />
     </Suspense>
   );

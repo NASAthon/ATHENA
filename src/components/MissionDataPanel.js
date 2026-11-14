@@ -36,7 +36,7 @@ export default function MissionDataPanel() {
 
   return (
     <section aria-labelledby="mission-data-heading" className={card}>
-      <h2 id="mission-data-heading" className="flex items-center gap-2 text-lg font-semibold">
+      <h2 id="mission-data-heading" className="flex items-center gap-2 text-base font-semibold">
         <Database aria-hidden="true" className="size-5" /> Mission data
       </h2>
       <p className="mt-1 text-muted-foreground">
@@ -49,7 +49,7 @@ export default function MissionDataPanel() {
       </p>
 
       {status !== "loading" && status !== "error" && (
-        <ul className="mt-3 grid auto-rows-fr gap-2 sm:grid-cols-3">
+        <ul className="mt-2 grid auto-rows-fr gap-2 sm:grid-cols-3">
           {CREW.map((member) => {
             const c = crew.find((x) => x.id === member.id);
             return (
@@ -61,7 +61,7 @@ export default function MissionDataPanel() {
                     : "No records"}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Baselines: pre-flight {c?.preflight ? "saved" : "not yet"} · in-flight {c?.inflight ? "saved" : "not yet"}
+                  Baselines: pre-flight {c?.preflight ? "saved" : "not yet"} | in-flight {c?.inflight ? "saved" : "not yet"}
                 </p>
               </li>
             );
@@ -70,14 +70,14 @@ export default function MissionDataPanel() {
       )}
 
       {confirming ? (
-        <div role="group" aria-labelledby="confirm-text" className="mt-3 rounded-lg border p-3" style={{ borderColor: "var(--status-amber)" }}>
+        <div role="group" aria-labelledby="confirm-text" className="mt-2 rounded-lg border p-3" style={{ borderColor: "var(--status-amber)" }}>
           <p id="confirm-text" className="flex items-start gap-2">
             <TriangleAlert aria-hidden="true" className="mt-0.5 size-5 shrink-0" style={{ color: "var(--status-amber)" }} />
             {confirming === "reset"
               ? "Delete every stored record and baseline? This can't be undone. The app stays empty until you load the demo mission."
               : "Replace everything stored with the demo mission? Records entered so far will be deleted."}
           </p>
-          <div className="mt-3 flex flex-wrap gap-3">
+          <div className="mt-2 flex flex-wrap gap-2">
             <button
               type="button"
               autoFocus
@@ -93,7 +93,7 @@ export default function MissionDataPanel() {
           </div>
         </div>
       ) : (
-        <div className="mt-3 flex flex-wrap gap-3">
+        <div className="mt-2 flex flex-wrap gap-2">
           <button type="button" disabled={busy} onClick={onLoad} className={`${button} border-primary bg-primary text-primary-foreground`}>
             <RotateCcw aria-hidden="true" className="size-4" /> Load demo mission
           </button>
@@ -103,7 +103,7 @@ export default function MissionDataPanel() {
         </div>
       )}
 
-      <p aria-live="polite" className="mt-3 min-h-6 text-sm">
+      <p aria-live="polite" className="mt-2 min-h-6 text-sm">
         {message}
       </p>
       {error && (

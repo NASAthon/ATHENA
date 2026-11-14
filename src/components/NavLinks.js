@@ -21,7 +21,7 @@ export default function NavLinks() {
   const pathname = usePathname();
 
   return (
-    <ul className="flex flex-wrap gap-2">
+    <ul className="flex flex-wrap justify-center gap-2">
       {navItems.map((item) => {
         const isCurrent = pathname === item.href || pathname.startsWith(`${item.href}/`);
         return (

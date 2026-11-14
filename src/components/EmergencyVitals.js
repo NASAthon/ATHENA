@@ -73,7 +73,7 @@ export default function EmergencyVitals({ astronautId, astronautName, currentGui
       <p className="text-muted-foreground">
         For {astronautName}. Skip anything you can&apos;t measure safely. Saved to their record for day {today}.
       </p>
-      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+      <div className="mt-2 grid gap-2 sm:grid-cols-2">
         {FIELDS.map(([key, label, limits, , unit]) => (
           <div key={key}>
             <label htmlFor={`vital-${key}`} className="block font-semibold">
@@ -91,7 +91,7 @@ export default function EmergencyVitals({ astronautId, astronautName, currentGui
                 setValues((v) => ({ ...v, [key]: e.target.value }));
                 setResult(null);
               }}
-              className={`mt-2 min-h-11 w-full rounded-lg border border-input bg-input/30 px-4 text-lg ${focusRing}`}
+              className={`mt-2 min-h-11 w-full rounded-lg border border-input bg-input/30 px-4 text-base ${focusRing}`}
             />
           </div>
         ))}
@@ -100,13 +100,13 @@ export default function EmergencyVitals({ astronautId, astronautName, currentGui
         type="button"
         onClick={save}
         disabled={status === "busy"}
-        className={`mt-3 inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-4 text-base font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60 ${focusRing}`}
+        className={`mt-2 inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-4 text-base font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60 ${focusRing}`}
       >
         Save vitals
       </button>
 
       {errors.length > 0 && (
-        <ul role="alert" className="mt-3 space-y-1 font-semibold" style={{ color: "var(--status-red)" }}>
+        <ul role="alert" className="mt-2 space-y-1 font-semibold" style={{ color: "var(--status-red)" }}>
           {errors.map((e) => (
             <li key={e}>{e}</li>
           ))}
@@ -114,7 +114,7 @@ export default function EmergencyVitals({ astronautId, astronautName, currentGui
       )}
 
       {result && (
-        <div role="status" className="mt-3 space-y-3">
+        <div role="status" className="mt-2 space-y-2">
           <p className="flex items-center gap-2 font-semibold">
             <CircleCheck className="size-5" aria-hidden="true" style={{ color: "var(--status-steady)" }} />
             Saved to {astronautName}&apos;s record (Day {result.day}).
@@ -122,7 +122,7 @@ export default function EmergencyVitals({ astronautId, astronautName, currentGui
           {result.breaches.length === 0 ? (
             <p className="text-muted-foreground">No reading is outside the reference ranges. Keep following the steps.</p>
           ) : (
-            <ul className="space-y-3">
+            <ul className="space-y-2">
               {result.breaches.map((b) => {
                 const s = LEVEL_STYLE[b.level] ?? LEVEL_STYLE.watch;
                 return (

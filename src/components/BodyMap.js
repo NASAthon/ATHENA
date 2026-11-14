@@ -125,13 +125,13 @@ export default function BodyMap({ statuses, selectedId, onSelect }) {
   const summary = statuses.map((s) => `${s.name}: ${s.label}`).join(". ");
 
   return (
-    <div className="flex flex-wrap items-start gap-3">
+    <div className="flex flex-wrap items-start gap-2">
       {/* The figure */}
       <svg
         viewBox="0 0 240 520"
         role="img"
         aria-label={`Body figure. ${summary}.`}
-        className="w-full max-w-[280px] flex-none"
+        className="h-[min(34rem,calc(100dvh-14rem))] min-h-72 w-auto max-w-full flex-none"
       >
         {DRAW_ORDER.map((id) => {
           const s = byId[id];
@@ -173,7 +173,7 @@ export default function BodyMap({ statuses, selectedId, onSelect }) {
                 type="button"
                 onClick={() => onSelect?.(s.id)}
                 aria-pressed={selected}
-                className={`flex min-h-11 w-full items-center justify-between gap-3 rounded-lg border px-4 py-2 text-left ${focusRing} ${
+                className={`flex min-h-11 w-full items-center justify-between gap-2 rounded-lg border px-3 py-1 text-left ${focusRing} ${
                   selected ? "bg-accent" : "bg-card hover:bg-accent/60"
                 }`}
                 style={{ borderColor: selected ? s.colour : undefined }}

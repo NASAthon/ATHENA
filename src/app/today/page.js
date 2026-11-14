@@ -61,25 +61,31 @@ function StatusPill({ status, label }) {
   );
 }
 
-function IndicatorCard({ id, group, record, baselines }) {
+function IndicatorCard({ id, group, record, baselines, flag }) {
   const { unit, value, normal } = readingFor(id, record, baselines);
   const readingOnly = id === "radiation";
   return (
-    <article className="flex min-h-36 flex-col rounded-xl border border-border bg-card p-3">
-      <div className="flex items-start justify-between gap-3">
+    <article className="flex min-h-32 flex-col rounded-xl border border-border bg-card p-3" style={flag ? { borderColor: "var(--status-amber)" } : undefined}>
+      <div className="flex items-start justify-between gap-2">
         <h3 className="text-base text-muted-foreground">{byId[id].name}</h3>
         {readingOnly ? <StatusPill status="no_data" label="Reading only" /> : <StatusPill status={group?.status ?? "no_data"} />}
       </div>
-      <p className="mt-3 text-2xl font-bold">
-        {value ?? "—"} {value && <span className="text-lg font-normal text-muted-foreground">{unit}</span>}
+      <p className="mt-2 text-xl font-bold">
+        {value ?? "—"} {value && <span className="text-base font-normal text-muted-foreground">{unit}</span>}
       </p>
+      {flag && (
+        <p className="mt-1 flex items-center gap-1 text-sm font-semibold" style={{ color: "var(--status-amber)" }}>
+          <TriangleAlert className="size-4 shrink-0" aria-hidden="true" />
+          General range: {flag.label}
+        </p>
+      )}
       <p className="mt-auto pt-3 text-muted-foreground">
         {readingOnly
           ? "Running total from the onboard dosimeter"
           : normal
             ? `Your normal: ${normal} ${unit}`
             : "No baseline yet"}
-        {!value && " · not measured today"}
+        {!value && " | not measured today"}
       </p>
     </article>
   );
@@ -101,9 +107,9 @@ export default function Today() {
 
   if (state !== "ready") {
     return (
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4">
-        <h1 className="text-2xl font-bold">{member.name} · today</h1>
-        <p className="mt-3 text-base text-muted-foreground">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
+        <h1 className="text-xl font-bold">{member.name} | today</h1>
+        <p className="mt-2 text-base text-muted-foreground">
           {state === "loading" ? (
             "Opening the mission data…"
           ) : (
@@ -124,7 +130,8 @@ export default function Today() {
   const groupById = Object.fromEntries(groups.map((g) => [g.group, g]));
   const band = health.band ? BAND_STYLE[health.band] : null;
   const redLimits = limitBreaches.filter((b) => b.redLimit);
-  const otherFlags = limitBreaches.filter((b) => !b.redLimit);
+  // Readings outside a general range that aren't red limits: shown on their indicator card.
+  const flagById = Object.fromEntries(limitBreaches.filter((b) => !b.redLimit).map((b) => [b.indicatorId, b]));
   const driftingIds = groups.filter((g) => g.status === "drifting").map((g) => g.group);
   const driftingNames = driftingIds.map((id) => byId[id]?.name ?? id);
   const hazards = likelyHazards(driftingIds);
@@ -142,11 +149,11 @@ export default function Today() {
   }[alert.level];
 
   return (
-    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
+      <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <h1 className="text-2xl font-bold">
-            {member.name} · today <span className="text-lg font-normal text-muted-foreground">(Day {today})</span>
+          <h1 className="text-xl font-bold">
+            Today <span className="text-base font-normal text-muted-foreground">| {member.name} | Day {today}</span>
           </h1>
         </div>
         <Link
@@ -158,16 +165,16 @@ export default function Today() {
         </Link>
       </div>
 
-      <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+      <div className="mt-2 grid gap-2 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
         <section className={card} aria-labelledby="score-heading">
           <p id="score-heading" className="text-sm uppercase tracking-wider text-muted-foreground">
             Health score
           </p>
           {health.score === null ? (
-            <p className="mt-3 text-base text-muted-foreground">Not enough data yet to score.</p>
+            <p className="mt-2 text-base text-muted-foreground">Not enough data yet to score.</p>
           ) : (
             <>
-              <div className="mt-3 flex flex-wrap items-center gap-3">
+              <div className="mt-2 flex flex-wrap items-center gap-2">
                 <span className="text-8xl font-bold leading-none" style={{ color: band.colour }}>
                   {health.score}
                 </span>
@@ -179,19 +186,19 @@ export default function Today() {
                   {health.label}
                 </span>
               </div>
-              <p className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-base">
+              <p className="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-base">
                 <Change value={change.sinceYesterday} label="since yesterday" />
                 <Change value={change.over7Days} label="this week" />
               </p>
               {health.cappedAt !== null && (
-                <p className="mt-3 text-muted-foreground">
+                <p className="mt-2 text-muted-foreground">
                   Capped at {health.cappedAt} because {CAP_REASON[health.cappedAt] ?? "an alert is active"}.
                 </p>
               )}
             </>
           )}
           <p className="mt-2 text-sm text-muted-foreground">
-            {SCORE_BANDS.map((b, i) => `${b.label} ${b.min}–${i === 0 ? 100 : SCORE_BANDS[i - 1].min - 1}`).join(" · ")}
+            {SCORE_BANDS.map((b, i) => `${b.label} ${b.min}–${i === 0 ? 100 : SCORE_BANDS[i - 1].min - 1}`).join(" | ")}
           </p>
         </section>
 
@@ -199,12 +206,12 @@ export default function Today() {
           <section aria-labelledby="alert-title" className="rounded-xl border-2 p-3" style={{ borderColor: "var(--status-red)" }}>
             <p className="flex items-center gap-2 font-bold uppercase tracking-wider" style={{ color: "var(--status-red)" }}>
               <OctagonAlert className="size-5" aria-hidden="true" />
-              Red limit · today
+              Red limit | today
             </p>
-            <h2 id="alert-title" className="mt-3 text-xl font-bold">
+            <h2 id="alert-title" className="mt-2 text-lg font-bold">
               Act now
             </h2>
-            <ul className="mt-3 space-y-3">
+            <ul className="mt-2 space-y-2">
               {redLimits.map((r) => (
                 <li key={r.indicatorId}>
                   <p className="text-base font-semibold">
@@ -214,7 +221,7 @@ export default function Today() {
                   {r.emergencyId && (
                     <Link
                       href={`/emergency?id=${r.emergencyId}`}
-                      className={`mt-3 inline-flex min-h-11 items-center gap-2 rounded-lg bg-destructive px-4 font-semibold text-background hover:bg-destructive/90 ${focusRing}`}
+                      className={`mt-2 inline-flex min-h-11 items-center gap-2 rounded-lg bg-destructive px-4 font-semibold text-background hover:bg-destructive/90 ${focusRing}`}
                     >
                       <TriangleAlert className="size-4" aria-hidden="true" />
                       Open: {emergencyName[r.emergencyId]}
@@ -230,12 +237,12 @@ export default function Today() {
             <p className="flex items-center gap-2 font-bold uppercase tracking-wider" style={{ color: "var(--status-amber)" }}>
               <TriangleAlert className="size-5" aria-hidden="true" />
               {alert.level === "note" ? "Note" : alert.level === "escalated" ? "Escalated alert" : "Drift alert"}
-              {alert.alertSince !== null && ` · since day ${alert.alertSince}`}
+              {alert.alertSince !== null && ` | since day ${alert.alertSince}`}
             </p>
-            <h2 id="alert-title" className="mt-3 text-xl font-bold">
+            <h2 id="alert-title" className="mt-2 text-lg font-bold">
               {alertTitle}
             </h2>
-            <p className="mt-3 text-base">Drifting: {driftingNames.join(", ")}.</p>
+            <p className="mt-2 text-base">Drifting: {driftingNames.join(", ")}.</p>
             {hazards.length > 0 && (
               <div className="mt-2 text-base">
                 <p>
@@ -255,7 +262,7 @@ export default function Today() {
               </div>
             )}
             <p className="mt-2 text-base">{alertNext}</p>
-            <details className="mt-3 border-t border-border pt-4">
+            <details className="mt-2 border-t border-border pt-4">
               <summary className={`flex min-h-11 cursor-pointer items-center rounded text-base font-semibold ${focusRing}`}>
                 Why this alert?
               </summary>
@@ -273,69 +280,47 @@ export default function Today() {
               <CircleCheck className="size-5" aria-hidden="true" />
               No alerts
             </p>
-            <h2 id="alert-title" className="mt-3 text-xl font-bold">
+            <h2 id="alert-title" className="mt-2 text-lg font-bold">
               Everything is inside your own normal
             </h2>
           </section>
         )}
       </div>
 
-      {(otherFlags.length > 0 || due.length > 0) && (
-        <div className="mt-3 grid gap-3 md:grid-cols-2">
-          {otherFlags.length > 0 && (
-            <section className={card} aria-labelledby="flags-heading">
-              <h2 id="flags-heading" className="text-lg font-bold">
-                Today&apos;s readings to watch
-              </h2>
-              <ul className="mt-3 space-y-3">
-                {otherFlags.map((r) => (
-                  <li key={r.indicatorId}>
-                    <p className="font-semibold">
-                      {byId[r.indicatorId].name}: {r.label}
-                    </p>
-                    <p className="text-muted-foreground">{r.action}</p>
-                    <p className="text-sm text-muted-foreground">{r.basisLabel}</p>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-          {due.length > 0 && (
-            <section className={card} aria-labelledby="due-heading">
-              <h2 id="due-heading" className="text-lg font-bold">
-                Still due today
-              </h2>
-              <p className="mt-2 text-muted-foreground">{due.join(", ")}</p>
-              <div className="mt-3 flex flex-wrap gap-3">
-                <Link href="/reaction-test" className={`inline-flex min-h-11 items-center rounded-lg border border-input px-4 hover:bg-accent ${focusRing}`}>
-                  Reaction test
-                </Link>
-                <Link href="/daily-check" className={`inline-flex min-h-11 items-center rounded-lg border border-input px-4 hover:bg-accent ${focusRing}`}>
-                  Daily check
-                </Link>
-              </div>
-            </section>
-          )}
-        </div>
+      {due.length > 0 && (
+        <section className={`${card} mt-2`} aria-labelledby="due-heading">
+          <h2 id="due-heading" className="text-base font-bold">
+            Still due today
+          </h2>
+          <p className="mt-2 text-muted-foreground">{due.join(", ")}</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <Link href="/reaction-test" className={`inline-flex min-h-11 items-center rounded-lg border border-input px-4 hover:bg-accent ${focusRing}`}>
+              Reaction test
+            </Link>
+            <Link href="/daily-check" className={`inline-flex min-h-11 items-center rounded-lg border border-input px-4 hover:bg-accent ${focusRing}`}>
+              Daily check
+            </Link>
+          </div>
+        </section>
       )}
 
-      <div className="mt-4 flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="text-lg font-bold">Indicators today</h2>
+      <div className="mt-3 flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="text-base font-bold">Indicators today</h2>
         <p className="text-muted-foreground">Status compares your 7-day average with your own in-flight normal, not Earth ranges</p>
       </div>
 
-      <div className="mt-3 grid auto-rows-fr gap-3 md:grid-cols-3">
+      <div className="mt-2 grid auto-rows-fr gap-2 md:grid-cols-3">
         {MAIN.map((id) => (
-          <IndicatorCard key={id} id={id} group={groupById[id]} record={record} baselines={baselines} />
+          <IndicatorCard key={id} id={id} group={groupById[id]} record={record} baselines={baselines} flag={flagById[id]} />
         ))}
       </div>
-      <div className="mt-3 grid auto-rows-fr gap-3 md:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-2 grid auto-rows-fr gap-2 md:grid-cols-2 xl:grid-cols-4">
         {EXTRAS.map((id) => (
-          <IndicatorCard key={id} id={id} group={groupById[id]} record={record} baselines={baselines} />
+          <IndicatorCard key={id} id={id} group={groupById[id]} record={record} baselines={baselines} flag={flagById[id]} />
         ))}
       </div>
 
-      <p className="mt-3 text-muted-foreground">Demo mission: all data on this screen is simulated. Not medical advice.</p>
+      <p className="mt-2 text-muted-foreground">Demo mission: all data on this screen is simulated. Not medical advice.</p>
     </main>
   );
 }
