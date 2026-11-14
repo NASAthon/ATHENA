@@ -143,6 +143,17 @@ AI-generated code was used to speed up the development process.
 
 ---
 
+## Team
+
+**NASAthon**, competing at HackAthlone (NASA Space Apps Challenge 2026)
+
+- Chidozie Onyejelem
+- Isaac Adeniji
+- Mercy Olasehinde
+- Izabela
+
+---
+
 ## For contributors and AI agents
 
 Start with [`context.md`](context.md) (the official event brief) and [`judging.md`](judging.md) (the submission and judging guide), then follow the workflow in [`AGENTS.md`](AGENTS.md).

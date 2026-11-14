@@ -11,8 +11,8 @@
 - We are a team entering the **2026 NASA International Space Apps Challenge** at the local event **HackAthlone** (Athlone, Ireland).
 - We are competing in the **Healthcare challenge: "Create Health Monitoring Software for Astronauts on Space Missions"** (difficulty: Intermediate; subjects: Human Exploration, Software, Space Exploration).
 - There is also a **global judging** round for submissions, so quality, polish and clear NASA-data provenance matter.
-- Team name / GitHub org: `<TEAM NAME — fill in>`
-- Team size: `<N members, max 6 — fill in>`
+- Team name / GitHub org: **NASAthon** (github.com/NASAthon). App/software name: **ATHENA**
+- Team size: **4 members**: Chidozie Onyejelem, Isaac Adeniji, Mercy Olasehinde, Izabela
 - Skills and preferred stack: JavaScript (no TypeScript). Stack is locked in `DECISIONS.md`.
 - Submission deadline: **Sun 15 Nov 2026, 23:59** (local time, global portal). Confirm with HackAthlone whether local pitching is earlier.
 
