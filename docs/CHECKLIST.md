@@ -16,7 +16,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 ## 1. Data and storage
 
 - [ ] **M** Daily record defined: date, mission day, heart rate, blood pressure (two numbers), blood sugar, temperature, sleep hours, mood (1–5), reaction median, lapses, false starts, exercise minutes, symptoms, SpO2 (optional), radiation dose (optional)
-- [ ] **M** Units chosen and shown everywhere (mg/dL or mmol/L, °C)
+- [ ] **M** Units chosen and shown everywhere (mg/dL or mmol/L, °C) 🟡 Partial (PR #7): units chosen in `src/data/indicators.js` (bpm, mmHg, mg/dL, °C, hours, 1–5, ms, minutes, %, mSv); still to do: show them on every screen
 - [ ] **M** Save and load daily records in the browser: SQLite via sql.js, saved to IndexedDB after every write, with the `.wasm` file bundled locally (`docs/DECISIONS.md` › Database)
 - [ ] **M** Save and load the two baselines
 - [ ] **M** Mission simulator: 180 days for 3 crew (`docs/DECISIONS.md` › Crew):
@@ -46,7 +46,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** Handles missing days without crashing or false alerts
 - [ ] **M** Search index: offline fuzzy search over all content (typos, prefixes, synonyms, symptoms; `docs/DECISIONS.md` › Search). Library: **MiniSearch** (MIT)
 - [ ] **M** Reminder scheduler: which measurements are due today
-- [ ] **S** Region mapper: indicator-to-body-region table and worst-status function
+- [ ] **M** Region mapper: indicator-to-body-region table and worst-status function 🟡 Partial (PR #7): the indicator-to-region table is in `src/data/regions.js`; still to do: worst-status function
 - [ ] **S** Calendar scheduler: which periodic exams are due on a given mission day
 - [ ] **S** Summary builder for the flight-surgeon report
 - [ ] **S** Mission mode changes which hazards and advice are shown (ISS, Lunar Gateway, Mars Transit; no Lunar Surface Base)
@@ -114,11 +114,11 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** Emergency guidance works for **a crewmate** (pick the affected astronaut, follow steps, record vitals)
 - [ ] **S** Voice reads the first-response steps aloud
 
-### Body figure (2D SVG; regions drafted in `docs/BODY_MAP.md`)
+### Body figure (2D SVG; regions in `docs/BODY_MAP.md` and `src/data/regions.js`). Required: the brief asks for a clickable body figure
 
-- [ ] **S** Outline with the eight clickable regions from `docs/BODY_MAP.md`
-- [ ] **S** Region colour from the region mapper
-- [ ] **S** Card on click: function, status, risk, hazard, advice, "last checked" date
+- [ ] **M** Outline with the eight clickable regions from `docs/BODY_MAP.md`
+- [ ] **M** Region colour (plus icon and label) from the region mapper
+- [ ] **M** Card on click: function, status, risk, hazard, advice, "last checked" date (card text ready in `src/data/regions.js`)
 - [ ] **S** Fallback: region tiles if the drawing takes too long
 
 ### Calendar, summary, extras
@@ -152,7 +152,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 ## 5. Offline
 
 - [ ] **M** App loads and works with the network switched off
-- [ ] **M** No fonts, scripts or data fetched from the internet at run time
+- [ ] **M** No fonts, scripts or data fetched from the internet at run time 🟡 Partial (PR #3, PR #4): system fonts only and sql.js engine served locally; still to do: re-check once all screens exist
 - [ ] **M** Data survives closing and reopening the browser
 - [ ] **S** Installable as an app (PWA) on a laptop or tablet
 

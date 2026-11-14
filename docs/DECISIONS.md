@@ -1,7 +1,7 @@
 # Decision Log
 
 Every locked choice and why. Entries are in the order they were made. **Index:**
-- **Product:** Originality · Crew · Trends Over Single Readings · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
+- **Product:** Originality · Body Map Required · Crew · Trends Over Single Readings · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
 - **Data and content:** No Medicines or Diagnoses · Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
 - **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open)
 - **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
@@ -591,3 +591,18 @@ false alarms (Pilot Singh stays green) and matches the drift-based approach.
 
 Status:
 LOCKED (numbers tunable)
+
+
+---
+
+## Body Map Required
+
+The clickable 2D SVG body figure (8 regions, `docs/BODY_MAP.md`, `src/data/regions.js`) is a
+**must-have**, not a stretch goal. The fallback tiles stay a "should have".
+
+Reason:
+The official challenge text asks for a clickable human body figure where each part shows its
+function and health status. It's also central to the demo.
+
+Status:
+LOCKED
