@@ -10,6 +10,8 @@ Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Age
 | Challenge video (Brazilian Space Agency) | https://www.youtube.com/watch?v=RERG3gEmdC8 | Challenge goals, emergency scenario, guidance requirements | Official challenge material | Cite and link only |
 | 17 NASA risk pages + 5 hazard pages | URLs listed in `docs/BODY_MAP.md` | Body regions, affected systems, verified facts (e.g. bone loss 1–1.5%/month) | Yes | US Gov work; no NASA logos |
 | NASA Space Apps resources (submission and judging guides) | https://www.spaceappschallenge.org/resources/ | Rules, deadlines and judging criteria (`docs/judging.md`) | Official event material | Cite and link only |
+| CDC pages (blood pressure, heart attack, cardiac arrest, stroke, fever, hypothermia, sleep, glucose monitoring) | see tables below | Thresholds, measurement steps, emergency steps | No (clinical) | US Gov work, public domain; rewritten in our words |
+| American Diabetes Association pages | see tables below | Glucose ranges, 15-15 rule | No (clinical) | Copyrighted: numbers only, our own wording |
 | Monitoring Radiation for Astronaut Health (CSA) | https://www.asc-csa.gc.ca/eng/news/articles/2026/2026-02-26-monitoring-radiation-astronaut-health.asp | Radiation monitoring context (CANS) | No (partner) | Cite and link only; check CSA notices |
 
 ## Clinical reference ranges (thresholds only, see `docs/DECISIONS.md` › Thresholds and › Red-Limit Sources)
@@ -18,17 +20,41 @@ Licence notes: **CDC** content is US Government work (public domain). **AHA** an
 copyrighted, so use only the numeric facts (facts can't be copyrighted), write our own
 wording, and cite the page. Never copy their text, images or charts.
 
+All values verified on 14 Nov 2026. The data lives in `src/data/indicators.js`.
+
 | Indicator | Range used | Source | URL |
 |---|---|---|---|
-| | | | |
+| Blood pressure | Normal <120/<80; Elevated 120–129/<80; Stage 1 130–139 or 80–89; Stage 2 ≥140 or ≥90; Severe >180 and/or >120 (emergency if symptoms) | CDC (table based on ACC/AHA guidelines) | https://www.cdc.gov/high-blood-pressure/about/index.html |
+| Blood glucose (fasting) | Normal <100; 100–125 raised; ≥126 high (mg/dL); fasting = 8 h | ADA | https://diabetes.org/about-diabetes/diagnosis |
+| Blood glucose (low) | Below 70 mg/dL | ADA | https://diabetes.org/living-with-diabetes/treatment-care/hypoglycemia-low-blood-glucose |
+| Blood glucose (very high) | Above 240 mg/dL: check ketones, don't exercise if present | ADA | https://diabetes.org/living-with-diabetes/treatment-care/hyperglycemia |
+| Body temperature (fever) | 38.0°C (100.4°F) or above | CDC | https://www.cdc.gov/quarantine/maritime/definitions-signs-symptoms-conditions-ill-travelers.html |
+| Body temperature (hypothermia) | Below 35°C (95°F): get medical help immediately | CDC | https://www.cdc.gov/winter-weather/prevention/index.html |
+| Sleep | Adults 18–60: 7 or more hours | CDC | https://www.cdc.gov/sleep/about/index.html |
+| Exercise | About 1.5 h a day, 6–7 days a week | NASA | https://www.nasa.gov/reference/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness/ |
+| Heart rate | **Pending:** only AHA states the normal resting range; heart.org blocks automated access (HTTP 403). Paste or fetch manually to verify. | AHA | — |
+| SpO₂, radiation dose | **No thresholds:** no verified source in the allowed list | — | — |
+
+Measurement steps: blood pressure from https://www.cdc.gov/high-blood-pressure/measure/index.html; glucose from https://www.cdc.gov/diabetes/diabetes-testing/monitoring-blood-sugar.html.
+ATHENA design choices (not clinical): the mood scale and its bands, the 500 ms reaction lapse, "3+ nights or days in a row" rules, and mapping clinical categories onto our four levels. These are labelled `basis: "design"` in the data.
 
 ## Emergency first-response steps (see `docs/DECISIONS.md` › Emergency Step Sources)
 
 NASA first; otherwise AHA or CDC, rewritten in our own words.
 
-| Scenario | Step(s) | Source | URL |
+All in `src/data/emergencies.js`. Where a source says "call 911", ATHENA says "contact the flight surgeon" (marked `adaptation: true`).
+
+| Scenario | Status | Source | URL |
 |---|---|---|---|
-| | | | |
+| Chest pain (heart attack signs) | Ready | CDC | https://www.cdc.gov/heart-disease/about/heart-attack.html |
+| Collapse (cardiac arrest) | Partial: CPR technique pending (AHA blocked) | CDC | https://www.cdc.gov/heart-disease/about/cardiac-arrest.html, https://www.cdc.gov/heart-disease/php/cardiac-arrest-response-plans/index.html |
+| Stroke (BE FAST) | Ready | CDC | https://www.cdc.gov/stroke/signs-symptoms/index.html |
+| Low blood sugar (15-15 rule) | Ready | ADA | https://diabetes.org/living-with-diabetes/hypoglycemia-low-blood-glucose/symptoms-treatment |
+| Very high blood pressure | Ready | CDC | https://www.cdc.gov/high-blood-pressure/about/index.html |
+| Hypothermia | Ready | CDC | https://www.cdc.gov/winter-weather/prevention/index.html |
+| Decompression sickness | Ready | NASA | https://www.nasa.gov/reference/risk-of-decompression-sickness/ |
+| Hypoxia | Partial: NASA says protocols are still in development | NASA | https://www.nasa.gov/reference/risk-of-hypoxia/ |
+| Radiation exposure, injury, mental health crisis | Needs source: signs plus "contact flight surgeon" only | NASA | see `src/data/emergencies.js` |
 
 ## Libraries and tools
 

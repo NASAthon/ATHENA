@@ -10,6 +10,7 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Chidozie | Claude Code | Installed sql.js, MiniSearch and shadcn/ui; set up the dark theme, wasm copy script and licence scan | `package.json`, `components/`, `lib/`, `app/`, `scripts/` |
 | 14 Nov 2026 | Chidozie | Claude Code | PR #6: merged main, moved header and pages into `src/`, restored dark theme, swapped emoji for Lucide icon | `src/components/Header.js`, `src/app/*` |
 | 14 Nov 2026 | Chidozie | Claude Code | PR #6 review fixes: keyboard focus rings, current-page nav highlight, theme colour tokens, crew switcher | `src/components/*`, `src/lib/crew.js` |
+| 14 Nov 2026 | Chidozie | Claude Code | Content and research: fetched and verified NASA, CDC and ADA pages; wrote hazard, risk, region, indicator, emergency, symptom and exam data with citations; content validation script | `src/data/`, `scripts/check-content.mjs`, `docs/SOURCES.md` |
 
 ## AI-generated media
 

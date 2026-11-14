@@ -11,6 +11,9 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 - **Root:** `AGENTS.md`, `CLAUDE.md` and `README.md` (they must stay at the root, because agents and GitHub look for them there), plus config files.
 - `docs/`: all project context for agents (`context.md`, `CHECKLIST.md`, `DECISIONS.md`, `judging.md`, `SOURCES.md`, `AI_USAGE.md`, `BODY_MAP.md`).
 - `src/`: all app code (`src/app/` pages, `src/components/`, `src/lib/`). Import with `@/`, e.g. `@/lib/utils`.
+- `src/data/`: all health content (hazards, risks, body regions, indicators with thresholds,
+  emergencies, symptoms, exams, sources). Import from `@/data`. **Never hard-code health text
+  or numbers in components; use these files.** Run `npm run check:content` after editing them.
 - `public/`: static files served as-is. `scripts/`: build helper scripts.
 
 ## 1. Before starting any task

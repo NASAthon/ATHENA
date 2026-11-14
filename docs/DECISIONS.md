@@ -496,6 +496,11 @@ Every value must be **checked against the live source page before use**, entered
 with its exact URL in `docs/SOURCES.md`, and labelled "general clinical reference
 range" in the app. If a value can't be verified, don't use it.
 
+Update (14 Nov): heart.org (AHA) blocks automated access, so blood pressure uses the
+**CDC** table (which is based on ACC/AHA guidelines). The resting heart-rate range and CPR
+technique stay **pending** until someone verifies the AHA page by hand. Until then, heart
+rate is tracked against each astronaut's own baseline only.
+
 Status:
 LOCKED
 
@@ -509,6 +514,8 @@ Emergency first-response steps come from:
    sickness: end the spacewalk and return to the pressurised environment).
 2. **Otherwise AHA or CDC:** published first-aid and first-response guidance from the
    American Heart Association or the CDC.
+   For low blood sugar, the American Diabetes Association's 15-15 rule is used, because ADA is already
+   the glucose source.
 
 Rules:
 - Write every step **in our own words** (plain English, with a short "why"). Never copy AHA text.
