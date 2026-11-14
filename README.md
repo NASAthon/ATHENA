@@ -80,9 +80,7 @@ Lunar Gateway
 
 Mars Transit
 
-(Optional: Lunar Surface Base, as named in the challenge video.)
-
-### Measurement Reminders (optional)
+### Measurement Reminders
 
 Prompts the crew to take scheduled measurements as part of the mission routine.
 

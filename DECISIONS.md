@@ -163,3 +163,19 @@ Submission closes 10:30 Sun 15 Nov. Pitching from 11:30: 3-minute pitch plus
 
 Status:
 LOCKED
+
+
+---
+
+## Scope Additions (from challenge video)
+
+Required: emergency guidance (including crewmate assessment), a measurement guide
+for every indicator, and measurement reminders.
+Out of scope: Lunar Surface Base mission mode.
+
+Reason:
+Emergency guidance and measurement guides are challenge requirements. Reminders are
+cheap and add value. Lunar base isn't worth the time.
+
+Status:
+LOCKED
