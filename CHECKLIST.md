@@ -107,9 +107,9 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** Emergency guidance works for **a crewmate** (pick the affected astronaut, follow steps, record vitals)
 - [ ] **S** Voice reads the first-response steps aloud
 
-### Body figure (2D SVG)
+### Body figure (2D SVG; regions drafted in `docs/BODY_MAP.md`)
 
-- [ ] **S** Outline with clickable regions covering every body system in the data map (about eight)
+- [ ] **S** Outline with the eight clickable regions from `docs/BODY_MAP.md`
 - [ ] **S** Region colour from the region mapper
 - [ ] **S** Card on click: function, status, risk, hazard, advice, "last checked" date
 - [ ] **S** Fallback: region tiles if the drawing takes too long
@@ -136,7 +136,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** Source list with links in `docs/SOURCES.md` (NASA HRP, NASA OSDR, Canadian Space Agency, clinical ranges, libraries)
 - [ ] **M** Every resource used is open source, openly licensed or public domain, with no NASA logos (`DECISIONS.md` › Licensing)
 - [ ] **M** Every figure in the app or pitch traced to a source, or removed
-- [ ] **S** Text for every body-region card (linked to its hazards and risks)
+- [ ] **S** Verify `docs/BODY_MAP.md` against the NASA pages, then write every region card (linked to its hazards and risks)
 - [ ] **S** List of periodic exams and how often
 - [ ] **S** Short note on existing tools and what ATHENA adds
 
