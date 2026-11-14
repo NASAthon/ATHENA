@@ -1,5 +1,11 @@
 # Decision Log
 
+Every locked choice and why. Entries are in the order they were made. **Index:**
+- **Product:** Originality · Crew · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
+- **Data and content:** Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
+- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open)
+- **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
+
 ## Frontend
 
 Next.js (JavaScript, static export) as an offline-first PWA, with Tailwind and ShadCN.
@@ -138,7 +144,6 @@ LOCKED
 
 ## File Naming
 
-The decision log is `docs/DECISIONS.md` (renamed from the misspelt `DECISONS.md`).
 `CLAUDE.md` only imports `AGENTS.md`, and all workflow rules live in `AGENTS.md`.
 Layout: `AGENTS.md`, `CLAUDE.md` and `README.md` stay at the root (tools and GitHub require it);
 all other docs live in `docs/`; app code lives in `src/` (Next.js `src/app`), with `@/*` → `./src/*`.
@@ -262,21 +267,13 @@ Edge cases it must handle:
 How:
 - Each searchable item has a `keywords` list (synonyms, symptoms, plain-English
   terms, common misspellings), stored with the content data.
-- Use a small open-source fuzzy search library that runs in the browser. Record
-  the final choice in `docs/SOURCES.md`.
-
-Library options (team to choose):
-
-| Library | Licence | Strengths | Weaknesses |
-|---|---|---|---|
-| **MiniSearch** (suggested) | MIT | Small and fast; typo tolerance, prefix matching and field boosting; built-in "did you mean" suggestions (`autoSuggest`) | Synonyms must come from our `keywords` lists |
-| **Fuse.js** | Apache-2.0 | Very simple API; good fuzzy matching on short lists | Slower on larger data; no built-in prefix or auto-suggest |
-
-Both run fully offline, need no server and are free to use.
+- Library: **MiniSearch (MIT)**, installed. It handles typos, prefixes, field boosting and
+  "did you mean" (`autoSuggest`); synonyms come from our `keywords` lists.
+  (Fuse.js was the alternative; it was rejected as slower, with no prefix or auto-suggest.)
 - Rank results with emergency matches first when the query looks like a symptom.
 
 Status:
-LOCKED. Library: **MiniSearch (MIT)**, recorded in `docs/SOURCES.md`.
+LOCKED
 
 
 ---
@@ -368,7 +365,7 @@ Each astronaut has a **0–100 health score** (100 = perfect, 0 = critical), so 
 vitals are noticed straight away.
 
 Starting formula (the logic owner may tune the numbers; record any change here):
-- Each core indicator gets a sub-score: steady = 100, expected adaptation = 90,
+- Each tracked indicator (or linked group, see Drift Cut-off) gets a sub-score: steady = 100, expected adaptation = 90,
   drifting = 80 − 20 × (z − 3.5) (floored at 20), red limit = 0. No data = left out.
 - Score = average of the available sub-scores, rounded.
 - **An active drift alert (2 or more groups drifting) caps the score at 79**, and
@@ -391,8 +388,8 @@ LOCKED (numbers tunable)
 ## Data Map Coverage
 
 - The NASA data map covers **all 5 hazards and all 17 risks** from the HRP pages.
-- **Body map** regions cover every body system those risks affect. Draft of the 8 regions
-  and their risk links: `docs/BODY_MAP.md` (verified against all 22 NASA pages on 14 Nov).
+- **Body map** regions cover every body system those risks affect. The 8 regions and
+  their risk links are in `docs/BODY_MAP.md` (verified against all 22 NASA pages on 14 Nov).
 - **Emergency scenarios** cover the acute events linked to the hazards (e.g. chest
   pain/collapse, hypoxia, decompression sickness, radiation exposure, injury,
   severe behavioural crisis). Chest pain/collapse is built first.

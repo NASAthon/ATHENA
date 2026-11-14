@@ -5,7 +5,7 @@ Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Age
 | Source | URL | What we take from it | Official NASA? | Licence / terms |
 |---|---|---|---|---|
 | 5 Hazards of Human Spaceflight | https://www.nasa.gov/hrp/hazards/ | The five hazards | Yes | US Gov work; no NASA logos |
-| Risks of Human Spaceflight | https://www.nasa.gov/hrp/risks/ | 17 risks and the hazard-to-risk link | Yes | US Gov work; no NASA logos |
+| Risks of Human Spaceflight | https://www.nasa.gov/hrp/risks/ | The 17 risks (the pages don't map them to hazards; our mapping is in `docs/BODY_MAP.md`) | Yes | US Gov work; no NASA logos |
 | NASA Open Science Data Repository (OSDR) | https://osdr.nasa.gov/ | Real spaceflight biology data for inspiration and testing (named in the challenge video) | Yes | Check each dataset's licence before use |
 | Challenge video (Brazilian Space Agency) | https://www.youtube.com/watch?v=RERG3gEmdC8 | Challenge goals, emergency scenario, guidance requirements | Official challenge material | Cite and link only |
 | 17 NASA risk pages + 5 hazard pages | URLs listed in `docs/BODY_MAP.md` | Body regions, affected systems, verified facts (e.g. bone loss 1–1.5%/month) | Yes | US Gov work; no NASA logos |

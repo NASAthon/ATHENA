@@ -2,7 +2,7 @@
 
 > **Status: PLAN APPROVED. We are in the BUILD phase.** Write application code following `AGENTS.md` and `docs/DECISIONS.md`. The architecture is locked, so do not re-plan it or propose a different stack.
 >
-> This file holds the event rules, submission requirements, judging rubric, the challenge, our concept (Section 6.1) and every data link we were given. Section 10 is the original planning brief, kept for reference.
+> This file holds the event rules, submission requirements, judging rubric, the challenge, our concept (Section 6.1) and every data link we were given.
 
 ---
 
@@ -85,7 +85,7 @@
 - Don't assume astronauts know how to assess their health. Provide simple instructions and explanations of measurements, indicators and risks.
 - *(From the challenge video)* Give **emergency guidance** (e.g. a crewmate with chest pain who collapses mid-transit to Mars). For each measurement, explain how to take it, why it matters and what to do when it's abnormal. The challenge is authored by the **Brazilian Space Agency (AEB)**.
 
-## 6. Our current idea (starting point, open to refinement during planning)
+## 6. Original idea (superseded by 6.1; kept for background)
 
 A visual astronaut self-assessment tool with these building blocks:
 1. **Hazard-to-health mapping:** each of the five HRP hazards is linked to the health risks it drives and to the indicators that signal them.
@@ -97,9 +97,7 @@ A visual astronaut self-assessment tool with these building blocks:
 7. **Routine prompts and optional gamification:** reminders and streaks for measurements, exercise, sleep and so on.
 8. **Plain-language guidance** for non-specialists.
 
-Planning should decide which of these are **must-have for the demo** versus **stretch goals**.
-
-### 6.1 ATHENA: our chosen concept and product spec (merged from the earlier `Project_Context.md`, `NASA_Challenge.md` and `ATHENA_MASTER_SPEC.md`)
+### 6.1 ATHENA: our chosen concept and product spec
 
 **Vision:** an autonomous astronaut health copilot. **ATHENA** stands for Autonomous Telecommunications and Health Evaluation Network for Astronauts. It is an onboard health monitoring and decision-support system for astronauts.
 
@@ -140,9 +138,6 @@ Planning should decide which of these are **must-have for the demo** versus **st
 **Tech stack** (locked in `docs/DECISIONS.md`): offline-first PWA. Next.js (JavaScript, static export) + Tailwind + ShadCN; SQLite in the browser (sql.js, saved to IndexedDB); JS rules engine + fixed-baseline z-score drift detection (z ≥ 3.5 in the worrying direction; `docs/DECISIONS.md` › Drift Cut-off); 2D SVG body map. No backend server. Everything runs onboard.
 
 **MVP scope, priorities and demo script:** see **`docs/CHECKLIST.md`**.
-
-
-> For judging, the official rubric in Section 4 (Impact, Creativity, Validity, Relevance, Presentation) replaces the informal "judging focus" list in the old `NASA_Challenge.md`.
 
 ## 7. Data and resources we were given (the full official list)
 
@@ -233,7 +228,7 @@ This means our design must handle the gap honestly:
 
 ## 9. Additional public sources worth checking (NOT in the official list — verify before relying on them)
 
-> **On hold:** the team decided to use only the official Section 7 resources for now (see `docs/DECISIONS.md`, Data Sources). Do not use these sources unless that decision changes.
+> **On hold:** the team uses only the official Section 7 resources (see `docs/DECISIONS.md` › Data Sources). The **only** exceptions are AHA, ADA and CDC guidance for thresholds and emergency steps (`docs/DECISIONS.md` › Red-Limit Sources and › Emergency Step Sources). Don't use the rest of this list unless that decision changes.
 
 These are likely useful for numeric ranges and spaceflight-specific context. Confirm each is accessible and appropriately licensed before using, and cite it explicitly.
 - NASA Human Research Roadmap: https://humanresearchroadmap.nasa.gov/
@@ -243,34 +238,3 @@ These are likely useful for numeric ranges and spaceflight-specific context. Con
 - NASA Lifetime Surveillance of Astronaut Health (LSAH) — search for public documentation; URL not verified.
 - Other agencies' public pages (ESA, JAXA) — look for astronaut health and countermeasure explainers; mind each site's data-use terms.
 - Published clinical guidelines for general reference ranges (e.g. WHO, AHA, ADA, CDC sleep guidance) — cite directly.
-
-## 10. Original planning brief (DONE, kept for reference only; do not re-run it)
-
-> The plan is approved and the stack is locked in `docs/DECISIONS.md`. Ignore the "recommend a stack" and "do not implement" instructions below. The useful parts still apply: the `docs/` files listed here (create them as needed) and the constraints at the end.
-
-Read this whole file. If you can access the web, open the linked NASA pages (start with the Risks page and the Standard Measures page) to extract accurate details. Then produce the following, in Markdown, and save them to a `docs/` folder in the repo:
-
-1. **`docs/PLAN.md`**
-   - A one-paragraph project pitch and a recommended **scope split: Must-have (demo-critical) / Should-have / Stretch**, justified against the five judging criteria.
-   - A **recommended tech stack** (given our skills in Section 1), with reasons. Prefer something we can build, deploy and demo publicly within roughly 24 hours.
-   - An **architecture overview**: data layer, rule/triage engine, UI components, charts, body-map component.
-   - A **timeline** from now to the submission deadline, including time for the demo video/slides, README and submission form. Reserve the last ~3 hours for polish and submission only.
-   - A **task split** for a team of `<N>` people that minimises merge conflicts.
-   - Top risks and mitigations.
-2. **`docs/DATA_MODEL.md`**
-   - Proposed **JSON schema** for: hazards, risks, body systems, indicators (name, unit, how it can be measured in flight, normal range, watch/act/contact-surgeon bands), countermeasures/actions, environments, and sources.
-   - A worked example for at least three indicators (e.g. heart rate, sleep hours, mood), each with a source URL and a note on where its numeric range comes from.
-   - The mapping from the five hazards → the 17 listed risks → body systems → indicators.
-3. **`docs/SOURCES.md`** — a table of every source we use: URL, what we take from it, whether it is official NASA data, and any licence/terms note. This feeds the submission's "NASA data" section.
-4. **`docs/DEMO_STORYBOARD.md`** — a storyboard for a **≤30-second demo video** and, alternatively, a **≤7-slide deck**, showing the problem, the live demo, and why it matters.
-5. **`docs/AI_USAGE.md`** — a running log template for disclosing how AI was used (required for submission), plus a list of any AI-generated media that will need a watermark/credit.
-6. **`README.md`** skeleton with: project name, summary, challenge, features, tech stack, **NASA data credits**, **AI-usage disclosure**, a "not medical advice" disclaimer, how to run, team name and members.
-7. A short list of **open questions** for the team (stack, deadline, who owns what) that you need answered before writing code.
-
-### Constraints to respect throughout
-- ~~Do not start implementing until I approve the plan.~~ Plan approved.
-- Hackathon time is tight. Favour a working, polished vertical slice over breadth.
-- Every health rule shown to the user should cite its source.
-- The repo will be **public**, so don't commit secrets, personal data, or anyone's photo or likeness (some participants may be under 18).
-- Be explicit wherever something is our assumption rather than an official NASA value.
-- Ask me before making any decision that is hard to reverse.

@@ -32,7 +32,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** Z-score of the seven-day average against the in-flight baseline
 - [ ] **M** Status per indicator: no data, steady, drifting, expected adaptation
 - [ ] **M** Drift cut-off of **z = 3.5** (`docs/DECISIONS.md` › Drift Cut-off) written in the README as a design choice
-- [ ] **M** Alert level: 1 drifting = note, 2 or more = alert, no recovery after 14 more days = tell crew and ground
+- [ ] **M** Alert level: 1 drifting = note, 2 or more = alert, no recovery after 14 more days = tell crew and ground (linked indicators count once; `docs/DECISIONS.md` › Drift Cut-off)
 - [ ] **M** Red-limit check on every new reading, independent of baselines
 - [ ] **M** Red limits taken from a published source and cited (general clinical reference ranges, `docs/DECISIONS.md` › Thresholds)
 - [ ] **M** Reaction scoring: median, lapses over 500 ms, false starts

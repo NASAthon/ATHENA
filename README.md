@@ -30,7 +30,7 @@ immediate support from Earth.
 ATHENA provides:
 
 - Continuous health monitoring
-- Personalized baselines
+- Personalised baselines
 - Explainable alerts
 - Recommended actions (no diagnoses or medication instructions)
 - Emergency guidance, including for a crewmate
@@ -147,7 +147,7 @@ Rule-based answers, available offline, to questions such as:
 
 "What factors are affecting my health score?"
 
-Every answer cites its NASA source.
+Every answer cites its source: NASA pages, or clinical guidelines for thresholds.
 
 ### Works Offline
 
@@ -165,6 +165,9 @@ App:
 
 Database:
 - SQLite in the browser (sql.js), saved to IndexedDB
+
+Search:
+- MiniSearch (offline fuzzy search)
 
 Analytics:
 - Rules engine with cited sources
