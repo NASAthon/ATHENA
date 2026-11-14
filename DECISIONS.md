@@ -81,7 +81,7 @@ LOCKED
 - Rule-based "Why this alert?" panels and a short FAQ ("Am I fit for EVA?"),
   answered from the rules engine with source URLs. Works fully offline.
 - Anomaly and trend detection: fixed personal baselines plus a z-score drift
-  check (|z| ≥ 3.5) in JavaScript (see Baselines and Drift Cut-off).
+  check (z ≥ 3.5) in JavaScript (see Baselines and Drift Cut-off).
 
 Status:
 LOCKED
