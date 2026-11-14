@@ -24,7 +24,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
   - **Pilot Singh:** stays healthy (shows no false alarm)
   - **Engineer Nakamura:** a sudden event (red-limit screen and crewmate emergency guidance, e.g. chest pain)
 - [x] **M** Simulator adds realistic day-to-day noise and one or two harmless bad days (Rivera day 50, Singh day 100; a few missed days too) (PR #15)
-- [ ] **M** "Load demo mission" and "Reset data" buttons work 🟡 Partial (PR #15): `loadDemoMission` and `resetData` in `src/lib/sim/demo.js` (they use the database from PR #14); still to do: the two buttons
+- [x] **M** "Load demo mission" and "Reset data" buttons work (Crew page, `src/components/MissionDataPanel.js`; demo loaded automatically on first run, stays empty after reset; tested against the real sql.js in `demo.db.test.js`)
 - [x] **M** Every indicator, guide and emergency entry has a `keywords` list (synonyms, plain-English terms, symptoms, common misspellings) for search (PR #7)
 - [ ] **S** Store periodic exam results and the check-in streak
 

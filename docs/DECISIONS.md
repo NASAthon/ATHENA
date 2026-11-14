@@ -716,6 +716,13 @@ the 3 crew in Crew. Every number is an invented demo value, labelled simulated, 
   once) and stores each astronaut's fixed baselines.
 - **Scenario Lab** (`/scenario-lab`) runs events on a copy of this mission with the fixed
   baselines, so it never changes stored data.
+- **First run and Reset data:** the demo mission is loaded automatically the very first time
+  the app opens (`seedOnFirstRun`, meta flag `initialised`). It is never reloaded by itself:
+  after "Reset data" the app stays empty, even after reopening, until "Load demo mission" is
+  pressed. Both buttons are on the Crew page (`MissionDataPanel`), with inline confirmation
+  before anything stored is deleted.
+- **Today's mission day** is stored with the mission (meta `today`) and shared with every screen
+  by `MissionDataProvider` (`useMissionData()`); the header shows it.
 
 Reason:
 CHECKLIST §1 (simulator, noise and bad days) and the demo script. Seeded so the live demo and
@@ -736,7 +743,8 @@ How the locked Database decision is built (`src/lib/db/`). Use `await getDatabas
   to memory (data lasts until reload).
 - **Tables:** `daily_record` (one row per astronaut per mission day; the record is stored as
   JSON so its fields can change without a migration), `baseline` (fixed: one per astronaut and
-  kind, never overwritten except by "Reset data") and `meta` (schema version).
+  kind, never overwritten except by "Reset data") and `meta` (schema version, today's mission
+  day, first-run flag).
 - **Baselines are calculated once and stored:** `ensureMissionBaselines(astronautId, today)`
   calculates each baseline the first time its window has ended, then only loads it. If no
   indicator has enough readings yet, nothing is stored and it tries again next time.
