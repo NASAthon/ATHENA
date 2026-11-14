@@ -14,7 +14,8 @@ GitHub is the single source of truth, so always branch from the latest `main`.
   - `src/lib/engine/`: **all health logic** (baselines, drift, alerts, red limits, health score, search, and so on).
     Import from `@/lib/engine`. Never put health logic in components. Tests sit next to each file (`*.test.js`).
   - `src/lib/regionStatus.js`: body-map display layer (labels, icons, colours, recent-symptom layer) on top of the engine's status order.
-  - `src/lib/sampleData.js`: SIMULATED crew statuses, used until the mission simulator exists. Always label them as simulated in the UI.
+  - `src/lib/sim/`: the seeded mission simulator (`simulateAstronaut`, `simulateCrew`) and `loadDemoMission` / `resetData`.
+    Prefer it over `src/lib/sampleData.js` (hand-written SIMULATED statuses, kept until screens switch over). Always label simulated data in the UI.
   - `src/components/CrewProvider.js`: the selected astronaut, shared by every page (`useCrew()`).
 - `src/data/`: all health content (hazards, risks, body regions, indicators with thresholds and
   input limits, emergencies, symptoms, exams, mission modes, sources). Import from `@/data`. Shared UI helpers (e.g. `focusRing`) live in `@/lib/ui`. **Never hard-code health text
