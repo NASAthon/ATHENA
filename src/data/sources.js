@@ -33,6 +33,7 @@ export const SOURCES = {
 
   // Clinical reference sources (docs/DECISIONS.md > Red-Limit Sources, Emergency Step Sources)
   "aha-what-is-cpr": { title: "What is CPR", publisher: "American Heart Association", url: "https://cpr.heart.org/en/resources/what-is-cpr" },
+  "aha-first-aid-2024": { title: "2024 AHA and American Red Cross Guidelines for First Aid (Trauma: bleeding, fractures)", publisher: "American Heart Association and American Red Cross", url: "https://cpr.heart.org/en/resuscitation-science/2024-first-aid-guidelines" },
   "cdc-bp-about": { title: "About High Blood Pressure", publisher: "CDC (table based on ACC/AHA guidelines)", url: "https://www.cdc.gov/high-blood-pressure/about/index.html" },
   "cdc-bp-measure": { title: "Measure Your Blood Pressure", publisher: "CDC", url: "https://www.cdc.gov/high-blood-pressure/measure/index.html" },
   "cdc-heart-attack": { title: "Heart Attack Symptoms, Risk, and Recovery", publisher: "CDC", url: "https://www.cdc.gov/heart-disease/about/heart-attack.html" },

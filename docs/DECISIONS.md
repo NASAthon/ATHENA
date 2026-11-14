@@ -1,7 +1,7 @@
 # Decision Log
 
 Every locked choice and why. Entries are in the order they were made. **Index:**
-- **Product:** Originality · Crew · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
+- **Product:** Originality · Crew · Trends Over Single Readings · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
 - **Data and content:** No Medicines or Diagnoses · Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
 - **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open)
 - **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
@@ -390,9 +390,10 @@ LOCKED (numbers tunable)
 - The NASA data map covers **all 5 hazards and all 17 risks** from the HRP pages.
 - **Body map** regions cover every body system those risks affect. The 8 regions and
   their risk links are in `docs/BODY_MAP.md` (verified against all 22 NASA pages on 14 Nov).
-- **Emergency scenarios** cover the acute events linked to the hazards (e.g. chest
-  pain/collapse, hypoxia, decompression sickness, radiation exposure, injury,
-  severe behavioural crisis). Chest pain/collapse is built first.
+- **Emergency scenarios** cover the acute events linked to the hazards: 13 guides in
+  `src/data/emergencies.js` (chest pain, collapse/CPR, stroke, low blood sugar, very high BP,
+  hypothermia, decompression sickness, hypoxia, radiation alert, head injury, severe bleeding,
+  suspected broken bone, mental health crisis).
 
 Status:
 LOCKED
@@ -497,8 +498,8 @@ with its exact URL in `docs/SOURCES.md`, and labelled "general clinical referenc
 range" in the app. If a value can't be verified, don't use it.
 
 Update (14 Nov): heart.org (AHA) blocks automated access, so blood pressure uses the
-**CDC** table (which is based on ACC/AHA guidelines). The CPR technique was read from AHA's
-page through a browser on 14 Nov. Heart rate has no population range by design (see Heart Rate and SpO₂).
+**CDC** table (which is based on ACC/AHA guidelines). The CPR technique and the bleeding and fracture
+first aid were read from AHA pages through a browser on 14 Nov. Heart rate has no population range by design (see Heart Rate and SpO₂).
 
 Status:
 LOCKED
@@ -568,3 +569,25 @@ harm a crew member. `npm run check:content` blocks dose patterns (e.g. "mg", "ta
 
 Status:
 LOCKED
+
+
+---
+
+## Trends Over Single Readings
+
+ATHENA judges **patterns over days**, not one reading on its own. A single low or high reading
+is "watch" at most, unless it crosses a clinical red limit (e.g. blood sugar below 70, temperature
+of 38°C or above) or comes with red-flag symptoms. "Act" needs a streak or a drift. The approved design limits are:
+- Sleep under 7 h on 3+ nights in a row → act
+- Mood 1–2 on 3+ days in a row → act
+- Reaction lapse = response slower than 500 ms, counted against the astronaut's own baseline
+- Exercise under 90 min → watch
+- Exam intervals: eye scan, heart ultrasound and samples every 30 days; fitness check every 14 days
+All are labelled `basis: "design"` in `src/data` and are tunable.
+
+Reason:
+Team decision. One bad day is normal; a trend is what signals a real problem. This also avoids
+false alarms (Pilot Singh stays green) and matches the drift-based approach.
+
+Status:
+LOCKED (numbers tunable)

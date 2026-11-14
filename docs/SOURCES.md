@@ -12,6 +12,7 @@ Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Age
 | NASA Space Apps resources (submission and judging guides) | https://www.spaceappschallenge.org/resources/ | Rules, deadlines and judging criteria (`docs/judging.md`) | Official event material | Cite and link only |
 | CDC pages (blood pressure, heart attack, cardiac arrest, stroke, fever, hypothermia, sleep, glucose monitoring) | see tables below | Thresholds, measurement steps, emergency steps | No (clinical) | US Gov work, public domain; rewritten in our words |
 | American Heart Association: What is CPR | https://cpr.heart.org/en/resources/what-is-cpr | CPR rate, depth and technique | No (clinical) | Copyrighted: facts only, our own wording |
+| AHA and American Red Cross 2024 First Aid Guidelines | https://cpr.heart.org/en/resuscitation-science/2024-first-aid-guidelines | Bleeding and fracture first aid (read in a browser, 14 Nov) | No (clinical) | Copyrighted: facts only, our own wording |
 | American Diabetes Association pages | see tables below | Glucose ranges, 15-15 rule | No (clinical) | Copyrighted: numbers only, our own wording |
 | Monitoring Radiation for Astronaut Health (CSA) | https://www.asc-csa.gc.ca/eng/news/articles/2026/2026-02-26-monitoring-radiation-astronaut-health.asp | Radiation monitoring context (CANS) | No (partner) | Cite and link only; check CSA notices |
 
@@ -56,7 +57,9 @@ All in `src/data/emergencies.js`. Where a source says "call 911", ATHENA says "c
 | Decompression sickness | Ready | NASA | https://www.nasa.gov/reference/risk-of-decompression-sickness/ |
 | Hypoxia | Ready (altitude-illness guidance applied to spaceflight, marked as adaptation) | NASA, CDC Yellow Book | https://www.nasa.gov/reference/risk-of-hypoxia/, https://www.cdc.gov/yellow-book/hcp/environmental-hazards-risks/high-altitude-travel-and-altitude-illness.html |
 | Radiation alert | Ready ("get inside, stay inside, stay tuned" applied to spaceflight) | CDC | https://www.cdc.gov/radiation-emergencies/response/get-inside.html (+ stay-inside, stay-tuned) |
-| Injury or blow to the head | Partial: concussion steps ready; bleeding and broken-bone first aid pending | CDC HEADS UP | https://www.cdc.gov/heads-up/response/index.html, https://www.cdc.gov/heads-up/signs-symptoms/index.html |
+| Blow to the head | Ready | CDC HEADS UP | https://www.cdc.gov/heads-up/response/index.html, https://www.cdc.gov/heads-up/signs-symptoms/index.html |
+| Severe bleeding | Ready (direct pressure, clotting dressing, tourniquet, pressure dressing) | AHA and American Red Cross 2024 First Aid Guidelines | https://cpr.heart.org/en/resuscitation-science/2024-first-aid-guidelines (Trauma › External Bleeding Control) |
+| Suspected broken bone | Ready (splint in position found, check limb colour, cover wounds) | AHA and American Red Cross 2024 First Aid Guidelines | https://cpr.heart.org/en/resuscitation-science/2024-first-aid-guidelines (Trauma › Fractures) |
 | Mental health crisis | Ready | CDC | https://www.cdc.gov/suicide/prevention/index.html, https://www.cdc.gov/mental-health/living-with/index.html |
 
 **No medicines, doses or diagnoses anywhere** (`docs/DECISIONS.md` › No Medicines or Diagnoses); `npm run check:content` enforces it.

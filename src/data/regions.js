@@ -71,7 +71,7 @@ export const REGIONS = [
       "Without gravity, weight-bearing bones lose 1 to 1.5% of their density each month and fitness drops by about 10 to 12%. Daily resistance and aerobic exercise (about 1.5 hours a day, 6 to 7 days a week) is the main protection.",
     risks: ["bone", "fitness", "dynamic", "eva"],
     indicators: ["exercise"],
-    symptoms: ["back-pain", "joint-pain", "injury"],
+    symptoms: ["back-pain", "joint-pain", "injury", "bleeding", "suspected-fracture"],
     keywords: ["muscles", "bones", "spine", "back", "hips", "joints", "fracture", "strength", "exercise"],
   },
   {

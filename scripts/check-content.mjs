@@ -87,4 +87,4 @@ for (const [name, list] of Object.entries({ INDICATORS, EMERGENCIES, SYMPTOMS, R
 if (errors.length) { console.error(`Content check failed (${errors.length}):\n- ` + errors.join("\n- ")); process.exit(1); }
 const pending = [...INDICATORS, ...EMERGENCIES].filter((x) => x.pending).map((x) => x.id);
 console.log(`Content OK: ${HAZARDS.length} hazards, ${RISKS.length} risks, ${REGIONS.length} regions, ${INDICATORS.length} indicators, ${EMERGENCIES.length} emergencies, ${SYMPTOMS.length} symptoms, ${EXAMS.length} exams, ${Object.keys(SOURCES).length} sources.`);
-console.log(`Pending verified content: ${pending.join(", ")}`);
+console.log(`Pending verified content: ${pending.length ? pending.join(", ") : "none"}`);
