@@ -25,7 +25,7 @@ export default function CrewSwitcher() {
         id="crew-switcher"
         value={crewId}
         onChange={(event) => setCrewId(event.target.value)}
-        className={`min-h-9 rounded-md bg-transparent pr-1 font-medium text-foreground ${focusRing}`}
+        className={`min-h-11 rounded-md bg-transparent pr-1 font-medium text-foreground ${focusRing}`}
       >
         {CREW.map((member) => (
           <option key={member.id} value={member.id} className="bg-popover text-popover-foreground">

@@ -176,10 +176,11 @@ export function search(index, query) {
     combineWith: "AND",
     filter: (r) => r.type === "emergency" || r.type === "symptom",
   });
-  // …but not when the query names a measurement ("temprature" is the indicator, not hypothermia).
+  // …but not when the query names a measurement, by its name or one of its own keywords
+  // ("temprature" is the indicator, not hypothermia; "pulse" is heart rate, not cardiac arrest).
   const namesIndicator =
     index.search(q, {
-      fields: ["title"],
+      fields: ["title", "keywords"],
       prefix: true,
       fuzzy: 0.2,
       combineWith: "AND",

@@ -1,16 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import { Radio, WifiOff } from "lucide-react";
-import { MISSION_MODES, DEFAULT_MISSION_MODE, SOURCES } from "@/data";
+import { MISSION_MODES, SOURCES } from "@/data";
+import { useMissionMode } from "@/components/MissionModeProvider";
 import { focusRing } from "@/lib/ui";
 
 // Mission mode switch and Earth-link delay (design by Izabela, PR #8).
 // The delay text comes from src/data/missionModes.js; modes without a sourced delay show none.
-// Selection is local for now; share it app-wide once the data layer exists.
+// The selected mode is shared app-wide (MissionModeProvider).
 export default function MissionStatus() {
-  const [modeId, setModeId] = useState(DEFAULT_MISSION_MODE);
-  const mode = MISSION_MODES.find((m) => m.id === modeId) ?? MISSION_MODES[0];
+  const { modeId, setModeId, mode } = useMissionMode();
   const delaySource = mode.earthDelay ? SOURCES[mode.earthDelay.sourceId] : null;
 
   return (
@@ -40,7 +39,7 @@ export default function MissionStatus() {
               href={delaySource.url}
               target="_blank"
               rel="noreferrer"
-              className={`rounded text-muted-foreground underline underline-offset-2 ${focusRing}`}
+              className={`inline-flex min-h-11 items-center rounded text-muted-foreground underline underline-offset-2 ${focusRing}`}
             >
               Source
             </a>

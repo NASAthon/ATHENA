@@ -5,10 +5,12 @@
 // Status names match the logic engine (src/lib/engine/regions.js, PR #10): red_limit, drifting,
 // expected_adaptation, steady, no_data. This adds one extra layer the engine doesn't have:
 // "symptom" (a recently reported symptom linked to the region).
-// When the engine is merged, feed its per-indicator statuses in here instead of sample data.
+// The Body page feeds it the engine's evaluation of stored data (regionInputFromEvaluation).
 
 import { REGIONS } from "@/data";
 import { REGION_STATUSES } from "@/lib/engine/regions";
+import { SYMPTOMS_FIELD } from "@/lib/engine/indicators";
+import { latestRecordWith, readingFor } from "@/lib/readings";
 
 // Ranking: the engine's REGION_STATUSES order (worst first) is the single source; "symptom" is
 // slotted in right after "drifting". This file only adds the UI's labels, icons and colours.
@@ -84,4 +86,38 @@ export function regionStatus(region, { indicators = {}, symptoms = [], today }) 
 /** Status of all 8 regions, in src/data order. */
 export function getRegionStatuses(input) {
   return REGIONS.map((region) => regionStatus(region, input));
+}
+
+/**
+ * Builds regionStatus() input from the logic engine's evaluation of STORED data
+ * (useTodayEvaluation), so the body map shows the same statuses as Today.
+ * - Status per indicator: "red_limit" if today's reading crossed a red limit, otherwise the
+ *   engine's group status (drifting, expected_adaptation, steady, no_data).
+ * - Value: the latest reading on or before today; normal: the in-flight baseline mean.
+ * - Symptoms: ticked in stored records in the last SYMPTOM_DAYS days.
+ *
+ * @param {{ evaluation: Object, records: ReadonlyArray<Object>, baselines: Object | null, today: number }} input
+ */
+export function regionInputFromEvaluation({ evaluation, records, baselines, today }) {
+  const indicators = {};
+  const ids = new Set(REGIONS.flatMap((r) => r.indicators));
+  for (const id of ids) {
+    const red = evaluation.limitBreaches.some((b) => b.indicatorId === id && b.redLimit);
+    const group = evaluation.groups.find((g) => g.group === id);
+    const latest = latestRecordWith(id, records, today);
+    const { value, normal } = readingFor(id, latest, baselines);
+    const status = red ? "red_limit" : (group?.status ?? (latest ? "steady" : "no_data"));
+    indicators[id] = { status, value, normal, lastDay: latest?.missionDay ?? null };
+  }
+  // Radiation is a running total with no drift status: it only counts as "checked".
+  if (indicators.radiation && indicators.radiation.status !== "red_limit") {
+    indicators.radiation.status = indicators.radiation.lastDay != null ? "steady" : "no_data";
+  }
+
+  const symptoms = [];
+  for (const r of records) {
+    if (!Number.isInteger(r.missionDay) || r.missionDay > today || today - r.missionDay >= SYMPTOM_DAYS) continue;
+    for (const id of r[SYMPTOMS_FIELD] ?? []) symptoms.push({ id, day: r.missionDay });
+  }
+  return { today, indicators, symptoms };
 }
