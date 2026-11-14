@@ -81,14 +81,14 @@ GitHub is the single source of truth, so always branch from the latest `main`.
    any AI-generated image or media there, because it must be watermarked or credited.
 3. If you used a new data source, add it to `docs/SOURCES.md`.
 4. Commit small, focused changes with clear messages. Run `git pull --rebase origin main`,
-   push your branch, and open a pull request (`gh pr create`). Do **not** merge your own PR.
+   push your branch, and open a pull request (`gh pr create`). Ideally let another
+   teammate's agent review and merge it (see 3b).
 
 ## 3b. Reviewing a PR
 
-The reviewer must be **another teammate's agent**, run by a different person than
-the PR author. Using Claude too is fine; it just can't be the author's own
-session or anything else on the author's machine. Never review or merge a PR opened
-from your own GitHub account.
+**Ideally** the reviewer is **another teammate's agent**, run by a different person than
+the PR author (it's fine if they also use Claude). If no one else is free, the author
+may review and merge their own PR, but still go through the checks below.
 
 1. Read the PR diff (`gh pr diff <number>`) against this file and `DECISIONS.md`.
 2. Check that:
