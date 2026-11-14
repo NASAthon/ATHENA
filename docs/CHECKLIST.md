@@ -16,7 +16,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 ## 1. Data and storage
 
 - [x] **M** Daily record defined: date, mission day, heart rate, blood pressure (two numbers), blood sugar, temperature, sleep hours, mood (1–5), reaction median, lapses, false starts, exercise minutes, symptoms, SpO2 (optional), radiation dose (optional) (PR #18: `src/lib/dailyRecord.js`, field names from the engine's `RECORD_FIELDS`, input limits from `src/data`, `validateRecord()`; all 625 simulated records pass)
-- [x] **M** Units chosen and shown everywhere (mg/dL or mmol/L, °C) (PR #7, PR #8, PR #16, PR #19, PR #20, PR #NN): units on Today, daily check, reaction test, body cards and save errors; Trends done in PR #NN (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
+- [x] **M** Units chosen and shown everywhere (mg/dL or mmol/L, °C) (PR #7, PR #8, PR #16, PR #19, PR #20, PR #24): units on Today, daily check, reaction test, body cards and save errors; Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
 - [x] **M** Save and load daily records in the browser: SQLite via sql.js, saved to IndexedDB after every write, with the `.wasm` file bundled locally (PR #14 storage, PR #17 app wiring, PR #19 saving from the Daily check and Reaction test, validated first)
 - [x] **M** Save and load the two baselines (`saveBaseline`/`loadMissionBaselines`/`ensureMissionBaselines` in `src/lib/db/database.js`) (PR #14)
 - [x] **M** Mission simulator: 180 days for 3 crew (`docs/DECISIONS.md` › Crew) (`src/lib/sim/simulator.js`, seeded; stories checked by the engine in `simulator.test.js`) (PR #15):
@@ -66,7 +66,7 @@ One line per designed page. A page is ticked when it's built and working in the 
 - [x] **M** Body: figure plus region list and region card with NASA risk and hazard (PR #9, PR #21)
 - [x] **M** Emergency: one step at a time with "why", read aloud, all steps, readings, not-medical-advice note (PR #22)
 - [x] **M** Crew status: a card per astronaut (score, band, change, one-line reason, open or emergency button), reminders today, Earth link, demo controls (PR #23: design by the team; cards, reminders and Earth link from the engine, schedulers and mission mode; real Load demo mission / Reset data panel and a Scenario Lab link)
-- [x] **M** Trends: 7-day average lines with pre-flight and in-flight bands, baseline window, drifting periods, day slider, "What to do this week", "When to tell the ground" (PR #NN: plain SVG charts; "What helps" uses each indicator's NASA countermeasures instead of the mockup's placeholder list)
+- [x] **M** Trends: 7-day average lines with pre-flight and in-flight bands, baseline window, drifting periods, day slider, "What to do this week", "When to tell the ground" (PR #24: plain SVG charts; "What helps" uses each indicator's NASA countermeasures instead of the mockup's placeholder list)
 
 ### Layout
 
@@ -76,15 +76,15 @@ One line per designed page. A page is ticked when it's built and working in the 
 - [x] **M** Alert banner area at the top of every screen (PR #20: `AlertBanner` in the header for the selected astronaut; red limits link to the emergency guide)
 - [x] **M** Dark theme dashboard (`docs/DECISIONS.md` › Design) (PR #4, PR #6)
 - [x] **M** Health score (0–100) shown prominently per astronaut, with a status icon and drop indicator (PR #20: Today screen, from the engine, with cap reason and bands)
-- [x] **M** One colour scheme for status, used everywhere, always colour **plus** icon **plus** text label (PR #9, PR #20, PR #NN): status tokens with icon and label on the body map, Today and the alert banner; Trends done in PR #NN (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
-- [x] **M** Readable on a laptop and a tablet (PR #21, PR #NN): every built screen checked at 1280 px and 768 px wide in Chrome (no sideways scrolling, layout wraps); Trends done in PR #NN (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
+- [x] **M** One colour scheme for status, used everywhere, always colour **plus** icon **plus** text label (PR #9, PR #20, PR #24): status tokens with icon and label on the body map, Today and the alert banner; Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
+- [x] **M** Readable on a laptop and a tablet (PR #21, PR #24): every built screen checked at 1280 px and 768 px wide in Chrome (no sideways scrolling, layout wraps); Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
 
 ### Inclusive design (`docs/DECISIONS.md` › Inclusive Design)
 
-- [x] **M** Colour-blind-safe palette, text contrast at least 4.5:1 (PR #8, PR #9, PR #NN): palette and status colours checked (text 5.8–17:1, form borders 3.5–3.9:1); charts use the same checked status tokens, and every coloured chart area also has a text label (PR #NN)
-- [x] **M** Tap targets at least 44×44 px (usable with gloves); large text (PR #6, #8, #9, #16, #20, PR #NN): header (logo, crew picker and Earth-link source enlarged in PR #21), navigation, Today, daily check, reaction test, body page, search results, calendar and summary done; Trends done in PR #NN (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
-- [x] **M** Full keyboard navigation and screen-reader labels (including the body figure) (PR #6, #8, #9, #16, #20, PR #NN): header, Today, daily check, reaction test, body figure, search (ARIA combobox: arrow keys, Enter, Escape, result count announced; PR #21), calendar and summary done; Trends done in PR #NN (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
-- [x] **M** Respects "reduce motion"; no information shown only through animation (PR #21, PR #NN): global reduced-motion rule in `globals.css` stops animations and transitions; the reaction-test signal is also shown as text; Trends done in PR #NN (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
+- [x] **M** Colour-blind-safe palette, text contrast at least 4.5:1 (PR #8, PR #9, PR #24): palette and status colours checked (text 5.8–17:1, form borders 3.5–3.9:1); charts use the same checked status tokens, and every coloured chart area also has a text label (PR #24)
+- [x] **M** Tap targets at least 44×44 px (usable with gloves); large text (PR #6, #8, #9, #16, #20, PR #24): header (logo, crew picker and Earth-link source enlarged in PR #21), navigation, Today, daily check, reaction test, body page, search results, calendar and summary done; Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
+- [x] **M** Full keyboard navigation and screen-reader labels (including the body figure) (PR #6, #8, #9, #16, #20, PR #24): header, Today, daily check, reaction test, body figure, search (ARIA combobox: arrow keys, Enter, Escape, result count announced; PR #21), calendar and summary done; Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
+- [x] **M** Respects "reduce motion"; no information shown only through animation (PR #21, PR #24): global reduced-motion rule in `globals.css` stops animations and transitions; the reaction-test signal is also shown as text; Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
 - [x] **M** Health text in plain English: glance summary plus "Learn more" layer, medical terms explained in brackets (PR #8, #9, #20, PR #22: emergency guides show the glance first, then each step with its "why", signs and "All steps at once")
 
 ### Daily check
@@ -107,11 +107,11 @@ One line per designed page. A page is ticked when it's built and working in the 
 
 ### Trends
 
-- [x] **M** One chart per indicator across the mission (PR #NN: plain SVG, no chart library, so no new licence; `TrendChart`)
-- [x] **M** Shaded bands for pre-flight normal and in-flight normal (PR #NN: `driftBand` in `src/lib/engine/trends.js`; the in-flight band edge is exactly the drift cut-off)
-- [x] **M** Drifting periods visibly marked (PR #NN: shaded and labelled, from `driftPeriods`)
-- [x] **M** Side-by-side view: ATHENA status against a generic-threshold status (the "stays green" comparison) (PR #NN: "ATHENA vs one-size-fits-all" table; Rivera day 129: mood and reaction drifting but "Normal" / no general range, marked "Missed by the general range")
-- [x] **M** Day slider or fast-forward to move through the mission (PR #NN: day 1 to today; charts, statuses and advice follow the chosen day)
+- [x] **M** One chart per indicator across the mission (PR #24: plain SVG, no chart library, so no new licence; `TrendChart`)
+- [x] **M** Shaded bands for pre-flight normal and in-flight normal (PR #24: `driftBand` in `src/lib/engine/trends.js`; the in-flight band edge is exactly the drift cut-off)
+- [x] **M** Drifting periods visibly marked (PR #24: shaded and labelled, from `driftPeriods`)
+- [x] **M** Side-by-side view: ATHENA status against a generic-threshold status (the "stays green" comparison) (PR #24: "ATHENA vs one-size-fits-all" table; Rivera day 129: mood and reaction drifting but "Normal" / no general range, marked "Missed by the general range")
+- [x] **M** Day slider or fast-forward to move through the mission (PR #24: day 1 to today; charts, statuses and advice follow the chosen day)
 
 ### Search
 
@@ -177,10 +177,10 @@ One line per designed page. A page is ticked when it's built and working in the 
 - [x] **M** Health score drops as Rivera declines and when a red limit is hit (checked in the app 14 Nov: Rivera 59 Alert, capped by escalation; Nakamura 25 Critical on the red limit)
 - [x] **M** One bad day produces no alert (PR #10 engine; checked in the app 14 Nov: a bad day for Singh (3.5 h sleep, mood 1, 20 min exercise) gave "watch" flags and score 96, no alert or banner. Note: the single low exercise day made exercise "drifting" (a one-indicator Note, by design not an alert); the exercise minimum spread may be worth tuning)
 - [x] **M** A dangerous reading (Nakamura) triggers the red-limit screen (PR #20, PR #22: checked in the app 14 Nov: Today's red-limit link opens the very-high-BP guide with Nakamura picked; saving 186/118 there flags the red limit)
-- [x] **M** Empty state (no data yet) looks sensible (PR #9, PR #10, PR #20, PR #NN): engine safe; Today, Daily check, Body, Calendar and Summary handle no stored data (PR #21); Trends done in PR #NN (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
+- [x] **M** Empty state (no data yet) looks sensible (PR #9, PR #10, PR #20, PR #24): engine safe; Today, Daily check, Body, Calendar and Summary handle no stored data (PR #21); Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
 - [x] **M** Reaction test run ten times in a row without breaking (checked 14 Nov on the production build: 10 back-to-back 60 s runs in guest mode, including false starts, missed signals, space bar and double taps; every run finished, no errors or blank results)
 - [x] **M** Search finds the right item for misspellings ("hart rate"), synonyms ("pulse") and symptoms ("chest pain") (PR #10, PR #21: checked in the search bar in Chrome)
-- [x] **M** Whole app usable by keyboard only; status readable in greyscale (checked 14 Nov on every built page: all focusable controls have a visible focus style and a name, no click handlers on non-buttons, status readable in greyscale through icon and label, PR #NN): ; Trends done in PR #NN (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
+- [x] **M** Whole app usable by keyboard only; status readable in greyscale (checked 14 Nov on every built page: all focusable controls have a visible focus style and a name, no click handlers on non-buttons, status readable in greyscale through icon and label, PR #24): ; Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
 - [ ] **M** Full demo rehearsed start to finish on the machine that will present it
 - [ ] **M** Someone outside the team tries it without instructions
 
