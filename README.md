@@ -79,9 +79,9 @@ Simulate:
 - Hypoxia
 - Multi-factor health events
 
-### AI Assistant
+### "Why this alert?" Explanations
 
-Astronauts can ask questions such as:
+Rule-based answers, available offline, to questions such as:
 
 "What caused this warning?"
 
@@ -89,24 +89,30 @@ Astronauts can ask questions such as:
 
 "What factors are affecting my health score?"
 
+Every answer cites its NASA source.
+
+### Works Offline
+
+ATHENA is an offline-first Progressive Web App. After the first load it runs
+with no internet connection, as it would onboard a spacecraft.
+
 ---
 
 ## Technology
 
-Frontend:
-- Next.js
+App:
+- Next.js (JavaScript, static export) as an offline-first PWA
 - TailwindCSS
-
-Backend:
-- FastAPI
+- ShadCN
 
 Database:
-- SQLite
+- SQLite in the browser (sql.js), saved to IndexedDB
 
-AI:
-- Rule Engine
-- Isolation Forest
-- LLM Assistant
+Analytics:
+- Rules engine with cited sources
+- Personal rolling baselines and z-score trend detection
+
+No backend server and no internet connection needed at runtime.
 
 ---
 

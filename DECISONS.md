@@ -2,19 +2,27 @@
 
 ## Frontend
 
-Next.js
+Next.js (JavaScript, static export) as an offline-first PWA, with Tailwind and ShadCN.
 
 Reason:
-Fast development
+Fast development. A service worker caches the app, so after the first load
+it runs with no internet, as it would onboard a spacecraft.
+
+Status:
+LOCKED
 
 ---
 
 ## Backend
 
-FastAPI
+None. FastAPI was removed (replaced the earlier FastAPI decision).
 
 Reason:
-Python ecosystem
+ATHENA is a single-device onboard app. The browser can store readings and run
+the rules at our scale (3 astronauts). One JavaScript codebase is faster to build.
+
+Status:
+LOCKED
 
 ---
 
@@ -40,3 +48,44 @@ Team decision to stay within the data we were given.
 
 Status:
 ACTIVE (revisit only if the team agrees)
+
+
+---
+
+## Database
+
+SQLite in the browser via sql.js (WASM), saved to IndexedDB.
+
+Reason:
+Must work offline. It's embedded, needs no server and survives reloads.
+Seed 3 simulated astronauts on first run, with a "reset demo" button.
+
+Status:
+LOCKED
+
+---
+
+## AI / Analytics
+
+- LLM assistant removed. The brief does not require it, and it needs internet.
+- Replaced by rule-based "Why this alert?" panels and a short FAQ ("Am I fit
+  for EVA?"), answered from the rules engine with source URLs.
+- Anomaly and trend detection: rolling personal baseline plus a z-score/drift
+  check in JavaScript, replacing Isolation Forest.
+
+Status:
+LOCKED
+
+---
+
+## Hosting and Demo
+
+- Hosting is optional. The public GitHub repo is the official "final project" link.
+- Demo on localhost: `npm run build`, serve the static output, then install as a PWA.
+- 30-second video "offline moment": turn Wi-Fi off on camera, reload, and trigger
+  a Scenario Lab event. The alert still fires.
+- README screenshots go in `docs/screenshots/`.
+- Optional: a free static deploy (e.g. Vercel Hobby) near the end, so judges get a live link.
+
+Status:
+ACTIVE

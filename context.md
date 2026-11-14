@@ -96,7 +96,7 @@ Planning should decide which of these are **must-have for the demo** versus **st
 
 ### 6.1 ATHENA: our chosen concept and product spec (merged from the earlier `Project_Context.md`, `NASA_Challenge.md` and `ATHENA_MASTER_SPEC.md`)
 
-**Vision:** an autonomous astronaut health copilot. **ATHENA** stands for Autonomous Telehealth and Health Evaluation Network for Astronauts. It is an onboard health monitoring and decision-support system for astronauts.
+**Vision:** an autonomous astronaut health copilot. **ATHENA** stands for Autonomous Telecommunications and Health Evaluation Network for Astronauts. It is an onboard health monitoring and decision-support system for astronauts.
 
 **Problem framing:** Deep-space crews face communication delays of 5–40 minutes from Earth, so medical decision-making must be autonomous.
 
@@ -115,11 +115,11 @@ Planning should decide which of these are **must-have for the demo** versus **st
 - **Mission modes:** ISS, Lunar Gateway, Mars Transit. This is our version of the environment context in idea 6 above.
 - **Scenario Lab:** simulate radiation, fatigue, sleep deprivation, hypoxia and multi-factor events.
 - **Earth Link:** visualise the communication delay to mission control.
-- **AI assistant:** answers questions like "What caused this warning?" or "Am I fit for EVA tomorrow?"
+- **"Why this alert?" panels and FAQ:** rule-based answers to "What caused this warning?" or "Am I fit for EVA tomorrow?", each citing its source. They work fully offline (the LLM assistant was removed; see `DECISONS.md`).
 
-**Innovation angles:** explainable AI, anomaly detection (Isolation Forest), decision support, visual health insights, Earth-delay simulation.
+**Innovation angles:** explainable AI, anomaly detection (rolling baseline + z-score), decision support, visual health insights, Earth-delay simulation.
 
-**Tech stack** (locked in `DECISONS.md`): Next.js + Tailwind + ShadCN, FastAPI (Python), SQLite, rule engine + Isolation Forest + LLM chat, 2D SVG body map.
+**Tech stack** (locked in `DECISONS.md`): offline-first PWA. Next.js (JavaScript, static export) + Tailwind + ShadCN; SQLite in the browser (sql.js, saved to IndexedDB); JS rules engine + rolling-baseline/z-score trend detection; 2D SVG body map. No backend server and no LLM. Everything runs onboard.
 
 **MVP scope** (product spec, from the earlier `ATHENA_MASTER_SPEC.md`):
 - Dashboard with 3 astronauts
@@ -127,14 +127,14 @@ Planning should decide which of these are **must-have for the demo** versus **st
 - Explainable alerts
 - Scenario Lab
 - Earth Link
-- AI Assistant
+- "Why this alert?" explanations
 
 **Demo flow:**
 1. Dashboard
 2. An astronaut on a warning
 3. An astronaut in critical status
 4. Scenario simulation
-5. AI explanation
+5. "Why this alert?" explanation
 6. Earth delay
 
 > For judging, the official rubric in Section 4 (Impact, Creativity, Validity, Relevance, Presentation) replaces the informal "judging focus" list in the old `NASA_Challenge.md`.
