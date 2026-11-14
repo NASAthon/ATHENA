@@ -8,6 +8,7 @@ import { DRIFT_INDICATOR_KEYS } from "../engine/indicators.js";
 import { makeMission } from "../engine/testData.js";
 import { openDatabase, SCHEMA_VERSION } from "./database.js";
 import { indexedDbPersistence, memoryPersistence } from "./persistence.js";
+import { createCommunicationMessage } from "../communications.js";
 
 const SQL = await initSqlJs();
 const open = (persistence = memoryPersistence()) =>
@@ -35,6 +36,85 @@ test("every write is saved, and data survives reopening (closing the app)", asyn
     { missionDay: 1, sleepHours: 7.2, symptoms: [] },
     { missionDay: 2, sleepHours: 6.9 },
   ]);
+});
+
+test("concurrent writes are serialised and the newest persisted file wins", async () => {
+  const base = memoryPersistence();
+  let active = 0;
+  let overlap = false;
+  const persistence = {
+    load: base.load,
+    clear: base.clear,
+    async save(bytes) {
+      active += 1;
+      if (active > 1) overlap = true;
+      await new Promise((resolve) => setTimeout(resolve, 5));
+      await base.save(bytes);
+      active -= 1;
+    },
+  };
+  const db = await open(persistence);
+  await Promise.all([
+    db.setMeta("first", "1"),
+    db.setMeta("second", "2"),
+    db.saveDailyRecord("rivera", { missionDay: 1, mood: 4 }),
+  ]);
+  assert.equal(overlap, false);
+  const reopened = await open(persistence);
+  assert.equal(reopened.getMeta("first"), "1");
+  assert.equal(reopened.getMeta("second"), "2");
+  assert.equal(reopened.loadDailyRecords("rivera").length, 1);
+});
+
+test("a persistence failure restores the in-memory database and does not block later writes", async () => {
+  const base = memoryPersistence();
+  let failNext = false;
+  const persistence = {
+    load: base.load,
+    clear: base.clear,
+    async save(bytes) {
+      if (failNext) {
+        failNext = false;
+        throw new Error("disk full");
+      }
+      await base.save(bytes);
+    },
+  };
+  const db = await open(persistence);
+  failNext = true;
+  await assert.rejects(db.setMeta("lost", "value"), /disk full/);
+  assert.equal(db.getMeta("lost"), null);
+  await db.setMeta("kept", "value");
+  assert.equal(db.getMeta("kept"), "value");
+});
+
+test("communication history persists, stays separate per astronaut and keeps snapshots immutable", async () => {
+  const persistence = memoryPersistence();
+  const db = await open(persistence);
+  const source = { astronaut: "Commander Rivera", alertLevel: "alert", drifting: [], limitBreaches: [], lines: ["original"] };
+  const make = (id, astronautId) => createCommunicationMessage({
+    id,
+    astronautId,
+    missionModeId: "mars",
+    missionDay: 129,
+    report: source,
+    sentAt: "2026-11-14T12:00:00.000Z",
+    sentSimMs: id === "one" ? 1000 : 2000,
+  });
+  await db.saveCommunication(make("one", "rivera"));
+  await db.saveCommunication(make("two", "singh"));
+  await db.saveCommunication(make("three", "rivera"));
+  source.lines[0] = "changed later";
+  await assert.rejects(db.saveCommunication(make("one", "rivera")));
+
+  const reopened = await open(persistence);
+  assert.deepEqual(reopened.loadCommunications("rivera").map((m) => m.id), ["three", "one"]);
+  assert.equal(reopened.loadCommunications("singh").length, 1);
+  assert.equal(reopened.loadCommunications("nakamura").length, 0);
+  assert.deepEqual(reopened.loadCommunications("rivera")[1].report.lines, ["original"]);
+  assert.deepEqual(reopened.loadCommunications("rivera")[1].response, db.loadCommunications("rivera")[1].response);
+  await reopened.resetAll();
+  assert.deepEqual(reopened.loadCommunications("rivera"), []);
 });
 
 test("records: one per astronaut per day, ranges, and other crew kept apart", async () => {

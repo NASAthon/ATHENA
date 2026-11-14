@@ -144,6 +144,11 @@ Prompts the crew to take scheduled measurements as part of the mission routine.
 Visualizes communication delays between astronaut crews
 and Earth-based mission control.
 
+The Flight-Surgeon Summary can queue an immutable report snapshot, simulate its trip to Earth,
+and return a clearly labelled simulated acknowledgement after the same one-way delay. A persistent
+clock supports real-time, 60× and 720× demo speeds; message history remains on the device and is
+kept separately for each astronaut. No message is actually transmitted.
+
 ### Scenario Lab
 
 Simulate:
