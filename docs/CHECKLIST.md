@@ -163,12 +163,12 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [x] **M** Fresh browser: load demo mission, Rivera's alert appears in the expected week (checked in the app 14 Nov: Today shows Rivera's alert since day 100, escalated by day 129)
 - [x] **M** Healthy data (Singh) produces no alert and a stable, high health score (checked in the app 14 Nov: "No alerts", score 100 Good, no banner)
 - [x] **M** Health score drops as Rivera declines and when a red limit is hit (checked in the app 14 Nov: Rivera 59 Alert, capped by escalation; Nakamura 25 Critical on the red limit)
-- [ ] **M** One bad day produces no alert 🟡 Partial (PR #10): passes at engine level (`evaluate.test.js`); still to do: check in the app
+- [x] **M** One bad day produces no alert (PR #10 engine; checked in the app 14 Nov: a bad day for Singh (3.5 h sleep, mood 1, 20 min exercise) gave "watch" flags and score 96, no alert or banner. Note: the single low exercise day made exercise "drifting" (a one-indicator Note, by design not an alert); the exercise minimum spread may be worth tuning)
 - [ ] **M** A dangerous reading (Nakamura) triggers the red-limit screen 🟡 Partial (PR #20): Today shows a red-limit card and the banner links to the emergency guide; still to do: the step-by-step emergency screen
 - [ ] **M** Empty state (no data yet) looks sensible 🟡 Partial (PR #9, PR #10, PR #20): engine safe; Today, Daily check, Body, Calendar and Summary handle no stored data (PR #21); still to do: check Trends and emergency screens
-- [ ] **M** Reaction test run ten times in a row without breaking
+- [x] **M** Reaction test run ten times in a row without breaking (checked 14 Nov on the production build: 10 back-to-back 60 s runs in guest mode, including false starts, missed signals, space bar and double taps; every run finished, no errors or blank results)
 - [x] **M** Search finds the right item for misspellings ("hart rate"), synonyms ("pulse") and symptoms ("chest pain") (PR #10, PR #21: checked in the search bar in Chrome)
-- [ ] **M** Whole app usable by keyboard only; status readable in greyscale
+- [ ] **M** Whole app usable by keyboard only; status readable in greyscale 🟡 Partial (checked 14 Nov on every built page: all focusable controls have a visible focus style and a name, no click handlers on non-buttons, status readable in greyscale through icon and label); still to do: Trends and Emergency screens
 - [ ] **M** Full demo rehearsed start to finish on the machine that will present it
 - [ ] **M** Someone outside the team tries it without instructions
 
