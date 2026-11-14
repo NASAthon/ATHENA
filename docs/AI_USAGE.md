@@ -15,6 +15,7 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Chidozie | Claude Code (Chrome) | Read AHA's CPR page in the browser; added CPR steps; added the no-medicines rule and dose check | `src/data/emergencies.js`, `scripts/check-content.mjs` |
 | 14 Nov 2026 | Chidozie | Claude Code (Chrome) | Read AHA/Red Cross 2024 First Aid Guidelines (bleeding, fractures) in the browser; added severe bleeding and broken-bone guides | `src/data/emergencies.js`, `src/data/symptoms.js` |
 | 14 Nov 2026 | Chidozie | Claude Code | PR #8 review fixes: merged main, single accessible header with Izabela's mission mode and Earth-link pill, daily check reads from `src/data`, theme contrast fix, mission modes data | `src/components/*`, `src/app/daily-check/page.js`, `src/app/globals.css`, `src/data/missionModes.js` |
+| 14 Nov 2026 | Isaac | Claude | CHECKLIST §2 logic engine (baselines, 7-day average, drift z-score, statuses, alerts, red limits, health score, reaction scoring, reminders, search, regions, surgeon summary, calendar, Scenario Lab injection) reading all content from `src/data`; machine-readable `check` on each band; 82 unit tests; README drift design choice | `src/lib/engine/*`, `src/data/indicators.js`, `scripts/check-content.mjs`, `README.md`, `docs/*` |
 
 ## AI-generated media
 

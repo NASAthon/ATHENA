@@ -75,6 +75,23 @@ Detects:
 - Vital sign drift
 - Radiation exposure trends
 
+#### Drift detection: a design choice
+
+Each day, ATHENA compares the last 7 days' average of each indicator with the
+astronaut's own fixed in-flight baseline (mission days 21–35):
+
+    z = (7-day average − baseline mean) ÷ (s × √(1/n + 1/m))
+
+where `n` is the number of readings in the last 7 days (at least 4), `m` the number
+in the baseline, and `s` the baseline's day-to-day spread (never below a minimum set
+per indicator). An indicator is **drifting when z ≥ 3.5** in its worrying direction.
+
+**The 3.5 cut-off is our design choice, not a clinical standard.** We chose it by
+simulation: with our logic engine, 100 healthy 180-day missions gave 1 false alert,
+while all 100 slowly declining missions were caught (median alert on day 101,
+decline starting day 75). Real data is noisier, so real false-alarm rates would be
+higher. Details: `docs/DECISIONS.md` › Drift Cut-off. Code: `src/lib/engine/`.
+
 ### Explainable Alerts
 
 Every alert includes:
@@ -171,7 +188,8 @@ Search:
 
 Analytics:
 - Rules engine with cited sources
-- Fixed personal baselines and z-score drift detection
+- Fixed personal baselines and z-score drift detection (z ≥ 3.5, a design choice)
+- Logic engine in plain JavaScript (`src/lib/engine/`), reading all thresholds from `src/data/`; tested with `npm test`
 
 No backend server and no internet connection needed at runtime.
 
