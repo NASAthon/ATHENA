@@ -1,25 +1,41 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { ExternalLink, TriangleAlert } from "lucide-react";
+import { INDICATORS, SOURCES } from "@/data";
+import { useCrew } from "@/components/CrewProvider";
+import {
+  IN_FLIGHT_WINDOW,
+  LAPSE_THRESHOLD_MS,
+  calculateMissionBaselines,
+  compareReactionToBaseline,
+  scoreReactionTest,
+} from "@/lib/engine";
+import { simulateAstronaut } from "@/lib/sim/simulator";
+import { focusRing } from "@/lib/ui";
 
-const RUN_SECONDS = 60;
-const LAPSE_MS = 500; // slower than this counts as a lapse
-const TIMEOUT_MS = 2000; // no tap after this long counts as a lapse
-// ASSUMPTION: placeholder personal baseline, not an official value.
-// Replace with the real baseline from src/data once it exists.
-const BASELINE = { median: 274, low: 255, high: 293 };
+// Reaction test (design and test flow by Izabela, PR #16).
+// Scoring is the engine's (scoreReactionTest); "your normal" is the selected astronaut's own
+// in-flight baseline from the SIMULATED mission (until real stored data is used).
+const RUN_SECONDS = 60; // test length (test design)
+const TIMEOUT_MS = 2000; // no tap after this long is recorded as a slow response (test design)
+const reaction = INDICATORS.find((i) => i.id === "reaction");
 
-function median(list) {
-  if (list.length === 0) return null;
-  const s = [...list].sort((a, b) => a - b);
-  const mid = Math.floor(s.length / 2);
-  return s.length % 2 ? s[mid] : Math.round((s[mid - 1] + s[mid]) / 2);
-}
+// Timing helpers live outside the component: they only run inside event handlers and timers,
+// never during render (keeps React's purity rules happy).
+const now = () => performance.now();
+const randomWaitMs = () => 2000 + Math.random() * 3000; // random wait of 2 to 5 seconds
 
 const card = "rounded-2xl border border-border bg-card p-6";
 
 export default function ReactionTest() {
+  const { crewId, member } = useCrew();
+  // The astronaut's own in-flight baseline (simulated mission, DECISIONS › Baselines).
+  const baseline = useMemo(() => {
+    const records = simulateAstronaut(crewId).filter((r) => r.missionDay <= IN_FLIGHT_WINDOW.toDay);
+    return calculateMissionBaselines(records, ["reactionMedianMs", "reactionLapses"]).inflight.indicators;
+  }, [crewId]);
   const [phase, setPhase] = useState("idle"); // idle | waiting | signal | done
   const [times, setTimes] = useState([]);
   const [falseStarts, setFalseStarts] = useState(0);
@@ -51,18 +67,18 @@ export default function ReactionTest() {
   const scheduleSignal = () => {
     clearTimeout(waitTimer.current);
     waitTimer.current = setTimeout(() => {
-      signalAt.current = performance.now();
+      signalAt.current = now();
       setLiveMs(0);
       setNotice("");
       go("signal");
       timeoutTimer.current = setTimeout(() => record(TIMEOUT_MS), TIMEOUT_MS);
-    }, 2000 + Math.random() * 3000); // random wait of 2 to 5 seconds
+    }, randomWaitMs());
   };
 
   const record = (ms) => {
     clearTimers();
     setTimes((t) => [...t, ms]);
-    if (performance.now() >= endAt.current) return finish();
+    if (now() >= endAt.current) return finish();
     go("waiting");
     scheduleSignal();
   };
@@ -73,7 +89,7 @@ export default function ReactionTest() {
     setFalseStarts(0);
     setNotice("");
     setSecondsLeft(RUN_SECONDS);
-    endAt.current = performance.now() + RUN_SECONDS * 1000;
+    endAt.current = now() + RUN_SECONDS * 1000;
     go("waiting");
     scheduleSignal();
   };
@@ -87,9 +103,14 @@ export default function ReactionTest() {
       scheduleSignal();
       return;
     }
-    if (p === "signal") record(Math.round(performance.now() - signalAt.current));
+    if (p === "signal") record(Math.round(now() - signalAt.current));
   };
-  tapRef.current = handleTap;
+  // Keep the latest handlers for the space-bar listener and the countdown (updated after render).
+  const finishRef = useRef(() => {});
+  useEffect(() => {
+    tapRef.current = handleTap;
+    finishRef.current = finish;
+  });
 
   // Space bar works anywhere on the page, except on buttons and links.
   useEffect(() => {
@@ -115,10 +136,10 @@ export default function ReactionTest() {
     const id = setInterval(() => {
       const left = Math.max(
         0,
-        Math.ceil((endAt.current - performance.now()) / 1000)
+        Math.ceil((endAt.current - now()) / 1000)
       );
       setSecondsLeft(left);
-      if (left === 0 && phaseRef.current === "waiting") finish();
+      if (left === 0 && phaseRef.current === "waiting") finishRef.current();
     }, 250);
     return () => clearInterval(id);
   }, [running]);
@@ -127,7 +148,7 @@ export default function ReactionTest() {
   useEffect(() => {
     if (phase !== "signal") return;
     const id = setInterval(
-      () => setLiveMs(Math.round(performance.now() - signalAt.current)),
+      () => setLiveMs(Math.round(now() - signalAt.current)),
       30
     );
     return () => clearInterval(id);
@@ -135,16 +156,19 @@ export default function ReactionTest() {
 
   useEffect(() => () => clearTimers(), []);
 
-  const lapses = times.filter((ms) => ms > LAPSE_MS).length;
-  const med = median(times);
+  const score = scoreReactionTest({ trialsMs: times, falseStarts });
+  const med = score.medianMs === null ? null : Math.round(score.medianMs);
+  const lapses = score.lapses;
+  const compared = compareReactionToBaseline(score, baseline.reactionMedianMs);
+  const usualLapses = baseline.reactionLapses?.status === "ok" ? Math.round(baseline.reactionLapses.mean) : null;
   const signalNo = times.length + (phase === "signal" ? 1 : 0);
   const progress = ((RUN_SECONDS - secondsLeft) / RUN_SECONDS) * 100;
-  const slower = med !== null && med > BASELINE.high;
+  const slower = Boolean(compared?.slower);
 
   return (
     <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">
       <h1 className="text-4xl font-bold">Reaction test</h1>
-      <p className="mt-2 text-lg text-foreground/70">
+      <p className="mt-2 text-lg text-muted-foreground">
         Step 1 of 3 · {RUN_SECONDS} seconds · tap the panel or press the space
         bar as soon as it lights up
       </p>
@@ -158,16 +182,15 @@ export default function ReactionTest() {
             onClick={(e) => {
               if (e.detail === 0) handleTap(); // keyboard activation
             }}
-            className={`flex min-h-72 w-full select-none flex-col items-center justify-center rounded-3xl border p-6 text-center focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-primary md:min-h-[26rem] ${
-              phase === "signal"
-                ? "border-amber-400 bg-amber-400 text-neutral-900"
-                : "border-border bg-card"
+            className={`flex min-h-72 w-full select-none flex-col items-center justify-center rounded-3xl border p-6 text-center md:min-h-[26rem] ${focusRing} ${
+              phase === "signal" ? "text-background" : "border-border bg-card"
             }`}
+            style={phase === "signal" ? { background: "var(--status-amber)", borderColor: "var(--status-amber)" } : undefined}
           >
             {phase === "idle" && (
               <>
                 <span className="text-3xl font-bold">Start</span>
-                <span className="mt-3 text-lg text-foreground/70">
+                <span className="mt-3 text-lg text-muted-foreground">
                   Tap here or press the space bar. The test runs {RUN_SECONDS}{" "}
                   seconds.
                 </span>
@@ -176,7 +199,7 @@ export default function ReactionTest() {
             {phase === "waiting" && (
               <>
                 <span className="text-3xl font-bold">Wait…</span>
-                <span className="mt-3 text-lg text-foreground/70">
+                <span className="mt-3 text-lg text-muted-foreground">
                   Do not tap until the panel lights up.
                 </span>
               </>
@@ -197,7 +220,7 @@ export default function ReactionTest() {
             )}
           </button>
 
-          <div className="mt-3 flex flex-wrap justify-between gap-2 text-foreground/70">
+          <div className="mt-3 flex flex-wrap justify-between gap-2 text-muted-foreground">
             <span>
               {running
                 ? `Signal ${signalNo} · ${secondsLeft} seconds left`
@@ -228,7 +251,7 @@ export default function ReactionTest() {
           <p role="status" className="mt-3 min-h-7 text-lg font-semibold">
             {notice && (
               <>
-                <span aria-hidden="true">⚠ </span>
+                <TriangleAlert aria-hidden="true" className="mr-1 inline size-5 align-text-bottom" />
                 {notice}
               </>
             )}
@@ -237,38 +260,47 @@ export default function ReactionTest() {
 
         <div className="space-y-6">
           <aside className={card}>
-            <p className="text-sm uppercase tracking-wider text-foreground/60">
+            <p className="text-sm uppercase tracking-wider text-muted-foreground">
               Why this test
             </p>
-            <p className="mt-3 text-lg">
-              Slower reactions and missed signals are early signs of sleep loss
-              and fatigue, often before you feel tired.
+            <p className="mt-3 text-lg">{reaction.glance}</p>
+            <p className="mt-4 text-muted-foreground">{reaction.whyItMatters}</p>
+            <p className="mt-4 text-muted-foreground">
+              Your result is only compared with {member.name}&apos;s own normal (simulated mission for now).
             </p>
-            <p className="mt-4 text-foreground/70">
-              NASA risk: inadequate sleep and irregular schedules. Your result is
-              only compared with your own earlier results on this device.
-            </p>
+            <ul className="mt-3 space-y-1 text-sm">
+              {reaction.sourceIds.map((id) => (
+                <li key={id}>
+                  <a
+                    href={SOURCES[id].url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={`inline-flex items-center gap-1 rounded text-primary underline ${focusRing}`}
+                  >
+                    Source: {SOURCES[id].title}
+                    <ExternalLink aria-hidden="true" className="size-3.5" />
+                  </a>
+                </li>
+              ))}
+            </ul>
           </aside>
 
           <aside className={card}>
-            <p className="text-sm uppercase tracking-wider text-foreground/60">
+            <p className="text-sm uppercase tracking-wider text-muted-foreground">
               This run so far
             </p>
             {times.length === 0 ? (
-              <p className="mt-3 text-foreground/70">No signals yet.</p>
+              <p className="mt-3 text-muted-foreground">No signals yet.</p>
             ) : (
               <ul className="mt-3 flex flex-wrap gap-2">
                 {times.map((ms, i) => (
                   <li
                     key={i}
-                    className={`rounded-lg border px-3 py-2 ${
-                      ms > LAPSE_MS
-                        ? "border-amber-400 text-amber-400"
-                        : "border-border"
-                    }`}
+                    className="rounded-lg border border-border px-3 py-2"
+                    style={ms > LAPSE_THRESHOLD_MS ? { borderColor: "var(--status-amber)", color: "var(--status-amber)" } : undefined}
                   >
                     {ms}
-                    {ms > LAPSE_MS && " lapse"}
+                    {ms > LAPSE_THRESHOLD_MS && " lapse"}
                   </li>
                 ))}
               </ul>
@@ -284,30 +316,27 @@ export default function ReactionTest() {
           </h2>
           <div className="mt-4 grid gap-6 md:grid-cols-4">
             <div>
-              <p className="text-foreground/70">Median reaction time</p>
-              <p
-                className={`mt-1 text-4xl font-bold ${slower ? "text-amber-400" : ""}`}
-              >
+              <p className="text-muted-foreground">Median reaction time</p>
+              <p className="mt-1 text-4xl font-bold" style={slower ? { color: "var(--status-amber)" } : undefined}>
                 {med === null ? "—" : `${med} ms`}
               </p>
-              <p className="mt-1 text-sm text-foreground/70">
-                Your normal: {BASELINE.median} ms (range {BASELINE.low} to{" "}
-                {BASELINE.high})
+              <p className="mt-1 text-sm text-muted-foreground">
+                {compared
+                  ? `Your normal: ${compared.usualMs} ms (usual range ${compared.typicalLowMs} to ${compared.typicalHighMs}, simulated)`
+                  : "No baseline yet"}
               </p>
             </div>
             <div>
-              <p className="text-foreground/70">Lapses (over {LAPSE_MS} ms)</p>
+              <p className="text-muted-foreground">Lapses (over {LAPSE_THRESHOLD_MS} ms)</p>
               <p className="mt-1 text-4xl font-bold">{lapses}</p>
-              <p className="mt-1 text-sm text-foreground/70">
-                Your normal: 0 to 1
+              <p className="mt-1 text-sm text-muted-foreground">
+                {usualLapses === null ? "No baseline yet" : `Your normal: about ${usualLapses} per test (simulated)`}
               </p>
             </div>
             <div>
-              <p className="text-foreground/70">False starts</p>
+              <p className="text-muted-foreground">False starts</p>
               <p className="mt-1 text-4xl font-bold">{falseStarts}</p>
-              <p className="mt-1 text-sm text-foreground/70">
-                Your normal: 0 to 1
-              </p>
+              <p className="mt-1 text-sm text-muted-foreground">Tapping before the light. Not tracked as a trend.</p>
             </div>
             <div>
               <p className="text-lg">
@@ -318,14 +347,14 @@ export default function ReactionTest() {
               <div className="mt-4 flex flex-wrap gap-3">
                 <Link
                   href="/daily-check"
-                  className="flex min-h-14 items-center rounded-xl bg-primary px-6 text-lg font-semibold text-background"
+                  className={`flex min-h-14 items-center rounded-xl bg-primary px-6 text-lg font-semibold text-primary-foreground hover:bg-primary/90 ${focusRing}`}
                 >
                   Continue to readings
                 </Link>
                 <button
                   type="button"
                   onClick={start}
-                  className="min-h-14 rounded-xl border border-border px-6 text-lg hover:bg-white/5"
+                  className={`min-h-14 rounded-xl border border-input px-6 text-lg hover:bg-accent ${focusRing}`}
                 >
                   Try again
                 </button>

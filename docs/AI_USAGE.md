@@ -23,6 +23,8 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Isaac | Claude | Seeded mission simulator for the 3 crew stories, Load demo mission / Reset data logic, and the Scenario Lab screen (before/after alerts), with tests | `src/lib/sim/*`, `src/app/scenario-lab/page.js`, `src/components/NavLinks.js`, `AGENTS.md`, `docs/*` |
 | 14 Nov 2026 | Isaac | Claude | Storage layer: sql.js database saved to IndexedDB after every write, daily records and fixed baselines (calculated once and stored), with tests against the real sql.js | `src/lib/db/*`, `scripts/copy-sqljs-wasm.mjs`, `.gitignore`, `AGENTS.md`, `docs/*` |
 | 14 Nov 2026 | Isaac | Claude | Found NASA sources for ISS and Gateway Earth-link delays (team-approved); mission-mode logic (hazard emphasis, advice, reply time) with tests | `src/data/missionModes.js`, `src/data/sources.js`, `src/lib/engine/missionMode.js`, `docs/*` |
+| 14 Nov 2026 | Izabela | AI assistant | Reaction test page: 60-second test, random wait, live counter, tap/click/space, false starts, results (PR #16) | `src/app/reaction-test/page.js` |
+| 14 Nov 2026 | Chidozie | Claude Code | PR #16 fixes: engine scoring, per-crew simulated baseline, text and source from `src/data`, theme tokens, lint fixes, `compareReactionToBaseline` helper and test | `src/app/reaction-test/page.js`, `src/lib/engine/reaction.js` |
 
 ## AI-generated media
 
