@@ -1,6 +1,6 @@
 "use client";
 
-// Body map: a 2D SVG figure with the 8 regions from docs/BODY_MAP.md,
+// Body map (Mercy, PR #9): a 2D SVG figure with the 8 regions from src/data/regions.js (docs/BODY_MAP.md),
 // plus a list of the same regions beside it.
 //
 // Props:
@@ -23,6 +23,8 @@ import {
   TrendingDown,
 } from "lucide-react";
 
+import { focusRing } from "@/lib/ui";
+
 const ICONS = { CircleCheck, CircleMinus, Info, MessageCircleWarning, OctagonAlert, TrendingDown };
 
 // Shapes for each region, drawn back to front (later shapes sit on top).
@@ -43,7 +45,7 @@ const REGION_ART = {
     ),
   },
   // Muscles and bones: the skeleton.
-  musculoskeletal: {
+  muscles: {
     mode: "stroke",
     shapes: (
       <>
@@ -71,7 +73,7 @@ const REGION_ART = {
     ),
   },
   // Breathing and oxygen: two lungs; the body's left lung is smaller, to make room for the heart.
-  breathing: {
+  lungs: {
     mode: "fill",
     shapes: (
       <>
@@ -115,7 +117,7 @@ const REGION_ART = {
 };
 
 // Order to draw them in.
-const DRAW_ORDER = ["immune", "musculoskeletal", "gut", "breathing", "heart", "brain", "eyes", "mind"];
+const DRAW_ORDER = ["immune", "muscles", "gut", "lungs", "heart", "brain", "eyes", "mind"];
 
 export default function BodyMap({ statuses, selectedId, onSelect }) {
   const byId = Object.fromEntries(statuses.map((s) => [s.id, s]));
@@ -142,13 +144,16 @@ export default function BodyMap({ statuses, selectedId, onSelect }) {
               key={id}
               onClick={() => onSelect?.(id)}
               className="cursor-pointer"
-              fill={isStroke ? "none" : s.colour}
               fillOpacity={id === "immune" ? 0.1 : 0.55}
-              stroke={selected && !isStroke ? "#FFFFFF" : s.colour}
               strokeWidth={isStroke ? 4 : selected ? 2.5 : 1.25}
               strokeLinecap="round"
               strokeLinejoin="round"
-              style={selected ? { filter: "drop-shadow(0 0 4px rgba(255,255,255,0.9))" } : undefined}
+              // Colours via style: SVG attributes can't read CSS variables (status tokens in globals.css).
+              style={{
+                fill: isStroke ? "none" : s.colour,
+                stroke: selected && !isStroke ? "var(--foreground)" : s.colour,
+                filter: selected ? "drop-shadow(0 0 4px var(--foreground))" : undefined,
+              }}
             >
               <title>{`${s.name}: ${s.label}`}</title>
               {art.shapes}
@@ -168,7 +173,7 @@ export default function BodyMap({ statuses, selectedId, onSelect }) {
                 type="button"
                 onClick={() => onSelect?.(s.id)}
                 aria-pressed={selected}
-                className={`flex min-h-14 w-full items-center justify-between gap-3 rounded-lg border px-4 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                className={`flex min-h-14 w-full items-center justify-between gap-3 rounded-lg border px-4 py-2 text-left ${focusRing} ${
                   selected ? "bg-accent" : "bg-card hover:bg-accent/60"
                 }`}
                 style={{ borderColor: selected ? s.colour : undefined }}

@@ -15,6 +15,9 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Chidozie | Claude Code (Chrome) | Read AHA's CPR page in the browser; added CPR steps; added the no-medicines rule and dose check | `src/data/emergencies.js`, `scripts/check-content.mjs` |
 | 14 Nov 2026 | Chidozie | Claude Code (Chrome) | Read AHA/Red Cross 2024 First Aid Guidelines (bleeding, fractures) in the browser; added severe bleeding and broken-bone guides | `src/data/emergencies.js`, `src/data/symptoms.js` |
 | 14 Nov 2026 | Chidozie | Claude Code | PR #8 review fixes: merged main, single accessible header with Izabela's mission mode and Earth-link pill, daily check reads from `src/data`, theme contrast fix, mission modes data | `src/components/*`, `src/app/daily-check/page.js`, `src/app/globals.css`, `src/data/missionModes.js` |
+| 14 Nov 2026 | Izabela | AI assistant | Frontend UI: header, navigation, dark space theme, daily check screen (PRs #6, #8) | `src/components/Header.js`, `src/app/daily-check/page.js`, `src/app/globals.css` |
+| 14 Nov 2026 | Mercy | AI assistant | Body map: SVG figure, accessible region list, region status logic, region card with NASA sources (PR #9) | `src/components/BodyMap.js`, `src/components/RegionCard.js`, `src/lib/regionStatus.js` |
+| 14 Nov 2026 | Chidozie | Claude Code | PR #9 fixes: moved region detail into `src/data`, status tokens, engine-aligned status names, crew-wide selection, samples for all 3 crew | `src/data/regions.js`, `src/components/CrewProvider.js`, `src/lib/sampleData.js` |
 
 ## AI-generated media
 

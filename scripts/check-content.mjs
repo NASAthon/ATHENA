@@ -31,6 +31,14 @@ for (const r of RISKS) {
 for (const g of REGIONS) {
   const w = `region ${g.id}`;
   all(g.risks, riskIds, w, "risk"); all(g.indicators, indicatorIds, w, "indicator"); all(g.symptoms, symptomIds, w, "symptom"); kw(g, w);
+  // Per-region detail for the body map card (PR #9).
+  for (const r of g.risks) check(g.riskNotes?.[r]?.note, `${w}: risk "${r}" has no riskNotes entry`);
+  for (const r of Object.keys(g.riskNotes || {})) check(g.risks.includes(r), `${w}: riskNotes has "${r}" but risks doesn't`);
+  for (const n of Object.values(g.riskNotes || {})) check(["stated", "inferred"].includes(n.basis), `${w}: bad riskNotes basis "${n.basis}"`);
+  check(Array.isArray(g.hazards) && g.hazards.length > 0, `${w}: needs at least one hazard`);
+  for (const h of g.hazards || []) { check(hazardIds.has(h.id), `${w}: unknown hazard "${h.id}"`); check(["stated", "inferred"].includes(h.basis), `${w}: bad hazard basis "${h.basis}"`); check(h.note, `${w}: hazard "${h.id}" needs a note`); }
+  for (const f of g.facts || []) { check(f.text, `${w}: fact needs text`); src(f.sourceId, `${w} fact`); check(f.sourceId, `${w}: fact needs a sourceId`); }
+  for (const k of Object.keys(g.indicatorNotes || {})) check(indicatorIds.has(k), `${w}: indicatorNotes has unknown indicator "${k}"`);
 }
 
 for (const i of INDICATORS) {

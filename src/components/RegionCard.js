@@ -1,4 +1,5 @@
-// Region card: details for the region picked on the body map.
+// Region card (Mercy, PR #9): details for the region picked on the body map.
+// All content comes from src/data (regions, risks, hazards, sources, indicators, symptoms).
 // Layered, as docs/DECISIONS.md > Content Style asks:
 //   Glance (always visible): name, status, the main reason, last checked.
 //   Learn more (on tap): body parts, NASA risks and hazards with source links, verified facts.
@@ -15,56 +16,27 @@ import {
   OctagonAlert,
   TrendingDown,
 } from "lucide-react";
-import { getRegion, HAZARDS, RISKS } from "@/lib/bodyRegions";
+import { REGIONS, RISKS, HAZARDS, SOURCES, INDICATORS, SYMPTOMS } from "@/data";
+import { focusRing } from "@/lib/ui";
 
 const ICONS = { CircleCheck, CircleMinus, Info, MessageCircleWarning, OctagonAlert, TrendingDown };
 
-// Plain-English names and units for readings and symptoms.
-// TODO: move to a shared file once the logic owner defines the indicator list.
-const INDICATORS = {
-  heartRate: { label: "Resting heart rate", unit: "bpm" },
-  systolic: { label: "Blood pressure (top number)", unit: "mmHg" },
-  diastolic: { label: "Blood pressure (bottom number)", unit: "mmHg" },
-  bloodSugar: { label: "Blood glucose", unit: "mg/dL" },
-  temperature: { label: "Body temperature", unit: "°C" },
-  sleepHours: { label: "Sleep", unit: "h" },
-  mood: { label: "Mood", unit: "/ 5" },
-  reactionMedian: { label: "Reaction time", unit: "ms" },
-  lapses: { label: "Reaction lapses (slow responses)", unit: "per test" },
-  exerciseMinutes: { label: "Exercise", unit: "min" },
-  spo2: { label: "Blood oxygen (SpO₂)", unit: "%" },
-  radiationDose: { label: "Radiation dose", unit: "mSv" },
-};
-
-const SYMPTOMS = {
-  dizziness: "Dizziness",
-  headache: "Headache",
-  motionSickness: "Motion sickness",
-  confusion: "Confusion",
-  visionChange: "Vision change",
-  chestPain: "Chest pain",
-  palpitations: "Palpitations (racing or uneven heartbeat)",
-  faint: "Feeling faint",
-  shortOfBreath: "Short of breath",
-  backPain: "Back pain",
-  jointPain: "Joint pain",
-  nausea: "Nausea",
-  appetiteChange: "Appetite change",
-  fever: "Fever",
-  rash: "Rash",
-  coldSore: "Cold sore",
-  infection: "Infection",
-};
+const regionById = Object.fromEntries(REGIONS.map((r) => [r.id, r]));
+const riskById = Object.fromEntries(RISKS.map((r) => [r.id, r]));
+const hazardById = Object.fromEntries(HAZARDS.map((h) => [h.id, h]));
+const indicatorById = Object.fromEntries(INDICATORS.map((i) => [i.id, i]));
+const symptomById = Object.fromEntries(SYMPTOMS.map((s) => [s.id, s]));
+const urlOf = (item) => SOURCES[item.sourceIds[0]].url;
 
 // One reason as a plain-English line, e.g. "Sleep 5.8 h (your normal 6.8 h)".
 function describeReason(reason) {
   if (reason.symptom) {
-    return `${SYMPTOMS[reason.symptom] ?? reason.symptom} reported on day ${reason.day}`;
+    return `${symptomById[reason.symptom]?.name ?? reason.symptom} reported on day ${reason.day}`;
   }
-  const info = INDICATORS[reason.indicator] ?? { label: reason.indicator, unit: "" };
+  const info = indicatorById[reason.indicator] ?? { name: reason.indicator, unit: "" };
   const value = reason.value != null ? ` ${reason.value} ${info.unit}` : "";
   const normal = reason.normal != null ? ` (your normal ${reason.normal} ${info.unit})` : "";
-  return `${info.label}${value}${normal}`;
+  return `${info.name}${value}${normal}`;
 }
 
 // "NASA states" or "ATHENA's interpretation", so inferred links are never shown as NASA claims.
@@ -84,7 +56,7 @@ function SourceLink({ href, children }) {
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex items-center gap-1 underline underline-offset-2 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className={`inline-flex items-center gap-1 rounded underline underline-offset-2 hover:text-foreground ${focusRing}`}
     >
       {children}
       <ExternalLink aria-hidden="true" className="size-3.5" />
@@ -102,7 +74,7 @@ export default function RegionCard({ status }) {
     );
   }
 
-  const region = getRegion(status.id);
+  const region = regionById[status.id];
   const Icon = ICONS[status.icon];
   const main = status.reasons[0];
 
@@ -143,7 +115,7 @@ export default function RegionCard({ status }) {
 
       {/* Learn more */}
       <details className="group border-t pt-4">
-        <summary className="flex min-h-11 cursor-pointer items-center font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+        <summary className={`flex min-h-11 cursor-pointer items-center rounded font-medium ${focusRing}`}>
           Learn more
         </summary>
 
@@ -151,18 +123,19 @@ export default function RegionCard({ status }) {
           <div>
             <h3 className="mb-1 font-semibold">What this covers</h3>
             <p className="text-muted-foreground">{region.bodyParts.join(", ")}.</p>
+            <p className="mt-2 text-muted-foreground">{region.learnMore}</p>
           </div>
 
           <div>
             <h3 className="mb-2 font-semibold">How spaceflight affects it (NASA health risks)</h3>
             <ul className="flex flex-col gap-3">
-              {region.risks.map((r) => (
-                <li key={r.id} className="flex flex-col gap-1">
+              {region.risks.map((id) => (
+                <li key={id} className="flex flex-col gap-1">
                   <span className="flex flex-wrap items-center gap-2">
-                    <SourceLink href={RISKS[r.id].url}>{RISKS[r.id].name}</SourceLink>
-                    <BasisTag basis={r.basis} />
+                    <SourceLink href={urlOf(riskById[id])}>{riskById[id].name}</SourceLink>
+                    <BasisTag basis={region.riskNotes[id].basis} />
                   </span>
-                  <span className="text-muted-foreground">{r.note}</span>
+                  <span className="text-muted-foreground">{region.riskNotes[id].note}</span>
                 </li>
               ))}
             </ul>
@@ -174,7 +147,7 @@ export default function RegionCard({ status }) {
               {region.hazards.map((h) => (
                 <li key={h.id} className="flex flex-col gap-1">
                   <span className="flex flex-wrap items-center gap-2">
-                    <SourceLink href={HAZARDS[h.id].url}>{HAZARDS[h.id].name}</SourceLink>
+                    <SourceLink href={urlOf(hazardById[h.id])}>{hazardById[h.id].name}</SourceLink>
                     <BasisTag basis={h.basis} />
                   </span>
                   <span className="text-muted-foreground">{h.note}</span>
@@ -191,7 +164,7 @@ export default function RegionCard({ status }) {
                   <li key={i}>
                     {f.text}{" "}
                     <span className="text-muted-foreground">
-                      Source: NASA, <SourceLink href={RISKS[f.source].url}>{RISKS[f.source].name}</SourceLink>
+                      Source: <SourceLink href={SOURCES[f.sourceId].url}>{SOURCES[f.sourceId].title}</SourceLink>
                     </span>
                   </li>
                 ))}
@@ -203,7 +176,7 @@ export default function RegionCard({ status }) {
             <p className="text-muted-foreground">
               {Object.entries(region.indicatorNotes).map(([id, note]) => (
                 <span key={id}>
-                  {INDICATORS[id]?.label ?? id}: {note}{" "}
+                  {indicatorById[id]?.name ?? id}: {note}{" "}
                 </span>
               ))}
             </p>

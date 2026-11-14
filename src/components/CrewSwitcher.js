@@ -1,14 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { CREW } from "@/lib/crew";
+import { useCrew } from "@/components/CrewProvider";
 import { focusRing } from "@/lib/ui";
 
-// Picks which astronaut the app is showing. The selection is local for now;
-// wire it to shared state once the data layer (CHECKLIST section 1) exists.
+// Picks which astronaut the whole app is showing (shared through CrewProvider).
 // Mission day is a placeholder until the mission simulator provides it.
 export default function CrewSwitcher() {
-  const [crewId, setCrewId] = useState(CREW[0].id);
+  const { crewId, setCrewId } = useCrew();
   const missionDay = 1;
 
   return (
