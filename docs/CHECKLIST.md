@@ -24,7 +24,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
   - **Pilot Singh:** stays healthy (shows no false alarm)
   - **Engineer Nakamura:** a sudden event (red-limit screen and crewmate emergency guidance, e.g. chest pain)
 - [x] **M** Simulator adds realistic day-to-day noise and one or two harmless bad days (Rivera day 50, Singh day 100; a few missed days too) (PR #15)
-- [ ] **M** "Load demo mission" and "Reset data" buttons work 🟡 Partial (PR #15): `loadDemoMission` and `resetData` in `src/lib/sim/demo.js` (they use the database from PR #14); still to do: the two buttons
+- [x] **M** "Load demo mission" and "Reset data" buttons work (Crew page, `src/components/MissionDataPanel.js`; demo loaded automatically on first run, stays empty after reset; tested against the real sql.js in `demo.db.test.js`)
 - [x] **M** Every indicator, guide and emergency entry has a `keywords` list (synonyms, plain-English terms, symptoms, common misspellings) for search (PR #7)
 - [ ] **S** Store periodic exam results and the check-in streak
 
@@ -60,7 +60,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 - [x] **M** Navigation: Today, Trends, Body, Calendar, Summary (PR #6)
 - [ ] **M** Search bar and an **Emergency** button on every screen 🟡 Partial (PR #6): both shown on every screen; still to do: search logic and results (section 3 › Search) and the Emergency screen content
-- [ ] **M** Crew switcher, with the mission day and astronaut name always visible 🟡 Partial (PR #6, PR #9): switcher for all 3 crew, shared with every page (`CrewProvider`); still to do: real mission day from the simulator
+- [x] **M** Crew switcher, with the mission day and astronaut name always visible (PR #6, PR #9; real mission day from the stored mission: PR #17)
 - [ ] **M** Alert banner area at the top of every screen
 - [x] **M** Dark theme dashboard (`docs/DECISIONS.md` › Design) (PR #4, PR #6)
 - [ ] **M** Health score (0–100) shown prominently per astronaut, with a status icon and drop indicator
