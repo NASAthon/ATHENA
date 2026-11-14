@@ -83,7 +83,12 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 4. Commit small, focused changes with clear messages. Run `git pull --rebase origin main`,
    push your branch, and open a pull request (`gh pr create`). Do **not** merge your own PR.
 
-## 3b. Reviewing a PR (done by a different agent than the author)
+## 3b. Reviewing a PR
+
+The reviewer must be **another teammate's agent**, run by a different person than
+the PR author. Using Claude too is fine; it just can't be the author's own
+session or anything else on the author's machine. Never review or merge a PR you opened
+or that came from your own teammate's account.
 
 1. Read the PR diff (`gh pr diff <number>`) against this file and `DECISIONS.md`.
 2. Check that:
