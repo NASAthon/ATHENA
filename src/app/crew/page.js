@@ -24,7 +24,7 @@ const emergencyName = Object.fromEntries(EMERGENCIES.map((e) => [e.id, e.name]))
 const BAND_STYLE = {
   good: { Icon: CircleCheck, colour: "var(--status-steady)" },
   watch: { Icon: Eye, colour: "var(--status-amber)" },
-  alert: { Icon: TriangleAlert, colour: "var(--status-red)" },
+  alert: { Icon: TriangleAlert, colour: "var(--status-orange)" },
   critical: { Icon: OctagonAlert, colour: "var(--status-red)" },
 };
 const NO_SCORE = { Icon: Minus, colour: "var(--status-nodata)" };

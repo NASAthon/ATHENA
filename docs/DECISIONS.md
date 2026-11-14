@@ -361,7 +361,8 @@ LOCKED
 - Palette: Izabela's dark "space" theme (PR #8), set as shadcn tokens in `src/app/globals.css`.
   Components use tokens only (`bg-card`, `text-muted-foreground`, `bg-destructive`), never raw hex colours.
   Checked contrast: body text 17:1, muted text 6.5–7.3:1, form-field borders 3.5–3.9:1, Emergency button 6.7:1.
-- **Status colours** (Mercy, PR #9): `--status-red / -amber / -adapted / -steady / -nodata` tokens, always
+- **Status colours** (Mercy, PR #9): `--status-red / -amber / -adapted / -steady / -nodata` tokens, plus `--status-orange` (14 Nov) so the
+  health-score bands are all different: Good blue, Watch amber, **Alert orange**, **Critical red**. The engine statuses use the tokens, always
   with an icon and a text label. Status names match the logic engine: `red_limit, drifting, expected_adaptation,
   steady, no_data`, plus the UI's `symptom` layer (a symptom reported in the last 3 days, a design choice).
 - **Per crew member:** the selected astronaut (`CrewProvider`) drives every page, and each status is judged
