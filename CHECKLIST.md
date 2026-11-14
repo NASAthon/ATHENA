@@ -31,7 +31,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** Health score 0–100 per astronaut (100 = perfect), with the change since yesterday and over 7 days (`DECISIONS.md` › Health Score)
 - [ ] **M** Z-score of the seven-day average against the in-flight baseline
 - [ ] **M** Status per indicator: no data, steady, drifting, expected adaptation
-- [ ] **M** Drift cut-off of **z = 2** (`DECISIONS.md` › Drift Cut-off) written in the README as a design choice
+- [ ] **M** Drift cut-off of **z = 3.5** (`DECISIONS.md` › Drift Cut-off) written in the README as a design choice
 - [ ] **M** Alert level: 1 drifting = note, 2 or more = alert, no recovery after 14 more days = tell crew and ground
 - [ ] **M** Red-limit check on every new reading, independent of baselines
 - [ ] **M** Red limits taken from a published source and cited (general clinical reference ranges, `DECISIONS.md` › Thresholds)

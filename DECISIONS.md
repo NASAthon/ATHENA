@@ -81,7 +81,7 @@ LOCKED
 - Rule-based "Why this alert?" panels and a short FAQ ("Am I fit for EVA?"),
   answered from the rules engine with source URLs. Works fully offline.
 - Anomaly and trend detection: fixed personal baselines plus a z-score drift
-  check (|z| ≥ 2) in JavaScript (see Baselines and Drift Cut-off).
+  check (|z| ≥ 3.5) in JavaScript (see Baselines and Drift Cut-off).
 
 Status:
 LOCKED
@@ -367,12 +367,19 @@ vitals are noticed straight away.
 
 Starting formula (the logic owner may tune the numbers; record any change here):
 - Each core indicator gets a sub-score: steady = 100, expected adaptation = 90,
-  drifting = 100 − 20 × (|z| − 1) (floored at 20), red limit = 0. No data = left out.
+  drifting = 80 − 20 × (z − 3.5) (floored at 20), red limit = 0. No data = left out.
 - Score = average of the available sub-scores, rounded.
+- **An active drift alert (2 or more groups drifting) caps the score at 79**, and
+  **an escalated alert caps it at 59**, so the score never says "Good" while an
+  alert is showing.
 - **Any red limit caps the score at 25**, so emergencies always look critical.
 - Bands, each with an icon and label: **80–100 Good**, **60–79 Watch**, **40–59 Alert**, **0–39 Critical**.
 - Show the change since yesterday and over 7 days, e.g. "72 ▼ 9 this week".
 - "Why this score?" lists the indicators pulling it down, in plain English.
+
+Reason for the caps:
+The score is an average, so two drifting indicators among nine still averaged
+about 91 ("Good") while the drift alert was active.
 
 Status:
 LOCKED (numbers tunable)
@@ -449,14 +456,33 @@ LOCKED
 
 ## Drift Cut-off
 
-An indicator counts as **drifting at |z| ≥ 2** (7-day average against the in-flight baseline).
+Formula, per indicator, each day:
+
+    z = (recent average − baseline mean) ÷ (s × √(1/n + 1/m))
+
+- recent average: mean of the readings in the last 7 days (n readings, at least 4).
+- baseline mean and s: mean and day-to-day standard deviation of the in-flight
+  baseline (m readings). s has a minimum per indicator, so a very steady
+  baseline cannot turn a trivial change into a large z.
+- Direction: only a change in the worrying direction counts (lower sleep, mood,
+  exercise or SpO₂; higher reaction time or lapses; either way for vital signs).
+
+An indicator counts as **drifting at z ≥ 3.5** in its worrying direction.
+
+For alert levels, linked indicators count once: reaction median and lapses are
+one group, and systolic and diastolic are one group.
 
 Reason:
-Stricter than 1.5, so normal day-to-day noise doesn't trigger alerts. This
-protects the "no false alarms" story (Pilot Singh stays green).
+"z ≥ 2" did not say what to divide by. With this formula, a cut-off of 2 gave a
+false main alert in 96% of 300 simulated healthy missions, and 3 gave 12%.
+At 3.5 it gave about 1%, while every one of 300 simulated declining missions
+was still caught (typical alert day 119, decline starting day 75). This keeps
+Pilot Singh green. Tested on simulated data with independent day-to-day noise,
+so real false-alarm rates would be higher. Re-run on our own simulator and
+record the result here. The cut-off is a design choice, not a clinical standard.
 
 Status:
-LOCKED
+LOCKED (number tunable after testing)
 
 ---
 
