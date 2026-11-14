@@ -122,25 +122,39 @@ Planning should decide which of these are **must-have for the demo** versus **st
 - **Earth Link:** visualise the communication delay to mission control.
 - **"Why this alert?" panels and FAQ:** rule-based answers to "What caused this warning?" or "Am I fit for EVA tomorrow?", each citing its source. They work fully offline.
 
+**Added from the challenge video (Section 7). These were not in our original plan:**
+- **Emergency guidance (required: "gives guidance on what to do in an emergency"):** a step-by-step, offline emergency mode for acute events, e.g. *a crewmate with sharp chest pain who collapses halfway to Mars*. Must work for **assessing a crewmate**, not only yourself: pick the affected astronaut, follow the steps, record vitals, see the escalation (crew action vs contact flight surgeon, with the Earth Link delay shown).
+- **Measurement guides (required: "astronauts are not doctors"):** for **every** indicator, a short card covering (1) **how to take it** in flight, (2) **why it matters** (linked to the NASA hazard or risk), and (3) **what to do if it's abnormal**. Reachable from the body map, alerts and data entry.
+- **Measurement reminders (optional):** prompt the crew to take scheduled measurements as part of the mission routine.
+- **Environments (optional):** the video names spacecraft, space station and **Moon surface base**. Our Mission Modes (ISS, Lunar Gateway, Mars Transit) cover spacecraft and station. Consider adding **Lunar Surface Base**.
+- **Earth impact story:** the same tool could support healthcare in remote communities with limited access to health services. Use it in the pitch (Impact criterion, Galactic Impact award).
+
+> **Open question for the team:** the official NASA pages give no emergency or first-aid steps. Emergency guidance needs a source, so decide whether to cite published first-aid guidance (e.g. from a recognised health body) as another exception, like clinical ranges. Until then, keep emergency steps generic, label them illustrative, and say they are not medical advice.
+
 **Innovation angles:** explainable AI, anomaly detection (rolling baseline + z-score), decision support, visual health insights, Earth-delay simulation.
 
 **Tech stack** (locked in `DECISIONS.md`): offline-first PWA. Next.js (JavaScript, static export) + Tailwind + ShadCN; SQLite in the browser (sql.js, saved to IndexedDB); JS rules engine + rolling-baseline/z-score trend detection; 2D SVG body map. No backend server. Everything runs onboard.
 
-**MVP scope** (product spec, from the earlier `ATHENA_MASTER_SPEC.md`):
+**MVP scope** (team to confirm must-have vs stretch):
 - Dashboard with 3 astronauts
 - Personal baselines
 - Explainable alerts
+- **Emergency guidance (crewmate assessment)** (challenge requirement)
+- **Measurement guides: how to take it, why it matters, what to do** (challenge requirement)
 - Scenario Lab
 - Earth Link
 - "Why this alert?" explanations
 
-**Demo flow:**
-1. Dashboard
-2. An astronaut on a warning
-3. An astronaut in critical status
-4. Scenario simulation
-5. "Why this alert?" explanation
-6. Earth delay
+**Demo flow** (draft; the storyboard comes later):
+1. Hook: "Halfway to Mars, your crewmate collapses with chest pain." (the challenge's own scenario)
+2. Dashboard
+3. An astronaut on a warning, with the measurement guide and "Why this alert?"
+4. An astronaut in critical status, opening emergency guidance for a crewmate
+5. Scenario simulation
+6. Earth delay: why the crew can't wait for Earth
+7. Close: the same tool for remote communities on Earth
+
+**Local pitch:** 3 minutes plus 2 minutes of Q&A (Section 2). Expect Q&A on where thresholds and emergency steps come from, so have sources ready.
 
 > For judging, the official rubric in Section 4 (Impact, Creativity, Validity, Relevance, Presentation) replaces the informal "judging focus" list in the old `NASA_Challenge.md`.
 

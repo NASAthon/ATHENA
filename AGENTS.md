@@ -42,6 +42,10 @@ GitHub is the single source of truth, so always work from the latest `main`.
   never as NASA flight standards.
 - Track the 6 indicators the official challenge names (heart rate, blood pressure,
   blood glucose, body temperature, sleep hours, mood) before adding extras.
+- The challenge video adds two requirements (`context.md` Section 6.1):
+  **emergency guidance** (including for a crewmate) and a **measurement guide for
+  every indicator** covering how to take it, why it matters and what to do if it's abnormal.
+  Every indicator you add needs its guide.
 - Mark assumptions explicitly. Never present an assumption as an official NASA value.
 - The repo is **public**. No secrets, API keys, personal data, or anyone's
   photo, voice or likeness. Some participants may be under 18.

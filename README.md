@@ -29,11 +29,27 @@ ATHENA provides:
 - Personalized baselines
 - Explainable alerts
 - Treatment recommendations
+- Emergency guidance, including for a crewmate
+- Plain-language measurement guides (astronauts are not doctors)
 - Mission-specific health guidance
+
+Beyond space, the same approach could support healthcare in remote communities
+with limited access to health services.
 
 ---
 
 ## Features
+
+### Emergency Guidance
+
+Step-by-step offline guidance for acute events, such as a crewmate with chest
+pain who collapses mid-transit. It shows when the crew can act and when to
+contact flight surgeons, accounting for the Earth communication delay.
+
+### Measurement Guides
+
+For every indicator: how to take it in flight, why it matters (linked to the
+NASA hazard or risk), and what to do if the value is abnormal.
 
 ### Personal Health Baselines
 
@@ -63,6 +79,12 @@ ISS
 Lunar Gateway
 
 Mars Transit
+
+(Optional: Lunar Surface Base, as named in the challenge video.)
+
+### Measurement Reminders (optional)
+
+Prompts the crew to take scheduled measurements as part of the mission routine.
 
 ### Earth Link
 
@@ -121,7 +143,7 @@ No backend server and no internet connection needed at runtime.
 ATHENA's link from each hazard to its risks, body systems and indicators is built
 from the NASA Human Research Program's official resources, including the
 [5 Hazards of Human Spaceflight](https://www.nasa.gov/hrp/hazards/) and
-[Risks of Human Spaceflight](https://www.nasa.gov/hrp/risks/). Partner context
+[Risks of Human Spaceflight](https://www.nasa.gov/hrp/risks/). The challenge was authored by the Brazilian Space Agency (AEB). Partner context
 comes from the [Canadian Space Agency](https://www.asc-csa.gc.ca/eng/news/articles/2026/2026-02-26-monitoring-radiation-astronaut-health.asp).
 The full list is in [`docs/SOURCES.md`](docs/SOURCES.md).
 
