@@ -48,7 +48,7 @@ export default function CalendarPage() {
 
   if (status === "loading" || today === null) {
     return (
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-3">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
         <h1 className="text-xl font-bold">Mission calendar</h1>
         <p className="mt-2 text-base text-muted-foreground">
           {status === "loading" ? (
@@ -99,7 +99,7 @@ export default function CalendarPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-3">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
       <h1 className="text-xl font-bold">
         Mission calendar <span className="text-base font-normal text-muted-foreground">| {member.name} | Day {today}</span>
       </h1>
@@ -111,7 +111,7 @@ export default function CalendarPage() {
         <h2 id="exams-heading" className="text-base font-bold">
           Exams
         </h2>
-        <ul className="mt-2 grid auto-rows-fr gap-2 md:grid-cols-2">
+        <ul className="mt-2 grid auto-rows-fr gap-2 md:grid-cols-2 xl:grid-cols-3">
           {rows.map(({ exam, state, dueDay, next, last }) => {
             const info = examById[exam.id];
             const s = EXAM_STATUS[state];
