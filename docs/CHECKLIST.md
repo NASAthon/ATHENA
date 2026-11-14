@@ -49,7 +49,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [x] **M** Region mapper: indicator-to-body-region table and worst-status function (table: `src/data/regions.js`; worst-status function: `src/lib/engine/regions.js`; UI version with recent-symptom layer: `src/lib/regionStatus.js`) (PR #7, PR #9, PR #10)
 - [x] **S** Calendar scheduler: which periodic exams are due on a given mission day (`src/lib/engine/calendar.js, exams from src/data/exams.js`) (PR #10)
 - [x] **S** Summary builder for the flight-surgeon report (`src/lib/engine/summary.js; Earth delay passed in`) (PR #10)
-- [ ] **S** Mission mode changes which hazards and advice are shown (ISS, Lunar Gateway, Mars Transit; no Lunar Surface Base)
+- [ ] **S** Mission mode changes which hazards and advice are shown (ISS, Lunar Gateway, Mars Transit; no Lunar Surface Base) 🟡 Partial (PR #8): mission mode switch and sourced Earth-link delay in the header; still to do: change hazards and advice per mode
 - [ ] **S** Scenario Lab: inject radiation, fatigue, sleep loss or hypoxia into the data and watch the alerts react 🟡 Partial (PR #10): injection in `src/lib/engine/scenarios.js` (demo effect sizes); still to do: the screen (§3)
 
 ---
@@ -164,8 +164,8 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** Healthy data (Singh) produces no alert and a stable, high health score 🟡 Partial (PR #10): passes on engine-level simulated missions (`evaluate.test.js`); still to do: re-run with the real mission simulator in the app
 - [ ] **M** Health score drops as Rivera declines and when a red limit is hit 🟡 Partial (PR #10): passes at engine level (`evaluate.test.js`); still to do: check in the app
 - [ ] **M** One bad day produces no alert 🟡 Partial (PR #10): passes at engine level (`evaluate.test.js`); still to do: check in the app
-- [ ] **M** A dangerous reading (Nakamura) triggers the red-limit screen
-- [ ] **M** Empty state (no data yet) looks sensible
+- [ ] **M** A dangerous reading (Nakamura) triggers the red-limit screen 🟡 Partial (PR #9, PR #10): red-limit check tested in `redLimits.test.js`; Nakamura's sample shows Red limit on the body map; still to do: the red-limit screen itself
+- [ ] **M** Empty state (no data yet) looks sensible 🟡 Partial (PR #9, PR #10): engine returns `no_data` safely (`evaluate.test.js`) and the body map shows "No recent data"; still to do: check every screen
 - [ ] **M** Reaction test run ten times in a row without breaking
 - [ ] **M** Search finds the right item for misspellings ("hart rate"), synonyms ("pulse") and symptoms ("chest pain") 🟡 Partial (PR #10): passes on the real content (`search.test.js`); still to do: check in the search bar
 - [ ] **M** Whole app usable by keyboard only; status readable in greyscale
