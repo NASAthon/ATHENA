@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# sql.js engine, copied from node_modules on install (scripts/copy-sqljs-wasm.mjs)
+/public/sql-wasm.wasm

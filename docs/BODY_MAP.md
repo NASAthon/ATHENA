@@ -5,11 +5,11 @@
 > - **Inferred:** our own mapping, consistent with the page but not stated by it. Present it as ATHENA's interpretation, not as a NASA claim.
 >
 > **Important:** the risk pages **don't** use the five-hazard list. They name causes such as "microgravity" or "prolonged isolation". The hazard links below come from matching those causes and the hazard pages, so most are marked *Inferred*.
-> Card text follows `DECISIONS.md` › Content Style (accurate, plain English, glance summary plus "Learn more").
+> Card text follows `docs/DECISIONS.md` › Content Style (accurate, plain English, glance summary plus "Learn more").
 
 ## Regions
 
-Eight clickable regions on the 2D SVG body figure. Together they cover all 17 risks (`DECISIONS.md` › Data Map Coverage). One risk can link to several regions.
+Eight clickable regions on the 2D SVG body figure. Together they cover all 17 risks (`docs/DECISIONS.md` › Data Map Coverage). One risk can link to several regions.
 
 ### 1. Brain and nerves
 - **Body parts:** brain, inner ear (balance), central nervous system
@@ -144,10 +144,10 @@ Eight clickable regions on the 2D SVG body figure. Together they cover all 17 ri
 - Fitness loss: **10–12%** on average, and 12–38% of crew lose more than 20% (fitness page).
 - Exercise countermeasure: **6–7 days a week, about 1.5 h a day** (fitness page).
 - **Most astronauts** get motion sickness in spaceflight (sensorimotor page).
-- Communication delay: **up to 20 minutes one way** (Distance from Earth page), so about 40 minutes round trip. This matches the 5–40 minute range in `context.md`.
-- None of these pages gives clinical thresholds (heart rate, blood pressure and so on), which confirms `context.md` Section 8.
+- Communication delay: **up to 20 minutes one way** (Distance from Earth page), so about 40 minutes round trip. This matches the 5–40 minute range in `docs/context.md`.
+- None of these pages gives clinical thresholds (heart rate, blood pressure and so on), which confirms `docs/context.md` Section 8.
 
-## Region card contents (`CHECKLIST.md` › Body figure)
+## Region card contents (`docs/CHECKLIST.md` › Body figure)
 
 Each region card shows:
 - **Glance:** region name, status (icon, colour and label), worst indicator, "last checked" date.
@@ -158,4 +158,4 @@ Each region card shows:
 
 - [x] All 17 region-to-risk links checked against their NASA risk pages (14 Nov 2026)
 - [x] Hazard links checked against the 5 hazard pages (14 Nov 2026); unstated links marked *Inferred*
-- [ ] Indicators per region agreed with the logic owner (region mapper in `CHECKLIST.md` › Logic)
+- [ ] Indicators per region agreed with the logic owner (region mapper in `docs/CHECKLIST.md` › Logic)
