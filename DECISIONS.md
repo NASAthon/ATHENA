@@ -131,3 +131,34 @@ The decision log is `DECISIONS.md` (renamed from the misspelt `DECISONS.md`).
 
 Status:
 LOCKED
+
+
+---
+
+## Licensing
+
+Everything ATHENA uses must be open source, openly licensed or public domain,
+with its licence recorded in `docs/SOURCES.md`.
+- Code, fonts and icons: open licences only (MIT, Apache-2.0, BSD, ISC, OFL).
+- NASA text and data: public domain US Government works. Cite them. No NASA
+  logos or insignia, no implied endorsement, no third-party-credited NASA images.
+- CSA and other agencies: cite and link only unless their terms allow reuse.
+- Clinical reference ranges: published facts, cited to their guideline.
+- Our own code: license the repo under an open licence (team to confirm MIT).
+
+Reason:
+Submission requires citing everything and having permission for copyrighted
+material (`judging.md` 1C.8). Open licences remove the risk.
+
+Status:
+LOCKED
+
+---
+
+## Local Judging
+
+Submission closes 10:30 Sun 15 Nov. Pitching from 11:30: 3-minute pitch plus
+2-minute Q&A. Plan the build so that it's finished well before 10:30.
+
+Status:
+LOCKED

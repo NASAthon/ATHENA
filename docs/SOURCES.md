@@ -1,6 +1,6 @@
 # Sources
 
-Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Agency Partner Data and Other References" fields (`judging.md` 1C.7–8). Add a row whenever you use something new.
+Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Agency Partner Data and Other References" fields (`judging.md` 1C.7–8). Add a row whenever you use something new. **Only open source, openly licensed or public-domain material** (see `DECISIONS.md` › Licensing). If a licence is unclear, don't use it.
 
 | Source | URL | What we take from it | Official NASA? | Licence / terms |
 |---|---|---|---|---|

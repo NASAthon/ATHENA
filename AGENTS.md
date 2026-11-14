@@ -52,6 +52,18 @@ GitHub is the single source of truth, so always work from the latest `main`.
   media must never use or modify NASA logos, flags or mission identifiers, and
   must carry a visible "AI-generated" watermark (`judging.md` 1C.6).
 - Cite every external library, tool, text and image used (`judging.md` 1C.8).
+- **Licensing: only use what is open source, openly licensed or public domain**,
+  so we can name its licence. See `DECISIONS.md` › Licensing. In short:
+  - Code libraries, fonts and icons need an open licence (e.g. MIT, Apache-2.0,
+    BSD, ISC, OFL). Check before installing and record it in `docs/SOURCES.md`.
+  - NASA text and data are public domain (US Government works). Cite them, but
+    **never use NASA logos or insignia**, never imply NASA endorsement, and skip
+    any nasa.gov image credited to a third party.
+  - Canadian Space Agency and other non-US agencies: cite and link only, unless
+    their site terms allow reuse.
+  - Clinical ranges are published facts. Cite the guideline they come from.
+  - No copyrighted images, text or media without a licence that allows it.
+  - If the licence is unclear, don't use it and ask the team.
 
 ## 3. Before finishing a task
 
@@ -73,5 +85,7 @@ GitHub is the single source of truth, so always work from the latest `main`.
 - Partner data and references: all libraries, tools and partner (e.g. CSA) sources cited
 - AI/SI disclosure, plus visible watermarks on any AI media
 - Everything in English, and no under-18 likeness anywhere
-- Both confirmation boxes ticked, then **Submit for Judging** before **Sun 15 Nov, 23:59**
-  local time. Confirm with HackAthlone whether local pitching is earlier.
+- Both confirmation boxes ticked, then **Submit for Judging** by **10:30 Sun 15 Nov**
+  (local deadline; the global portal closes at 23:59).
+- **Local pitch at 11:30:** 3-minute live pitch plus 2-minute Q&A. Prepare the pitch
+  and a working local demo.

@@ -12,9 +12,9 @@
 - We are competing in the **Healthcare challenge: "Create Health Monitoring Software for Astronauts on Space Missions"** (difficulty: Intermediate; subjects: Human Exploration, Software, Space Exploration).
 - There is also a **global judging** round for submissions, so quality, polish and clear NASA-data provenance matter.
 - Team name / GitHub org: **NASAthon** (github.com/NASAthon). App/software name: **ATHENA**
-- Team size: **4 members**: Chidozie Onyejelem, Isaac Adeniji, Mercy Olasehinde, Izabela
+- Team size: **4 members**: Chidozie Onyejelem, Isaac Adeniji, Mercy Olasehinde, Izabela Heczková
 - Skills and preferred stack: JavaScript (no TypeScript). Stack is locked in `DECISIONS.md`.
-- Submission deadline: **Sun 15 Nov 2026, 23:59** (local time, global portal). Confirm with HackAthlone whether local pitching is earlier.
+- **Local (HackAthlone) deadline: Sun 15 Nov, 10:30 submission closes. Pitching starts 11:30: 3-minute pitch + 2-minute Q&A per team.** Global portal closes Sun 15 Nov, 23:59. Work to the 10:30 deadline.
 
 ## 2. Event facts
 
@@ -26,6 +26,8 @@
 | Dates | **14–15 November 2026**. Work officially starts **09:00 on 14 Nov** and concludes on 15 Nov |
 | Local event lead | Sahir Sharma (sharma.sahir@gmail.com / spaceappsathlone@gmail.com) |
 | Facilities | Tech resources, mentors, food and drink provided. No accommodation (sleeping bags allowed on site) |
+| Local judging | Submission closes **10:30 Sun 15 Nov**. Live pitching from **11:30**: **3 min pitch + 2 min Q&A** in front of local judges |
+| Global judging | Separate: online submission (≤30 s video or ≤7 slides), portal closes 23:59 Sun 15 Nov |
 | Global site | https://www.spaceappschallenge.org/ |
 
 ## 3. Rules that constrain us
