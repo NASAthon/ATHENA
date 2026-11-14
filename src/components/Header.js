@@ -18,6 +18,8 @@ export default function Header() {
 
           <SearchBox />
 
+          <MissionStatus />
+
           <CrewSwitcher />
 
           <Link
@@ -27,8 +29,6 @@ export default function Header() {
             <TriangleAlert aria-hidden="true" className="size-5" /> Emergency
           </Link>
         </div>
-
-        <MissionStatus />
 
         <nav aria-label="Main">
           <NavLinks />
