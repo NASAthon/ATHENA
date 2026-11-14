@@ -47,8 +47,9 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 - Priorities: hackathon speed, then NASA relevance, then demo quality, then simplicity. Prefer MVP solutions.
 - **Every health rule shown to users must cite its source URL.** NASA pages
   are qualitative, so numeric thresholds come from general clinical reference
-  ranges. That is the one allowed exception to "official sources only" (see
-  `DECISIONS.md` › Thresholds). Label them "general clinical reference range",
+  ranges (`DECISIONS.md` › Thresholds). Emergency steps use NASA where a NASA page
+  gives them, otherwise AHA or CDC guidance in our own words (`DECISIONS.md` › Emergency
+  Step Sources). These are the only two exceptions to "official sources only". Label them "general clinical reference range",
   never as NASA flight standards.
 - **Health content: accurate, informative and in plain English.** Astronauts aren't doctors,
   so give them more understanding, but simply. Simplify the words, not the facts.

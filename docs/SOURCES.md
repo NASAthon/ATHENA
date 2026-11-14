@@ -22,6 +22,14 @@ wording, and cite the page. Never copy their text, images or charts.
 |---|---|---|---|
 | | | | |
 
+## Emergency first-response steps (see `DECISIONS.md` › Emergency Step Sources)
+
+NASA first; otherwise AHA or CDC, rewritten in our own words.
+
+| Scenario | Step(s) | Source | URL |
+|---|---|---|---|
+| | | | |
+
 ## Libraries and tools
 
 | Name | Use | Licence |

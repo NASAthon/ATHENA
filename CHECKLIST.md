@@ -130,7 +130,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** NASA data map: hazard → risk → body system → indicator → countermeasure, each entry with its source URL
 - [ ] **M** Guidance card text for each indicator, answering the brief's five questions: can it be measured in space, why it matters, how hazards affect it, when to escalate, what action helps
 - [ ] **M** "How to measure" steps for each indicator, in plain English
-- [ ] **M** Emergency guide text in plain English covering the hazards (`DECISIONS.md` › Data Map Coverage): chest pain/collapse first, then the rest
+- [ ] **M** Emergency guide text in plain English (NASA steps first, otherwise AHA or CDC in our own words, each cited; `DECISIONS.md` › Emergency Step Sources) covering the hazards (`DECISIONS.md` › Data Map Coverage): chest pain/collapse first, then the rest
 - [ ] **M** Search keywords for every item (synonyms, symptoms, misspellings)
 - [ ] **M** Advice wording checked: modest, no diagnoses, no medication instructions
 - [ ] **M** Source list with links in `docs/SOURCES.md` (NASA HRP, NASA OSDR, Canadian Space Agency, clinical ranges, libraries)

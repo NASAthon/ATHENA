@@ -43,7 +43,8 @@ LOCKED
 Use only the official resources listed in `context.md` Section 7. This
 includes NASA OSDR (https://osdr.nasa.gov/), which the official challenge video
 names. Do not use the extra sources in Section 9 for now.
-Exception: general clinical reference ranges for thresholds (see Thresholds).
+Exceptions: general clinical reference ranges for thresholds (see Thresholds), and
+emergency first-response steps (see Emergency Step Sources).
 
 Reason:
 Team decision to stay within the data we were given.
@@ -111,8 +112,8 @@ cited in `docs/SOURCES.md`. NASA pages give the qualitative link from each
 hazard to its risks, body systems and indicators, with source URLs.
 
 Reason:
-The official NASA resources contain no numeric thresholds. This is the only
-exception to "official sources only".
+The official NASA resources contain no numeric thresholds. This is one of two
+exceptions to "official sources only" (the other is Emergency Step Sources).
 
 Status:
 LOCKED
@@ -469,6 +470,32 @@ Red limits (and normal ranges) come from published clinical guidelines:
 Every value must be **checked against the live source page before use**, entered
 with its exact URL in `docs/SOURCES.md`, and labelled "general clinical reference
 range" in the app. If a value can't be verified, don't use it.
+
+Status:
+LOCKED
+
+
+---
+
+## Emergency Step Sources
+
+Emergency first-response steps come from:
+1. **NASA first:** wherever a NASA page gives a step, use it and cite it (e.g. decompression
+   sickness: end the spacewalk and return to the pressurised environment).
+2. **Otherwise AHA or CDC:** published first-aid and first-response guidance from the
+   American Heart Association or the CDC.
+
+Rules:
+- Write every step **in our own words** (plain English, with a short "why"). Never copy AHA text.
+  CDC text is public domain, but still rewrite it for our style.
+- Cite each step's exact source page in the app and in `docs/SOURCES.md`.
+- Check every step against the live source page before use. If it can't be verified, leave it out.
+- No diagnoses and no medication instructions. Label steps "not medical advice" and always
+  include when to contact the flight surgeon.
+
+Reason:
+The official pages give almost no emergency steps, but every fact in the app must be
+cited (Content Style). This is the second exception to "official sources only".
 
 Status:
 LOCKED
