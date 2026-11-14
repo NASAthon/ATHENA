@@ -18,9 +18,11 @@ export default function Header() {
 
           <SearchBox />
 
+          <MissionStatus />
+
           <CrewSwitcher />
 
-            <Link
+          <Link
             href="/emergency"
             className={`flex min-h-12 items-center gap-2 rounded-lg bg-destructive px-4 font-semibold text-background hover:bg-destructive/90 ${focusRing}`}
           >
