@@ -7,41 +7,47 @@ github.com/NASAthon/ATHENA first and follow it."*
 
 GitHub is the single source of truth, so always branch from the latest `main`.
 
+**Repo layout:**
+- **Root:** `AGENTS.md`, `CLAUDE.md` and `README.md` (they must stay at the root, because agents and GitHub look for them there), plus config files.
+- `docs/`: all project context for agents (`context.md`, `CHECKLIST.md`, `DECISIONS.md`, `judging.md`, `SOURCES.md`, `AI_USAGE.md`, `BODY_MAP.md`).
+- `src/`: all app code (`src/app/` pages, `src/components/`, `src/lib/`). Import with `@/`, e.g. `@/lib/utils`.
+- `public/`: static files served as-is. `scripts/`: build helper scripts.
+
 ## 1. Before starting any task
 
 1. `git checkout main && git pull`, then create a branch for the task:
    `git checkout -b feature/<short-name>` (or `fix/<short-name>`). Never commit straight to `main`.
 2. Read these files in this order:
-   1. `context.md`: the official event brief. It covers the rules, submission
+   1. `docs/context.md`: the official event brief. It covers the rules, submission
       deliverables, judging rubric, challenge text, NASA data sources and the
       data caveat. Section 6.1 holds the ATHENA product spec: vision, crew, features
       and stack.
-   2. `CHECKLIST.md`: what to build and hand in, with priorities (M = must, S = should).
+   2. `docs/CHECKLIST.md`: what to build and hand in, with priorities (M = must, S = should).
       Pick your task from here.
-   3. `judging.md`: the official Space Apps submission and judging guide. It
+   3. `docs/judging.md`: the official Space Apps submission and judging guide. It
       covers deadlines, the project page fields, demo limits, AI/SI rules, global
       eligibility, the 1–5 judging criteria and the 10 global awards. Check work
       against the criteria (Impact, Creativity, Validity, Relevance, Presentation).
-   4. `DECISIONS.md`: locked decisions. Do not reverse a LOCKED decision.
+   4. `docs/DECISIONS.md`: locked decisions. Do not reverse a LOCKED decision.
    5. `docs/`: `SOURCES.md` (every source used), `AI_USAGE.md` (AI log), `BODY_MAP.md`
       (verified body regions mapped to the 17 NASA risks and 5 hazards), and other files as they are added.
 3. If two files conflict:
-   - Submission, demo, AI/SI rules and judging: `judging.md` wins.
-   - Challenge, data and citations: the official sections of `context.md` win.
-   - Product scope and architecture: `DECISIONS.md` wins, then `CHECKLIST.md`, then `context.md` Section 6.1.
+   - Submission, demo, AI/SI rules and judging: `docs/judging.md` wins.
+   - Challenge, data and citations: the official sections of `docs/context.md` win.
+   - Product scope and architecture: `docs/DECISIONS.md` wins, then `docs/CHECKLIST.md`, then `docs/context.md` Section 6.1.
    - Anything still unclear: ask the team. Do not guess.
 
 ## 2. While working
 
 - **Base template already exists:** a basic Next.js 16 app (JavaScript, App Router,
-  Tailwind, static export, dark theme) in `app/`. **Build on top of it; don't re-create
-  the project.** The "NASAthon - Athena" text in `app/page.js` is only there to prove
+  Tailwind, static export, dark theme) in `src/app/`. **Build on top of it; don't re-create
+  the project.** The "NASAthon - Athena" text in `src/app/page.js` is only there to prove
   the site runs on localhost. Whoever pushes real code can replace or remove it.
 - Run it with `npm install`, then `npm run dev`, and open http://localhost:3000. `npm run build` creates the
   static export in `out/`.
 - **Installed packages** (all open source; licences are in `docs/SOURCES.md`):
   - **shadcn/ui** (Radix base, dark theme): add components with `npx shadcn@latest add <name>`.
-    They land in `components/ui/`. Use `cn` from `@/lib/utils` and icons from `lucide-react`.
+    They land in `src/components/ui/`. Use `cn` from `@/lib/utils` and icons from `lucide-react`.
   - **sql.js:** `npm install` copies the engine to `public/sql-wasm.wasm` (`scripts/copy-sqljs-wasm.mjs`).
     Load it with `initSqlJs({ locateFile: () => "/sql-wasm.wasm" })`, never from a CDN.
   - **MiniSearch** for search.
@@ -54,24 +60,24 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 - Priorities: hackathon speed, then NASA relevance, then demo quality, then simplicity. Prefer MVP solutions.
 - **Every health rule shown to users must cite its source URL.** NASA pages
   are qualitative, so numeric thresholds come from general clinical reference
-  ranges (`DECISIONS.md` › Thresholds). Emergency steps use NASA where a NASA page
-  gives them, otherwise AHA or CDC guidance in our own words (`DECISIONS.md` › Emergency
+  ranges (`docs/DECISIONS.md` › Thresholds). Emergency steps use NASA where a NASA page
+  gives them, otherwise AHA or CDC guidance in our own words (`docs/DECISIONS.md` › Emergency
   Step Sources). These are the only two exceptions to "official sources only". Label them "general clinical reference range",
   never as NASA flight standards.
 - **Health content: accurate, informative and in plain English.** Astronauts aren't doctors,
   so give them more understanding, but simply. Simplify the words, not the facts.
   Show a glanceable summary first, with a "Learn more" layer for the full plain-English
-  detail. Explain medical terms in brackets (`DECISIONS.md` › Content Style).
+  detail. Explain medical terms in brackets (`docs/DECISIONS.md` › Content Style).
 - Track the 6 indicators the official challenge names (heart rate, blood pressure,
   blood glucose, body temperature, sleep hours, mood) before adding extras.
-- The challenge video adds two requirements (`context.md` Section 6.1):
+- The challenge video adds two requirements (`docs/context.md` Section 6.1):
   **emergency guidance** (including for a crewmate) and a **measurement guide for
   every indicator** covering how to take it, why it matters and what to do if it's abnormal.
   Every indicator you add needs its guide.
-- **Inclusive design is required** (`DECISIONS.md` › Inclusive Design). Build every screen
+- **Inclusive design is required** (`docs/DECISIONS.md` › Inclusive Design). Build every screen
   for different knowledge levels and abilities: plain English, colour plus icon plus label,
   large tap targets, high contrast, keyboard and screen-reader support, and reduced motion.
-- **Adaptive search** is required (`DECISIONS.md` › Search). Every indicator, guide and
+- **Adaptive search** is required (`docs/DECISIONS.md` › Search). Every indicator, guide and
   emergency entry you add must include search keywords: synonyms, plain-English terms
   and symptoms, so search can find it.
 - **Measurement reminders** are also required (team decision). Lunar Surface Base is out of scope.
@@ -83,10 +89,10 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 - Ask the team before any hard-to-reverse decision.
 - AI may speed up building but **must not generate the core idea**. AI-generated
   media must never use or modify NASA logos, flags or mission identifiers, and
-  must carry a visible "AI-generated" watermark (`judging.md` 1C.6).
-- Cite every external library, tool, text and image used (`judging.md` 1C.8).
+  must carry a visible "AI-generated" watermark (`docs/judging.md` 1C.6).
+- Cite every external library, tool, text and image used (`docs/judging.md` 1C.8).
 - **Licensing: only use what is open source, openly licensed or public domain**,
-  so we can name its licence. See `DECISIONS.md` › Licensing. In short:
+  so we can name its licence. See `docs/DECISIONS.md` › Licensing. In short:
   - Code libraries, fonts and icons need an open licence (e.g. MIT, Apache-2.0,
     BSD, ISC, OFL). Check before installing and record it in `docs/SOURCES.md`.
   - NASA text and data are public domain (US Government works). Cite them, but
@@ -100,8 +106,8 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 
 ## 3. Before finishing a task
 
-1. Tick the items you completed in `CHECKLIST.md`.
-2. If you made or changed a decision, add it to `DECISIONS.md` with a reason.
+1. Tick the items you completed in `docs/CHECKLIST.md`.
+2. If you made or changed a decision, add it to `docs/DECISIONS.md` with a reason.
 3. Log how AI was used in `docs/AI_USAGE.md` (required for submission). List
    any AI-generated image or media there, because it must be watermarked or credited.
 4. If you used a new data source, add it to `docs/SOURCES.md`.
@@ -115,7 +121,7 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 the PR author (it's fine if they also use Claude). If no one else is free, the author
 may review and merge their own PR, but still go through the checks below.
 
-1. Read the PR diff (`gh pr diff <number>`) against this file and `DECISIONS.md`.
+1. Read the PR diff (`gh pr diff <number>`) against this file and `docs/DECISIONS.md`.
 2. Check that:
    - it builds and works offline;
    - it doesn't change the locked stack;
@@ -131,7 +137,7 @@ may review and merge their own PR, but still go through the checks below.
 
 ## 4. Build and submission checklist
 
-Everything to build and hand in is in **`CHECKLIST.md`** (sections 1–7, with M/S priorities).
+Everything to build and hand in is in **`docs/CHECKLIST.md`** (sections 1–7, with M/S priorities).
 Pick tasks from it, and tick items off in your PR when they're done.
 
 <!-- BEGIN:nextjs-agent-rules -->

@@ -1,6 +1,6 @@
 # Sources
 
-Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Agency Partner Data and Other References" fields (`judging.md` 1C.7–8). Add a row whenever you use something new. **Only open source, openly licensed or public-domain material** (see `DECISIONS.md` › Licensing). If a licence is unclear, don't use it.
+Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Agency Partner Data and Other References" fields (`docs/judging.md` 1C.7–8). Add a row whenever you use something new. **Only open source, openly licensed or public-domain material** (see `docs/DECISIONS.md` › Licensing). If a licence is unclear, don't use it.
 
 | Source | URL | What we take from it | Official NASA? | Licence / terms |
 |---|---|---|---|---|
@@ -9,10 +9,10 @@ Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Age
 | NASA Open Science Data Repository (OSDR) | https://osdr.nasa.gov/ | Real spaceflight biology data for inspiration and testing (named in the challenge video) | Yes | Check each dataset's licence before use |
 | Challenge video (Brazilian Space Agency) | https://www.youtube.com/watch?v=RERG3gEmdC8 | Challenge goals, emergency scenario, guidance requirements | Official challenge material | Cite and link only |
 | 17 NASA risk pages + 5 hazard pages | URLs listed in `docs/BODY_MAP.md` | Body regions, affected systems, verified facts (e.g. bone loss 1–1.5%/month) | Yes | US Gov work; no NASA logos |
-| NASA Space Apps resources (submission and judging guides) | https://www.spaceappschallenge.org/resources/ | Rules, deadlines and judging criteria (`judging.md`) | Official event material | Cite and link only |
+| NASA Space Apps resources (submission and judging guides) | https://www.spaceappschallenge.org/resources/ | Rules, deadlines and judging criteria (`docs/judging.md`) | Official event material | Cite and link only |
 | Monitoring Radiation for Astronaut Health (CSA) | https://www.asc-csa.gc.ca/eng/news/articles/2026/2026-02-26-monitoring-radiation-astronaut-health.asp | Radiation monitoring context (CANS) | No (partner) | Cite and link only; check CSA notices |
 
-## Clinical reference ranges (thresholds only, see `DECISIONS.md` › Thresholds and › Red-Limit Sources)
+## Clinical reference ranges (thresholds only, see `docs/DECISIONS.md` › Thresholds and › Red-Limit Sources)
 
 Licence notes: **CDC** content is US Government work (public domain). **AHA** and **ADA** pages are
 copyrighted, so use only the numeric facts (facts can't be copyrighted), write our own
@@ -22,7 +22,7 @@ wording, and cite the page. Never copy their text, images or charts.
 |---|---|---|---|
 | | | | |
 
-## Emergency first-response steps (see `DECISIONS.md` › Emergency Step Sources)
+## Emergency first-response steps (see `docs/DECISIONS.md` › Emergency Step Sources)
 
 NASA first; otherwise AHA or CDC, rewritten in our own words.
 
@@ -37,7 +37,7 @@ NASA first; otherwise AHA or CDC, rewritten in our own words.
 | Next.js | App framework (static export) | MIT | https://github.com/vercel/next.js |
 | React / React DOM | UI library | MIT | https://github.com/facebook/react |
 | Tailwind CSS (+ @tailwindcss/turbopack) | Styling | MIT | https://github.com/tailwindlabs/tailwindcss |
-| shadcn/ui (`shadcn` CLI and CSS, `cn`) | UI components copied into `components/ui/`; class merging | MIT | https://github.com/shadcn-ui/ui |
+| shadcn/ui (`shadcn` CLI and CSS, `cn`) | UI components copied into `src/components/ui/`; class merging | MIT | https://github.com/shadcn-ui/ui |
 | Radix UI (`radix-ui`) | Accessible UI primitives used by shadcn/ui | MIT | https://github.com/radix-ui/primitives |
 | Lucide (`lucide-react`) | Icons (status icons and so on) | ISC | https://github.com/lucide-icons/lucide |
 | class-variance-authority | Component style variants | Apache-2.0 | https://github.com/joe-bell/cva |
