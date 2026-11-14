@@ -8,22 +8,33 @@
 // When the engine is merged, feed its per-indicator statuses in here instead of sample data.
 
 import { REGIONS } from "@/data";
+import { REGION_STATUSES } from "@/lib/engine/regions";
 
-// Worst first. colour = a status token from globals.css; icon = a lucide-react icon name.
-export const STATUSES = {
-  red_limit: { rank: 5, label: "Red limit", icon: "OctagonAlert", colour: "var(--status-red)",
+// Ranking: the engine's REGION_STATUSES order (worst first) is the single source; "symptom" is
+// slotted in right after "drifting". This file only adds the UI's labels, icons and colours.
+const ORDER = [...REGION_STATUSES];
+ORDER.splice(ORDER.indexOf("drifting") + 1, 0, "symptom");
+const rankOf = (status) => ORDER.length - 1 - ORDER.indexOf(status);
+
+// colour = a status token from globals.css; icon = a lucide-react icon name.
+const STATUS_DISPLAY = {
+  red_limit: { label: "Red limit", icon: "OctagonAlert", colour: "var(--status-red)",
     meaning: "A reading crossed a clinical red limit. Open the emergency guide." },
-  drifting: { rank: 4, label: "Drifting", icon: "TrendingDown", colour: "var(--status-amber)",
+  drifting: { label: "Drifting", icon: "TrendingDown", colour: "var(--status-amber)",
     meaning: "Outside your own normal range for several days." },
-  symptom: { rank: 3, label: "Symptom", icon: "MessageCircleWarning", colour: "var(--status-amber)",
+  symptom: { label: "Symptom", icon: "MessageCircleWarning", colour: "var(--status-amber)",
     meaning: "You reported a related symptom recently." },
-  expected_adaptation: { rank: 2, label: "Adapted", icon: "Info", colour: "var(--status-adapted)",
+  expected_adaptation: { label: "Adapted", icon: "Info", colour: "var(--status-adapted)",
     meaning: "Changed since launch in a way that's expected in space." },
-  steady: { rank: 1, label: "Steady", icon: "CircleCheck", colour: "var(--status-steady)",
+  steady: { label: "Steady", icon: "CircleCheck", colour: "var(--status-steady)",
     meaning: "Inside your own normal range." },
-  no_data: { rank: 0, label: "No recent data", icon: "CircleMinus", colour: "var(--status-nodata)",
+  no_data: { label: "No recent data", icon: "CircleMinus", colour: "var(--status-nodata)",
     meaning: "Nothing measured recently. Not a clean bill of health." },
 };
+
+export const STATUSES = Object.fromEntries(
+  ORDER.map((status) => [status, { rank: rankOf(status), ...STATUS_DISPLAY[status] }]),
+);
 
 // A symptom counts as "recent" for this many days (ATHENA design choice, tunable).
 export const SYMPTOM_DAYS = 3;

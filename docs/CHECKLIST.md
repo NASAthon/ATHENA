@@ -17,14 +17,14 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 - [ ] **M** Daily record defined: date, mission day, heart rate, blood pressure (two numbers), blood sugar, temperature, sleep hours, mood (1–5), reaction median, lapses, false starts, exercise minutes, symptoms, SpO2 (optional), radiation dose (optional) 🟡 Partial (PR #10): the engine assumes camelCase field names (`RECORD_FIELDS` in `src/lib/engine/indicators.js`); still to do: team confirms them, adds the date field and the database table
 - [ ] **M** Units chosen and shown everywhere (mg/dL or mmol/L, °C) 🟡 Partial (PR #7): units chosen in `src/data/indicators.js` (bpm, mmHg, mg/dL, °C, hours, 1–5, ms, minutes, %, mSv); still to do: show them on every screen
-- [ ] **M** Save and load daily records in the browser: SQLite via sql.js, saved to IndexedDB after every write, with the `.wasm` file bundled locally (`docs/DECISIONS.md` › Database)
-- [ ] **M** Save and load the two baselines
-- [ ] **M** Mission simulator: 180 days for 3 crew (`docs/DECISIONS.md` › Crew):
+- [ ] **M** Save and load daily records in the browser: SQLite via sql.js, saved to IndexedDB after every write, with the `.wasm` file bundled locally (`docs/DECISIONS.md` › Database) 🟡 Partial (PR #14): `saveDailyRecord`/`loadDailyRecords` in `src/lib/db/` (sql.js loaded from `public/`, IndexedDB after every write, tested); still to do: the daily check form calls it
+- [x] **M** Save and load the two baselines (`saveBaseline`/`loadMissionBaselines`/`ensureMissionBaselines` in `src/lib/db/database.js`) (PR #14)
+- [x] **M** Mission simulator: 180 days for 3 crew (`docs/DECISIONS.md` › Crew) (`src/lib/sim/simulator.js`, seeded; stories checked by the engine in `simulator.test.js`) (PR #15):
   - **Commander Rivera:** pre-flight days, early adaptation, a settled period, then slow decline in sleep, reaction and mood from about week 12 (drift alert)
   - **Pilot Singh:** stays healthy (shows no false alarm)
   - **Engineer Nakamura:** a sudden event (red-limit screen and crewmate emergency guidance, e.g. chest pain)
-- [ ] **M** Simulator adds realistic day-to-day noise and one or two harmless bad days
-- [ ] **M** "Load demo mission" and "Reset data" buttons work
+- [x] **M** Simulator adds realistic day-to-day noise and one or two harmless bad days (Rivera day 50, Singh day 100; a few missed days too) (PR #15)
+- [ ] **M** "Load demo mission" and "Reset data" buttons work 🟡 Partial (PR #15): `loadDemoMission` and `resetData` in `src/lib/sim/demo.js` (they use the database from PR #14); still to do: the two buttons
 - [x] **M** Every indicator, guide and emergency entry has a `keywords` list (synonyms, plain-English terms, symptoms, common misspellings) for search (PR #7)
 - [ ] **S** Store periodic exam results and the check-in streak
 
@@ -33,7 +33,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 ## 2. Logic (plain functions with no screen code)
 
 - [x] **M** Baseline calculator: mean and standard deviation per indicator for a fixed window (`src/lib/engine/baseline.js`) (PR #10)
-- [ ] **M** Pre-flight baseline and in-flight baseline (for example mission days 21–35) both calculated once and stored 🟡 Partial (PR #10): calculated by `calculateMissionBaselines` (pre-flight days −30 to −1, in-flight 21–35); still to do: store them (§1 "Save and load the two baselines")
+- [x] **M** Pre-flight baseline and in-flight baseline (for example mission days 21–35) both calculated once and stored (calculated by `calculateMissionBaselines`, PR #10; stored once by `ensureMissionBaselines`, PR #14)
 - [x] **M** Seven-day average per indicator (`src/lib/engine/average.js`) (PR #10)
 - [x] **M** Health score 0–100 per astronaut (100 = perfect), with the change since yesterday and over 7 days (`docs/DECISIONS.md` › Health Score) (`src/lib/engine/healthScore.js`) (PR #10)
 - [x] **M** Z-score of the seven-day average against the in-flight baseline (`src/lib/engine/drift.js`) (PR #10)
@@ -49,8 +49,8 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [x] **M** Region mapper: indicator-to-body-region table and worst-status function (table: `src/data/regions.js`; worst-status function: `src/lib/engine/regions.js`; UI version with recent-symptom layer: `src/lib/regionStatus.js`) (PR #7, PR #9, PR #10)
 - [x] **S** Calendar scheduler: which periodic exams are due on a given mission day (`src/lib/engine/calendar.js, exams from src/data/exams.js`) (PR #10)
 - [x] **S** Summary builder for the flight-surgeon report (`src/lib/engine/summary.js; Earth delay passed in`) (PR #10)
-- [ ] **S** Mission mode changes which hazards and advice are shown (ISS, Lunar Gateway, Mars Transit; no Lunar Surface Base) 🟡 Partial (PR #8): mission mode switch and sourced Earth-link delay in the header; still to do: change hazards and advice per mode
-- [ ] **S** Scenario Lab: inject radiation, fatigue, sleep loss or hypoxia into the data and watch the alerts react 🟡 Partial (PR #10): injection in `src/lib/engine/scenarios.js` (demo effect sizes); still to do: the screen (§3)
+- [x] **S** Mission mode changes which hazards and advice are shown (ISS, Lunar Gateway, Mars Transit; no Lunar Surface Base) (`src/lib/engine/missionMode.js`; delays, emphasis and advice in `src/data/missionModes.js`) (PR #8, PR #12)
+- [x] **S** Scenario Lab: inject radiation, fatigue, sleep loss or hypoxia into the data and watch the alerts react (injection: PR #10; `/scenario-lab` screen with before/after score and alerts: PR #15)
 
 ---
 
@@ -81,7 +81,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [x] **M** "How to measure" help beside each field (how to take it, why it matters, what to do if abnormal) (PR #8)
 - [x] **M** Mood as five large buttons, not a text box (PR #8)
 - [x] **M** Symptom tick boxes and exercise minutes (PR #8; red-flag symptoms link to their emergency guide)
-- [ ] **M** Save confirmation and today's result shown straight away 🟡 Partial (PR #8): confirmation shown; still to do: store the record and show today's result (needs data layer and logic)
+- [ ] **M** Save confirmation and today's result shown straight away 🟡 Partial (PR #8, PR #13): confirmation plus "Today's result" from the engine's red-limit check (label, action, source, emergency link); still to do: store the record (data layer)
 - [ ] **M** Reminders: shows which measurements are still due today
 
 ### Reaction test
@@ -124,8 +124,8 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 ### Calendar, summary, extras
 
 - [ ] **S** Mission calendar listing due and completed periodic exams
-- [ ] **S** One-page flight-surgeon summary, with "reply expected in about N minutes" (Earth Link delay)
-- [ ] **S** Earth Link: shows the current communication delay for the mission mode 🟡 Partial (PR #8): header pill shows the sourced delay (Mars: up to 20 min one way); still to do: use it in the summary
+- [ ] **S** One-page flight-surgeon summary, with "reply expected in about N minutes" (Earth Link delay) 🟡 Partial (PR #10, PR #12): `buildSurgeonSummary` in `src/lib/engine/summary.js` builds the text with the mode's reply time; still to do: the screen
+- [x] **S** Earth Link: shows the current communication delay for the mission mode (PR #8 header pill; sourced delays for all three modes and the summary's reply time PR #12)
 - [x] **S** Mission mode switch: ISS, Lunar Gateway, Mars Transit (PR #8; modes in `src/data/missionModes.js`)
 - [ ] **S** Check-in streak
 
@@ -153,15 +153,15 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 - [ ] **M** App loads and works with the network switched off
 - [ ] **M** No fonts, scripts or data fetched from the internet at run time 🟡 Partial (PR #3, PR #4): system fonts only and sql.js engine served locally; still to do: re-check once all screens exist
-- [ ] **M** Data survives closing and reopening the browser
+- [ ] **M** Data survives closing and reopening the browser 🟡 Partial (PR #14): the database is saved to IndexedDB after every write and reloaded on open (tested); still to do: check in the browser once screens save data
 - [ ] **S** Installable as an app (PWA) on a laptop or tablet
 
 ---
 
 ## 6. Testing
 
-- [ ] **M** Fresh browser: load demo mission, Rivera's alert appears in the expected week
-- [ ] **M** Healthy data (Singh) produces no alert and a stable, high health score 🟡 Partial (PR #10): passes on engine-level simulated missions (`evaluate.test.js`); still to do: re-run with the real mission simulator in the app
+- [ ] **M** Fresh browser: load demo mission, Rivera's alert appears in the expected week 🟡 Partial (PR #15): in the simulated mission Rivera's alert appears on day 100 (week 15), escalating on day 114 (`simulator.test.js`); still to do: check in the app once Load demo mission is wired
+- [ ] **M** Healthy data (Singh) produces no alert and a stable, high health score 🟡 Partial (PR #10): passes on engine-level simulated missions (`evaluate.test.js`) and on the demo mission simulator (PR #15, `simulator.test.js`); still to do: check in the app
 - [ ] **M** Health score drops as Rivera declines and when a red limit is hit 🟡 Partial (PR #10): passes at engine level (`evaluate.test.js`); still to do: check in the app
 - [ ] **M** One bad day produces no alert 🟡 Partial (PR #10): passes at engine level (`evaluate.test.js`); still to do: check in the app
 - [ ] **M** A dangerous reading (Nakamura) triggers the red-limit screen 🟡 Partial (PR #9, PR #10): red-limit check tested in `redLimits.test.js`; Nakamura's sample shows Red limit on the body map; still to do: the red-limit screen itself

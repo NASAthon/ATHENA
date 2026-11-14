@@ -11,6 +11,12 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 - **Root:** `AGENTS.md`, `CLAUDE.md` and `README.md` (they must stay at the root, because agents and GitHub look for them there), plus config files.
 - `docs/`: all project context for agents (`context.md`, `CHECKLIST.md`, `DECISIONS.md`, `judging.md`, `SOURCES.md`, `AI_USAGE.md`, `BODY_MAP.md`).
 - `src/`: all app code (`src/app/` pages, `src/components/`, `src/lib/`). Import with `@/`, e.g. `@/lib/utils`.
+  - `src/lib/engine/`: **all health logic** (baselines, drift, alerts, red limits, health score, search, and so on).
+    Import from `@/lib/engine`. Never put health logic in components. Tests sit next to each file (`*.test.js`).
+  - `src/lib/regionStatus.js`: body-map display layer (labels, icons, colours, recent-symptom layer) on top of the engine's status order.
+  - `src/lib/sim/`: the seeded mission simulator (`simulateAstronaut`, `simulateCrew`) and `loadDemoMission` / `resetData`.
+    Prefer it over `src/lib/sampleData.js` (hand-written SIMULATED statuses, kept until screens switch over). Always label simulated data in the UI.
+  - `src/components/CrewProvider.js`: the selected astronaut, shared by every page (`useCrew()`).
 - `src/data/`: all health content (hazards, risks, body regions, indicators with thresholds and
   input limits, emergencies, symptoms, exams, mission modes, sources). Import from `@/data`. Shared UI helpers (e.g. `focusRing`) live in `@/lib/ui`. **Never hard-code health text
   or numbers in components; use these files.** Run `npm run check:content` after editing them.
@@ -44,15 +50,15 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 
 - **Base template already exists:** a basic Next.js 16 app (JavaScript, App Router,
   Tailwind, static export, dark theme) in `src/app/`. **Build on top of it; don't re-create
-  the project.** The "NASAthon - Athena" text in `src/app/page.js` is only there to prove
-  the site runs on localhost. Whoever pushes real code can replace or remove it.
-- Run it with `npm install`, then `npm run dev`, and open http://localhost:3000. `npm run build` creates the
+  the project.** `/` shows the Today screen (`src/app/page.js` re-exports `src/app/today/page.js`).
+- Run it with `npm install`, then `npm run dev`, and open http://localhost:3000. Run the logic tests with `npm test`. `npm run build` creates the
   static export in `out/`.
 - **Installed packages** (all open source; licences are in `docs/SOURCES.md`):
   - **shadcn/ui** (Radix base, dark theme): add components with `npx shadcn@latest add <name>`.
     They land in `src/components/ui/`. Use `cn` from `@/lib/utils` and icons from `lucide-react`.
-  - **sql.js:** `npm install` copies the engine to `public/sql-wasm.wasm` (`scripts/copy-sqljs-wasm.mjs`).
-    Load it with `initSqlJs({ locateFile: () => "/sql-wasm.wasm" })`, never from a CDN.
+  - **sql.js:** `npm install` copies the engine to `public/sql-wasm.wasm` and `public/sql-wasm.js`
+    (`scripts/copy-sqljs-wasm.mjs`), never from a CDN. Don't open it yourself: use the shared
+    database from `@/lib/db` (`await getDatabase()`), which loads both files and saves to IndexedDB.
   - **MiniSearch** for search.
   - Before adding any other package, check its licence, add it to `docs/SOURCES.md`, and run
     `npm run licenses` to refresh `THIRD_PARTY_LICENSES.md`.
@@ -136,7 +142,7 @@ may review and merge their own PR, but still go through the checks below.
 
 1. Read the PR diff (`gh pr diff <number>`) against this file and `docs/DECISIONS.md`.
 2. Check that:
-   - it builds and works offline;
+   - it builds, `npm test` and `npm run check:content` pass, and it works offline;
    - it doesn't change the locked stack;
    - every health rule cites a source;
    - health text is accurate, sourced and in plain English, with a glance summary plus "Learn more";

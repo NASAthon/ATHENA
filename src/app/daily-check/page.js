@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check, ExternalLink, TriangleAlert, Volume2 } from "lucide-react";
+import { Check, ExternalLink, Eye, OctagonAlert, TriangleAlert, Volume2 } from "lucide-react";
 import { INDICATORS, SYMPTOMS, SOURCES, EMERGENCIES } from "@/data";
+import { RECORD_FIELDS, SYMPTOMS_FIELD, checkReading } from "@/lib/engine";
 import { focusRing } from "@/lib/ui";
 
 // Daily check (layout and design by Izabela, PR #8).
@@ -17,6 +18,28 @@ const mood = byId.mood;
 const emergencyName = Object.fromEntries(EMERGENCIES.map((e) => [e.id, e.name]));
 
 const card = "rounded-2xl border border-border bg-card p-6";
+
+// How each engine band level is shown: always icon + text label + colour token.
+const LEVEL_STYLE = {
+  urgent: { label: "Urgent", Icon: OctagonAlert, colour: "var(--status-red)" },
+  act: { label: "Act", Icon: TriangleAlert, colour: "var(--status-amber)" },
+  watch: { label: "Watch", Icon: Eye, colour: "var(--status-amber)" },
+};
+
+// Turns the form into the engine's daily record (src/lib/engine/indicators.js › RECORD_FIELDS),
+// so the form and the logic engine always use the same field names.
+function toRecord(values, moodValue, symptoms) {
+  const record = { [SYMPTOMS_FIELD]: symptoms };
+  for (const id of FORM_ORDER) {
+    const fields = RECORD_FIELDS[id];
+    const parts = byId[id].inputs ? byId[id].inputs.map((f) => [f.id, values[`${id}.${f.id}`]]) : [["value", values[id]]];
+    for (const [part, raw] of parts) {
+      if (raw !== undefined && raw !== "" && Number.isFinite(Number(raw))) record[fields[part]] = Number(raw);
+    }
+  }
+  if (moodValue != null) record[RECORD_FIELDS.mood.value] = moodValue;
+  return record;
+}
 const inputClass = `mt-2 min-h-14 w-full rounded-lg border border-input bg-input/30 px-4 text-xl ${focusRing}`;
 
 // One input box. Limits come from the indicator data (plausibility bounds, not health thresholds).
@@ -47,18 +70,18 @@ export default function DailyCheck() {
   const [moodValue, setMoodValue] = useState(null);
   const [symptoms, setSymptoms] = useState([]);
   const [focusId, setFocusId] = useState("bloodPressure");
-  const [saved, setSaved] = useState(false);
+  const [result, setResult] = useState(null);
 
   const focused = byId[focusId];
   const redFlags = SYMPTOMS.filter((s) => s.redFlag && symptoms.includes(s.id));
 
   const setValue = (key) => (value) => {
     setValues((v) => ({ ...v, [key]: value }));
-    setSaved(false);
+    setResult(null);
   };
 
   const toggleSymptom = (id) => {
-    setSaved(false);
+    setResult(null);
     setSymptoms((list) => (list.includes(id) ? list.filter((s) => s !== id) : [...list, id]));
   };
 
@@ -69,9 +92,10 @@ export default function DailyCheck() {
     window.speechSynthesis.speak(new SpeechSynthesisUtterance(`${focused.name}. ${steps}`));
   };
 
+  // Checks today's readings with the logic engine's red-limit check (bands in src/data).
+  // Storage comes with the data layer (CHECKLIST section 1). Until then, nothing is saved.
   const save = () => {
-    // Storage comes with the data layer (CHECKLIST section 1). Until then, nothing is saved.
-    setSaved(true);
+    setResult(checkReading(toRecord(values, moodValue, symptoms)));
   };
 
   return (
@@ -143,7 +167,7 @@ export default function DailyCheck() {
                   onFocus={() => setFocusId("mood")}
                   onClick={() => {
                     setMoodValue(value);
-                    setSaved(false);
+                    setResult(null);
                   }}
                   className={`min-h-20 rounded-lg border px-2 py-3 text-center ${focusRing} ${
                     moodValue === value
@@ -218,13 +242,66 @@ export default function DailyCheck() {
             <Link href="/today" className={`rounded text-primary underline ${focusRing}`}>
               Cancel
             </Link>
-            {saved && (
+            {result && (
               <p role="status" className="flex items-center gap-2 font-semibold">
                 <Check aria-hidden="true" className="size-5" />
                 Checked (demo: not stored yet)
               </p>
             )}
           </div>
+
+          {result && (
+            <section className={card} aria-labelledby="result-heading">
+              <h2 id="result-heading" className="text-2xl font-bold">
+                Today&apos;s result
+              </h2>
+              {result.length === 0 ? (
+                <p className="mt-3 flex items-center gap-2 text-lg">
+                  <Check aria-hidden="true" className="size-5" style={{ color: "var(--status-steady)" }} />
+                  No flags on today&apos;s readings. Trends are checked against your own baseline over the coming days.
+                </p>
+              ) : (
+                <ul className="mt-4 space-y-4">
+                  {result.map((r) => {
+                    const { label, Icon, colour } = LEVEL_STYLE[r.level];
+                    return (
+                      <li key={r.indicatorId} className="rounded-lg border border-border p-4" style={{ borderColor: colour }}>
+                        <p className="flex flex-wrap items-center gap-2 text-lg font-semibold">
+                          <span className="flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-sm" style={{ borderColor: colour, color: colour }}>
+                            <Icon aria-hidden="true" className="size-4" />
+                            {label}
+                          </span>
+                          {byId[r.indicatorId].name}: {r.label}
+                        </p>
+                        <p className="mt-1 text-muted-foreground">{r.rule}</p>
+                        <p className="mt-2">{r.action}</p>
+                        {r.emergencyId && (
+                          <Link
+                            href={`/emergency?id=${r.emergencyId}`}
+                            className={`mt-3 inline-flex min-h-11 items-center rounded-lg bg-destructive px-4 font-semibold text-background hover:bg-destructive/90 ${focusRing}`}
+                          >
+                            Open: {emergencyName[r.emergencyId]}
+                          </Link>
+                        )}
+                        <p className="mt-3 text-sm text-muted-foreground">
+                          {r.basisLabel}
+                          {r.source && (
+                            <>
+                              {" · "}
+                              <a href={r.source.url} target="_blank" rel="noreferrer" className={`rounded underline ${focusRing}`}>
+                                Source: {r.source.title}
+                              </a>
+                            </>
+                          )}
+                        </p>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+              <p className="mt-4 text-sm text-muted-foreground">Not medical advice. The flight surgeon makes every medical decision.</p>
+            </section>
+          )}
         </div>
 
         <aside className={`${card} h-fit lg:sticky lg:top-4`} aria-live="polite">
