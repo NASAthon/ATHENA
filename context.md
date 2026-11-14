@@ -94,9 +94,9 @@ A visual astronaut self-assessment tool with these building blocks:
 
 Planning should decide which of these are **must-have for the demo** versus **stretch goals**.
 
-### 6.1 ATHENA: our chosen concept (merged from the earlier `Project_Context.md` and `NASA_Challenge.md`)
+### 6.1 ATHENA: our chosen concept and product spec (merged from the earlier `Project_Context.md`, `NASA_Challenge.md` and `ATHENA_MASTER_SPEC.md`)
 
-**ATHENA** stands for Autonomous Telehealth and Health Evaluation Network for Astronauts. It is an onboard health monitoring and decision-support system for astronauts.
+**Vision:** an autonomous astronaut health copilot. **ATHENA** stands for Autonomous Telehealth and Health Evaluation Network for Astronauts. It is an onboard health monitoring and decision-support system for astronauts.
 
 **Problem framing:** Deep-space crews face communication delays of 5–40 minutes from Earth, so medical decision-making must be autonomous.
 
@@ -120,6 +120,22 @@ Planning should decide which of these are **must-have for the demo** versus **st
 **Innovation angles:** explainable AI, anomaly detection (Isolation Forest), decision support, visual health insights, Earth-delay simulation.
 
 **Tech stack** (locked in `DECISONS.md`): Next.js + Tailwind + ShadCN, FastAPI (Python), SQLite, rule engine + Isolation Forest + LLM chat, 2D SVG body map.
+
+**MVP scope** (product spec, from the earlier `ATHENA_MASTER_SPEC.md`):
+- Dashboard with 3 astronauts
+- Personal baselines
+- Explainable alerts
+- Scenario Lab
+- Earth Link
+- AI Assistant
+
+**Demo flow:**
+1. Dashboard
+2. An astronaut on a warning
+3. An astronaut in critical status
+4. Scenario simulation
+5. AI explanation
+6. Earth delay
 
 > For judging, the official rubric in Section 4 (Impact, Creativity, Validity, Relevance, Presentation) replaces the informal "judging focus" list in the old `NASA_Challenge.md`.
 

@@ -9,13 +9,13 @@ source of truth, so always work from the latest `main`.
 2. Read these files in this order:
    1. `context.md`: the official event brief. It covers the rules, submission
       deliverables, judging rubric, challenge text, NASA data sources and the
-      data caveat. It is the **source of truth for rules and data**.
-   2. `ATHENA_MASTER_SPEC.md`: product vision, MVP scope, demo flow.
-   3. `DECISONS.md`: locked decisions. Do not reverse a LOCKED decision.
-   4. `docs/` (once it exists): plan, data model, sources, storyboard, AI log.
+      data caveat. Section 6.1 holds the ATHENA product spec: vision, MVP
+      scope, demo flow and stack.
+   2. `DECISONS.md`: locked decisions. Do not reverse a LOCKED decision.
+   3. `docs/` (once it exists): plan, data model, sources, storyboard, AI log.
 3. If two files conflict:
-   - Rules, deliverables, data and citations: `context.md` wins.
-   - Product scope and architecture: `ATHENA_MASTER_SPEC.md` and `DECISONS.md` win.
+   - Rules, deliverables, data and citations: the official sections of `context.md` win.
+   - Product scope and architecture: `DECISONS.md` wins, then `context.md` Section 6.1.
    - Anything still unclear: ask the team. Do not guess.
 
 ## 2. While working

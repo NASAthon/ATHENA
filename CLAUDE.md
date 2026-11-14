@@ -3,9 +3,8 @@
 Follow the shared agent workflow in `AGENTS.md`. Pull from GitHub first, then read
 the docs in this order:
 
-1. context.md (official event brief: rules, rubric, NASA data, data caveat)
-2. ATHENA_MASTER_SPEC.md
-3. DECISONS.md
+1. context.md (official event brief, plus the ATHENA product spec in Section 6.1)
+2. DECISONS.md
 
 Do not redesign the architecture.
 
