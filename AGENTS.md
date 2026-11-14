@@ -22,7 +22,7 @@ source of truth, so always work from the latest `main`.
 
 - **Do not redesign the architecture.** Stack: offline-first PWA,
   Next.js (JavaScript) + Tailwind + ShadCN, SQLite in the browser (sql.js +
-  IndexedDB), JS rules engine, 2D SVG body map. No backend, no LLM, no
+  IndexedDB), JS rules engine, 2D SVG body map. No backend and no
   runtime internet dependency.
 - Priorities: hackathon speed, then NASA relevance, then demo quality, then simplicity. Prefer MVP solutions.
 - **Every health rule shown to users must cite its source URL.** Label

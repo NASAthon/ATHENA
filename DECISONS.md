@@ -15,7 +15,7 @@ LOCKED
 
 ## Backend
 
-None. FastAPI was removed (replaced the earlier FastAPI decision).
+None. Everything runs in the browser.
 
 Reason:
 ATHENA is a single-device onboard app. The browser can store readings and run
@@ -67,11 +67,10 @@ LOCKED
 
 ## AI / Analytics
 
-- LLM assistant removed. The brief does not require it, and it needs internet.
-- Replaced by rule-based "Why this alert?" panels and a short FAQ ("Am I fit
-  for EVA?"), answered from the rules engine with source URLs.
+- Rule-based "Why this alert?" panels and a short FAQ ("Am I fit for EVA?"),
+  answered from the rules engine with source URLs. Works fully offline.
 - Anomaly and trend detection: rolling personal baseline plus a z-score/drift
-  check in JavaScript, replacing Isolation Forest.
+  check in JavaScript.
 
 Status:
 LOCKED

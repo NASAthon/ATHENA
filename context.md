@@ -115,11 +115,11 @@ Planning should decide which of these are **must-have for the demo** versus **st
 - **Mission modes:** ISS, Lunar Gateway, Mars Transit. This is our version of the environment context in idea 6 above.
 - **Scenario Lab:** simulate radiation, fatigue, sleep deprivation, hypoxia and multi-factor events.
 - **Earth Link:** visualise the communication delay to mission control.
-- **"Why this alert?" panels and FAQ:** rule-based answers to "What caused this warning?" or "Am I fit for EVA tomorrow?", each citing its source. They work fully offline (the LLM assistant was removed; see `DECISONS.md`).
+- **"Why this alert?" panels and FAQ:** rule-based answers to "What caused this warning?" or "Am I fit for EVA tomorrow?", each citing its source. They work fully offline.
 
 **Innovation angles:** explainable AI, anomaly detection (rolling baseline + z-score), decision support, visual health insights, Earth-delay simulation.
 
-**Tech stack** (locked in `DECISONS.md`): offline-first PWA. Next.js (JavaScript, static export) + Tailwind + ShadCN; SQLite in the browser (sql.js, saved to IndexedDB); JS rules engine + rolling-baseline/z-score trend detection; 2D SVG body map. No backend server and no LLM. Everything runs onboard.
+**Tech stack** (locked in `DECISONS.md`): offline-first PWA. Next.js (JavaScript, static export) + Tailwind + ShadCN; SQLite in the browser (sql.js, saved to IndexedDB); JS rules engine + rolling-baseline/z-score trend detection; 2D SVG body map. No backend server. Everything runs onboard.
 
 **MVP scope** (product spec, from the earlier `ATHENA_MASTER_SPEC.md`):
 - Dashboard with 3 astronauts
