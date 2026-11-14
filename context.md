@@ -222,6 +222,8 @@ This means our design must handle the gap honestly:
 
 ## 9. Additional public sources worth checking (NOT in the official list — verify before relying on them)
 
+> **On hold:** the team decided to use only the official Section 7 resources for now (see `DECISONS.md`, Data Sources). Do not use these sources unless that decision changes.
+
 These are likely useful for numeric ranges and spaceflight-specific context. Confirm each is accessible and appropriately licensed before using, and cite it explicitly.
 - NASA Human Research Roadmap: https://humanresearchroadmap.nasa.gov/
 - NASA Open Science Data Repository (OSDR): https://osdr.nasa.gov/
