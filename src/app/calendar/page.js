@@ -111,7 +111,7 @@ export default function CalendarPage() {
         <h2 id="exams-heading" className="text-xl font-bold">
           Exams
         </h2>
-        <ul className="mt-4 grid gap-4 md:grid-cols-2">
+        <ul className="mt-4 grid auto-rows-fr gap-4 md:grid-cols-2">
           {rows.map(({ exam, state, dueDay, next, last }) => {
             const info = examById[exam.id];
             const s = EXAM_STATUS[state];

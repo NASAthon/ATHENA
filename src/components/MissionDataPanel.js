@@ -49,7 +49,7 @@ export default function MissionDataPanel() {
       </p>
 
       {status !== "loading" && status !== "error" && (
-        <ul className="mt-4 grid gap-2 sm:grid-cols-3">
+        <ul className="mt-4 grid auto-rows-fr gap-2 sm:grid-cols-3">
           {CREW.map((member) => {
             const c = crew.find((x) => x.id === member.id);
             return (

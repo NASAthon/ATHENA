@@ -156,7 +156,7 @@ export default function Page() {
       >
         <fieldset className="md:col-span-2">
           <legend className="font-semibold">Event</legend>
-          <div className="mt-2 grid gap-3 sm:grid-cols-2">
+          <div className="mt-2 grid auto-rows-fr gap-3 sm:grid-cols-2">
             {SCENARIOS.map((s) => (
               <label
                 key={s.id}
@@ -271,7 +271,7 @@ export default function Page() {
               </p>
             )}
 
-            <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <div className="mt-4 grid auto-rows-fr gap-4 md:grid-cols-2">
               <DayResult title="Without the event" day={result.beforeEnd} />
               <DayResult title="With the event" day={result.afterEnd} />
             </div>
