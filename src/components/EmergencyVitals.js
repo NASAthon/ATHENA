@@ -33,7 +33,7 @@ const FIELDS = VITALS.flatMap((id) => {
     : [[id, ind.name, ind.input, RECORD_FIELDS[id].value, ind.unit]];
 });
 
-export default function EmergencyVitals({ astronautId, astronautName }) {
+export default function EmergencyVitals({ astronautId, astronautName, currentGuideId = null }) {
   const { saveCheckIn, today, status } = useMissionData();
   const [values, setValues] = useState({});
   const [result, setResult] = useState(null); // { day, breaches }
@@ -132,7 +132,7 @@ export default function EmergencyVitals({ astronautId, astronautName }) {
                       {s.label}: {byId[b.indicatorId]?.name}: {b.label}
                     </p>
                     <p className="mt-1">{b.action}</p>
-                    {b.emergencyId && (
+                    {b.emergencyId && b.emergencyId !== currentGuideId && (
                       <Link href={`/emergency?id=${b.emergencyId}`} className={`mt-2 inline-flex min-h-11 items-center rounded-lg border border-input px-4 hover:bg-accent ${focusRing}`}>
                         Open: {emergencyName[b.emergencyId]}
                       </Link>

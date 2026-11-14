@@ -9,11 +9,11 @@
 // All step text and sources come from src/data/emergencies.js (NASA first, otherwise AHA/CDC/ADA in
 // our own words). Not medical advice; no medicines, doses or diagnoses.
 
-import { Suspense, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight, Clock, ExternalLink, OctagonAlert, Radio, RotateCcw, TriangleAlert, Volume2 } from "lucide-react";
-import { EMERGENCIES, INDICATORS, SOURCES } from "@/data";
+import { EMERGENCIES, INDICATORS, SOURCES, SYMPTOMS } from "@/data";
 import { adviceForMode } from "@/lib/engine";
 import { CREW } from "@/lib/crew";
 import { useCrew } from "@/components/CrewProvider";
@@ -24,6 +24,7 @@ import { focusRing } from "@/lib/ui";
 
 const guideById = Object.fromEntries(EMERGENCIES.map((e) => [e.id, e]));
 const indicatorName = Object.fromEntries(INDICATORS.map((i) => [i.id, i.name]));
+const symptomById = Object.fromEntries(SYMPTOMS.map((s) => [s.id, s]));
 const GUIDES_BY_PRIORITY = [...EMERGENCIES].sort((a, b) => a.priority - b.priority);
 const card = "rounded-2xl border border-border bg-card p-6";
 const bigButton = `inline-flex min-h-16 items-center justify-center gap-2 rounded-xl px-6 text-xl font-semibold ${focusRing}`;
@@ -89,16 +90,24 @@ function Guide({ guide }) {
   const router = useRouter();
   const { crewId, setCrewId, member } = useCrew();
   const { modeId, mode } = useMissionMode();
-  const { state, evaluation } = useTodayEvaluation();
+  const { evaluation, record } = useTodayEvaluation();
   const [step, setStep] = useState(0);
   const [times, setTimes] = useState([]);
+  const stepHeading = useRef(null);
+  // Move keyboard focus to the heading after the step view changes, so focus is never lost.
+  const goTo = (next) => {
+    setStep(next);
+    requestAnimationFrame(() => stepHeading.current?.focus());
+  };
 
   const total = guide.steps.length;
   const finished = step >= total;
   const current = guide.steps[Math.min(step, total - 1)];
   const advice = adviceForMode(modeId);
   const link = advice.earthLink;
-  const redLimits = state === "ready" ? evaluation.limitBreaches.filter((b) => b.redLimit) : [];
+  const redLimits = evaluation?.limitBreaches.filter((b) => b.redLimit) ?? [];
+  // Other guides suggested by symptoms ticked today (e.g. chest pain while on the blood-pressure guide).
+  const related = [...new Set((record?.symptoms ?? []).map((id) => symptomById[id]).filter((s) => s?.emergencyId && s.emergencyId !== guide.id && guideById[s.emergencyId]))];
 
   const noteTime = () => setTimes((t) => [...t, new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })]);
 
@@ -142,13 +151,32 @@ function Guide({ guide }) {
         </p>
       )}
 
+      {related.length > 0 && (
+        <div className="mt-4 rounded-lg border-2 border-border px-4 py-3">
+          <p className="text-lg font-semibold">Also reported today by {member.name}:</p>
+          <ul className="mt-2 flex flex-wrap gap-3">
+            {related.map((s) => (
+              <li key={s.id}>
+                <Link
+                  href={`/emergency?id=${s.emergencyId}`}
+                  className={`inline-flex min-h-12 items-center gap-2 rounded-lg bg-destructive px-4 font-semibold text-background hover:bg-destructive/90 ${focusRing}`}
+                >
+                  <TriangleAlert className="size-5" aria-hidden="true" />
+                  {s.name}: open {guideById[s.emergencyId].name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <div className="space-y-6">
           {/* The step */}
           <section aria-labelledby="step-heading" className="rounded-2xl border-2 p-6" style={{ borderColor: "var(--status-red)" }}>
             {finished ? (
               <div aria-live="polite">
-                <h2 id="step-heading" className="text-3xl font-bold">
+                <h2 id="step-heading" ref={stepHeading} tabIndex={-1} className="rounded text-3xl font-bold outline-none focus-visible:ring-2 focus-visible:ring-ring">
                   All {total} steps done
                 </h2>
                 <p className="mt-3 text-xl">
@@ -158,7 +186,7 @@ function Guide({ guide }) {
                   <Link href="/summary" className={`${bigButton} bg-primary text-primary-foreground hover:bg-primary/90`}>
                     Summary for the flight surgeon
                   </Link>
-                  <button type="button" onClick={() => setStep(0)} className={`${bigButton} border border-input hover:bg-accent`}>
+                  <button type="button" onClick={() => goTo(0)} className={`${bigButton} border border-input hover:bg-accent`}>
                     <RotateCcw className="size-5" aria-hidden="true" /> Start again
                   </button>
                 </div>
@@ -176,7 +204,7 @@ function Guide({ guide }) {
                   </ol>
                 </div>
                 <div aria-live="polite">
-                  <h2 id="step-heading" className="mt-3 text-3xl font-bold leading-snug">
+                  <h2 id="step-heading" ref={stepHeading} tabIndex={-1} className="mt-3 rounded text-3xl font-bold leading-snug outline-none focus-visible:ring-2 focus-visible:ring-ring">
                     {current.text}
                   </h2>
                   <p className="mt-4 text-xl">
@@ -202,13 +230,13 @@ function Guide({ guide }) {
                 <div className="mt-6 grid grid-cols-2 gap-3">
                   <button
                     type="button"
-                    onClick={() => setStep((s) => Math.max(0, s - 1))}
+                    onClick={() => (step === 1 ? goTo(0) : setStep(Math.max(0, step - 1)))}
                     disabled={step === 0}
                     className={`${bigButton} border border-input hover:bg-accent disabled:opacity-40`}
                   >
                     <ArrowLeft className="size-6" aria-hidden="true" /> Back
                   </button>
-                  <button type="button" onClick={() => setStep((s) => s + 1)} className={`${bigButton} bg-primary text-primary-foreground hover:bg-primary/90`}>
+                  <button type="button" onClick={() => (step + 1 === total ? goTo(total) : setStep(step + 1))} className={`${bigButton} bg-primary text-primary-foreground hover:bg-primary/90`}>
                     {step + 1 === total ? "Done" : "Next step"} <ArrowRight className="size-6" aria-hidden="true" />
                   </button>
                 </div>
@@ -242,7 +270,7 @@ function Guide({ guide }) {
               Record vitals
             </h2>
             <div className="mt-2">
-              <EmergencyVitals key={crewId} astronautId={crewId} astronautName={member.name} />
+              <EmergencyVitals key={crewId} astronautId={crewId} astronautName={member.name} currentGuideId={guide.id} />
             </div>
           </section>
         </div>
@@ -292,7 +320,7 @@ function Guide({ guide }) {
             <ol className="mt-3 list-decimal space-y-3 pl-5">
               {guide.steps.map((s, i) => (
                 <li key={i}>
-                  <button type="button" onClick={() => setStep(i)} className={`min-h-11 rounded text-left underline-offset-2 hover:underline ${focusRing}`}>
+                  <button type="button" onClick={() => goTo(i)} className={`min-h-11 rounded text-left underline-offset-2 hover:underline ${focusRing}`}>
                     {s.text}
                   </button>
                 </li>
