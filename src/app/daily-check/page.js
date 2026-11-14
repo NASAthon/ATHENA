@@ -199,20 +199,6 @@ function DailyCheck() {
                 );
               })}
             </div>
-            {/* Same save as the button at the bottom: saves everything entered so far (readings, mood, symptoms). */}
-            <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3">
-              <button
-                type="button"
-                onClick={save}
-                disabled={!canSave}
-                className={`min-h-11 rounded-lg bg-primary px-4 text-base font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 ${focusRing}`}
-              >
-                Save readings
-              </button>
-              <span className="text-sm text-muted-foreground">
-                {saveInfo ? `Saved for day ${saveInfo.day}. Results are below.` : "You can save again after mood and symptoms."}
-              </span>
-            </div>
           </section>
 
           <section className={card} aria-labelledby="mood-heading">
