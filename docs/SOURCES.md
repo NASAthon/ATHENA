@@ -32,22 +32,27 @@ NASA first; otherwise AHA or CDC, rewritten in our own words.
 
 ## Libraries and tools
 
-| Name | Use | Licence |
-|---|---|---|
-| Next.js | App framework (static export) | MIT |
-| React | UI library | MIT |
-| Tailwind CSS | Styling | MIT |
-| ESLint + eslint-config-next | Linting (dev only) | MIT |
-| shadcn/ui (when installed) | UI components, copied into the repo | MIT (uses Radix UI, MIT, and Lucide icons, ISC) |
-| sql.js | SQLite database in the browser (WASM) | MIT. https://github.com/sql-js/sql.js |
-| MiniSearch | Offline fuzzy search (typos, prefixes, synonyms) | MIT. https://github.com/lucaong/minisearch |
+| Name | Use | Licence | Link |
+|---|---|---|---|
+| Next.js | App framework (static export) | MIT | https://github.com/vercel/next.js |
+| React / React DOM | UI library | MIT | https://github.com/facebook/react |
+| Tailwind CSS (+ @tailwindcss/turbopack) | Styling | MIT | https://github.com/tailwindlabs/tailwindcss |
+| shadcn/ui (`shadcn` CLI and CSS, `cn`) | UI components copied into `components/ui/`; class merging | MIT | https://github.com/shadcn-ui/ui |
+| Radix UI (`radix-ui`) | Accessible UI primitives used by shadcn/ui | MIT | https://github.com/radix-ui/primitives |
+| Lucide (`lucide-react`) | Icons (status icons and so on) | ISC | https://github.com/lucide-icons/lucide |
+| class-variance-authority | Component style variants | Apache-2.0 | https://github.com/joe-bell/cva |
+| tw-animate-css | Tailwind animation utilities | MIT | https://github.com/Wombosvideo/tw-animate-css |
+| sql.js | SQLite database in the browser (WASM, bundled locally) | MIT | https://github.com/sql-js/sql.js |
+| MiniSearch | Offline fuzzy search (typos, prefixes, synonyms) | MIT | https://github.com/lucaong/minisearch |
+| ESLint + eslint-config-next | Linting (dev only) | MIT | https://github.com/eslint/eslint |
+| Fonts | System fonts only, nothing bundled or downloaded | n/a | n/a |
 
-### Dependency licence scan (14 Nov 2026)
+### Dependency licence scan (14 Nov 2026, after installing sql.js, MiniSearch and shadcn/ui)
 
-All installed npm packages (direct and transitive, about 350) are open source:
-MIT (294), Apache-2.0 (22), ISC (14), BSD-2/3-Clause (9), MPL-2.0 (3: axe-core,
-lightningcss), BlueOak-1.0.0 (2), CC-BY-4.0 (caniuse-lite browser data), CC0-1.0,
-0BSD, Python-2.0 (argparse), and LGPL-3.0 (sharp/libvips, Next's optional image
-optimiser; unused with static export and not modified).
+All 575 installed npm packages (direct and transitive) are open source:
+MIT (498), Apache-2.0 (27), ISC (19), BSD-2/3-Clause (18), BlueOak-1.0.0 (3), MPL-2.0 (3:
+axe-core, lightningcss), CC-BY-4.0 (caniuse-lite browser data), CC0-1.0, 0BSD,
+Python-2.0 (argparse), MIT OR CC0-1.0 (type-fest), and LGPL-3.0 (sharp/libvips,
+Next's optional image optimiser; unused with static export and not modified).
 No proprietary or unknown licences. Re-run the scan after adding packages, e.g.
 `npx license-checker --summary`.

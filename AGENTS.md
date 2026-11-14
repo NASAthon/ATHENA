@@ -39,6 +39,13 @@ GitHub is the single source of truth, so always branch from the latest `main`.
   the site runs on localhost. Whoever pushes real code can replace or remove it.
 - Run it with `npm install`, then `npm run dev`, and open http://localhost:3000. `npm run build` creates the
   static export in `out/`.
+- **Installed packages** (all open source; licences are in `docs/SOURCES.md`):
+  - **shadcn/ui** (Radix base, dark theme): add components with `npx shadcn@latest add <name>`.
+    They land in `components/ui/`. Use `cn` from `@/lib/utils` and icons from `lucide-react`.
+  - **sql.js:** `npm install` copies the engine to `public/sql-wasm.wasm` (`scripts/copy-sqljs-wasm.mjs`).
+    Load it with `initSqlJs({ locateFile: () => "/sql-wasm.wasm" })`, never from a CDN.
+  - **MiniSearch** for search.
+  - Before adding any other package, check its licence and add it to `docs/SOURCES.md`.
 
 - **Do not redesign the architecture.** Stack: offline-first PWA,
   Next.js (JavaScript) + Tailwind + ShadCN, SQLite in the browser (sql.js +
