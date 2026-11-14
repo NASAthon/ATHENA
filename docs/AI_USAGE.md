@@ -59,6 +59,7 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Chidozie | Codex | GitHub Pages evaluation deployment: environment-specific base path, sql.js/WASM public paths, static deployment workflow, local/hosted path tests and hosting documentation | `next.config.mjs`, `.github/workflows/pages.yml`, `src/lib/basePath*`, `src/lib/db/index.js`, `src/components/{NavLinks,AlertBanner}.js`, `docs/*`, `README.md`, `AGENTS.md` |
 | 14 Nov 2026 | Chidozie | Codex | Diagnosed unstyled GitHub Pages output in Safari, configured Tailwind's official PostCSS compiler for production builds and added a deployment check that rejects uncompiled Tailwind directives | `.github/workflows/pages.yml`, `postcss.config.mjs`, `scripts/check-built-css.mjs`, `package.json`, `docs/*` |
 | 14 Nov 2026 | Chidozie | Codex | Updated the README to display the complete, copyable GitHub Pages deployment URL | `README.md`, `docs/*` |
+| 14 Nov 2026 | Chidozie | Codex | Focused the public README on ATHENA: moved the full live URL and NASAthon members near the top, removed organiser/submission workflow text, and strengthened the sources and AI usage sections | `README.md`, `docs/*` |
 
 ## AI-generated media
 
