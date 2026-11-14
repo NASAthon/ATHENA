@@ -6,6 +6,8 @@ Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Age
 |---|---|---|---|---|
 | 5 Hazards of Human Spaceflight | https://www.nasa.gov/hrp/hazards/ | The five hazards | Yes | US Gov work; no NASA logos |
 | Risks of Human Spaceflight | https://www.nasa.gov/hrp/risks/ | The 17 risks (the pages don't map them to hazards; our mapping is in `docs/BODY_MAP.md`) | Yes | US Gov work; no NASA logos |
+| Data Rate Increase on the ISS (NASA Goddard) | https://www.nasa.gov/feature/goddard/2019/data-rate-increase-on-the-international-space-station-supports-future-exploration | ISS Earth-link delay: under 1 second | Yes (team-approved 14 Nov, `docs/DECISIONS.md` › Data Sources) | US Gov work; no NASA logos |
+| NASA/TM-20250003885: Assessment of the State of Communication Delay Research | https://ntrs.nasa.gov/citations/20250003885 | Lunar-mission delay of 3–14 s one way, applied to Gateway (marked as inferred) | Yes (team-approved 14 Nov) | US Gov work; no NASA logos |
 | NASA Open Science Data Repository (OSDR) | https://osdr.nasa.gov/ | Real spaceflight biology data for inspiration and testing (named in the challenge video) | Yes | Check each dataset's licence before use |
 | Challenge video (Brazilian Space Agency) | https://www.youtube.com/watch?v=RERG3gEmdC8 | Challenge goals, emergency scenario, guidance requirements | Official challenge material | Cite and link only |
 | 17 NASA risk pages + 5 hazard pages | URLs listed in `docs/BODY_MAP.md` | Body regions, affected systems, verified facts (e.g. bone loss 1–1.5%/month) | Yes | US Gov work; no NASA logos |
@@ -56,7 +58,7 @@ All in `src/data/emergencies.js`. Where a source says "call 911", ATHENA says "c
 | Hypothermia | Ready | CDC | https://www.cdc.gov/winter-weather/prevention/index.html |
 | Decompression sickness | Ready | NASA | https://www.nasa.gov/reference/risk-of-decompression-sickness/ |
 | Hypoxia | Ready (altitude-illness guidance applied to spaceflight, marked as adaptation) | NASA, CDC Yellow Book | https://www.nasa.gov/reference/risk-of-hypoxia/, https://www.cdc.gov/yellow-book/hcp/environmental-hazards-risks/high-altitude-travel-and-altitude-illness.html |
-| Radiation alert | Ready ("get inside, stay inside, stay tuned" applied to spaceflight) | CDC | https://www.cdc.gov/radiation-emergencies/response/get-inside.html (+ stay-inside, stay-tuned) |
+| Radiation alert | Ready ("get inside, stay inside, stay tuned" applied to spaceflight) | CDC | https://www.cdc.gov/radiation-emergencies/response/get-inside.html, https://www.cdc.gov/radiation-emergencies/response/stay-inside.html, https://www.cdc.gov/radiation-emergencies/response/stay-tuned.html |
 | Blow to the head | Ready | CDC HEADS UP | https://www.cdc.gov/heads-up/response/index.html, https://www.cdc.gov/heads-up/signs-symptoms/index.html |
 | Severe bleeding | Ready (direct pressure, clotting dressing, tourniquet, pressure dressing) | AHA and American Red Cross 2024 First Aid Guidelines | https://cpr.heart.org/en/resuscitation-science/2024-first-aid-guidelines (Trauma › External Bleeding Control) |
 | Suspected broken bone | Ready (splint in position found, check limb colour, cover wounds) | AHA and American Red Cross 2024 First Aid Guidelines | https://cpr.heart.org/en/resuscitation-science/2024-first-aid-guidelines (Trauma › Fractures) |

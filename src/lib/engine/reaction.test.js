@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { reactionRecordFields, scoreReactionTest } from "./reaction.js";
+import { compareReactionToBaseline, reactionRecordFields, scoreReactionTest } from "./reaction.js";
 
 test("median, lapses over 500 ms and false starts", () => {
   const score = scoreReactionTest({ trialsMs: [320, 280, 510, 300, 500], falseStarts: 2 });
@@ -26,4 +26,13 @@ test("ten runs in a row give identical results", () => {
   const trials = [301, 299, 650, 280, 310, 305];
   const first = scoreReactionTest({ trialsMs: trials, falseStarts: 1 });
   for (let i = 0; i < 10; i += 1) assert.deepEqual(scoreReactionTest({ trialsMs: trials, falseStarts: 1 }), first);
+});
+
+test("compareReactionToBaseline: usual range is mean ± 1.5 sd; slower only above it", () => {
+  const baseline = { status: "ok", mean: 274, sd: 12.6 };
+  const usual = compareReactionToBaseline({ medianMs: 280 }, baseline);
+  assert.deepEqual([usual.usualMs, usual.typicalLowMs, usual.typicalHighMs, usual.slower], [274, 255, 293, false]);
+  assert.equal(compareReactionToBaseline({ medianMs: 300 }, baseline).slower, true);
+  assert.equal(compareReactionToBaseline({ medianMs: 300 }, { status: "no_data", mean: null, sd: null }), null);
+  assert.equal(compareReactionToBaseline({ medianMs: null }, baseline).slower, false);
 });
