@@ -9,7 +9,7 @@
 // Accessibility: ARIA combobox + listbox. Arrow keys move, Enter opens, Escape closes; the number
 // of results is announced; emergency results carry an icon and a text label, not only colour.
 
-import { useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BookOpen, OctagonAlert, Search as SearchIcon, Sparkles } from "lucide-react";
 import { buildContentSearchIndex, search } from "@/lib/engine";
@@ -54,6 +54,11 @@ export default function SearchBox() {
   const { response, options } = useMemo(() => buildOptions(query), [query]);
   const showList = open && query.trim().length > 0;
   const realResults = options.filter((o) => o.kind === "hit" && !o.closest).length;
+
+  // Keep the option chosen with the arrow keys in view when the list scrolls.
+  useEffect(() => {
+    if (showList && active >= 0) document.getElementById(`${listId}-opt-${active}`)?.scrollIntoView({ block: "nearest" });
+  }, [showList, active, listId]);
 
   const close = () => {
     setOpen(false);

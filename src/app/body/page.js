@@ -32,8 +32,10 @@ function BodyPage() {
   // Open the region asked for in the link, otherwise the worst one, so the most important is shown first.
   const worstId = [...statuses].sort((a, b) => b.rank - a.rank)[0]?.id ?? null;
   const defaultId = requestedId ?? worstId;
-  const [picked, setPicked] = useState({ crewId, requestedId, regionId: defaultId });
-  const stillValid = picked.crewId === crewId && picked.requestedId === requestedId;
+  // Only a region the user picked is remembered; otherwise the default is worked out on every render,
+  // so it updates once the stored data has loaded (on a full page load it starts as "loading").
+  const [picked, setPicked] = useState(null);
+  const stillValid = picked !== null && picked.crewId === crewId && picked.requestedId === requestedId;
   const selectedId = stillValid ? picked.regionId : defaultId;
   const selected = statuses.find((s) => s.id === selectedId);
 

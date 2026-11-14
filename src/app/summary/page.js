@@ -9,19 +9,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { CircleCheck, Copy, ExternalLink, OctagonAlert, Radio, TriangleAlert } from "lucide-react";
 import { INDICATORS } from "@/data";
-import { DRIFT_INDICATORS, buildSurgeonSummary, earthLink, likelyHazards } from "@/lib/engine";
+import { DRIFT_INDICATORS, buildSurgeonSummary, driftKeyName, earthLink, likelyHazards } from "@/lib/engine";
 import { useTodayEvaluation } from "@/components/useTodayEvaluation";
 import { useMissionMode } from "@/components/MissionModeProvider";
 import { focusRing } from "@/lib/ui";
 
 const nameOf = Object.fromEntries(INDICATORS.map((i) => [i.id, i.name]));
 const groupOf = Object.fromEntries(DRIFT_INDICATORS.map((d) => [d.key, d.group]));
-// Plain-English names for the record fields that share one indicator.
-const PART_NAME = { bpSystolic: "top number", bpDiastolic: "bottom number", reactionMedianMs: "median", reactionLapses: "lapses" };
-const keyName = (key) => {
-  const name = nameOf[groupOf[key]] ?? key;
-  return PART_NAME[key] ? `${name} (${PART_NAME[key]})` : name;
-};
 
 const card = "rounded-2xl border border-border bg-card p-6";
 const ALERT_TEXT = {
@@ -130,7 +124,7 @@ export default function SummaryPage() {
             <ul className="mt-3 space-y-1 text-lg">
               {summary.drifting.map((d) => (
                 <li key={d.key}>
-                  {keyName(d.key)} <span className="text-muted-foreground">(drift score {d.worryingZ?.toFixed(1)})</span>
+                  {driftKeyName(d.key)} <span className="text-muted-foreground">(drift score {d.worryingZ?.toFixed(1)})</span>
                 </li>
               ))}
             </ul>
