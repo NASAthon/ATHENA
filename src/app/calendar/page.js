@@ -18,7 +18,7 @@ import { focusRing } from "@/lib/ui";
 
 const LOOK_AHEAD_DAYS = 30;
 const examById = Object.fromEntries(EXAMS.map((e) => [e.id, e]));
-const card = "rounded-xl border border-border bg-card p-4";
+const card = "rounded-xl border border-border bg-card p-3";
 
 // Exam status: colour + icon + text label (DECISIONS › Inclusive Design).
 const EXAM_STATUS = {
@@ -48,9 +48,9 @@ export default function CalendarPage() {
 
   if (status === "loading" || today === null) {
     return (
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-5">
-        <h1 className="text-3xl font-bold">Mission calendar</h1>
-        <p className="mt-4 text-base text-muted-foreground">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-4">
+        <h1 className="text-2xl font-bold">Mission calendar</h1>
+        <p className="mt-3 text-base text-muted-foreground">
           {status === "loading" ? (
             "Opening the mission data…"
           ) : (
@@ -99,19 +99,19 @@ export default function CalendarPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-5">
-      <h1 className="text-3xl font-bold">
-        Mission calendar <span className="text-xl font-normal text-muted-foreground">· {member.name} · mission day {today}</span>
+    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-4">
+      <h1 className="text-2xl font-bold">
+        Mission calendar <span className="text-lg font-normal text-muted-foreground">· {member.name} · Day {today}</span>
       </h1>
       <p className="mt-2 text-base text-muted-foreground">
         Periodic exams named on NASA risk pages. How often they repeat in flight is an ATHENA design choice: NASA doesn&apos;t state it.
       </p>
 
-      <section className="mt-4" aria-labelledby="exams-heading">
-        <h2 id="exams-heading" className="text-xl font-bold">
+      <section className="mt-3" aria-labelledby="exams-heading">
+        <h2 id="exams-heading" className="text-lg font-bold">
           Exams
         </h2>
-        <ul className="mt-4 grid auto-rows-fr gap-4 md:grid-cols-2">
+        <ul className="mt-3 grid auto-rows-fr gap-3 md:grid-cols-2">
           {rows.map(({ exam, state, dueDay, next, last }) => {
             const info = examById[exam.id];
             const s = EXAM_STATUS[state];
@@ -136,7 +136,7 @@ export default function CalendarPage() {
                     type="button"
                     onClick={() => markDone(exam.id)}
                     disabled={saving !== null || status === "busy"}
-                    className={`mt-4 inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-4 font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60 ${focusRing}`}
+                    className={`mt-3 inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-4 font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60 ${focusRing}`}
                   >
                     <CircleCheck className="size-5" aria-hidden="true" />
                     {saving === exam.id ? "Saving…" : `Mark done today (day ${today})`}
@@ -147,13 +147,13 @@ export default function CalendarPage() {
           })}
         </ul>
         {error && (
-          <p role="alert" className="mt-4 font-semibold" style={{ color: "var(--status-red)" }}>
+          <p role="alert" className="mt-3 font-semibold" style={{ color: "var(--status-red)" }}>
             Couldn&apos;t save: {error}
           </p>
         )}
       </section>
 
-      <div className="mt-6 grid gap-4 md:grid-cols-2">
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
         <section className={card} aria-labelledby="upcoming-heading">
           <h2 id="upcoming-heading" className="text-lg font-bold">
             Next {LOOK_AHEAD_DAYS} days
@@ -191,7 +191,7 @@ export default function CalendarPage() {
         )}
       </div>
 
-      <p className="mt-4 text-muted-foreground">Demo mission: all data on this screen is simulated. Not medical advice.</p>
+      <p className="mt-3 text-muted-foreground">Demo mission: all data on this screen is simulated. Not medical advice.</p>
     </main>
   );
 }

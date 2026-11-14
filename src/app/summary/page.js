@@ -3,11 +3,12 @@
 // One-page flight-surgeon summary (CHECKLIST §3 › Calendar, summary, extras) for the astronaut
 // selected in the header. Built by the engine's buildSurgeonSummary (src/lib/engine/summary.js)
 // from today's evaluation of STORED data; the reply time comes from the mission mode's sourced
-// Earth-link delay (header switch). The plain-text version can be copied to send to the ground.
+// Earth-link delay (header switch). "Send to Earth" sends the plain-text version to the ground
+// (simulated in the demo: ATHENA has no real link to Earth).
 
 import { useState } from "react";
 import Link from "next/link";
-import { CircleCheck, Copy, OctagonAlert, Radio, TriangleAlert } from "lucide-react";
+import { CircleCheck, OctagonAlert, Radio, Send, TriangleAlert } from "lucide-react";
 import { INDICATORS } from "@/data";
 import { DRIFT_INDICATORS, buildSurgeonSummary, driftKeyName, earthLink, likelyHazards } from "@/lib/engine";
 import { useTodayEvaluation } from "@/components/useTodayEvaluation";
@@ -17,7 +18,7 @@ import { focusRing } from "@/lib/ui";
 const nameOf = Object.fromEntries(INDICATORS.map((i) => [i.id, i.name]));
 const groupOf = Object.fromEntries(DRIFT_INDICATORS.map((d) => [d.key, d.group]));
 
-const card = "rounded-xl border border-border bg-card p-4";
+const card = "rounded-xl border border-border bg-card p-3";
 const ALERT_TEXT = {
   none: "No alert",
   note: "Note: one indicator drifting",
@@ -28,13 +29,14 @@ const ALERT_TEXT = {
 export default function SummaryPage() {
   const { state, today, member, evaluation } = useTodayEvaluation();
   const { modeId, mode } = useMissionMode();
-  const [copied, setCopied] = useState(null);
+  // Which astronaut and day the summary was last sent for, so switching crew or day resets it.
+  const [sent, setSent] = useState(null);
 
   if (state !== "ready" || !evaluation) {
     return (
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-5">
-        <h1 className="text-3xl font-bold">Flight-surgeon summary</h1>
-        <p className="mt-4 text-base text-muted-foreground">
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-4">
+        <h1 className="text-2xl font-bold">Flight-surgeon summary</h1>
+        <p className="mt-3 text-base text-muted-foreground">
           {state === "loading" ? (
             "Opening the mission data…"
           ) : (
@@ -59,23 +61,18 @@ export default function SummaryPage() {
   const statusColour = red.length > 0 ? "var(--status-red)" : summary.alertLevel === "none" ? "var(--status-steady)" : "var(--status-amber)";
   const StatusIcon = red.length > 0 ? OctagonAlert : summary.alertLevel === "none" ? CircleCheck : TriangleAlert;
 
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(summary.lines.join("\n"));
-      setCopied("Copied. Paste it into the message to the ground.");
-    } catch {
-      setCopied("Couldn't copy automatically. Select the text below and copy it.");
-    }
-  };
+  const sentKey = `${member.name}|${today}`;
+  const isSent = sent === sentKey;
+  const send = () => setSent(sentKey);
 
   return (
-    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-5">
-      <h1 className="text-3xl font-bold">Flight-surgeon summary</h1>
+    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-4">
+      <h1 className="text-2xl font-bold">Flight-surgeon summary</h1>
       <p className="mt-2 text-base text-muted-foreground">
-        {member.name} · mission day {today} · {mode.name}. One page for the flight surgeon on the ground.
+        {member.name} · Day {today} · {mode.name}. One page for the flight surgeon on the ground.
       </p>
 
-      <section aria-labelledby="reply-heading" className="mt-4 flex flex-wrap items-center gap-3 rounded-xl border-2 p-4" style={{ borderColor: urgent ? "var(--status-red)" : "var(--border)" }}>
+      <section aria-labelledby="reply-heading" className="mt-3 flex flex-wrap items-center gap-3 rounded-xl border-2 p-3" style={{ borderColor: urgent ? "var(--status-red)" : "var(--border)" }}>
         <Radio className="size-5 shrink-0" aria-hidden="true" />
         <div className="flex-1">
           <h2 id="reply-heading" className="text-lg font-bold">
@@ -88,12 +85,12 @@ export default function SummaryPage() {
         </div>
       </section>
 
-      <div className="mt-4 grid gap-4 md:grid-cols-2">
+      <div className="mt-3 grid gap-3 md:grid-cols-2">
         <section className={card} aria-labelledby="status-heading">
           <h2 id="status-heading" className="text-sm uppercase tracking-wider text-muted-foreground">
             Status today
           </h2>
-          <p className="mt-3 text-4xl font-bold">
+          <p className="mt-3 text-3xl font-bold">
             {summary.score ?? "—"}
             <span className="ml-2 text-lg font-normal text-muted-foreground">/ 100 health score</span>
           </p>
@@ -132,11 +129,11 @@ export default function SummaryPage() {
       </div>
 
       {summary.limitBreaches.length > 0 && (
-        <section className={`${card} mt-4`} aria-labelledby="readings-heading">
+        <section className={`${card} mt-3`} aria-labelledby="readings-heading">
           <h2 id="readings-heading" className="text-sm uppercase tracking-wider text-muted-foreground">
             Today&apos;s readings outside the reference range
           </h2>
-          <ul className="mt-3 space-y-4">
+          <ul className="mt-3 space-y-3">
             {summary.limitBreaches.map((b) => (
               <li key={`${b.indicatorId}-${b.label}`}>
                 <p className="flex items-center gap-2 text-base font-semibold" style={{ color: b.level === "urgent" ? "var(--status-red)" : "var(--status-amber)" }}>
@@ -153,27 +150,28 @@ export default function SummaryPage() {
         </section>
       )}
 
-      <section className={`${card} mt-4`} aria-labelledby="message-heading">
+      <section className={`${card} mt-3`} aria-labelledby="message-heading">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 id="message-heading" className="text-lg font-bold">
             Message to send
           </h2>
           <button
             type="button"
-            onClick={copy}
+            onClick={send}
             className={`inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-4 font-semibold text-primary-foreground hover:bg-primary/90 ${focusRing}`}
           >
-            <Copy className="size-5" aria-hidden="true" />
-            Copy text
+            {isSent ? <CircleCheck className="size-5" aria-hidden="true" /> : <Send className="size-5" aria-hidden="true" />}
+            {isSent ? "Sent to Earth" : "Send to Earth"}
           </button>
         </div>
         <p role="status" className="mt-2 text-muted-foreground">
-          {copied}
+          {isSent &&
+            `Sent to the flight surgeon on Day ${today}. Reply expected ${link ? link.replyText : "after an unknown delay"}. (Demo: sending is simulated.)`}
         </p>
-        <pre className="mt-3 overflow-x-auto rounded-lg border border-border bg-background p-4 text-sm whitespace-pre-wrap">{summary.lines.join("\n")}</pre>
+        <pre className="mt-3 overflow-x-auto rounded-lg border border-border bg-background p-3 text-sm whitespace-pre-wrap">{summary.lines.join("\n")}</pre>
       </section>
 
-      <p className="mt-4 text-muted-foreground">Demo mission: all data on this screen is simulated. Not medical advice.</p>
+      <p className="mt-3 text-muted-foreground">Demo mission: all data on this screen is simulated. Not medical advice.</p>
     </main>
   );
 }

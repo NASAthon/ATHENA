@@ -21,7 +21,7 @@ import { focusRing } from "@/lib/ui";
 // changes stored crew data. All health logic is the engine's (src/lib/engine); this page
 // only picks the inputs and shows the before/after results.
 
-const card = "rounded-xl border border-border bg-card p-4";
+const card = "rounded-xl border border-border bg-card p-3";
 const indicatorById = Object.fromEntries(INDICATORS.map((i) => [i.id, i]));
 
 // Record field → content indicator name, e.g. "sleepHours" → "Sleep".
@@ -75,7 +75,7 @@ function DayResult({ title, day }) {
   return (
     <section className={card} aria-label={title}>
       <h3 className="text-base font-semibold">{title}</h3>
-      <p className="mt-3 text-3xl font-semibold">
+      <p className="mt-3 text-2xl font-semibold">
         {day.health.score ?? "–"}
         <span className="ml-2 text-base font-normal text-muted-foreground">
           {day.health.label ? `health score · ${day.health.label}` : "not enough data"}
@@ -139,7 +139,7 @@ export default function Page() {
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-4">
-      <h1 className="flex items-center gap-3 text-2xl font-semibold">
+      <h1 className="flex items-center gap-3 text-xl font-semibold">
         <FlaskConical aria-hidden="true" className="size-8" /> Scenario Lab
       </h1>
       <p className="mt-2 mb-6 text-muted-foreground">
@@ -148,7 +148,7 @@ export default function Page() {
       </p>
 
       <form
-        className={`${card} grid gap-4 md:grid-cols-2`}
+        className={`${card} grid gap-3 md:grid-cols-2`}
         onSubmit={(event) => {
           event.preventDefault();
           if (fromDayValid) setRun({ crewId, ...form });
@@ -160,7 +160,7 @@ export default function Page() {
             {SCENARIOS.map((s) => (
               <label
                 key={s.id}
-                className={`flex min-h-12 cursor-pointer items-start gap-3 rounded-lg border border-input p-3 has-[:checked]:border-ring has-[:checked]:bg-accent`}
+                className={`flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-input p-3 has-[:checked]:border-ring has-[:checked]:bg-accent`}
               >
                 <input
                   type="radio"
@@ -181,7 +181,7 @@ export default function Page() {
 
         <div>
           <label htmlFor="from-day" className="block font-semibold">
-            Starts on mission day <span className="font-normal text-muted-foreground">({FIRST_DAY}–{MISSION_DAYS.toDay})</span>
+            Starts on day <span className="font-normal text-muted-foreground">({FIRST_DAY}–{MISSION_DAYS.toDay})</span>
           </label>
           <input
             id="from-day"
@@ -192,7 +192,7 @@ export default function Page() {
             value={form.fromDay}
             onChange={set("fromDay")}
             aria-describedby="from-day-help"
-            className={`mt-2 min-h-12 w-full rounded-lg border border-input bg-input/30 px-4 text-lg ${focusRing}`}
+            className={`mt-2 min-h-11 w-full rounded-lg border border-input bg-input/30 px-4 text-lg ${focusRing}`}
           />
           <p id="from-day-help" className="mt-1 text-sm text-muted-foreground">
             From day {FIRST_DAY}: drift is measured against the in-flight baseline (days {IN_FLIGHT_WINDOW.fromDay}–{IN_FLIGHT_WINDOW.toDay}).
@@ -207,7 +207,7 @@ export default function Page() {
             id="length"
             value={form.days}
             onChange={set("days")}
-            className={`mt-2 min-h-12 w-full rounded-lg border border-input bg-input/30 px-4 text-lg ${focusRing}`}
+            className={`mt-2 min-h-11 w-full rounded-lg border border-input bg-input/30 px-4 text-lg ${focusRing}`}
           >
             {LENGTHS.map((n) => (
               <option key={n} value={n} className="bg-popover text-popover-foreground">
@@ -243,17 +243,17 @@ export default function Page() {
           <button
             type="submit"
             disabled={!fromDayValid}
-            className={`min-h-12 w-full rounded-lg bg-primary px-4 text-base font-semibold text-primary-foreground disabled:opacity-50 ${focusRing}`}
+            className={`min-h-11 w-full rounded-lg bg-primary px-4 text-base font-semibold text-primary-foreground disabled:opacity-50 ${focusRing}`}
           >
             Run scenario
           </button>
         </div>
       </form>
 
-      <div aria-live="polite" className="mt-4">
+      <div aria-live="polite" className="mt-3">
         {result && (
           <>
-            <h2 className="text-xl font-semibold">
+            <h2 className="text-lg font-semibold">
               Day {result.endDay}: last day of the event
             </h2>
             <p className="mt-1 text-muted-foreground">
@@ -265,18 +265,18 @@ export default function Page() {
                     (result.firstAlertBefore ? ` (without it: day ${result.firstAlertBefore}).` : " (without it: no alert).")}
             </p>
             {result.touched === 0 && (
-              <p className="mt-3 rounded-lg border border-border p-4 text-sm">
+              <p className="mt-3 rounded-lg border border-border p-3 text-sm">
                 Nothing changed: {member.name} has no recorded readings for this event to change.
                 {run.type === "radiation" && ` ${indicatorById.radiation?.personalBaselineOnly ?? ""}`}
               </p>
             )}
 
-            <div className="mt-4 grid auto-rows-fr gap-4 md:grid-cols-2">
+            <div className="mt-3 grid auto-rows-fr gap-3 md:grid-cols-2">
               <DayResult title="Without the event" day={result.beforeEnd} />
               <DayResult title="With the event" day={result.afterEnd} />
             </div>
 
-            <div className={`${card} mt-4 overflow-x-auto`}>
+            <div className={`${card} mt-3 overflow-x-auto`}>
               <table className="w-full text-left">
                 <caption className="mb-3 text-left font-semibold">Day by day</caption>
                 <thead>
@@ -308,7 +308,7 @@ export default function Page() {
         )}
       </div>
 
-      <p className="mt-4 text-sm text-muted-foreground">
+      <p className="mt-3 text-sm text-muted-foreground">
         Simulated data. Event sizes are demo values chosen to show how the alerts react, not real physiology
         (docs/DECISIONS.md › Logic Engine Assumptions). Not medical advice.
       </p>
