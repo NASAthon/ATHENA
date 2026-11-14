@@ -17,7 +17,7 @@ import { focusRing } from "@/lib/ui";
 const nameOf = Object.fromEntries(INDICATORS.map((i) => [i.id, i.name]));
 const groupOf = Object.fromEntries(DRIFT_INDICATORS.map((d) => [d.key, d.group]));
 
-const card = "rounded-2xl border border-border bg-card p-6";
+const card = "rounded-xl border border-border bg-card p-4";
 const ALERT_TEXT = {
   none: "No alert",
   note: "Note: one indicator drifting",
@@ -32,9 +32,9 @@ export default function SummaryPage() {
 
   if (state !== "ready" || !evaluation) {
     return (
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8">
-        <h1 className="text-4xl font-bold">Flight-surgeon summary</h1>
-        <p className="mt-4 text-lg text-muted-foreground">
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-5">
+        <h1 className="text-3xl font-bold">Flight-surgeon summary</h1>
+        <p className="mt-4 text-base text-muted-foreground">
           {state === "loading" ? (
             "Opening the mission data…"
           ) : (
@@ -69,16 +69,16 @@ export default function SummaryPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8">
-      <h1 className="text-4xl font-bold">Flight-surgeon summary</h1>
-      <p className="mt-2 text-lg text-muted-foreground">
+    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-5">
+      <h1 className="text-3xl font-bold">Flight-surgeon summary</h1>
+      <p className="mt-2 text-base text-muted-foreground">
         {member.name} · mission day {today} · {mode.name}. One page for the flight surgeon on the ground.
       </p>
 
-      <section aria-labelledby="reply-heading" className="mt-6 flex flex-wrap items-center gap-3 rounded-2xl border-2 p-5" style={{ borderColor: urgent ? "var(--status-red)" : "var(--border)" }}>
-        <Radio className="size-6 shrink-0" aria-hidden="true" />
+      <section aria-labelledby="reply-heading" className="mt-4 flex flex-wrap items-center gap-3 rounded-xl border-2 p-4" style={{ borderColor: urgent ? "var(--status-red)" : "var(--border)" }}>
+        <Radio className="size-5 shrink-0" aria-hidden="true" />
         <div className="flex-1">
-          <h2 id="reply-heading" className="text-xl font-bold">
+          <h2 id="reply-heading" className="text-lg font-bold">
             {summary.replyText ? `Reply expected ${summary.replyText}` : "Reply time unknown"}
           </h2>
           <p className="text-muted-foreground">
@@ -88,16 +88,16 @@ export default function SummaryPage() {
         </div>
       </section>
 
-      <div className="mt-6 grid gap-6 md:grid-cols-2">
+      <div className="mt-4 grid gap-4 md:grid-cols-2">
         <section className={card} aria-labelledby="status-heading">
           <h2 id="status-heading" className="text-sm uppercase tracking-wider text-muted-foreground">
             Status today
           </h2>
-          <p className="mt-3 text-5xl font-bold">
+          <p className="mt-3 text-4xl font-bold">
             {summary.score ?? "—"}
-            <span className="ml-2 text-xl font-normal text-muted-foreground">/ 100 health score</span>
+            <span className="ml-2 text-lg font-normal text-muted-foreground">/ 100 health score</span>
           </p>
-          <p className="mt-3 flex items-center gap-2 text-lg font-semibold" style={{ color: statusColour }}>
+          <p className="mt-3 flex items-center gap-2 text-base font-semibold" style={{ color: statusColour }}>
             <StatusIcon className="size-5" aria-hidden="true" />
             {ALERT_TEXT[summary.alertLevel] ?? summary.alertLevel}
             {summary.alertSince !== null && ` · since day ${summary.alertSince}`}
@@ -113,9 +113,9 @@ export default function SummaryPage() {
             Drifting from own in-flight normal
           </h2>
           {summary.drifting.length === 0 ? (
-            <p className="mt-3 text-lg">None</p>
+            <p className="mt-3 text-base">None</p>
           ) : (
-            <ul className="mt-3 space-y-1 text-lg">
+            <ul className="mt-3 space-y-1 text-base">
               {summary.drifting.map((d) => (
                 <li key={d.key}>
                   {driftKeyName(d.key)} <span className="text-muted-foreground">(drift score {d.worryingZ?.toFixed(1)})</span>
@@ -132,14 +132,14 @@ export default function SummaryPage() {
       </div>
 
       {summary.limitBreaches.length > 0 && (
-        <section className={`${card} mt-6`} aria-labelledby="readings-heading">
+        <section className={`${card} mt-4`} aria-labelledby="readings-heading">
           <h2 id="readings-heading" className="text-sm uppercase tracking-wider text-muted-foreground">
             Today&apos;s readings outside the reference range
           </h2>
           <ul className="mt-3 space-y-4">
             {summary.limitBreaches.map((b) => (
               <li key={`${b.indicatorId}-${b.label}`}>
-                <p className="flex items-center gap-2 text-lg font-semibold" style={{ color: b.level === "urgent" ? "var(--status-red)" : "var(--status-amber)" }}>
+                <p className="flex items-center gap-2 text-base font-semibold" style={{ color: b.level === "urgent" ? "var(--status-red)" : "var(--status-amber)" }}>
                   {b.level === "urgent" ? <OctagonAlert className="size-5" aria-hidden="true" /> : <TriangleAlert className="size-5" aria-hidden="true" />}
                   {nameOf[b.indicatorId] ?? b.indicatorId}: {b.label} · {Object.values(b.values).join(" / ")}
                 </p>
@@ -153,15 +153,15 @@ export default function SummaryPage() {
         </section>
       )}
 
-      <section className={`${card} mt-6`} aria-labelledby="message-heading">
+      <section className={`${card} mt-4`} aria-labelledby="message-heading">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 id="message-heading" className="text-xl font-bold">
+          <h2 id="message-heading" className="text-lg font-bold">
             Message to send
           </h2>
           <button
             type="button"
             onClick={copy}
-            className={`inline-flex min-h-12 items-center gap-2 rounded-lg bg-primary px-5 font-semibold text-primary-foreground hover:bg-primary/90 ${focusRing}`}
+            className={`inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-4 font-semibold text-primary-foreground hover:bg-primary/90 ${focusRing}`}
           >
             <Copy className="size-5" aria-hidden="true" />
             Copy text
@@ -173,7 +173,7 @@ export default function SummaryPage() {
         <pre className="mt-3 overflow-x-auto rounded-lg border border-border bg-background p-4 text-sm whitespace-pre-wrap">{summary.lines.join("\n")}</pre>
       </section>
 
-      <p className="mt-6 text-muted-foreground">Demo mission: all data on this screen is simulated. Not medical advice.</p>
+      <p className="mt-4 text-muted-foreground">Demo mission: all data on this screen is simulated. Not medical advice.</p>
     </main>
   );
 }

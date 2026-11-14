@@ -40,8 +40,8 @@ function BodyPage() {
   const selected = statuses.find((s) => s.id === selectedId);
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
-      <h1 className="text-3xl font-semibold">Body</h1>
+    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-4">
+      <h1 className="text-2xl font-semibold">Body</h1>
       {state === "empty" ? (
         <p className="mt-2 mb-6 text-muted-foreground">
           No mission data stored yet, so every region shows &quot;No recent data&quot;. Load the demo mission on the{" "}
@@ -57,7 +57,7 @@ function BodyPage() {
           readings and recent symptoms linked to it, compared with {member.name.split(" ").pop()}&apos;s own normal
         </p>
       )}
-      <div className="flex flex-wrap items-start gap-6">
+      <div className="flex flex-wrap items-start gap-4">
         <div className="min-w-0 flex-[3_1_560px]">
           <BodyMap
             statuses={statuses}
@@ -75,7 +75,7 @@ function BodyPage() {
 
 export default function Page() {
   return (
-    <Suspense fallback={<main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6"><h1 className="text-3xl font-semibold">Body</h1></main>}>
+    <Suspense fallback={<main className="mx-auto w-full max-w-6xl flex-1 px-4 py-4"><h1 className="text-2xl font-semibold">Body</h1></main>}>
       <BodyPage />
     </Suspense>
   );
