@@ -81,7 +81,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [x] **M** "How to measure" help beside each field (how to take it, why it matters, what to do if abnormal) (PR #8)
 - [x] **M** Mood as five large buttons, not a text box (PR #8)
 - [x] **M** Symptom tick boxes and exercise minutes (PR #8; red-flag symptoms link to their emergency guide)
-- [ ] **M** Save confirmation and today's result shown straight away 🟡 Partial (PR #8, PR #11): confirmation plus "Today's result" from the engine's red-limit check (label, action, source, emergency link); still to do: store the record (data layer)
+- [ ] **M** Save confirmation and today's result shown straight away 🟡 Partial (PR #8, PR #13): confirmation plus "Today's result" from the engine's red-limit check (label, action, source, emergency link); still to do: store the record (data layer)
 - [ ] **M** Reminders: shows which measurements are still due today
 
 ### Reaction test
