@@ -7,7 +7,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { CircleCheck, Copy, ExternalLink, OctagonAlert, Radio, TriangleAlert } from "lucide-react";
+import { CircleCheck, Copy, OctagonAlert, Radio, TriangleAlert } from "lucide-react";
 import { INDICATORS } from "@/data";
 import { DRIFT_INDICATORS, buildSurgeonSummary, driftKeyName, earthLink, likelyHazards } from "@/lib/engine";
 import { useTodayEvaluation } from "@/components/useTodayEvaluation";
@@ -83,13 +83,7 @@ export default function SummaryPage() {
           </h2>
           <p className="text-muted-foreground">
             {link ? `Earth link: ${link.text}${link.inferred ? " (lunar estimate)" : ""}. ` : ""}
-            {urgent ? "Don't wait for the reply to act: follow the emergency guide or the advice on Today now." : "Send the summary, then carry on with the daily routine."}{" "}
-            {link?.source && (
-              <a href={link.source.url} target="_blank" rel="noreferrer" className={`inline-flex items-center gap-1 rounded underline ${focusRing}`}>
-                Source: {link.source.title}
-                <ExternalLink className="size-3.5" aria-hidden="true" />
-              </a>
-            )}
+            {urgent ? "Don't wait for the reply to act: follow the emergency guide or the advice on Today now." : "Send the summary, then carry on with the daily routine."}
           </p>
         </div>
       </section>
@@ -152,15 +146,6 @@ export default function SummaryPage() {
                 <p className="mt-1">{b.action}</p>
                 <p className="text-sm text-muted-foreground">
                   {b.basisLabel}
-                  {b.source && (
-                    <>
-                      {" · "}
-                      <a href={b.source} target="_blank" rel="noreferrer" className={`inline-flex items-center gap-1 rounded underline ${focusRing}`}>
-                        Source
-                        <ExternalLink className="size-3.5" aria-hidden="true" />
-                      </a>
-                    </>
-                  )}
                 </p>
               </li>
             ))}

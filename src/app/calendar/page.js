@@ -8,8 +8,8 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { CalendarCheck, CalendarClock, CircleCheck, ExternalLink, TriangleAlert } from "lucide-react";
-import { EXAMS, SOURCES } from "@/data";
+import { CalendarCheck, CalendarClock, CircleCheck, TriangleAlert } from "lucide-react";
+import { EXAMS } from "@/data";
 import { EXAM_SCHEDULE, examsDueOn, examsOverdue } from "@/lib/engine";
 import { loadExamResults } from "@/lib/checkIn";
 import { useCrew } from "@/components/CrewProvider";
@@ -31,17 +31,6 @@ const EXAM_STATUS = {
 function nextDueAfter(exam, day) {
   if (day < exam.firstDay) return exam.firstDay;
   return exam.firstDay + (Math.floor((day - exam.firstDay) / exam.everyDays) + 1) * exam.everyDays;
-}
-
-function SourceLink({ sourceId }) {
-  const source = SOURCES[sourceId];
-  if (!source) return null;
-  return (
-    <a href={source.url} target="_blank" rel="noreferrer" className={`inline-flex items-center gap-1 rounded underline ${focusRing}`}>
-      Source: {source.title}
-      <ExternalLink className="size-3.5" aria-hidden="true" />
-    </a>
-  );
 }
 
 export default function CalendarPage() {
@@ -153,9 +142,6 @@ export default function CalendarPage() {
                     {saving === exam.id ? "Saving…" : `Mark done today (day ${today})`}
                   </button>
                 )}
-                <p className="mt-3 text-sm text-muted-foreground">
-                  <SourceLink sourceId={info.sourceId} />
-                </p>
               </li>
             );
           })}
@@ -197,9 +183,6 @@ export default function CalendarPage() {
                   <p className="font-semibold">{e.name}</p>
                   <p className="text-muted-foreground">
                     {e.why} When: {e.interval?.when ?? "not scheduled in flight"}.
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    <SourceLink sourceId={e.sourceId} />
                   </p>
                 </li>
               ))}

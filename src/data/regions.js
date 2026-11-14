@@ -1,5 +1,5 @@
 // The 8 clickable body-map regions (docs/BODY_MAP.md, verified 14 Nov 2026).
-// Card text follows docs/DECISIONS.md > Content Style: glance first, "Learn more" second.
+// Card text follows docs/DECISIONS.md > Content Style: quick reference only (the longer fields are kept for search).
 // riskNotes / hazards / facts / indicatorNotes: per-region detail for the body map card (Mercy, PR #9).
 
 export const REGIONS = [

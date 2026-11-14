@@ -6,7 +6,7 @@
 >
 > **Important:** the risk pages **don't** use the five-hazard list. They name causes such as "microgravity" or "prolonged isolation". The hazard links below come from matching those causes and the hazard pages, so most are marked *Inferred*.
 > **In the app:** this content lives in `src/data/regions.js` (`risks`, `riskNotes`, `hazards`, `facts`) and powers the Body page (PR #9). Keep the two in sync.
-> Card text follows `docs/DECISIONS.md` › Content Style (accurate, plain English, glance summary plus "Learn more").
+> Card text follows `docs/DECISIONS.md` › Content Style (accurate, plain English, quick reference only).
 
 ## Regions
 
@@ -152,7 +152,6 @@ Eight clickable regions on the 2D SVG body figure. Together they cover all 17 ri
 
 Each region card shows:
 - **Glance:** region name, status (icon, colour and label), worst indicator, "last checked" date.
-- **Learn more:** what this part of the body does, how spaceflight affects it (risk and hazard, with NASA source links), what's normal, what to do, and when to tell the flight surgeon.
 - **Search keywords:** synonyms and symptoms (e.g. "heart", "chest", "pulse", "palpitations", "faint" for region 4).
 
 ## Verification log

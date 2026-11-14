@@ -11,7 +11,6 @@ import {
   CircleCheck,
   CircleMinus,
   ClipboardList,
-  ExternalLink,
   Eye,
   Info,
   Minus,
@@ -224,15 +223,7 @@ export default function Today() {
                       Open: {emergencyName[r.emergencyId]}
                     </Link>
                   )}
-                  {r.source && (
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      {r.basisLabel} ·{" "}
-                      <a href={r.source.url} target="_blank" rel="noreferrer" className={`inline-flex items-center gap-1 rounded underline ${focusRing}`}>
-                        Source: {r.source.title}
-                        <ExternalLink className="size-3.5" aria-hidden="true" />
-                      </a>
-                    </p>
-                  )}
+                  {r.basisLabel && <p className="mt-2 text-sm text-muted-foreground">{r.basisLabel}</p>}
                 </li>
               ))}
             </ul>
@@ -262,13 +253,7 @@ export default function Today() {
                   ))}
                 </ul>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  ATHENA&apos;s interpretation of the NASA hazard page, not a diagnosis.{" "}
-                  {hazards[0].source && (
-                    <a href={hazards[0].source.url} target="_blank" rel="noreferrer" className={`inline-flex items-center gap-1 rounded underline ${focusRing}`}>
-                      Source: {hazards[0].source.title}
-                      <ExternalLink className="size-3.5" aria-hidden="true" />
-                    </a>
-                  )}
+                  ATHENA&apos;s interpretation of the NASA hazard page, not a diagnosis.
                 </p>
               </div>
             )}

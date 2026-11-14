@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ExternalLink, TriangleAlert } from "lucide-react";
-import { INDICATORS, SOURCES } from "@/data";
+import { TriangleAlert } from "lucide-react";
+import { INDICATORS } from "@/data";
 import { useCrew } from "@/components/CrewProvider";
 import {
   LAPSE_THRESHOLD_MS,
@@ -311,21 +311,6 @@ function ReactionTest() {
             <p className="mt-4 text-muted-foreground">
               Your result is only compared with {member.name}&apos;s own normal (their stored in-flight baseline; demo data is simulated).
             </p>
-            <ul className="mt-3 space-y-1 text-sm">
-              {reaction.sourceIds.map((id) => (
-                <li key={id}>
-                  <a
-                    href={SOURCES[id].url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={`inline-flex items-center gap-1 rounded text-primary underline ${focusRing}`}
-                  >
-                    Source: {SOURCES[id].title}
-                    <ExternalLink aria-hidden="true" className="size-3.5" />
-                  </a>
-                </li>
-              ))}
-            </ul>
           </aside>
 
           <aside className={card}>

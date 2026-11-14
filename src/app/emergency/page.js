@@ -12,8 +12,8 @@
 import { Suspense, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, ArrowRight, Clock, ExternalLink, OctagonAlert, Radio, RotateCcw, TriangleAlert, Volume2 } from "lucide-react";
-import { EMERGENCIES, INDICATORS, SOURCES, SYMPTOMS } from "@/data";
+import { ArrowLeft, ArrowRight, Clock, OctagonAlert, Radio, RotateCcw, TriangleAlert, Volume2 } from "lucide-react";
+import { EMERGENCIES, INDICATORS, SYMPTOMS } from "@/data";
 import { adviceForMode } from "@/lib/engine";
 import { CREW } from "@/lib/crew";
 import { useCrew } from "@/components/CrewProvider";
@@ -33,17 +33,6 @@ function speak(text) {
   if (typeof window === "undefined" || !window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
-}
-
-function SourceLink({ sourceId }) {
-  const source = SOURCES[sourceId];
-  if (!source) return null;
-  return (
-    <a href={source.url} target="_blank" rel="noreferrer" className={`inline-flex items-center gap-1 rounded underline ${focusRing}`}>
-      Source: {source.title}
-      <ExternalLink className="size-3.5" aria-hidden="true" />
-    </a>
-  );
 }
 
 const NotAdvice = () => (
@@ -212,12 +201,11 @@ function Guide({ guide }) {
                     {current.why}
                   </p>
                 </div>
-                <p className="mt-3 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-                  {current.sourceId ? <SourceLink sourceId={current.sourceId} /> : null}
-                  {current.adaptation && (
+                {current.adaptation && (
+                  <p className="mt-3 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                     <span className="rounded border border-dashed border-border px-1.5 py-0.5">ATHENA&apos;s adaptation for spaceflight</span>
-                  )}
-                </p>
+                  </p>
+                )}
                 {current.nextEmergencyId && guideById[current.nextEmergencyId] && (
                   <button
                     type="button"
@@ -286,15 +274,6 @@ function Guide({ guide }) {
             <p className="mt-2">{advice.glance}</p>
             <p className="mt-2 text-sm text-muted-foreground">
               {advice.basisLabel}
-              {link?.source && (
-                <>
-                  {" · "}
-                  <a href={link.source.url} target="_blank" rel="noreferrer" className={`inline-flex items-center gap-1 rounded underline ${focusRing}`}>
-                    Delay source: {link.source.title}
-                    <ExternalLink className="size-3.5" aria-hidden="true" />
-                  </a>
-                </>
-              )}
             </p>
             <Link href="/summary" className={`mt-4 inline-flex min-h-12 items-center rounded-lg border border-input px-4 font-semibold hover:bg-accent ${focusRing}`}>
               Open the summary to send
@@ -310,9 +289,6 @@ function Guide({ guide }) {
                 <li key={s}>{s}</li>
               ))}
             </ul>
-            <p className="mt-3 text-sm text-muted-foreground">
-              <SourceLink sourceId={guide.signsSourceId} />
-            </p>
           </section>
 
           <details className={card}>

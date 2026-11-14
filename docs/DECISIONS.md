@@ -1,7 +1,7 @@
 # Decision Log
 
 Every locked choice and why. Entries are in the order they were made. **Index:**
-- **Product:** Originality · Body Map Required · Crew · Trends Over Single Readings · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
+- **Product:** Originality · Body Map Required · Crew · Trends Over Single Readings · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · No External Links · Quick Reference Only · Design · First-Time Help · Checklist
 - **Data and content:** No Medicines or Diagnoses · Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
 - **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts · Logic Engine · Logic Engine Assumptions · Logic Tests · Mission Simulator · Storage Layer · Daily Record · Saving From the App · Mission Modes
 - **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
@@ -214,18 +214,14 @@ All health info in the app (measurement guides, alerts, "Why this alert?",
 emergency steps) must be **as accurate and informative as possible, written in
 plain English**. Astronauts aren't doctors, so give them more understanding,
 not less. Simplify the wording, not the facts.
-- **Layered:** a glanceable summary first, then "Learn more" for the full
-  plain-English explanation. Nobody has to read a report to act, but the detail
-  is there when they need it.
-  - **Glance (always visible):** status, a one-line meaning, the next action.
-    E.g. "Heart rate high: 118 bpm (your normal ~65). Sit down and rest 5 min, then re-measure."
-  - **Learn more (on tap):** what the measurement is, how to take it properly,
-    why it matters in space (linked to the NASA hazard or risk), what's normal,
-    what can cause it, what to do and when to escalate to the flight surgeon.
+- **Quick reference, no "Learn more" layer** (see Quick Reference Only): status, a one-line
+  meaning and the next action, e.g. "Heart rate high: 118 bpm (your normal ~65). Sit down and
+  rest 5 min, then re-measure." Measurement steps and emergency steps (each with a short
+  "why") stay, because they tell the crew what to do.
 - Plain English everywhere. Explain any medical term in brackets the first time,
   e.g. "hypoxia (low oxygen in the body)". Use short sentences and everyday words.
 - Accuracy first: no oversimplifying that changes the meaning. Every fact traces
-  to a cited source, shown as a small "Source" link.
+  to a cited source in `docs/SOURCES.md` (not shown in the app; see No External Links).
 - Emergency steps: clear, ordered, plain-English actions (e.g. "Check if they
   respond", "Record heart rate and blood pressure", "Contact the flight surgeon")
   with a short "why" for each step. Labelled not medical advice.
@@ -290,7 +286,7 @@ ATHENA must work for every astronaut, whatever their medical knowledge and
 whatever their state at that moment. We show judges we've thought about this.
 
 **Different knowledge:**
-- Plain English, with a glance summary plus a "Learn more" layer (see Content Style).
+- Plain English, quick-reference text: what it means and what to do (see Content Style).
 - Medical terms explained in brackets. Measurement guides explain how, why and what to do.
 - Adaptive search understands typos, everyday words and symptoms (see Search).
 
@@ -435,7 +431,7 @@ LOCKED
 ## First-Time Help
 
 Not included. Astronauts are trained on onboard software before flight, so the
-app doesn't need a walkthrough. Plain-English guides and "Learn more" cover the rest.
+app doesn't need a walkthrough. Plain-English guides cover the rest.
 
 Status:
 LOCKED
@@ -547,7 +543,7 @@ Emergency first-response steps come from:
 Rules:
 - Write every step **in our own words** (plain English, with a short "why"). Never copy AHA text.
   CDC text is public domain, but still rewrite it for our style.
-- Cite each step's exact source page in the app and in `docs/SOURCES.md`.
+- Cite each step's exact source page in `docs/SOURCES.md` (and its `sourceId` in `src/data`).
 - Check every step against the live source page before use. If it can't be verified, leave it out.
 - No diagnoses and no medication instructions. Label steps "not medical advice" and always
   include when to contact the flight surgeon.
@@ -874,3 +870,38 @@ flight-surgeon summary uses its Earth-link delay and search can switch it. It's 
 
 Status:
 ACTIVE
+
+## No External Links
+
+The app shows **no external links**: no "Source" links, no links to NASA or other web pages.
+Astronauts can't open web pages in flight, so a link would be a dead end.
+- Sources stay documented in `docs/SOURCES.md` and as `sourceIds` in `src/data` (checked by
+  `npm run check:content`), so every health rule is still cited for the judges and reviewers.
+- Labels that say what a rule is based on stay in the app as plain text, e.g. "general clinical
+  reference range", "NASA states", "ATHENA's interpretation".
+- No "Learn more" sections either (see Quick Reference Only).
+- Links between ATHENA's own screens (e.g. "Open: emergency guide") are fine.
+
+Reason:
+Team decision (Isaac, 14 Nov): the app is used in space with no internet.
+
+Status:
+LOCKED
+
+## Quick Reference Only
+
+ATHENA is a quick check, not a textbook: astronauts are already trained, so the app tells
+them their status and what to do, including in emergencies. **No "Learn more" layers.**
+- Removed: the Daily check "Learn more" (why it matters in space, when to get help) and the
+  body-map region card "Learn more" (NASA risks, hazards, key facts).
+- Kept: glance status and meaning, next action, measurement steps, emergency guides with
+  their short "why", "Why this alert?", and required labels ("general clinical reference
+  range, not NASA flight standards", "not medical advice").
+- The longer text stays in `src/data` (search still uses it) and its sources in `docs/SOURCES.md`.
+
+Reason:
+Team decision (Isaac, 14 Nov): the purpose is to let trained crew check their health quickly
+and know what to do.
+
+Status:
+LOCKED

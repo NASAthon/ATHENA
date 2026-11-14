@@ -72,7 +72,9 @@ GitHub is the single source of truth, so always branch from the latest `main`.
   IndexedDB), JS rules engine, 2D SVG body map. No backend and no
   runtime internet dependency. No hosting or deployment work.
 - Priorities: hackathon speed, then NASA relevance, then demo quality, then simplicity. Prefer MVP solutions.
-- **Every health rule shown to users must cite its source URL.** NASA pages
+- **Every health rule must cite its source in `docs/SOURCES.md` (and its `sourceIds` in
+  `src/data`).** The app itself shows no source links or other external links: astronauts
+  can't open web pages in flight (`docs/DECISIONS.md` › No External Links). NASA pages
   are qualitative, so numeric thresholds come from general clinical reference
   ranges (`docs/DECISIONS.md` › Thresholds). Emergency steps use NASA where a NASA page
   gives them, otherwise AHA or CDC guidance in our own words (`docs/DECISIONS.md` › Emergency
@@ -80,8 +82,8 @@ GitHub is the single source of truth, so always branch from the latest `main`.
   never as NASA flight standards.
 - **Health content: accurate, informative and in plain English.** Astronauts aren't doctors,
   so give them more understanding, but simply. Simplify the words, not the facts.
-  Show a glanceable summary first, with a "Learn more" layer for the full plain-English
-  detail. Explain medical terms in brackets (`docs/DECISIONS.md` › Content Style).
+  Quick reference only: status, meaning and what to do, with no "Learn more" layers
+  (`docs/DECISIONS.md` › Quick Reference Only). Explain medical terms in brackets (`docs/DECISIONS.md` › Content Style).
 - Track the 6 indicators the official challenge names (heart rate, blood pressure,
   blood glucose, body temperature, sleep hours, mood) before adding extras.
 - The challenge video adds two requirements (`docs/context.md` Section 6.1):
@@ -149,8 +151,8 @@ may review and merge their own PR, but still go through the checks below.
    - it builds, `npm test` and `npm run check:content` pass, and it works offline (no external fonts,
      scripts or data: check the browser's network log shows only the app's own address);
    - it doesn't change the locked stack;
-   - every health rule cites a source;
-   - health text is accurate, sourced and in plain English, with a glance summary plus "Learn more";
+   - every health rule cites a source in `docs/SOURCES.md`, and the app shows no external links;
+   - health text is accurate, sourced and in plain English, quick reference only (no "Learn more" layers);
    - the inclusive design checklist passes (colour isn't the only signal, tap targets are large,
      it works by keyboard, images have labels, contrast is OK);
    - new libraries, fonts and icons are open-licensed and listed in `docs/SOURCES.md`;

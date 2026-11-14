@@ -7,7 +7,7 @@
 
 import { useMemo } from "react";
 import Link from "next/link";
-import { ArrowDown, ArrowUp, CalendarClock, CircleCheck, ClipboardList, ExternalLink, Eye, FlaskConical, Minus, OctagonAlert, TriangleAlert } from "lucide-react";
+import { ArrowDown, ArrowUp, CalendarClock, CircleCheck, ClipboardList, Eye, FlaskConical, Minus, OctagonAlert, TriangleAlert } from "lucide-react";
 import { EMERGENCIES, EXAMS, INDICATORS } from "@/data";
 import { SCORE_CAPS, adviceForMode, dueMeasurements, examsDueOn, examsOverdue } from "@/lib/engine";
 import { loadExamResults } from "@/lib/checkIn";
@@ -206,15 +206,6 @@ export default function Crew() {
           <p className="mt-2 text-lg">{advice.glance}</p>
           <p className="mt-3 text-sm text-muted-foreground">
             {advice.basisLabel}
-            {link?.source && (
-              <>
-                {" · "}
-                <a href={link.source.url} target="_blank" rel="noreferrer" className={`inline-flex items-center gap-1 rounded underline ${focusRing}`}>
-                  Delay source: {link.source.title}
-                  <ExternalLink className="size-3.5" aria-hidden="true" />
-                </a>
-              </>
-            )}
           </p>
           <Link href="/summary" className={`mt-4 inline-flex min-h-12 items-center rounded-lg border border-input px-4 font-semibold hover:bg-accent ${focusRing}`}>
             Flight-surgeon summary

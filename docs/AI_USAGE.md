@@ -45,6 +45,7 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Team | Claude | Screen-design mockups for the 7 main pages, used as the design reference for building the app (see AI-generated media below) | none in the repo |
 | 14 Nov 2026 | Chidozie | Claude Code | Submission form answers: SI checkboxes and statement, NASA and partner link lists generated from `src/data/sources.js` | `docs/SUBMISSION.md`, `docs/judging.md` |
 | 14 Nov 2026 | Chidozie | Claude Code | Demo polish: seeded exam history, reaction test on the stored baseline, mission mode remembered, exercise minimum spread 5 → 10 min (checked against the crew story tests) | `src/lib/sim/demo.js`, `src/app/reaction-test/page.js`, `src/components/MissionModeProvider.js`, `src/lib/engine/indicators.js`, tests, `docs/*` |
+| 14 Nov 2026 | Isaac | Claude | Removed every external link and source link from the app (astronauts can't open web pages in flight); sources stay in `docs/SOURCES.md`; new LOCKED decisions No External Links and Quick Reference Only (removed the Daily check and region card "Learn more" sections) | `src/app/*/page.js`, `src/components/RegionCard.js`, `src/components/EmergencyVitals.js`, `AGENTS.md`, `docs/*` |
 
 ## AI-generated media
 
