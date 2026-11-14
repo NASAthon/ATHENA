@@ -16,7 +16,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 ## 1. Data and storage
 
 - [x] **M** Daily record defined: date, mission day, heart rate, blood pressure (two numbers), blood sugar, temperature, sleep hours, mood (1–5), reaction median, lapses, false starts, exercise minutes, symptoms, SpO2 (optional), radiation dose (optional) (PR #18: `src/lib/dailyRecord.js`, field names from the engine's `RECORD_FIELDS`, input limits from `src/data`, `validateRecord()`; all 625 simulated records pass)
-- [ ] **M** Units chosen and shown everywhere (mg/dL or mmol/L, °C) 🟡 Partial (PR #7, PR #8, PR #16, PR #19): units shown on the daily check, reaction test, body cards and save errors; still to do: Today, Trends and alert screens
+- [ ] **M** Units chosen and shown everywhere (mg/dL or mmol/L, °C) 🟡 Partial (PR #7, PR #8, PR #16, PR #19, PR #20): units on Today, daily check, reaction test, body cards and save errors; still to do: Trends and emergency screens
 - [x] **M** Save and load daily records in the browser: SQLite via sql.js, saved to IndexedDB after every write, with the `.wasm` file bundled locally (PR #14 storage, PR #17 app wiring, PR #19 saving from the Daily check and Reaction test, validated first)
 - [x] **M** Save and load the two baselines (`saveBaseline`/`loadMissionBaselines`/`ensureMissionBaselines` in `src/lib/db/database.js`) (PR #14)
 - [x] **M** Mission simulator: 180 days for 3 crew (`docs/DECISIONS.md` › Crew) (`src/lib/sim/simulator.js`, seeded; stories checked by the engine in `simulator.test.js`) (PR #15):
@@ -61,19 +61,19 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [x] **M** Navigation: Today, Trends, Body, Calendar, Summary (PR #6)
 - [ ] **M** Search bar and an **Emergency** button on every screen 🟡 Partial (PR #6): both shown on every screen; still to do: search logic and results (section 3 › Search) and the Emergency screen content
 - [x] **M** Crew switcher, with the mission day and astronaut name always visible (PR #6, PR #9; real mission day from the stored mission: PR #17)
-- [ ] **M** Alert banner area at the top of every screen
+- [x] **M** Alert banner area at the top of every screen (PR #20: `AlertBanner` in the header for the selected astronaut; red limits link to the emergency guide)
 - [x] **M** Dark theme dashboard (`docs/DECISIONS.md` › Design) (PR #4, PR #6)
-- [ ] **M** Health score (0–100) shown prominently per astronaut, with a status icon and drop indicator
-- [ ] **M** One colour scheme for status, used everywhere, always colour **plus** icon **plus** text label 🟡 Partial (PR #9): status tokens `--status-*` in `globals.css`, used with icon and label on the body map; still to do: alerts, Today and Trends
+- [x] **M** Health score (0–100) shown prominently per astronaut, with a status icon and drop indicator (PR #20: Today screen, from the engine, with cap reason and bands)
+- [ ] **M** One colour scheme for status, used everywhere, always colour **plus** icon **plus** text label 🟡 Partial (PR #9, PR #20): status tokens with icon and label on the body map, Today and the alert banner; still to do: Trends
 - [ ] **M** Readable on a laptop and a tablet
 
 ### Inclusive design (`docs/DECISIONS.md` › Inclusive Design)
 
 - [ ] **M** Colour-blind-safe palette, text contrast at least 4.5:1 🟡 Partial (PR #8, PR #9): palette and status colours checked (text 5.8–17:1, form borders 3.5–3.9:1); still to do: chart colours (colour-blind check)
-- [ ] **M** Tap targets at least 44×44 px (usable with gloves); large text 🟡 Partial (PR #6, PR #8, PR #9): header, navigation, daily check and body page done; still to do: other screens
-- [ ] **M** Full keyboard navigation and screen-reader labels (including the body figure) 🟡 Partial (PR #6, PR #8, PR #9): header, nav, crew switcher, mission mode, daily check and body figure (region list, one SVG summary) done; still to do: other screens
+- [ ] **M** Tap targets at least 44×44 px (usable with gloves); large text 🟡 Partial (PR #6, #8, #9, #16, #20): header, navigation, Today, daily check, reaction test and body page done; still to do: Trends, search and emergency screens
+- [ ] **M** Full keyboard navigation and screen-reader labels (including the body figure) 🟡 Partial (PR #6, #8, #9, #16, #20): header, Today, daily check, reaction test and body figure done; still to do: Trends, search and emergency screens
 - [ ] **M** Respects "reduce motion"; no information shown only through animation
-- [ ] **M** Health text in plain English: glance summary plus "Learn more" layer, medical terms explained in brackets 🟡 Partial (PR #8, PR #9): daily check side panel and body region cards (glance plus Learn more, sources, NASA states/interpretation tags) read from `src/data`; still to do: alerts and emergency screens (`docs/DECISIONS.md` › Content Style)
+- [ ] **M** Health text in plain English: glance summary plus "Learn more" layer, medical terms explained in brackets 🟡 Partial (PR #8, #9, #20): daily check panel, body cards, and Today's alert card with "Why this alert?"; still to do: emergency screens
 
 ### Daily check
 
@@ -82,7 +82,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [x] **M** Mood as five large buttons, not a text box (PR #8)
 - [x] **M** Symptom tick boxes and exercise minutes (PR #8; red-flag symptoms link to their emergency guide)
 - [x] **M** Save confirmation and today's result shown straight away (PR #8, PR #13, PR #19: saved to the astronaut's record, "Today's result" from the engine using the previous days, check-in streak)
-- [ ] **M** Reminders: shows which measurements are still due today
+- [x] **M** Reminders: shows which measurements are still due today (PR #20: "Still due today" on the Today screen, from the engine's `dueMeasurements`)
 
 ### Reaction test
 
@@ -160,12 +160,12 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 ## 6. Testing
 
-- [ ] **M** Fresh browser: load demo mission, Rivera's alert appears in the expected week 🟡 Partial (PR #15): in the simulated mission Rivera's alert appears on day 100 (week 15), escalating on day 114 (`simulator.test.js`); still to do: check in the app once Load demo mission is wired
-- [ ] **M** Healthy data (Singh) produces no alert and a stable, high health score 🟡 Partial (PR #10): passes on engine-level simulated missions (`evaluate.test.js`) and on the demo mission simulator (PR #15, `simulator.test.js`); still to do: check in the app
-- [ ] **M** Health score drops as Rivera declines and when a red limit is hit 🟡 Partial (PR #10): passes at engine level (`evaluate.test.js`); still to do: check in the app
+- [x] **M** Fresh browser: load demo mission, Rivera's alert appears in the expected week (checked in the app 14 Nov: Today shows Rivera's alert since day 100, escalated by day 129)
+- [x] **M** Healthy data (Singh) produces no alert and a stable, high health score (checked in the app 14 Nov: "No alerts", score 100 Good, no banner)
+- [x] **M** Health score drops as Rivera declines and when a red limit is hit (checked in the app 14 Nov: Rivera 59 Alert, capped by escalation; Nakamura 25 Critical on the red limit)
 - [ ] **M** One bad day produces no alert 🟡 Partial (PR #10): passes at engine level (`evaluate.test.js`); still to do: check in the app
-- [ ] **M** A dangerous reading (Nakamura) triggers the red-limit screen 🟡 Partial (PR #9, PR #10): red-limit check tested in `redLimits.test.js`; Nakamura's sample shows Red limit on the body map; still to do: the red-limit screen itself
-- [ ] **M** Empty state (no data yet) looks sensible 🟡 Partial (PR #9, PR #10): engine returns `no_data` safely (`evaluate.test.js`) and the body map shows "No recent data"; still to do: check every screen
+- [ ] **M** A dangerous reading (Nakamura) triggers the red-limit screen 🟡 Partial (PR #20): Today shows a red-limit card and the banner links to the emergency guide; still to do: the step-by-step emergency screen
+- [ ] **M** Empty state (no data yet) looks sensible 🟡 Partial (PR #9, PR #10, PR #20): engine safe; Today and Daily check point to the Crew page when nothing is stored; still to do: check Trends and emergency screens
 - [ ] **M** Reaction test run ten times in a row without breaking
 - [ ] **M** Search finds the right item for misspellings ("hart rate"), synonyms ("pulse") and symptoms ("chest pain") 🟡 Partial (PR #10): passes on the real content (`search.test.js`); still to do: check in the search bar
 - [ ] **M** Whole app usable by keyboard only; status readable in greyscale

@@ -3,6 +3,7 @@ import { TriangleAlert } from "lucide-react";
 import CrewSwitcher from "@/components/CrewSwitcher";
 import MissionStatus from "@/components/MissionStatus";
 import NavLinks from "@/components/NavLinks";
+import AlertBanner from "@/components/AlertBanner";
 import { focusRing } from "@/lib/ui";
 
 export default function Header() {
@@ -41,6 +42,8 @@ export default function Header() {
         <nav aria-label="Main">
           <NavLinks />
         </nav>
+
+        <AlertBanner />
       </div>
     </header>
   );

@@ -31,6 +31,8 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 14 Nov 2026 | Chidozie | Claude Code | PR #18 review: checked all simulated records pass validation; DECISIONS entry, checklist tick | `docs/*` |
 | 14 Nov 2026 | Chidozie | Claude Code | Saving from the app (PR #19): Daily check and Reaction test save to storage (validated), streak, exam results storage, guest mode, tests | `src/lib/checkIn.js`, `src/app/daily-check/page.js`, `src/app/reaction-test/page.js`, `src/components/MissionDataProvider.js` |
 | 14 Nov 2026 | Chidozie | Claude Code | PR #19 review fixes: clear "Saved" after edits, fresh form/test per astronaut, reaction result can't be saved twice | `src/app/daily-check/page.js`, `src/app/reaction-test/page.js` |
+| 14 Nov 2026 | Izabela | AI assistant | Today page design: health score card, alert card with "Why this alert?", indicator cards (PR #20) | `src/app/today/page.js` |
+| 14 Nov 2026 | Chidozie | Claude Code | PR #20 fixes: Today wired to stored data and the engine for the selected astronaut, red-limit card, reminders, alert banner on every screen, theme tokens | `src/app/today/page.js`, `src/components/useTodayEvaluation.js`, `src/components/AlertBanner.js` |
 
 ## AI-generated media
 
