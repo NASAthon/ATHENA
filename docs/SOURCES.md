@@ -58,7 +58,7 @@ All in `src/data/emergencies.js`. Where a source says "call 911", ATHENA says "c
 | Hypothermia | Ready | CDC | https://www.cdc.gov/winter-weather/prevention/index.html |
 | Decompression sickness | Ready | NASA | https://www.nasa.gov/reference/risk-of-decompression-sickness/ |
 | Hypoxia | Ready (altitude-illness guidance applied to spaceflight, marked as adaptation) | NASA, CDC Yellow Book | https://www.nasa.gov/reference/risk-of-hypoxia/, https://www.cdc.gov/yellow-book/hcp/environmental-hazards-risks/high-altitude-travel-and-altitude-illness.html |
-| Radiation alert | Ready ("get inside, stay inside, stay tuned" applied to spaceflight) | CDC | https://www.cdc.gov/radiation-emergencies/response/get-inside.html (+ stay-inside, stay-tuned) |
+| Radiation alert | Ready ("get inside, stay inside, stay tuned" applied to spaceflight) | CDC | https://www.cdc.gov/radiation-emergencies/response/get-inside.html, https://www.cdc.gov/radiation-emergencies/response/stay-inside.html, https://www.cdc.gov/radiation-emergencies/response/stay-tuned.html |
 | Blow to the head | Ready | CDC HEADS UP | https://www.cdc.gov/heads-up/response/index.html, https://www.cdc.gov/heads-up/signs-symptoms/index.html |
 | Severe bleeding | Ready (direct pressure, clotting dressing, tourniquet, pressure dressing) | AHA and American Red Cross 2024 First Aid Guidelines | https://cpr.heart.org/en/resuscitation-science/2024-first-aid-guidelines (Trauma › External Bleeding Control) |
 | Suspected broken bone | Ready (splint in position found, check limb colour, cover wounds) | AHA and American Red Cross 2024 First Aid Guidelines | https://cpr.heart.org/en/resuscitation-science/2024-first-aid-guidelines (Trauma › Fractures) |
