@@ -65,7 +65,7 @@ function IndicatorCard({ id, group, record, baselines }) {
   const { unit, value, normal } = readingFor(id, record, baselines);
   const readingOnly = id === "radiation";
   return (
-    <article className="rounded-xl border border-border bg-card p-4">
+    <article className="flex min-h-44 flex-col rounded-xl border border-border bg-card p-4">
       <div className="flex items-start justify-between gap-3">
         <h3 className="text-base text-muted-foreground">{byId[id].name}</h3>
         {readingOnly ? <StatusPill status="no_data" label="Reading only" /> : <StatusPill status={group?.status ?? "no_data"} />}
@@ -73,7 +73,7 @@ function IndicatorCard({ id, group, record, baselines }) {
       <p className="mt-3 text-3xl font-bold">
         {value ?? "—"} {value && <span className="text-lg font-normal text-muted-foreground">{unit}</span>}
       </p>
-      <p className="mt-3 text-muted-foreground">
+      <p className="mt-auto pt-3 text-muted-foreground">
         {readingOnly
           ? "Running total from the onboard dosimeter"
           : normal
@@ -327,12 +327,12 @@ export default function Today() {
         <p className="text-muted-foreground">Status compares your 7-day average with your own in-flight normal, not Earth ranges</p>
       </div>
 
-      <div className="mt-4 grid gap-4 md:grid-cols-3">
+      <div className="mt-4 grid auto-rows-fr gap-4 md:grid-cols-3">
         {MAIN.map((id) => (
           <IndicatorCard key={id} id={id} group={groupById[id]} record={record} baselines={baselines} />
         ))}
       </div>
-      <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-4 grid auto-rows-fr gap-4 md:grid-cols-2 xl:grid-cols-4">
         {EXTRAS.map((id) => (
           <IndicatorCard key={id} id={id} group={groupById[id]} record={record} baselines={baselines} />
         ))}

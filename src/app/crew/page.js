@@ -166,7 +166,7 @@ export default function Crew() {
       {status === "loading" ? (
         <p className="mt-4 text-base text-muted-foreground">Opening the mission data…</p>
       ) : (
-        <div className="mt-4 grid gap-4 lg:grid-cols-3">
+        <div className="mt-4 grid auto-rows-fr gap-4 lg:grid-cols-3">
           {CREW.map((m) => (
             <CrewCard key={m.id} member={m} result={results?.[m.id] ?? { state: "empty" }} onOpen={() => setCrewId(m.id)} />
           ))}

@@ -206,7 +206,7 @@ function DailyCheck() {
               How is your mood today?
             </h2>
             <p className="mt-1 text-muted-foreground">{mood.glance}</p>
-            <div className="mt-4 grid grid-cols-5 gap-3">
+            <div className="mt-4 grid auto-rows-fr grid-cols-5 gap-3">
               {mood.scale.map(({ value, label }) => (
                 <button
                   key={value}
@@ -234,7 +234,7 @@ function DailyCheck() {
             <h2 id="symptoms-heading" className="text-xl font-bold">
               Any of these today?
             </h2>
-            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-4 grid auto-rows-fr gap-3 md:grid-cols-2 xl:grid-cols-3">
               {SYMPTOMS.map((s) => (
                 <label
                   key={s.id}

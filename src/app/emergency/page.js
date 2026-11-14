@@ -54,12 +54,12 @@ function GuideList() {
         <NotAdvice />
       </div>
       <p className="mt-4 text-base">Pick what you see. Not sure? Type the symptom in the search bar (e.g. &ldquo;can&apos;t breathe&rdquo;).</p>
-      <ul className="mt-4 grid gap-3 md:grid-cols-2">
+      <ul className="mt-4 grid auto-rows-fr gap-3 md:grid-cols-2">
         {GUIDES_BY_PRIORITY.map((g) => (
           <li key={g.id}>
             <Link
               href={`/emergency?id=${g.id}`}
-              className={`flex min-h-16 flex-col justify-center rounded-xl border-2 border-border bg-card px-4 py-3 hover:bg-accent ${focusRing}`}
+              className={`flex h-full min-h-16 flex-col justify-center rounded-xl border-2 border-border bg-card px-4 py-3 hover:bg-accent ${focusRing}`}
             >
               <span className="flex items-center gap-2 text-lg font-semibold">
                 <OctagonAlert className="size-5 shrink-0" aria-hidden="true" style={{ color: "var(--status-red)" }} />
