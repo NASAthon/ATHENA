@@ -109,7 +109,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 ### Alerts and guidance
 
-- [ ] **M** Alert card: what is drifting, since when, likely hazard, what to do, when to tell the ground ("Why this alert?")
+- [ ] **M** Alert card: what is drifting, since when, likely hazard, what to do, when to tell the ground ("Why this alert?") 🟡 Partial (PR #20): Today's alert card shows what is drifting, since when, what to do, when to tell the ground and "Why this alert?"; still to do: likely hazard (from `src/data` risks/hazards)
 - [ ] **M** Red-limit and emergency screen: numbered first-response steps with a short "why" each, one step at a time with big controls
 - [ ] **M** Emergency guidance works for **a crewmate** (pick the affected astronaut, follow steps, record vitals)
 - [ ] **S** Voice reads the first-response steps aloud 🟡 Partial (PR #8): "Read these steps aloud" on the daily check; still to do: emergency steps
