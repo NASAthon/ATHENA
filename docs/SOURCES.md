@@ -32,8 +32,8 @@ All values verified on 14 Nov 2026. The data lives in `src/data/indicators.js`.
 | Body temperature (hypothermia) | Below 35°C (95°F): get medical help immediately | CDC | https://www.cdc.gov/winter-weather/prevention/index.html |
 | Sleep | Adults 18–60: 7 or more hours | CDC | https://www.cdc.gov/sleep/about/index.html |
 | Exercise | About 1.5 h a day, 6–7 days a week | NASA | https://www.nasa.gov/reference/risk-of-reduced-cardiorespiratory-and-musculoskeletal-fitness/ |
-| Heart rate | **Pending:** only AHA states the normal resting range; heart.org blocks automated access (HTTP 403). Paste or fetch manually to verify. | AHA | — |
-| SpO₂, radiation dose | **No thresholds:** no verified source in the allowed list | — | — |
+| Heart rate | **No fixed range, by design:** compared with each astronaut's own baseline (`docs/DECISIONS.md` › Heart Rate and SpO₂) | — | — |
+| SpO₂, radiation dose | **No fixed thresholds:** own baseline (SpO₂) and running total (dose); symptoms open the emergency guides | — | — |
 
 Measurement steps: blood pressure from https://www.cdc.gov/high-blood-pressure/measure/index.html; glucose from https://www.cdc.gov/diabetes/diabetes-testing/monitoring-blood-sugar.html.
 ATHENA design choices (not clinical): the mood scale and its bands, the 500 ms reaction lapse, "3+ nights or days in a row" rules, and mapping clinical categories onto our four levels. These are labelled `basis: "design"` in the data.
@@ -47,16 +47,22 @@ All in `src/data/emergencies.js`. Where a source says "call 911", ATHENA says "c
 | Scenario | Status | Source | URL |
 |---|---|---|---|
 | Chest pain (heart attack signs) | Ready | CDC | https://www.cdc.gov/heart-disease/about/heart-attack.html |
-| Collapse (cardiac arrest) | Partial: CPR technique pending (AHA blocked) | CDC | https://www.cdc.gov/heart-disease/about/cardiac-arrest.html, https://www.cdc.gov/heart-disease/php/cardiac-arrest-response-plans/index.html |
+| Collapse (cardiac arrest) | Partial: CPR technique pending (only AHA states it, and heart.org blocks automated access) | CDC | https://www.cdc.gov/heart-disease/about/cardiac-arrest.html, https://www.cdc.gov/heart-disease/php/cardiac-arrest-response-plans/index.html |
 | Stroke (BE FAST) | Ready | CDC | https://www.cdc.gov/stroke/signs-symptoms/index.html |
 | Low blood sugar (15-15 rule) | Ready | ADA | https://diabetes.org/living-with-diabetes/hypoglycemia-low-blood-glucose/symptoms-treatment |
 | Very high blood pressure | Ready | CDC | https://www.cdc.gov/high-blood-pressure/about/index.html |
 | Hypothermia | Ready | CDC | https://www.cdc.gov/winter-weather/prevention/index.html |
 | Decompression sickness | Ready | NASA | https://www.nasa.gov/reference/risk-of-decompression-sickness/ |
-| Hypoxia | Partial: NASA says protocols are still in development | NASA | https://www.nasa.gov/reference/risk-of-hypoxia/ |
-| Radiation exposure, injury, mental health crisis | Needs source: signs plus "contact flight surgeon" only | NASA | see `src/data/emergencies.js` |
+| Hypoxia | Ready (altitude-illness guidance applied to spaceflight, marked as adaptation) | NASA, CDC Yellow Book | https://www.nasa.gov/reference/risk-of-hypoxia/, https://www.cdc.gov/yellow-book/hcp/environmental-hazards-risks/high-altitude-travel-and-altitude-illness.html |
+| Radiation alert | Ready ("get inside, stay inside, stay tuned" applied to spaceflight) | CDC | https://www.cdc.gov/radiation-emergencies/response/get-inside.html (+ stay-inside, stay-tuned) |
+| Injury or blow to the head | Partial: concussion steps ready; bleeding and broken-bone first aid pending | CDC HEADS UP | https://www.cdc.gov/heads-up/response/index.html, https://www.cdc.gov/heads-up/signs-symptoms/index.html |
+| Mental health crisis | Ready | CDC | https://www.cdc.gov/suicide/prevention/index.html, https://www.cdc.gov/mental-health/living-with/index.html |
+
+No medication doses are included anywhere (the CDC altitude chapter lists drugs; ATHENA leaves medicines to the flight surgeon).
 
 ## Libraries and tools
+
+The full licence text of every package is in [`THIRD_PARTY_LICENSES.md`](../THIRD_PARTY_LICENSES.md) (regenerate with `npm run licenses`).
 
 | Name | Use | Licence | Link |
 |---|---|---|---|

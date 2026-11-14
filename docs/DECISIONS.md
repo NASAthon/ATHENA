@@ -1,7 +1,7 @@
 # Decision Log
 
 Every locked choice and why. Entries are in the order they were made. **Index:**
-- **Product:** Originality · Crew · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
+- **Product:** Originality · Crew · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
 - **Data and content:** Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
 - **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open)
 - **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
@@ -497,9 +497,8 @@ with its exact URL in `docs/SOURCES.md`, and labelled "general clinical referenc
 range" in the app. If a value can't be verified, don't use it.
 
 Update (14 Nov): heart.org (AHA) blocks automated access, so blood pressure uses the
-**CDC** table (which is based on ACC/AHA guidelines). The resting heart-rate range and CPR
-technique stay **pending** until someone verifies the AHA page by hand. Until then, heart
-rate is tracked against each astronaut's own baseline only.
+**CDC** table (which is based on ACC/AHA guidelines). CPR technique stays **pending**
+(see Emergency Step Sources). Heart rate has no population range by design (see Heart Rate and SpO₂).
 
 Status:
 LOCKED
@@ -516,6 +515,10 @@ Emergency first-response steps come from:
    American Heart Association or the CDC.
    For low blood sugar, the American Diabetes Association's 15-15 rule is used, because ADA is already
    the glucose source.
+   Earth guidance is adapted for space and marked `adaptation: true`. Examples: the CDC
+   altitude-illness steps for hypoxia ("descend" becomes "restore cabin pressure"), and the CDC
+   radiation steps ("get inside" becomes "go to the most shielded area"). Medication doses
+   from any source are never included.
 
 Rules:
 - Write every step **in our own words** (plain English, with a short "why"). Never copy AHA text.
@@ -528,6 +531,22 @@ Rules:
 Reason:
 The official pages give almost no emergency steps, but every fact in the app must be
 cited (Content Style). This is the second exception to "official sources only".
+
+Status:
+LOCKED
+
+
+---
+
+## Heart Rate and SpO₂
+
+No one-size-fits-all range. A healthy resting heart rate differs between people, so ATHENA compares
+each astronaut's heart rate (and SpO₂) only with **their own baseline** (Baselines, Drift Cut-off).
+Symptoms such as chest pain, fainting or breathlessness open the Emergency guides instead.
+
+Reason:
+Team decision. It fits ATHENA's personal-baseline approach, and the allowed sources don't
+give a usable population range (AHA is blocked; the CDC notes SpO₂ is naturally lower at altitude).
 
 Status:
 LOCKED

@@ -41,7 +41,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** Drift cut-off of **z = 3.5** (`docs/DECISIONS.md` › Drift Cut-off) written in the README as a design choice
 - [ ] **M** Alert level: 1 drifting = note, 2 or more = alert, no recovery after 14 more days = tell crew and ground (linked indicators count once; `docs/DECISIONS.md` › Drift Cut-off)
 - [ ] **M** Red-limit check on every new reading, independent of baselines
-- [ ] **M** Red limits taken from a published source and cited (general clinical reference ranges, `docs/DECISIONS.md` › Thresholds) 🟡 Partial (PR #7): blood pressure, glucose, temperature, sleep and exercise in `src/data/indicators.js`; still to do: heart rate (AHA, manual check)
+- [x] **M** Red limits taken from a published source and cited (general clinical reference ranges, `docs/DECISIONS.md` › Thresholds) (PR #7; heart rate and SpO₂ use personal baselines by design)
 - [ ] **M** Reaction scoring: median, lapses over 500 ms, false starts
 - [ ] **M** Handles missing days without crashing or false alerts
 - [ ] **M** Search index: offline fuzzy search over all content (typos, prefixes, synonyms, symptoms; `docs/DECISIONS.md` › Search). Library: **MiniSearch** (MIT)
@@ -136,8 +136,8 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [x] **M** Open the NASA HRP pages for **all 5 hazards and all 17 risks**; note key points with links (PR #7; `docs/BODY_MAP.md`, `src/data/risks.js`)
 - [x] **M** NASA data map: hazard → risk → body system → indicator → countermeasure, each entry with its source URL (PR #7; `src/data/`)
 - [x] **M** Guidance card text for each indicator, answering the brief's five questions: can it be measured in space, why it matters, how hazards affect it, when to escalate, what action helps (PR #7; `briefAnswers` in `src/data/indicators.js`)
-- [ ] **M** "How to measure" steps for each indicator, in plain English 🟡 Partial (PR #7): blood pressure, glucose, sleep, mood, reaction, exercise, radiation done; still to do: heart rate (AHA page needs manual verification), temperature and SpO₂ (no verified source yet)
-- [ ] **M** Emergency guide text in plain English (NASA steps first, otherwise AHA or CDC in our own words, each cited; `docs/DECISIONS.md` › Emergency Step Sources) covering the hazards (`docs/DECISIONS.md` › Data Map Coverage): chest pain/collapse first, then the rest 🟡 Partial (PR #7): chest pain, stroke, low blood sugar, very high blood pressure, hypothermia and decompression ready; still to do: CPR technique for collapse (AHA), and verified steps for hypoxia, radiation, injury and mental health crisis
+- [x] **M** "How to measure" steps for each indicator, in plain English (PR #7)
+- [ ] **M** Emergency guide text in plain English (NASA steps first, otherwise AHA or CDC in our own words, each cited; `docs/DECISIONS.md` › Emergency Step Sources) covering the hazards (`docs/DECISIONS.md` › Data Map Coverage): chest pain/collapse first, then the rest 🟡 Partial (PR #7): 9 of 11 guides ready (chest pain, stroke, low blood sugar, very high BP, hypothermia, decompression, hypoxia, radiation, mental health crisis); still to do: CPR technique (collapse) and bleeding or broken-bone first aid (injury)
 - [x] **M** Search keywords for every item (synonyms, symptoms, misspellings) (PR #7; checked by `npm run check:content`)
 - [x] **M** Advice wording checked: modest, no diagnoses, no medication instructions (PR #7)
 - [x] **M** Source list with links in `docs/SOURCES.md` (NASA HRP, NASA OSDR, Canadian Space Agency, clinical ranges, libraries) (PR #7)

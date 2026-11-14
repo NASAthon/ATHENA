@@ -17,17 +17,20 @@ export const INDICATORS = [
     core: true,
     region: "heart",
     risks: ["cardio", "fitness"],
-    glance: "How fast your heart beats at rest.",
-    howToMeasure: [],
-    pending:
-      "Normal resting range and pulse-taking steps are not added yet. Only the American Heart Association states them, and heart.org could not be verified automatically. Until verified, ATHENA tracks heart rate against each astronaut's own baseline (drift) only.",
+    glance: "How fast your heart beats at rest, compared with YOUR normal.",
+    howToMeasure: [
+      { step: "Rest quietly for a few minutes first.", sourceId: null },
+      { step: "Read your heart rate from the onboard wearable sensor or fingertip pulse oximeter, and log it.", sourceId: null },
+    ],
+    personalBaselineOnly:
+      "By design, ATHENA has no one-size-fits-all heart rate range: a healthy resting rate varies from person to person. Each reading is compared with the astronaut's own baseline (docs/DECISIONS.md > Baselines, Drift Cut-off). Symptoms such as chest pain or fainting open the Emergency guides.",
     whyItMatters:
       "In low gravity the heart and blood vessels adapt, which can lead to irregular heartbeats and fainting when gravity returns.",
     briefAnswers: {
       measurableInSpace: "Yes, with a pulse check or a wearable sensor.",
       whyExamNeeded: "To catch heart changes caused by low gravity early.",
       hazardEffect: "Gravity Fields: the heart and blood vessels adapt to low gravity.",
-      whenToEscalate: "If it drifts away from your own normal, or with chest pain, fainting or shortness of breath (see Emergency).",
+      whenToEscalate: "If it drifts away from your own normal (z ≥ 3.5), or with chest pain, fainting or shortness of breath (see Emergency).",
       prevention: "Regular exercise, fluids and compression garments (NASA countermeasures).",
     },
     bands: [],
@@ -128,8 +131,9 @@ export const INDICATORS = [
     region: "immune",
     risks: ["immune", "microbes"],
     glance: "A fever can be the first sign of infection.",
-    howToMeasure: [],
-    pending: "Thermometer steps are not added yet (no verified source found). Use the thermometer's own instructions.",
+    howToMeasure: [
+      { step: "Use the onboard thermometer exactly as its instructions say, and log the reading in °C.", sourceId: null },
+    ],
     whyItMatters:
       "Spaceflight can weaken the immune system, and germs spread easily in a closed spacecraft. A fever is an early warning of infection.",
     briefAnswers: {
@@ -279,8 +283,11 @@ export const INDICATORS = [
     region: "lungs",
     risks: ["hypoxia"],
     glance: "How much oxygen your blood is carrying.",
-    howToMeasure: [],
-    pending: "No verified source for SpO₂ ranges or pulse oximeter steps yet, so there are no thresholds. Track against your own baseline only.",
+    howToMeasure: [
+      { step: "Rest quietly, clip the pulse oximeter on a fingertip, keep still and log the reading once it settles.", sourceId: null },
+    ],
+    personalBaselineOnly:
+      "No fixed SpO₂ cut-off: the allowed sources don't give one for spaceflight (CDC notes saturation is naturally lower at altitude). Readings are compared with the astronaut's own baseline, and symptoms open the Low oxygen guide.",
     whyItMatters: "If cabin pressure is lowered, oxygen in the body can fall (hypoxia), causing confusion and headaches.",
     briefAnswers: {
       measurableInSpace: "Yes, with a fingertip pulse oximeter.",
@@ -305,7 +312,7 @@ export const INDICATORS = [
     howToMeasure: [
       { step: "Log the reading from the onboard dosimeter.", sourceId: null },
     ],
-    pending: "No verified dose limits from the official sources, so there are no thresholds. Shown as a running total only.",
+    personalBaselineOnly: "No dose limits in the allowed sources, so ATHENA shows a running total and follows mission control's radiation alerts.",
     whyItMatters: "Space radiation raises lifetime cancer risk and can affect the brain, heart and eyes.",
     briefAnswers: {
       measurableInSpace: "Yes, with onboard radiation monitors.",
