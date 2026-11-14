@@ -12,8 +12,8 @@ detect emerging risks, understand long-term trends,
 and receive guidance even when communication with Earth
 is delayed.
 
-**What makes ATHENA different:** it catches the slow decline that fixed
-thresholds miss, it's built for astronauts who aren't doctors, and it works
+**What makes ATHENA different:** it catches the slow decline that generic
+one-size-fits-all thresholds miss, it's built for astronauts who aren't doctors, and it works
 fully offline.
 
 ---
@@ -30,9 +30,9 @@ immediate support from Earth.
 ATHENA provides:
 
 - Continuous health monitoring
-- Personalized baselines
+- Personalised baselines
 - Explainable alerts
-- Treatment recommendations
+- Recommended actions (no diagnoses or medication instructions)
 - Emergency guidance, including for a crewmate
 - Plain-language measurement guides (astronauts are not doctors)
 - Mission-specific health guidance
@@ -147,7 +147,7 @@ Rule-based answers, available offline, to questions such as:
 
 "What factors are affecting my health score?"
 
-Every answer cites its NASA source.
+Every answer cites its source: NASA pages, or clinical guidelines for thresholds.
 
 ### Works Offline
 
@@ -165,6 +165,9 @@ App:
 
 Database:
 - SQLite in the browser (sql.js), saved to IndexedDB
+
+Search:
+- MiniSearch (offline fuzzy search)
 
 Analytics:
 - Rules engine with cited sources
@@ -228,4 +231,4 @@ Open http://localhost:3000. For the offline production build, run `npm run build
 
 ## For contributors and AI agents
 
-Start with [`AGENTS.md`](AGENTS.md) (the workflow). It points to [`context.md`](context.md) (the official event brief), [`CHECKLIST.md`](CHECKLIST.md) (what to build), [`judging.md`](judging.md) (submission and judging) and [`DECISIONS.md`](DECISIONS.md).
+Start with [`AGENTS.md`](AGENTS.md) (the workflow). It points to [`docs/context.md`](docs/context.md) (the official event brief), [`docs/CHECKLIST.md`](docs/CHECKLIST.md) (what to build), [`docs/judging.md`](docs/judging.md) (submission and judging) and [`docs/DECISIONS.md`](docs/DECISIONS.md).

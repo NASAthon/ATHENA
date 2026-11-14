@@ -1,5 +1,11 @@
 # Decision Log
 
+Every locked choice and why. Entries are in the order they were made. **Index:**
+- **Product:** Originality · Crew · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
+- **Data and content:** Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
+- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open)
+- **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
+
 ## Frontend
 
 Next.js (JavaScript, static export) as an offline-first PWA, with Tailwind and ShadCN.
@@ -40,10 +46,11 @@ LOCKED
 
 ## Data Sources
 
-Use only the official resources listed in `context.md` Section 7. This
+Use only the official resources listed in `docs/context.md` Section 7. This
 includes NASA OSDR (https://osdr.nasa.gov/), which the official challenge video
 names. Do not use the extra sources in Section 9 for now.
-Exception: general clinical reference ranges for thresholds (see Thresholds).
+Exceptions: general clinical reference ranges for thresholds (see Thresholds), and
+emergency first-response steps (see Emergency Step Sources).
 
 Reason:
 Team decision to stay within the data we were given.
@@ -80,7 +87,7 @@ LOCKED
 - Rule-based "Why this alert?" panels and a short FAQ ("Am I fit for EVA?"),
   answered from the rules engine with source URLs. Works fully offline.
 - Anomaly and trend detection: fixed personal baselines plus a z-score drift
-  check (|z| ≥ 2) in JavaScript (see Baselines and Drift Cut-off).
+  check (z ≥ 3.5) in JavaScript (see Baselines and Drift Cut-off).
 
 Status:
 LOCKED
@@ -94,7 +101,7 @@ LOCKED
 - The README must keep clear "How to run" steps so judges can run it locally.
 - Demo on localhost: `npm run build`, serve the static output, then install as a PWA.
 - 30-second video "offline moment": turn Wi-Fi off on camera, reload, and trigger
-  a Scenario Lab event. The alert still fires.
+  an alert (a dangerous reading, or a Scenario Lab event if built). The alert still fires.
 - README screenshots go in `docs/screenshots/`.
 
 Status:
@@ -111,8 +118,8 @@ cited in `docs/SOURCES.md`. NASA pages give the qualitative link from each
 hazard to its risks, body systems and indicators, with source URLs.
 
 Reason:
-The official NASA resources contain no numeric thresholds. This is the only
-exception to "official sources only".
+The official NASA resources contain no numeric thresholds. This is one of two
+exceptions to "official sources only" (the other is Emergency Step Sources).
 
 Status:
 LOCKED
@@ -123,7 +130,7 @@ LOCKED
 
 Core (official challenge text): heart rate, blood pressure, blood glucose,
 body temperature, sleep hours, mood (1–5).
-Also recorded daily (from `CHECKLIST.md`): reaction test (median, lapses, false
+Also recorded daily (from `docs/CHECKLIST.md`): reaction test (median, lapses, false
 starts), exercise minutes, symptoms.
 Optional: SpO₂, radiation dose (and HRV and respiration rate if time allows).
 
@@ -137,8 +144,9 @@ LOCKED
 
 ## File Naming
 
-The decision log is `DECISIONS.md` (renamed from the misspelt `DECISONS.md`).
 `CLAUDE.md` only imports `AGENTS.md`, and all workflow rules live in `AGENTS.md`.
+Layout: `AGENTS.md`, `CLAUDE.md` and `README.md` stay at the root (tools and GitHub require it);
+all other docs live in `docs/`; app code lives in `src/` (Next.js `src/app`), with `@/*` → `./src/*`.
 
 Status:
 LOCKED
@@ -160,7 +168,7 @@ with its licence recorded in `docs/SOURCES.md`.
 
 Reason:
 Submission requires citing everything and having permission for copyrighted
-material (`judging.md` 1C.8). Open licences remove the risk.
+material (`docs/judging.md` 1C.8). Open licences remove the risk.
 
 Status:
 LOCKED
@@ -259,21 +267,13 @@ Edge cases it must handle:
 How:
 - Each searchable item has a `keywords` list (synonyms, symptoms, plain-English
   terms, common misspellings), stored with the content data.
-- Use a small open-source fuzzy search library that runs in the browser. Record
-  the final choice in `docs/SOURCES.md`.
-
-Library options (team to choose):
-
-| Library | Licence | Strengths | Weaknesses |
-|---|---|---|---|
-| **MiniSearch** (suggested) | MIT | Small and fast; typo tolerance, prefix matching and field boosting; built-in "did you mean" suggestions (`autoSuggest`) | Synonyms must come from our `keywords` lists |
-| **Fuse.js** | Apache-2.0 | Very simple API; good fuzzy matching on short lists | Slower on larger data; no built-in prefix or auto-suggest |
-
-Both run fully offline, need no server and are free to use.
+- Library: **MiniSearch (MIT)**, installed. It handles typos, prefixes, field boosting and
+  "did you mean" (`autoSuggest`); synonyms come from our `keywords` lists.
+  (Fuse.js was the alternative; it was rejected as slower, with no prefix or auto-suggest.)
 - Rank results with emergency matches first when the query looks like a symptom.
 
 Status:
-LOCKED. Library: **MiniSearch (MIT)**, recorded in `docs/SOURCES.md`.
+LOCKED
 
 
 ---
@@ -338,7 +338,7 @@ LOCKED
 
 ## Checklist
 
-`CHECKLIST.md` is the single list of what to build and hand in, with M/S priorities.
+`docs/CHECKLIST.md` is the single list of what to build and hand in, with M/S priorities.
 It merges the team's build checklist with the earlier plan. New features from the
 checklist: reaction-time test, mission calendar, flight-surgeon summary, check-in
 streak and voice read-aloud.
@@ -365,13 +365,20 @@ Each astronaut has a **0–100 health score** (100 = perfect, 0 = critical), so 
 vitals are noticed straight away.
 
 Starting formula (the logic owner may tune the numbers; record any change here):
-- Each core indicator gets a sub-score: steady = 100, expected adaptation = 90,
-  drifting = 100 − 20 × (|z| − 1) (floored at 20), red limit = 0. No data = left out.
+- Each tracked indicator (or linked group, see Drift Cut-off) gets a sub-score: steady = 100, expected adaptation = 90,
+  drifting = 80 − 20 × (z − 3.5) (floored at 20), red limit = 0. No data = left out.
 - Score = average of the available sub-scores, rounded.
+- **An active drift alert (2 or more groups drifting) caps the score at 79**, and
+  **an escalated alert caps it at 59**, so the score never says "Good" while an
+  alert is showing.
 - **Any red limit caps the score at 25**, so emergencies always look critical.
 - Bands, each with an icon and label: **80–100 Good**, **60–79 Watch**, **40–59 Alert**, **0–39 Critical**.
 - Show the change since yesterday and over 7 days, e.g. "72 ▼ 9 this week".
 - "Why this score?" lists the indicators pulling it down, in plain English.
+
+Reason for the caps:
+The score is an average, so two drifting indicators among nine still averaged
+about 91 ("Good") while the drift alert was active.
 
 Status:
 LOCKED (numbers tunable)
@@ -381,8 +388,8 @@ LOCKED (numbers tunable)
 ## Data Map Coverage
 
 - The NASA data map covers **all 5 hazards and all 17 risks** from the HRP pages.
-- **Body map** regions cover every body system those risks affect. Draft of the 8 regions
-  and their risk links: `docs/BODY_MAP.md` (verified against all 22 NASA pages on 14 Nov).
+- **Body map** regions cover every body system those risks affect. The 8 regions and
+  their risk links are in `docs/BODY_MAP.md` (verified against all 22 NASA pages on 14 Nov).
 - **Emergency scenarios** cover the acute events linked to the hazards (e.g. chest
   pain/collapse, hypoxia, decompression sickness, radiation exposure, injury,
   severe behavioural crisis). Chest pain/collapse is built first.
@@ -413,7 +420,7 @@ LOCKED
 
 ## Demo and Pitch
 
-Follows the recommendations in `judging.md` 1D.
+Follows the recommendations in `docs/judging.md` 1D.
 - **Global:** a 30-second video using the recommended pacing.
 - **Local (11:30):** a short presentation **plus a live demo** of the app in 3 minutes,
   followed by 2 minutes of Q&A.
@@ -425,7 +432,8 @@ LOCKED
 
 ## Originality
 
-ATHENA's original angle: it **catches the slow decline that fixed thresholds miss**,
+ATHENA's original angle: it **catches the slow decline that generic one-size-fits-all thresholds miss**
+(by comparing each astronaut with their own baseline),
 is **built for astronauts who aren't doctors**, and **works fully offline**. Every
 feature and the pitch should support this line.
 
@@ -437,7 +445,7 @@ LOCKED
 
 ## Roles
 
-No fixed roles. Each teammate picks `CHECKLIST.md` tasks they're comfortable with.
+No fixed roles. Each teammate picks `docs/CHECKLIST.md` tasks they're comfortable with.
 Say which item you're taking, and work on its own branch to avoid clashes.
 
 Status:
@@ -447,14 +455,33 @@ LOCKED
 
 ## Drift Cut-off
 
-An indicator counts as **drifting at |z| ≥ 2** (7-day average against the in-flight baseline).
+Formula, per indicator, each day:
+
+    z = (recent average − baseline mean) ÷ (s × √(1/n + 1/m))
+
+- recent average: mean of the readings in the last 7 days (n readings, at least 4).
+- baseline mean and s: mean and day-to-day standard deviation of the in-flight
+  baseline (m readings). s has a minimum per indicator, so a very steady
+  baseline cannot turn a trivial change into a large z.
+- Direction: only a change in the worrying direction counts (lower sleep, mood,
+  exercise or SpO₂; higher reaction time or lapses; either way for vital signs).
+
+An indicator counts as **drifting at z ≥ 3.5** in its worrying direction.
+
+For alert levels, linked indicators count once: reaction median and lapses are
+one group, and systolic and diastolic are one group.
 
 Reason:
-Stricter than 1.5, so normal day-to-day noise doesn't trigger alerts. This
-protects the "no false alarms" story (Pilot Singh stays green).
+"z ≥ 2" did not say what to divide by. With this formula, a cut-off of 2 gave a
+false main alert in 96% of 300 simulated healthy missions, and 3 gave 12%.
+At 3.5 it gave about 1%, while every one of 300 simulated declining missions
+was still caught (typical alert day 119, decline starting day 75). This keeps
+Pilot Singh green. Tested on simulated data with independent day-to-day noise,
+so real false-alarm rates would be higher. Re-run on our own simulator and
+record the result here. The cut-off is a design choice, not a clinical standard.
 
 Status:
-LOCKED
+LOCKED (number tunable after testing)
 
 ---
 
@@ -468,6 +495,32 @@ Red limits (and normal ranges) come from published clinical guidelines:
 Every value must be **checked against the live source page before use**, entered
 with its exact URL in `docs/SOURCES.md`, and labelled "general clinical reference
 range" in the app. If a value can't be verified, don't use it.
+
+Status:
+LOCKED
+
+
+---
+
+## Emergency Step Sources
+
+Emergency first-response steps come from:
+1. **NASA first:** wherever a NASA page gives a step, use it and cite it (e.g. decompression
+   sickness: end the spacewalk and return to the pressurised environment).
+2. **Otherwise AHA or CDC:** published first-aid and first-response guidance from the
+   American Heart Association or the CDC.
+
+Rules:
+- Write every step **in our own words** (plain English, with a short "why"). Never copy AHA text.
+  CDC text is public domain, but still rewrite it for our style.
+- Cite each step's exact source page in the app and in `docs/SOURCES.md`.
+- Check every step against the live source page before use. If it can't be verified, leave it out.
+- No diagnoses and no medication instructions. Label steps "not medical advice" and always
+  include when to contact the flight surgeon.
+
+Reason:
+The official pages give almost no emergency steps, but every fact in the app must be
+cited (Content Style). This is the second exception to "official sources only".
 
 Status:
 LOCKED
