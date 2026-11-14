@@ -93,8 +93,8 @@ One line per designed page. A page is ticked when it's built and working in the 
 
 ### Daily check
 
-- [x] **M** Form for the six brief indicators, with units and sensible input limits (PR #8; PR #51: vitals now come from a simulated sensor scan, validated against the same limits and saved automatically; the form stays as the manual fallback for a failed sensor)
-- [x] **M** "How to measure" help beside each field (how to take it, why it matters, what to do if abnormal) (PR #8; PR #51: shown as "How it's measured" for each sensor, with the manual steps for when a sensor fails)
+- [x] **M** Form for the six brief indicators, with units and sensible input limits (PR #8; PR #51: numeric vitals now come from a simulated sensor scan, validated against the same limits and saved automatically; failed sensors are retried rather than entered manually)
+- [x] **M** "How to measure" help beside each field (how to take it, why it matters, what to do if abnormal) (PR #8; PR #51: retained as a reference guide beside the simulated scan)
 - [x] **M** Mood as five large buttons, not a text box (PR #8)
 - [x] **M** Symptom tick boxes and exercise minutes (PR #8; red-flag symptoms link to their emergency guide)
 - [x] **M** Save confirmation and today's result shown straight away (PR #8, PR #13, PR #19: saved to the astronaut's record, "Today's result" from the engine using the previous days, check-in streak)

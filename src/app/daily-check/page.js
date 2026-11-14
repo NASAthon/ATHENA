@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Check, CircleDashed, Eye, LoaderCircle, OctagonAlert, PencilLine, RotateCcw, ScanLine, TriangleAlert, Volume2 } from "lucide-react";
+import { Check, CircleDashed, Eye, LoaderCircle, OctagonAlert, RotateCcw, ScanLine, TriangleAlert, Volume2 } from "lucide-react";
 import { INDICATORS, SYMPTOMS, EMERGENCIES } from "@/data";
 import { RECORD_FIELDS, SYMPTOMS_FIELD, checkReading } from "@/lib/engine";
 import { useCrew } from "@/components/CrewProvider";
@@ -17,12 +17,11 @@ import { focusRing } from "@/lib/ui";
 // Daily check (layout and design by Izabela, PR #8; simulated sensor scan, docs/DECISIONS.md ›
 // Simulated Sensor Scan). Vitals are collected by a SIMULATED sensor scan (src/lib/sim/sensorScan.js),
 // validated and saved automatically; the crew only adds mood and symptoms, which no sensor can
-// report. A sensor that fails can be retried or entered by hand.
+// report. A sensor that fails can be retried; numeric vital entry is fully replaced by the scan.
 // All health text, units, steps, limits and symptoms come from src/data (AGENTS.md rule),
 // so the screen always matches the verified research.
 
 const byId = Object.fromEntries(INDICATORS.map((i) => [i.id, i]));
-const FORM_ORDER = ["sleep", "heartRate", "bloodPressure", "glucose", "temperature", "exercise", "spo2"];
 const mood = byId.mood;
 const emergencyName = Object.fromEntries(EMERGENCIES.map((e) => [e.id, e.name]));
 
@@ -37,45 +36,6 @@ const LEVEL_STYLE = {
 
 const plainError = plainFieldError;
 
-// Turns the form into the engine's daily record (src/lib/engine/indicators.js › RECORD_FIELDS),
-// so the form and the logic engine always use the same field names.
-function toRecord(values, moodValue, symptoms, ids = FORM_ORDER) {
-  const record = symptoms ? { [SYMPTOMS_FIELD]: symptoms } : {};
-  for (const id of ids) {
-    const fields = RECORD_FIELDS[id];
-    const parts = byId[id].inputs ? byId[id].inputs.map((f) => [f.id, values[`${id}.${f.id}`]]) : [["value", values[id]]];
-    for (const [part, raw] of parts) {
-      if (raw !== undefined && raw !== "" && Number.isFinite(Number(raw))) record[fields[part]] = Number(raw);
-    }
-  }
-  if (moodValue != null) record[RECORD_FIELDS.mood.value] = moodValue;
-  return record;
-}
-const inputClass = `mt-1 min-h-11 w-full rounded-lg border border-input bg-input/30 px-3 text-base ${focusRing}`;
-
-// One input box. Limits come from the indicator data (plausibility bounds, not health thresholds).
-function NumberInput({ id, label, unit, limits, value, onChange, onFocus }) {
-  return (
-    <div>
-      <label htmlFor={id} className="block font-semibold">
-        {label} <span className="font-normal text-muted-foreground">({unit})</span>
-      </label>
-      <input
-        id={id}
-        type="number"
-        inputMode="decimal"
-        min={limits?.min}
-        max={limits?.max}
-        step={limits?.step ?? "any"}
-        value={value}
-        onFocus={onFocus}
-        onChange={(e) => onChange(e.target.value)}
-        className={inputClass}
-      />
-    </div>
-  );
-}
-
 // A fresh form for each astronaut: switching crew in the header never carries one person's
 // readings over to another.
 function DailyCheckForCrew() {
@@ -87,9 +47,10 @@ function DailyCheckForCrew() {
 const STEP_STYLE = {
   waiting: { label: "Waiting", Icon: CircleDashed, colour: "var(--status-nodata)" },
   reading: { label: "Reading…", Icon: LoaderCircle, colour: "var(--primary)" },
-  valid: { label: "Checked and saved", Icon: Check, colour: "var(--status-steady)" },
+  checked: { label: "Checked", Icon: Check, colour: "var(--primary)" },
+  saved: { label: "Checked and saved", Icon: Check, colour: "var(--status-steady)" },
   invalid: { label: "Check failed", Icon: TriangleAlert, colour: "var(--status-amber)" },
-  manual: { label: "Entered by hand", Icon: PencilLine, colour: "var(--status-steady)" },
+  save_error: { label: "Not saved", Icon: TriangleAlert, colour: "var(--status-red)" },
 };
 
 /** Pause between sensors while scanning (none when the person asks for reduced motion). */
@@ -108,8 +69,6 @@ function readingText(r) {
 function DailyCheck() {
   const [steps, setSteps] = useState({}); // sensorId → { state, result, attempt }
   const [scanning, setScanning] = useState(false);
-  const [manualFor, setManualFor] = useState(null); // sensorId being entered by hand
-  const [values, setValues] = useState({});
   const [moodValue, setMoodValue] = useState(null);
   const [symptoms, setSymptoms] = useState([]);
   // `?guide=<indicator id>` (from search) opens that indicator's "How it's measured" guide.
@@ -140,6 +99,7 @@ function DailyCheck() {
   const scanned = SCAN_SENSORS.filter((s) => steps[s.id]?.state && steps[s.id].state !== "waiting" && steps[s.id].state !== "reading");
   const scanDone = scanned.length === SCAN_SENSORS.length;
   const failed = SCAN_SENSORS.filter((s) => steps[s.id]?.state === "invalid");
+  const unsaved = SCAN_SENSORS.filter((s) => steps[s.id]?.state === "save_error");
 
   // Saves record fields (validated first, src/lib/dailyRecord.js), then checks the whole of
   // today's record with the engine's red-limit check, using the previous days for streak bands.
@@ -167,7 +127,6 @@ function DailyCheck() {
     setScanning(true);
     setResult(null);
     setSaveInfo(null);
-    setManualFor(null);
     setSteps(Object.fromEntries(SCAN_SENSORS.map((s) => [s.id, { state: "waiting", result: null, attempt: 0 }])));
     const delay = prefersReducedMotion() ? 0 : STEP_MS;
     const results = [];
@@ -178,10 +137,15 @@ function DailyCheck() {
       if (!alive.current) return;
       const r = readSensor(crewId, today, sensor.id, { attempt: 0 });
       results.push(r);
-      setSteps((st) => ({ ...st, [sensor.id]: { state: r.ok ? "valid" : "invalid", result: r, attempt: 0 } }));
+      setSteps((st) => ({ ...st, [sensor.id]: { state: r.ok ? "checked" : "invalid", result: r, attempt: 0 } }));
     }
     const fields = scanToRecordFields(results);
-    if (Object.keys(fields).length > 0) await persist(fields, "Simulated sensor readings");
+    const saved = Object.keys(fields).length > 0 && await persist(fields, "Simulated sensor readings");
+    if (!alive.current) return;
+    setSteps((st) => Object.fromEntries(Object.entries(st).map(([id, step]) => [
+      id,
+      step.state === "checked" ? { ...step, state: saved ? "saved" : "save_error" } : step,
+    ])));
     if (alive.current) setScanning(false);
   };
 
@@ -192,24 +156,12 @@ function DailyCheck() {
     await wait(prefersReducedMotion() ? 0 : STEP_MS);
     if (!alive.current) return;
     const r = readSensor(crewId, today, sensorId, { attempt });
-    setSteps((st) => ({ ...st, [sensorId]: { state: r.ok ? "valid" : "invalid", result: r, attempt } }));
-    if (r.ok) await persist(scanToRecordFields([r]), "Simulated sensor reading");
+    setSteps((st) => ({ ...st, [sensorId]: { state: r.ok ? "checked" : "invalid", result: r, attempt } }));
+    if (!r.ok) return;
+    const saved = await persist(scanToRecordFields([r]), "Simulated sensor reading");
+    if (!alive.current) return;
+    setSteps((st) => ({ ...st, [sensorId]: { ...st[sensorId], state: saved ? "saved" : "save_error" } }));
   };
-
-  // Manual fallback for a failed sensor: typed values, checked by the same record validation.
-  const saveManual = async (sensor) => {
-    const fields = toRecord(values, null, null, sensor.indicators);
-    if (Object.keys(fields).length === 0) {
-      setErrors(["Enter at least one reading, or retry the sensor."]);
-      return;
-    }
-    if (await persist(fields, "Readings entered by hand")) {
-      setSteps((st) => ({ ...st, [sensor.id]: { ...st[sensor.id], state: "manual" } }));
-      setManualFor(null);
-    }
-  };
-
-  const setValue = (key) => (value) => setValues((v) => ({ ...v, [key]: value }));
 
   const toggleSymptom = (id) => {
     setSaveInfo(null);
@@ -281,61 +233,27 @@ function DailyCheck() {
                       </span>
                     </div>
                     <p className="text-sm text-muted-foreground">Reads {sensor.detail}</p>
-                    {(step.state === "valid" || step.state === "manual") && shown.length > 0 && (
+                    {(["checked", "saved", "save_error"].includes(step.state)) && shown.length > 0 && (
                       <ul className="mt-1 space-y-0.5">
                         {shown.map((r) => (
                           <li key={r.indicatorId} className="text-base">
                             {byId[r.indicatorId].name}: <strong>{readingText(r)}</strong>{" "}
-                            <span className="text-sm text-muted-foreground">{step.state === "manual" ? "(by hand)" : "(simulated)"}</span>
+                            <span className="text-sm text-muted-foreground">(simulated)</span>
                           </li>
                         ))}
                       </ul>
                     )}
-                    {step.state === "invalid" && (
+                    {(step.state === "invalid" || step.state === "save_error") && (
                       <>
-                        <p className="text-sm">{reason} Nothing from this sensor was saved.</p>
+                        <p className="text-sm">
+                          {step.state === "invalid" ? `${reason} Nothing from this sensor was saved.` : "The readings passed their checks, but the database did not confirm the save."}
+                        </p>
                         <div className="mt-1 flex flex-wrap gap-2">
-                          <button type="button" onClick={() => retry(sensor.id)} disabled={scanning} className={`inline-flex min-h-11 items-center gap-2 rounded-lg border border-input px-3 text-sm font-semibold hover:bg-accent disabled:opacity-50 ${focusRing}`}>
+                          <button type="button" onClick={() => retry(sensor.id)} disabled={scanning || step.state === "reading"} className={`inline-flex min-h-11 items-center gap-2 rounded-lg border border-input px-3 text-sm font-semibold hover:bg-accent disabled:opacity-50 ${focusRing}`}>
                             <RotateCcw aria-hidden="true" className="size-4" /> Retry sensor
-                          </button>
-                          <button
-                            type="button"
-                            aria-expanded={manualFor === sensor.id}
-                            onClick={() => {
-                              setManualFor(manualFor === sensor.id ? null : sensor.id);
-                              setFocusId(sensor.indicators[0]);
-                            }}
-                            className={`inline-flex min-h-11 items-center gap-2 rounded-lg border border-input px-3 text-sm font-semibold hover:bg-accent ${focusRing}`}
-                          >
-                            <PencilLine aria-hidden="true" className="size-4" /> Enter by hand
                           </button>
                         </div>
                       </>
-                    )}
-                    {manualFor === sensor.id && (
-                      <div className="mt-1 space-y-2 rounded-lg border border-border p-2">
-                        {sensor.indicators.map((id) => {
-                          const ind = byId[id];
-                          if (ind.inputs) {
-                            return (
-                              <fieldset key={id} onFocus={() => setFocusId(id)}>
-                                <legend className="font-semibold">{ind.name}</legend>
-                                <div className="grid gap-2 sm:grid-cols-2">
-                                  {ind.inputs.map((f) => (
-                                    <NumberInput key={f.id} id={`${id}-${f.id}`} label={f.label} unit={ind.unit} limits={f} value={values[`${id}.${f.id}`] ?? ""} onChange={setValue(`${id}.${f.id}`)} onFocus={() => setFocusId(id)} />
-                                  ))}
-                                </div>
-                              </fieldset>
-                            );
-                          }
-                          return (
-                            <NumberInput key={id} id={id} label={ind.optional ? `${ind.name} (optional)` : ind.name} unit={ind.unit} limits={ind.input} value={values[id] ?? ""} onChange={setValue(id)} onFocus={() => setFocusId(id)} />
-                          );
-                        })}
-                        <button type="button" onClick={() => saveManual(sensor)} className={`min-h-11 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground hover:bg-primary/90 ${focusRing}`}>
-                          Save these readings
-                        </button>
-                      </div>
                     )}
                     <button type="button" onClick={() => setFocusId(sensor.indicators[0])} className={`mt-auto self-start rounded text-sm text-primary underline ${focusRing}`}>
                       How it&apos;s measured
@@ -350,8 +268,10 @@ function DailyCheck() {
                 ? `Scanning: ${scanned.length} of ${SCAN_SENSORS.length} sensors read.`
                 : scanDone
                   ? failed.length > 0
-                    ? `Scan finished. ${failed.length} ${failed.length === 1 ? "sensor needs" : "sensors need"} attention: retry or enter by hand.`
-                    : "Scan finished. Every reading passed its checks and was saved."
+                    ? `Scan finished. ${failed.length} ${failed.length === 1 ? "sensor needs" : "sensors need"} attention: retry the sensor.`
+                    : unsaved.length > 0
+                      ? `Scan finished, but ${unsaved.length} ${unsaved.length === 1 ? "sensor was" : "sensors were"} not saved. Retry to save again.`
+                      : "Scan finished. Every reading passed its checks and was saved."
                   : "Press Start sensor scan. It takes a few seconds and needs nothing from you."}
             </p>
           </section>
@@ -525,7 +445,7 @@ function DailyCheck() {
           <p className="mt-1 text-muted-foreground">{focused.glance}</p>
 
           {focused.howToMeasure.length > 0 && (
-            <p className="mt-2 text-sm text-muted-foreground">If a sensor fails, measure by hand like this:</p>
+            <p className="mt-2 text-sm text-muted-foreground">Reference steps for checking this measurement:</p>
           )}
           {focused.howToMeasure.length > 0 && (
             <ol className="mt-2 list-decimal space-y-2 pl-5 text-base">

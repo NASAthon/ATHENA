@@ -1011,8 +1011,8 @@ automatically through `saveCheckIn`. The crew only adds mood and symptoms, which
   nothing, so it can never overwrite stored data. The record is then validated again by `dailyRecord.js`.
 - **Sensor faults (simulated, ASSUMPTION):** Singh's shirt gives no signal on demo day 129, and about
   1 first attempt in 12 elsewhere has a harmless glitch. A retry always reads cleanly, so a demo can't get stuck.
-- **Manual fallback:** a failed sensor can be retried or entered by hand with the original input
-  limits, and the "How it's measured" panel keeps the measurement guide for every indicator.
+- **No manual vital entry:** a failed sensor is retried. The simulation guarantees a clean retry,
+  keeping the demo focused on sensor collection while the measurement guides remain available.
 - **Accessible:** icon + label + colour for every scan state, a live status line for screen readers,
   44 px targets, and no pauses or spinner animation when "reduce motion" is on.
 
