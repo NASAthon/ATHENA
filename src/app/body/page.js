@@ -40,7 +40,7 @@ function BodyPage() {
   const selected = statuses.find((s) => s.id === selectedId);
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-3">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
       <h1 className="text-xl font-bold">
         Body{" "}
         <span className="text-base font-normal text-muted-foreground">
@@ -75,7 +75,7 @@ function BodyPage() {
 
 export default function Page() {
   return (
-    <Suspense fallback={<main className="mx-auto w-full max-w-6xl flex-1 px-4 py-3"><h1 className="text-lg font-semibold">Body</h1></main>}>
+    <Suspense fallback={<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3"><h1 className="text-lg font-semibold">Body</h1></main>}>
       <BodyPage />
     </Suspense>
   );

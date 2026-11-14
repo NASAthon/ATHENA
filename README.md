@@ -2,6 +2,19 @@
 
 Autonomous Telecommunications and Health Evaluation Network for Astronauts
 
+## Live Demo
+
+**[https://nasathon.github.io/ATHENA/](https://nasathon.github.io/ATHENA/)**
+
+## Team
+
+**NASAthon**
+
+- Chidozie Onyejelem
+- Isaac Adeniji
+- Mercy Olasehinde
+- Izabela Heczková
+
 ## Overview
 
 ATHENA is a health monitoring and decision-support platform
@@ -144,6 +157,16 @@ Prompts the crew to take scheduled measurements as part of the mission routine.
 Visualizes communication delays between astronaut crews
 and Earth-based mission control.
 
+The Flight-Surgeon Summary can queue an immutable report snapshot, simulate its trip to Earth,
+and return a clearly labelled simulated acknowledgement after the same one-way delay. A persistent
+clock supports real-time, 60× and 720× demo speeds; message history remains on the device and is
+kept separately for each astronaut. It shows changes since the preceding report and combines
+alerts, red limits, recovery and communications in an incident timeline. No message is actually
+transmitted.
+
+Mission data can be exported and atomically restored as a validated offline SQLite backup from
+the Crew page. Invalid backups leave the current database unchanged.
+
 ### Scenario Lab
 
 Simulate:
@@ -195,14 +218,16 @@ No backend server and no internet connection needed at runtime.
 
 ---
 
-## NASA Data and Credits
+## Sources and References
 
 ATHENA's link from each hazard to its risks, body systems and indicators is built
 from the NASA Human Research Program's official resources, including the
 [5 Hazards of Human Spaceflight](https://www.nasa.gov/hrp/hazards/) and
-[Risks of Human Spaceflight](https://www.nasa.gov/hrp/risks/). The challenge was authored by the Brazilian Space Agency (AEB). Partner context
-comes from the [Canadian Space Agency](https://www.asc-csa.gc.ca/eng/news/articles/2026/2026-02-26-monitoring-radiation-astronaut-health.asp).
-The full list is in [`docs/SOURCES.md`](docs/SOURCES.md), and the licences of all open-source packages are in [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md).
+[Risks of Human Spaceflight](https://www.nasa.gov/hrp/risks/).
+
+The complete NASA and clinical reference list is in
+[`docs/SOURCES.md`](docs/SOURCES.md). Open-source package licences are recorded in
+[`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md).
 
 Numeric thresholds are general clinical reference ranges, not NASA flight
 standards. Astronaut data in the app is simulated.
@@ -218,22 +243,25 @@ illustrative and would need validation by flight surgeons before any real use.
 
 ## AI Usage Disclosure
 
-AI-generated code was used to speed up the development process.
-
----
-
-## Team
-
-**NASAthon**, competing at HackAthlone (NASA Space Apps Challenge 2026)
-
-- Chidozie Onyejelem
-- Isaac Adeniji
-- Mercy Olasehinde
-- Izabela Heczková
+The ATHENA concept is the team's own. AI coding assistants were used to speed up
+implementation, testing, research checks and documentation. ATHENA itself does not use AI;
+health evaluations come from its deterministic rules engine. The full dated disclosure is in
+[`docs/AI_USAGE.md`](docs/AI_USAGE.md).
 
 ---
 
 ## How to Run
+
+### Hosted evaluation copy
+
+Open the hosted evaluation copy without installing packages:
+
+**[https://nasathon.github.io/ATHENA/](https://nasathon.github.io/ATHENA/)**
+
+This is a convenience copy: it has no backend, and its simulated mission data stays in that
+browser's IndexedDB. Internet is needed for the initial hosted page load.
+
+### Local offline version
 
 Requires Node.js 20 or newer (tested on Node 24).
 
@@ -250,9 +278,3 @@ Open http://localhost:3000. For the offline production build, run `npm run build
 - **npm is not recognised**: install Node.js 20 or newer (LTS) from nodejs.org, then restart the terminal.
 - **running scripts is disabled** (Windows PowerShell): run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, or use `npm.cmd install`.
 - `npx serve out` downloads a small tool the first time it runs, so run it once while you're online.
-  
----
-
-## For contributors and AI agents
-
-Start with [`AGENTS.md`](AGENTS.md) (the workflow). It points to [`docs/context.md`](docs/context.md) (the official event brief), [`docs/CHECKLIST.md`](docs/CHECKLIST.md) (what to build), [`docs/judging.md`](docs/judging.md) (submission and judging) and [`docs/DECISIONS.md`](docs/DECISIONS.md).

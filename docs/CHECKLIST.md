@@ -27,6 +27,9 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [x] **M** "Load demo mission" and "Reset data" buttons work (Crew page, `src/components/MissionDataPanel.js`; demo loaded automatically on first run, stays empty after reset; tested against the real sql.js in `demo.db.test.js`)
 - [x] **M** Every indicator, guide and emergency entry has a `keywords` list (synonyms, plain-English terms, symptoms, common misspellings) for search (PR #7)
 - [x] **S** Store periodic exam results and the check-in streak (PR #19: `saveExamResult`/`loadExamResults` in `src/lib/checkIn.js`, cleared by Reset data; streak worked out from stored records with `checkInStreak`)
+- [x] **S** Persist immutable simulated Earth-link reports and separate history per astronaut; Reset and Load demo clear it (PR #45)
+- [x] **S** Serialise SQLite/IndexedDB writes and restore in-memory state after a failed persistence save (PR #45)
+- [x] **S** Export and atomically restore a validated offline SQLite backup; show a recovery notice after a damaged saved database (PR #45)
 
 ---
 
@@ -51,6 +54,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [x] **S** Summary builder for the flight-surgeon report (`src/lib/engine/summary.js; Earth delay passed in`) (PR #10)
 - [x] **S** Mission mode changes which hazards and advice are shown (ISS, Lunar Gateway, Mars Transit; no Lunar Surface Base) (`src/lib/engine/missionMode.js`; delays, emphasis and advice in `src/data/missionModes.js`) (PR #8, PR #12)
 - [x] **S** Scenario Lab: inject radiation, fatigue, sleep loss or hypoxia into the data and watch the alerts react (injection: PR #10; `/scenario-lab` screen with before/after score and alerts: PR #15)
+- [x] **S** Incident timeline and report comparison derived from engine evaluations and immutable Earth-link snapshots (PR #45)
 
 ---
 
@@ -77,20 +81,20 @@ One line per designed page. A page is ticked when it's built and working in the 
 - [x] **M** Dark theme dashboard (`docs/DECISIONS.md` › Design) (PR #4, PR #6)
 - [x] **M** Health score (0–100) shown prominently per astronaut, with a status icon and drop indicator (PR #20: Today screen, from the engine, with cap reason and bands)
 - [x] **M** One colour scheme for status, used everywhere, always colour **plus** icon **plus** text label (PR #9, PR #20, PR #24): status tokens with icon and label on the body map, Today and the alert banner; Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
-- [x] **M** Readable on a laptop and a tablet (PR #21, PR #24): every built screen checked at 1280 px and 768 px wide in Chrome (no sideways scrolling, layout wraps); Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
+- [x] **M** Readable on a laptop and a tablet (PR #21, PR #24, PR #50): every built screen checked at 1280 px and 768 px wide in Chrome (no sideways scrolling, layout wraps); Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state); PR #50 adds a collapsible desktop sidebar and wider, denser content while retaining the existing navigation below the desktop breakpoint
 
 ### Inclusive design (`docs/DECISIONS.md` › Inclusive Design)
 
 - [x] **M** Colour-blind-safe palette, text contrast at least 4.5:1 (PR #8, PR #9, PR #24): palette and status colours checked (text 5.8–17:1, form borders 3.5–3.9:1); charts use the same checked status tokens, and every coloured chart area also has a text label (PR #24)
-- [x] **M** Tap targets at least 44×44 px (usable with gloves); large text (PR #6, #8, #9, #16, #20, PR #24): header (logo, crew picker and Earth-link source enlarged in PR #21), navigation, Today, daily check, reaction test, body page, search results, calendar and summary done; Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
-- [x] **M** Full keyboard navigation and screen-reader labels (including the body figure) (PR #6, #8, #9, #16, #20, PR #24): header, Today, daily check, reaction test, body figure, search (ARIA combobox: arrow keys, Enter, Escape, result count announced; PR #21), calendar and summary done; Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
+- [x] **M** Tap targets at least 44×44 px (usable with gloves); large text (PR #6, #8, #9, #16, #20, PR #24, PR #50): header (logo, crew picker and Earth-link source enlarged in PR #21), navigation, Today, daily check, reaction test, body page, search results, calendar and summary done; Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state); the PR #50 sidebar toggle and links retain 44 px targets in expanded and collapsed modes
+- [x] **M** Full keyboard navigation and screen-reader labels (including the body figure) (PR #6, #8, #9, #16, #20, PR #24, PR #50): header, Today, daily check, reaction test, body figure, search (ARIA combobox: arrow keys, Enter, Escape, result count announced; PR #21), calendar and summary done; Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state); the PR #50 sidebar toggle and icon-only links have explicit accessible names
 - [x] **M** Respects "reduce motion"; no information shown only through animation (PR #21, PR #24): global reduced-motion rule in `globals.css` stops animations and transitions; the reaction-test signal is also shown as text; Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
 - [x] **M** Health text in plain English: quick reference (status, meaning, what to do; no "Learn more" layer, DECISIONS › Quick Reference Only), medical terms explained in brackets (PR #8, #9, #20, PR #22: emergency guides show the glance first, then each step with its "why", signs and "All steps at once")
 
 ### Daily check
 
-- [x] **M** Form for the six brief indicators, with units and sensible input limits (PR #8)
-- [x] **M** "How to measure" help beside each field (how to take it, why it matters, what to do if abnormal) (PR #8)
+- [x] **M** Form for the six brief indicators, with units and sensible input limits (PR #8; PR #51: numeric vitals now come from a simulated sensor scan, validated against the same limits and saved automatically; failed sensors are retried rather than entered manually)
+- [x] **M** "How to measure" help beside each field (how to take it, why it matters, what to do if abnormal) (PR #8; PR #51: retained as a reference guide beside the simulated scan)
 - [x] **M** Mood as five large buttons, not a text box (PR #8)
 - [x] **M** Symptom tick boxes and exercise minutes (PR #8; red-flag symptoms link to their emergency guide)
 - [x] **M** Save confirmation and today's result shown straight away (PR #8, PR #13, PR #19: saved to the astronaut's record, "Today's result" from the engine using the previous days, check-in streak)
@@ -145,6 +149,8 @@ One line per designed page. A page is ticked when it's built and working in the 
 - [x] **S** Mission calendar listing due and completed periodic exams (PR #21: `/calendar`, overdue, due today, next 30 days, "Mark done today" saves with `saveExamResult`)
 - [x] **S** One-page flight-surgeon summary, with "reply expected in about N minutes" (Earth Link delay) (PR #10, PR #12, PR #21: `/summary` screen; "Send to Earth" button (simulated send, shows the reply time; replaced "Copy text" in PR #34); mission mode now shared app-wide)
 - [x] **S** Earth Link: shows the current communication delay for the mission mode (PR #8; header pill removed, delay shown on the Emergency, Summary and Trends pages; sourced delays for all three modes and the summary's reply time PR #12)
+- [x] **S** Mission communications simulation: queued report, two-way delay, deterministic simulated reply, 1×/60×/720× clock, progress and persistent per-astronaut history (PR #45)
+- [x] **S** Earth-link receipt acknowledgement, onboard-wait guidance, report-to-report changes and combined incident history (PR #45)
 - [x] **S** Mission mode switch: ISS, Lunar Gateway, Mars Transit (PR #8; modes in `src/data/missionModes.js`)
 - [x] **S** Check-in streak (PR #19: shown after saving the Daily check)
 
@@ -173,7 +179,9 @@ One line per designed page. A page is ticked when it's built and working in the 
 - [x] **M** App loads and works with the network switched off (checked 14 Nov on the production build: every file, the database engine and the demo data come from the device; first run seeds the mission with no internet. Repeat with Wi-Fi off in the final rehearsal)
 - [x] **M** No fonts, scripts or data fetched from the internet at run time (checked 14 Nov: build scan plus all 10 pages loaded with 0 external requests; system fonts only. Re-check new screens in PR review)
 - [x] **M** Data survives closing and reopening the browser (PR #14 storage, PR #17 app wiring; checked in the app 14 Nov: reset stays empty and loaded data stays loaded after reload)
-- [x] **S** ~~Installable as an app (PWA) on a laptop or tablet~~ Dropped (team decision 14 Nov): we don't host the app, so there's nothing to install; it runs from the laptop
+- [x] **S** ~~Installable as an app (PWA) on a laptop or tablet~~ Dropped (team decision 14 Nov): the operational version runs locally; the hosted evaluation copy intentionally has no service worker
+- [x] **S** Hosted evaluation copy deploys the static export to GitHub Pages with no backend; local build remains the offline operational version (PR #46)
+- [x] **S** Hosted evaluation copy renders compiled production styles in Safari and Chrome; deployment fails if Tailwind build directives remain in the CSS (PR #47)
 
 ---
 
@@ -187,6 +195,8 @@ One line per designed page. A page is ticked when it's built and working in the 
 - [x] **M** Empty state (no data yet) looks sensible (PR #9, PR #10, PR #20, PR #24): engine safe; Today, Daily check, Body, Calendar and Summary handle no stored data (PR #21); Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
 - [x] **M** Reaction test run ten times in a row without breaking (checked 14 Nov on the production build: 10 back-to-back 60 s runs in guest mode, including false starts, missed signals, space bar and double taps; every run finished, no errors or blank results)
 - [x] **M** Search finds the right item for misspellings ("hart rate"), synonyms ("pulse") and symptoms ("chest pain") (PR #10, PR #21: checked in the search bar in Chrome)
+- [x] **S** Mission communications unit/storage coverage: mode delays, all statuses, speed changes, reload, separate histories, multiple immutable snapshots and reset/reload clearing (PR #45)
+- [x] **S** Backup/recovery and incident-history coverage: valid restore, corrupt rejection, persistence failure rollback, alert transitions, red limits and receipt acknowledgement (PR #45)
 - [x] **M** Whole app usable by keyboard only; status readable in greyscale (checked 14 Nov on every built page: all focusable controls have a visible focus style and a name, no click handlers on non-buttons, status readable in greyscale through icon and label, PR #24): ; Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
 - [ ] **M** Full demo rehearsed start to finish on the machine that will present it
 - [ ] **M** Someone outside the team tries it without instructions
@@ -221,7 +231,7 @@ Deadlines: **local submission closes 10:30 Sun 15 Nov**, local pitching starts *
 - [ ] **M** AI use declared, and any AI-generated media watermarked (`docs/AI_USAGE.md`) 🟡 Partial: SI checkboxes and project-page statement ready in `docs/SUBMISSION.md` › 1; AI-made mockups logged (made with Claude); still to do: watermark any AI image used in the slides, video or repo, paste the statement
 - [ ] **M** NASA Data and Partner Data fields: every resource as Link Text plus full URL 🟡 Partial: ready to paste in `docs/SUBMISSION.md` › 2 and 3; still to do: test each link in an incognito window
 - [ ] **M** Limits stated: simulated data, untested thresholds, not a diagnostic tool or medical advice
-- [ ] **M** Repo public with an up-to-date README, including "How to run" steps (no hosting)
+- [x] **M** Repo public with an up-to-date README, hosted evaluation link and local "How to run" steps (PRs #46, #47, #48 and #49)
 - [ ] **M** Every link tested in an incognito window; the app runs from the README steps on another machine
 - [ ] **M** Everything in English; no under-18 likeness anywhere
 - [ ] **M** All 4 members confirmed at HackAthlone (none waitlisted)

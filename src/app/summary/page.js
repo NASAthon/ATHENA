@@ -6,13 +6,13 @@
 // Earth-link delay (header switch). "Send to Earth" sends the plain-text version to the ground
 // (simulated in the demo: ATHENA has no real link to Earth).
 
-import { useState } from "react";
 import Link from "next/link";
-import { CircleCheck, OctagonAlert, Radio, Send, TriangleAlert } from "lucide-react";
+import { CircleCheck, OctagonAlert, Radio, TriangleAlert } from "lucide-react";
 import { INDICATORS } from "@/data";
-import { DRIFT_INDICATORS, buildSurgeonSummary, driftKeyName, earthLink, likelyHazards } from "@/lib/engine";
+import { DRIFT_INDICATORS, IN_FLIGHT_WINDOW, buildSurgeonSummary, driftKeyName, earthLink, evaluateMission, likelyHazards } from "@/lib/engine";
 import { useTodayEvaluation } from "@/components/useTodayEvaluation";
 import { useMissionMode } from "@/components/MissionModeProvider";
+import MissionCommunications from "@/components/MissionCommunications";
 import { focusRing } from "@/lib/ui";
 
 const nameOf = Object.fromEntries(INDICATORS.map((i) => [i.id, i.name]));
@@ -27,14 +27,11 @@ const ALERT_TEXT = {
 };
 
 export default function SummaryPage() {
-  const { state, today, member, evaluation } = useTodayEvaluation();
+  const { state, today, member, evaluation, records, baselines } = useTodayEvaluation();
   const { modeId, mode } = useMissionMode();
-  // Which astronaut and day the summary was last sent for, so switching crew or day resets it.
-  const [sent, setSent] = useState(null);
-
   if (state !== "ready" || !evaluation) {
     return (
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-3">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
         <h1 className="text-xl font-bold">Flight-surgeon summary</h1>
         <p className="mt-2 text-base text-muted-foreground">
           {state === "loading" ? (
@@ -60,13 +57,10 @@ export default function SummaryPage() {
   const urgent = red.length > 0 || summary.alertLevel === "escalated";
   const statusColour = red.length > 0 ? "var(--status-red)" : summary.alertLevel === "none" ? "var(--status-steady)" : "var(--status-amber)";
   const StatusIcon = red.length > 0 ? OctagonAlert : summary.alertLevel === "none" ? CircleCheck : TriangleAlert;
-
-  const sentKey = `${member.name}|${today}`;
-  const isSent = sent === sentKey;
-  const send = () => setSent(sentKey);
+  const evaluations = evaluateMission(records, baselines, Math.min(IN_FLIGHT_WINDOW.toDay + 1, today), today);
 
   return (
-    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-3">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
       <h1 className="text-xl font-bold">Flight-surgeon summary</h1>
       <p className="mt-2 text-base text-muted-foreground">
         {member.name} | Day {today} | {mode.name}. One page for the flight surgeon on the ground.
@@ -150,26 +144,22 @@ export default function SummaryPage() {
         </section>
       )}
 
-      <section className={`${card} mt-2`} aria-labelledby="message-heading">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 id="message-heading" className="text-base font-bold">
-            Message to send
-          </h2>
-          <button
-            type="button"
-            onClick={send}
-            className={`inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-4 font-semibold text-primary-foreground hover:bg-primary/90 ${focusRing}`}
-          >
-            {isSent ? <CircleCheck className="size-5" aria-hidden="true" /> : <Send className="size-5" aria-hidden="true" />}
-            {isSent ? "Sent to Earth" : "Send to Earth"}
-          </button>
-        </div>
-        <p role="status" className="mt-2 text-muted-foreground">
-          {isSent &&
-            `Sent to the flight surgeon on Day ${today}. Reply expected ${link ? link.replyText : "after an unknown delay"}. (Demo: sending is simulated.)`}
-        </p>
+      <details className={`${card} mt-2`}>
+        <summary className={`flex min-h-11 cursor-pointer items-center font-bold ${focusRing}`}>
+          Current report snapshot
+        </summary>
+        <p className="mt-1 text-sm text-muted-foreground">Sending stores this exact report. Later health changes do not alter message history.</p>
         <pre className="mt-2 overflow-x-auto rounded-lg border border-border bg-background p-3 text-sm whitespace-pre-wrap">{summary.lines.join("\n")}</pre>
-      </section>
+      </details>
+
+      <MissionCommunications
+        astronautId={member.id}
+        astronautName={member.name}
+        missionDay={today}
+        missionModeId={modeId}
+        report={summary}
+        evaluations={evaluations}
+      />
 
       <p className="mt-2 text-muted-foreground">Demo mission: all data on this screen is simulated. Not medical advice.</p>
     </main>

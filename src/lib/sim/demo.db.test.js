@@ -8,6 +8,7 @@ import { evaluateMission } from "../engine/evaluate.js";
 import { examsDueOn, examsOverdue } from "../engine/calendar.js";
 import { loadExamResults } from "../checkIn.js";
 import { DEMO_TODAY, loadDemoMission, missionSummary, resetData, seedOnFirstRun } from "./demo.js";
+import { createCommunicationMessage } from "../communications.js";
 
 const SQL = await initSqlJs();
 const CREW_IDS = ["rivera", "singh", "nakamura"];
@@ -59,4 +60,24 @@ test("the demo mission comes with a realistic exam history: nothing overdue on t
   }
   await resetData(db);
   assert.deepEqual(loadExamResults(db, "rivera"), []);
+});
+
+test("Reset and Load demo mission both clear simulated communication history", async () => {
+  const db = await openDatabase({ SQL, persistence: memoryPersistence() });
+  const message = (id) => createCommunicationMessage({
+    id,
+    astronautId: "rivera",
+    missionModeId: "mars",
+    missionDay: DEMO_TODAY,
+    report: { alertLevel: "none", limitBreaches: [], lines: ["demo"] },
+    sentAt: "2026-11-14T12:00:00.000Z",
+    sentSimMs: 1000,
+  });
+  await loadDemoMission(db);
+  await db.saveCommunication(message("before-reset"));
+  await resetData(db);
+  assert.deepEqual(db.loadCommunications("rivera"), []);
+  await db.saveCommunication(message("before-reload"));
+  await loadDemoMission(db);
+  assert.deepEqual(db.loadCommunications("rivera"), []);
 });

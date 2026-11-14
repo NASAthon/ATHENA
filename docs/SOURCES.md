@@ -75,7 +75,7 @@ The full licence text of every package is in [`THIRD_PARTY_LICENSES.md`](../THIR
 |---|---|---|---|
 | Next.js | App framework (static export) | MIT | https://github.com/vercel/next.js |
 | React / React DOM | UI library | MIT | https://github.com/facebook/react |
-| Tailwind CSS (+ @tailwindcss/turbopack) | Styling | MIT | https://github.com/tailwindlabs/tailwindcss |
+| Tailwind CSS (+ @tailwindcss/turbopack and @tailwindcss/postcss) | Styling and production CSS compilation | MIT | https://github.com/tailwindlabs/tailwindcss |
 | shadcn/ui (`shadcn` CLI and CSS, `cn`) | UI components copied into `src/components/ui/`; class merging | MIT | https://github.com/shadcn-ui/ui |
 | Radix UI (`radix-ui`) | Accessible UI primitives used by shadcn/ui | MIT | https://github.com/radix-ui/primitives |
 | Lucide (`lucide-react`) | Icons (status icons and so on) | ISC | https://github.com/lucide-icons/lucide |
@@ -84,6 +84,7 @@ The full licence text of every package is in [`THIRD_PARTY_LICENSES.md`](../THIR
 | sql.js | SQLite database in the browser (WASM, bundled locally) | MIT | https://github.com/sql-js/sql.js |
 | MiniSearch | Offline fuzzy search (typos, prefixes, synonyms) | MIT | https://github.com/lucaong/minisearch |
 | ESLint + eslint-config-next | Linting (dev only) | MIT | https://github.com/eslint/eslint |
+| GitHub Actions (`checkout`, `setup-node`, `configure-pages`, `upload-pages-artifact`, `deploy-pages`) | Verify and publish the static evaluation copy to GitHub Pages | MIT | https://github.com/actions |
 | Fonts | System fonts only, nothing bundled or downloaded | n/a | n/a |
 
 ### Dependency licence scan (14 Nov 2026, after installing sql.js, MiniSearch and shadcn/ui)

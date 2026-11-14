@@ -15,7 +15,7 @@ GitHub is the single source of truth, so always branch from the latest `main`.
     Import from `@/lib/engine`. Never put health logic in components. Tests sit next to each file (`*.test.js`).
   - `src/lib/regionStatus.js`: body-map display layer (labels, icons, colours, recent-symptom layer) on top of the engine's status order.
   - `src/lib/sim/`: the seeded mission simulator (`simulateAstronaut`, `simulateCrew`) and `loadDemoMission` / `resetData`.
-    It seeds the on-device database that every screen reads; `src/lib/sampleData.js` (hand-written SIMULATED statuses) is no longer used by any screen. Always label simulated data in the UI.
+    It seeds the on-device database that every screen reads. `sensorScan.js` is the simulated sensor scan the Daily check uses (readings always labelled simulated); `src/lib/sampleData.js` (hand-written SIMULATED statuses) is no longer used by any screen. Always label simulated data in the UI.
   - `src/components/CrewProvider.js`: the selected astronaut, shared by every page (`useCrew()`).
   - **Reading today's status:** `useTodayEvaluation()` (`src/components/useTodayEvaluation.js`) gives the selected
     astronaut's engine evaluation from stored data (score, alert, red limits, statuses). Today, the alert banner, Body and Summary use it.
@@ -69,8 +69,9 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 
 - **Do not redesign the architecture.** Stack: offline-first web app run on the laptop (not a PWA),
   Next.js (JavaScript) + Tailwind + ShadCN, SQLite in the browser (sql.js +
-  IndexedDB), JS rules engine, 2D SVG body map. No backend and no
-  runtime internet dependency. No hosting or deployment work.
+  IndexedDB), JS rules engine, 2D SVG body map. No backend and no runtime internet dependency.
+  A static GitHub Pages copy exists only for judge access; the local build remains the operational
+  offline version (`docs/DECISIONS.md` › Hosting and Demo).
 - Priorities: hackathon speed, then NASA relevance, then demo quality, then simplicity. Prefer MVP solutions.
 - **Every health rule must cite its source in `docs/SOURCES.md` (and its `sourceIds` in
   `src/data`).** The app itself shows no source links or other external links: astronauts

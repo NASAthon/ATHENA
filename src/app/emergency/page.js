@@ -44,7 +44,7 @@ const NotAdvice = () => (
 /** The list of guides (no ?id). */
 function GuideList() {
   return (
-    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-3">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
       <h1 className="flex items-center gap-2 text-xl font-bold">
         <OctagonAlert className="size-6" aria-hidden="true" style={{ color: "var(--status-red)" }} />
         Emergency guides
@@ -102,7 +102,7 @@ function Guide({ guide }) {
   const secondaryButton = `inline-flex min-h-11 items-center gap-2 rounded-lg border border-input px-3 text-sm hover:bg-accent ${focusRing}`;
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-3">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
       {/* Header: back, guide name, one-line summary, and who it's for on one row */}
       <Link href="/emergency" className={`inline-flex min-h-11 items-center gap-1 rounded text-sm text-primary hover:underline ${focusRing}`}>
         <ArrowLeft className="size-4" aria-hidden="true" /> All emergency guides
@@ -324,7 +324,7 @@ function EmergencyPage() {
 
 export default function Page() {
   return (
-    <Suspense fallback={<main className="mx-auto w-full max-w-5xl flex-1 px-4 py-3"><h1 className="text-xl font-bold">Emergency guides</h1></main>}>
+    <Suspense fallback={<main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3"><h1 className="text-xl font-bold">Emergency guides</h1></main>}>
       <EmergencyPage />
     </Suspense>
   );
