@@ -272,3 +272,9 @@ npm run dev
 
 Open http://localhost:3000. For the offline production build, run `npm run build`
 (static files are written to `out/`), then serve them with e.g. `npx serve out`.
+
+### If something goes wrong
+
+- **npm is not recognised**: install Node.js 20 or newer (LTS) from nodejs.org, then restart the terminal.
+- **running scripts is disabled** (Windows PowerShell): run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, or use `npm.cmd install`.
+- `npx serve out` downloads a small tool the first time it runs, so run it once while you're online.
