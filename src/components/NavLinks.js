@@ -29,7 +29,7 @@ export default function NavLinks() {
             <Link
               href={item.href}
               aria-current={isCurrent ? "page" : undefined}
-              className={`flex min-h-11 items-center rounded-lg px-4 font-medium text-muted-foreground underline-offset-8 hover:bg-accent hover:text-accent-foreground aria-[current=page]:bg-accent aria-[current=page]:font-semibold aria-[current=page]:text-foreground aria-[current=page]:underline ${focusRing}`}
+              className={`flex min-h-11 items-center rounded-lg px-4 font-medium text-foreground underline-offset-8 hover:bg-accent hover:text-accent-foreground aria-[current=page]:bg-accent aria-[current=page]:font-semibold aria-[current=page]:text-foreground aria-[current=page]:underline ${focusRing}`}
             >
               {item.label}
             </Link>

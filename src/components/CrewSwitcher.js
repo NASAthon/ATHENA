@@ -14,7 +14,7 @@ export default function CrewSwitcher() {
 
   return (
     <div className="flex min-h-11 items-center gap-2 rounded-lg border border-border px-3 text-sm">
-      <span className="text-muted-foreground">{dayLabel}</span>
+      <span className="text-foreground">{dayLabel}</span>
       <span aria-hidden="true" className="text-muted-foreground">
         |
       </span>

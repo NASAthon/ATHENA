@@ -11,7 +11,7 @@ export default function MissionStatus() {
 
   return (
     <div className="flex items-center gap-2">
-      <label htmlFor="mission-mode" className="text-sm text-muted-foreground">
+      <label htmlFor="mission-mode" className="text-sm text-foreground">
         Mission mode
       </label>
       <select

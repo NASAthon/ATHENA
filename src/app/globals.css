@@ -51,21 +51,21 @@
 .dark {
 
   --background: #0d131f;
-  --foreground: #f1f5f9;
+  --foreground: #ffffff; /* pure white body text for maximum legibility (was #f1f5f9) */
   --card: #151e2e;
-  --card-foreground: #f1f5f9;
+  --card-foreground: #ffffff;
   --popover: #151e2e;
-  --popover-foreground: #f1f5f9;
+  --popover-foreground: #ffffff;
 
   --primary: #6ec4ff;
   --primary-foreground: #071324;
 
   --secondary: #1e293b;
-  --secondary-foreground: #f8fafc;
+  --secondary-foreground: #ffffff;
   --muted: #182234;
   --muted-foreground: #94a3b8;
   --accent: #1e293b;
-  --accent-foreground: #f8fafc;
+  --accent-foreground: #ffffff;
 
   --destructive: #ff7a6e; /* same red as --status-red: 4.65:1 on cards, 7.25:1 on the page (was #f87171, 4.27:1 on cards) */
 
