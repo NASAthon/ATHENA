@@ -9,6 +9,7 @@ import { RECORD_FIELDS, SYMPTOMS_FIELD, checkReading } from "@/lib/engine";
 import { useCrew } from "@/components/CrewProvider";
 import { useMissionData } from "@/components/MissionDataProvider";
 import { checkInStreak } from "@/lib/checkIn";
+import { plainFieldError } from "@/lib/readings";
 import { focusRing } from "@/lib/ui";
 
 // Daily check (layout and design by Izabela, PR #8).
@@ -30,16 +31,7 @@ const LEVEL_STYLE = {
   watch: { label: "Watch", Icon: Eye, colour: "var(--status-amber)" },
 };
 
-// Record field → plain name for error messages, e.g. "bpSystolic" → "Blood pressure (top number)".
-const FIELD_NAME = Object.fromEntries(
-  Object.entries(RECORD_FIELDS).flatMap(([id, parts]) =>
-    Object.entries(parts).map(([part, field]) => {
-      const sub = byId[id]?.inputs?.find((f) => f.id === part)?.label;
-      return [field, sub ? `${byId[id].name}: ${sub}` : (byId[id]?.name ?? field)];
-    }),
-  ),
-);
-const plainError = (message) => message.replace(/^(\w+)/, (field) => FIELD_NAME[field] ?? field);
+const plainError = plainFieldError;
 
 // Turns the form into the engine's daily record (src/lib/engine/indicators.js › RECORD_FIELDS),
 // so the form and the logic engine always use the same field names.
