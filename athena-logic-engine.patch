@@ -1,0 +1,3270 @@
+From ba7ac433ed6f3d921be2c35586f27cbebc58d6fc Mon Sep 17 00:00:00 2001
+From: Isaac Adeniji <isaaclys@users.noreply.github.com>
+Date: Sat, 14 Nov 2026 14:59:38 +0000
+Subject: [PATCH 1/3] =?UTF-8?q?Add=20baseline=20calculator=20(CHECKLIST=20?=
+ =?UTF-8?q?=C2=A72,=20first=20item)=20with=20unit=20tests?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+calculateBaseline(records, indicators, window, options) returns the mean,
+sample standard deviation and reading count per indicator over a fixed,
+inclusive window of mission days (DECISIONS › Baselines: fixed, not
+rolling). Plain browser-safe JavaScript with JSDoc; no React, DOM or
+Node-only APIs.
+
+- Missing or invalid values are skipped and counted, never filled in.
+- Fewer than minReadings (default 2) gives insufficient_data / no_data
+  with null numbers.
+- Deterministic: values are sorted before summing, so record order
+  cannot change the result; output is frozen and inputs are untouched.
+- 14 tests with node:test; run with `npm test`.
+
+Records the calculator's choices in DECISIONS.md, ticks the checklist
+item and logs AI use.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_012U3WghHoSinPyjqHsrgUEJ
+---
+ docs/AI_USAGE.md                |   1 +
+ docs/CHECKLIST.md               |   2 +-
+ docs/DECISIONS.md               |  34 +++++-
+ package.json                    |   3 +-
+ src/lib/engine/baseline.js      | 209 ++++++++++++++++++++++++++++++++
+ src/lib/engine/baseline.test.js | 180 +++++++++++++++++++++++++++
+ 6 files changed, 426 insertions(+), 3 deletions(-)
+ create mode 100644 src/lib/engine/baseline.js
+ create mode 100644 src/lib/engine/baseline.test.js
+
+diff --git a/docs/AI_USAGE.md b/docs/AI_USAGE.md
+index d8ee4e8..efe5076 100644
+--- a/docs/AI_USAGE.md
++++ b/docs/AI_USAGE.md
+@@ -10,6 +10,7 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
+ | 14 Nov 2026 | Chidozie | Claude Code | Installed sql.js, MiniSearch and shadcn/ui; set up the dark theme, wasm copy script and licence scan | `package.json`, `components/`, `lib/`, `app/`, `scripts/` |
+ | 14 Nov 2026 | Chidozie | Claude Code | PR #6: merged main, moved header and pages into `src/`, restored dark theme, swapped emoji for Lucide icon | `src/components/Header.js`, `src/app/*` |
+ | 14 Nov 2026 | Chidozie | Claude Code | PR #6 review fixes: keyboard focus rings, current-page nav highlight, theme colour tokens, crew switcher | `src/components/*`, `src/lib/crew.js` |
++| 14 Nov 2026 | Isaac | Claude | Baseline calculator (mean and sample SD per indicator over a fixed window) with unit tests; `npm test` script | `src/lib/engine/baseline.js`, `src/lib/engine/baseline.test.js`, `package.json` |
+ 
+ ## AI-generated media
+ 
+diff --git a/docs/CHECKLIST.md b/docs/CHECKLIST.md
+index 6f3113c..d7ec23b 100644
+--- a/docs/CHECKLIST.md
++++ b/docs/CHECKLIST.md
+@@ -32,7 +32,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
+ 
+ ## 2. Logic (plain functions with no screen code)
+ 
+-- [ ] **M** Baseline calculator: mean and standard deviation per indicator for a fixed window
++- [x] **M** Baseline calculator: mean and standard deviation per indicator for a fixed window (`src/lib/engine/baseline.js`, tests: `npm test`) (PR #?)
+ - [ ] **M** Pre-flight baseline and in-flight baseline (for example mission days 21–35) both calculated once and stored
+ - [ ] **M** Seven-day average per indicator
+ - [ ] **M** Health score 0–100 per astronaut (100 = perfect), with the change since yesterday and over 7 days (`docs/DECISIONS.md` › Health Score)
+diff --git a/docs/DECISIONS.md b/docs/DECISIONS.md
+index bb175fd..3914325 100644
+--- a/docs/DECISIONS.md
++++ b/docs/DECISIONS.md
+@@ -3,7 +3,7 @@
+ Every locked choice and why. Entries are in the order they were made. **Index:**
+ - **Product:** Originality · Crew · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
+ - **Data and content:** Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
+-- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open)
++- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open) · Baseline Calculator · Logic Tests
+ - **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
+ 
+ ## Frontend
+@@ -524,3 +524,35 @@ cited (Content Style). This is the second exception to "official sources only".
+ 
+ Status:
+ LOCKED
++
++---
++
++## Baseline Calculator
++
++`src/lib/engine/baseline.js` › `calculateBaseline(records, indicators, window, options)`.
++- **Standard deviation:** sample SD (divide by n − 1), the usual estimate of day-to-day spread.
++  This is the `s` in the Drift Cut-off formula; `n` is its `m`.
++- **Raw SD is returned.** The per-indicator minimum SD (Drift Cut-off) is applied later, in the
++  z-score step, so the stored baseline stays the true measured value.
++- **Missing data:** only finite numbers count. Missing, null, NaN, infinite or text values are
++  skipped and counted, never filled in.
++- **Too few readings:** fewer than `minReadings` (default 2, the mathematical minimum) gives
++  `insufficient_data` with no numbers. The team still needs to choose the real minimum
++  (e.g. 10 of the 15 in-flight days) and pass it in.
++- **In-flight window:** `IN_FLIGHT_WINDOW` = mission days 21–35. The pre-flight window is not
++  decided yet.
++- **Field names:** indicator fields are passed in by the caller; the mission-day field defaults
++  to `missionDay`. Both follow whatever the daily record (CHECKLIST §1) defines.
++
++Status:
++ACTIVE (minimum readings and pre-flight window still to decide)
++
++---
++
++## Logic Tests
++
++Engine functions in `src/lib/` are tested with Node's built-in test runner (`node:test`), so
++nothing extra is installed. Test files sit next to the code as `*.test.js`; run them with `npm test`.
++
++Status:
++ACTIVE
+diff --git a/package.json b/package.json
+index 6a3d5b5..82f4550 100644
+--- a/package.json
++++ b/package.json
+@@ -7,7 +7,8 @@
+     "dev": "next dev",
+     "build": "next build",
+     "start": "next start",
+-    "lint": "eslint"
++    "lint": "eslint",
++    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test \"src/lib/**/*.test.js\""
+   },
+   "dependencies": {
+     "class-variance-authority": "^0.7.1",
+diff --git a/src/lib/engine/baseline.js b/src/lib/engine/baseline.js
+new file mode 100644
+index 0000000..c3f974f
+--- /dev/null
++++ b/src/lib/engine/baseline.js
+@@ -0,0 +1,209 @@
++// Baseline calculator (docs/CHECKLIST.md › 2. Logic, first item).
++//
++// Mean and standard deviation per indicator over a FIXED window of mission days
++// (docs/DECISIONS.md › Baselines: fixed, not rolling). The same function computes
++// both the pre-flight and the in-flight baseline; the caller picks the window.
++//
++// Pure logic: no React, no DOM, no database, no Node-only APIs. It runs in the
++// browser and in `node --test` unchanged.
++//
++// Not done here (other checklist items): storing baselines, the 7-day average,
++// z-scores, the per-indicator minimum standard deviation used by the drift
++// formula, and statuses.
++
++/**
++ * A daily record as the calculator reads it. Only `missionDay` (or the key given
++ * in `options.dayKey`) and the indicator fields are used; anything else is ignored.
++ * Pre-flight days are negative (e.g. -30 … -1).
++ *
++ * @typedef {Object<string, unknown>} DailyRecord
++ */
++
++/**
++ * An inclusive range of mission days, e.g. { fromDay: 21, toDay: 35 }.
++ *
++ * @typedef {Object} BaselineWindow
++ * @property {number} fromDay First mission day in the window (integer, inclusive).
++ * @property {number} toDay   Last mission day in the window (integer, inclusive).
++ */
++
++/**
++ * Result for one indicator.
++ * - `ok`: enough readings; `mean` and `sd` are numbers.
++ * - `insufficient_data`: some readings, but fewer than `minReadings`; `mean` and `sd` are null.
++ * - `no_data`: no usable readings in the window; `mean` and `sd` are null.
++ *
++ * @typedef {Object} IndicatorBaseline
++ * @property {"ok" | "insufficient_data" | "no_data"} status
++ * @property {number | null} mean Arithmetic mean of the usable readings.
++ * @property {number | null} sd   Sample standard deviation (divides by n − 1), i.e. the
++ *                                day-to-day spread the drift formula calls `s`.
++ * @property {number} n           Number of usable readings (the drift formula's `m`).
++ * @property {number} skipped     Records in the window whose value for this indicator
++ *                                was missing or not a finite number.
++ */
++
++/**
++ * @typedef {Object} BaselineResult
++ * @property {BaselineWindow} window Copy of the window used.
++ * @property {Object<string, IndicatorBaseline>} indicators One entry per requested indicator.
++ */
++
++/**
++ * The in-flight baseline window named in docs/DECISIONS.md › Baselines
++ * ("e.g. mission days 21–35"). The pre-flight window isn't fixed by the team yet,
++ * so it is not defined here.
++ *
++ * @type {Readonly<BaselineWindow>}
++ */
++export const IN_FLIGHT_WINDOW = Object.freeze({ fromDay: 21, toDay: 35 });
++
++/** A standard deviation needs at least two readings. */
++const ABSOLUTE_MIN_READINGS = 2;
++
++/**
++ * Calculates a fixed baseline (mean and sample standard deviation) for each
++ * requested indicator, using only records whose mission day falls inside the window.
++ *
++ * Missing data is safe:
++ * - records that are null, not objects, or have no integer mission day are ignored;
++ * - indicator values that are null, undefined, NaN, ±Infinity or not numbers
++ *   (including numeric strings) are skipped and counted in `skipped`;
++ * - an indicator with too few readings gets `insufficient_data` or `no_data`
++ *   with null mean and sd, never a made-up number.
++ *
++ * Deterministic: the same records give bit-identical results whatever order they
++ * arrive in, because values are sorted before summing. Inputs are never modified,
++ * and the result is frozen.
++ *
++ * @param {ReadonlyArray<DailyRecord>} records Daily records for ONE astronaut.
++ * @param {ReadonlyArray<string>} indicators   Field names to calculate, e.g.
++ *   ["heartRate", "sleepHours"]. Must be non-empty, without duplicates.
++ * @param {BaselineWindow} window              Inclusive range of mission days.
++ * @param {Object} [options]
++ * @param {number} [options.minReadings=2]     Fewest usable readings needed for an
++ *   `ok` result. Must be an integer ≥ 2. The team hasn't set a number yet.
++ * @param {string} [options.dayKey="missionDay"] Field holding the mission day.
++ * @returns {Readonly<BaselineResult>}
++ * @throws {TypeError}  If `records` isn't an array, or `indicators` is empty, has a
++ *   non-string or duplicate entry.
++ * @throws {RangeError} If the window or `minReadings` is invalid.
++ *
++ * @example
++ * const result = calculateBaseline(records, ["heartRate", "sleepHours"], IN_FLIGHT_WINDOW);
++ * result.indicators.heartRate; // { status: "ok", mean: 64.2, sd: 2.1, n: 15, skipped: 0 }
++ */
++export function calculateBaseline(records, indicators, window, options = {}) {
++  const { minReadings = ABSOLUTE_MIN_READINGS, dayKey = "missionDay" } = options;
++
++  validateArguments(records, indicators, window, minReadings, dayKey);
++
++  const inWindow = records.filter((record) => {
++    if (record === null || typeof record !== "object") return false;
++    const day = record[dayKey];
++    return Number.isInteger(day) && day >= window.fromDay && day <= window.toDay;
++  });
++
++  /** @type {Object<string, IndicatorBaseline>} */
++  const results = {};
++  for (const indicator of indicators) {
++    results[indicator] = summarise(inWindow, indicator, minReadings);
++  }
++
++  return Object.freeze({
++    window: Object.freeze({ fromDay: window.fromDay, toDay: window.toDay }),
++    indicators: Object.freeze(results),
++  });
++}
++
++/**
++ * Mean and sample standard deviation for one indicator.
++ *
++ * @param {ReadonlyArray<DailyRecord>} records Records already inside the window.
++ * @param {string} indicator
++ * @param {number} minReadings
++ * @returns {Readonly<IndicatorBaseline>}
++ */
++function summarise(records, indicator, minReadings) {
++  const values = [];
++  let skipped = 0;
++
++  for (const record of records) {
++    const value = record[indicator];
++    if (typeof value === "number" && Number.isFinite(value)) {
++      values.push(value);
++    } else {
++      skipped += 1;
++    }
++  }
++
++  const n = values.length;
++  if (n === 0) {
++    return Object.freeze({ status: "no_data", mean: null, sd: null, n, skipped });
++  }
++  if (n < minReadings) {
++    return Object.freeze({ status: "insufficient_data", mean: null, sd: null, n, skipped });
++  }
++
++  // Sort so floating-point sums don't depend on the order records arrived in.
++  values.sort((a, b) => a - b);
++
++  // Two-pass method: more accurate than the one-pass "sum of squares" shortcut.
++  let sum = 0;
++  for (const value of values) sum += value;
++  const mean = sum / n;
++
++  let squaredDeviations = 0;
++  for (const value of values) squaredDeviations += (value - mean) ** 2;
++  const sd = Math.sqrt(squaredDeviations / (n - 1));
++
++  return Object.freeze({ status: "ok", mean, sd, n, skipped });
++}
++
++/**
++ * Throws on programmer errors (wrong argument types). Bad DATA never throws; it is
++ * skipped and counted instead.
++ *
++ * @param {unknown} records
++ * @param {unknown} indicators
++ * @param {unknown} window
++ * @param {unknown} minReadings
++ * @param {unknown} dayKey
++ */
++function validateArguments(records, indicators, window, minReadings, dayKey) {
++  if (!Array.isArray(records)) {
++    throw new TypeError("calculateBaseline: records must be an array.");
++  }
++  if (!Array.isArray(indicators) || indicators.length === 0) {
++    throw new TypeError("calculateBaseline: indicators must be a non-empty array of field names.");
++  }
++  const seen = new Set();
++  for (const indicator of indicators) {
++    if (typeof indicator !== "string" || indicator.length === 0) {
++      throw new TypeError("calculateBaseline: each indicator must be a non-empty string.");
++    }
++    if (seen.has(indicator)) {
++      throw new TypeError(`calculateBaseline: indicator "${indicator}" is listed twice.`);
++    }
++    seen.add(indicator);
++  }
++  if (
++    window === null ||
++    typeof window !== "object" ||
++    !Number.isInteger(window.fromDay) ||
++    !Number.isInteger(window.toDay)
++  ) {
++    throw new RangeError("calculateBaseline: window needs integer fromDay and toDay.");
++  }
++  if (window.fromDay > window.toDay) {
++    throw new RangeError("calculateBaseline: window.fromDay must not be after window.toDay.");
++  }
++  if (!Number.isInteger(minReadings) || minReadings < ABSOLUTE_MIN_READINGS) {
++    throw new RangeError(
++      `calculateBaseline: minReadings must be an integer of at least ${ABSOLUTE_MIN_READINGS}.`,
++    );
++  }
++  if (typeof dayKey !== "string" || dayKey.length === 0) {
++    throw new TypeError("calculateBaseline: dayKey must be a non-empty string.");
++  }
++}
+diff --git a/src/lib/engine/baseline.test.js b/src/lib/engine/baseline.test.js
+new file mode 100644
+index 0000000..47963ca
+--- /dev/null
++++ b/src/lib/engine/baseline.test.js
+@@ -0,0 +1,180 @@
++// Unit tests for the baseline calculator. Run with: npm test
++// Uses Node's built-in test runner, so there is nothing extra to install.
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { calculateBaseline, IN_FLIGHT_WINDOW } from "./baseline.js";
++
++/** Builds one record per day with the given heart rates, starting at `firstDay`. */
++function heartRateDays(firstDay, rates) {
++  return rates.map((heartRate, index) => ({ missionDay: firstDay + index, heartRate }));
++}
++
++test("known values: mean and sample standard deviation", () => {
++  // 2, 4, 4, 4, 5, 5, 7, 9 → mean 5, sample SD √(32 / 7)
++  const records = heartRateDays(21, [2, 4, 4, 4, 5, 5, 7, 9]);
++  const { indicators } = calculateBaseline(records, ["heartRate"], IN_FLIGHT_WINDOW);
++
++  assert.equal(indicators.heartRate.status, "ok");
++  assert.equal(indicators.heartRate.mean, 5);
++  assert.equal(indicators.heartRate.sd, Math.sqrt(32 / 7));
++  assert.equal(indicators.heartRate.n, 8);
++  assert.equal(indicators.heartRate.skipped, 0);
++});
++
++test("only days inside the window count, and both ends are included", () => {
++  const records = [
++    { missionDay: 20, heartRate: 999 }, // just before
++    { missionDay: 21, heartRate: 60 }, // first day
++    { missionDay: 35, heartRate: 70 }, // last day
++    { missionDay: 36, heartRate: 999 }, // just after
++  ];
++  const { indicators } = calculateBaseline(records, ["heartRate"], IN_FLIGHT_WINDOW);
++
++  assert.equal(indicators.heartRate.n, 2);
++  assert.equal(indicators.heartRate.mean, 65);
++});
++
++test("pre-flight window with negative mission days", () => {
++  const records = heartRateDays(-10, [58, 60, 62, 60, 60, 60, 60, 60, 60, 60]);
++  const { indicators } = calculateBaseline(records, ["heartRate"], { fromDay: -10, toDay: -1 });
++
++  assert.equal(indicators.heartRate.status, "ok");
++  assert.equal(indicators.heartRate.n, 10);
++  assert.equal(indicators.heartRate.mean, 60);
++});
++
++test("missing and invalid values are skipped and counted, never used", () => {
++  const records = [
++    { missionDay: 21, heartRate: 60, sleepHours: 7 },
++    { missionDay: 22, heartRate: null, sleepHours: 8 },
++    { missionDay: 23, sleepHours: 7.5 }, // heartRate missing
++    { missionDay: 24, heartRate: Number.NaN },
++    { missionDay: 25, heartRate: Number.POSITIVE_INFINITY },
++    { missionDay: 26, heartRate: "64" }, // a string is not a reading
++    { missionDay: 27, heartRate: 70 },
++  ];
++  const { indicators } = calculateBaseline(records, ["heartRate", "sleepHours"], IN_FLIGHT_WINDOW);
++
++  assert.equal(indicators.heartRate.n, 2);
++  assert.equal(indicators.heartRate.skipped, 5);
++  assert.equal(indicators.heartRate.mean, 65);
++  assert.equal(indicators.sleepHours.n, 3);
++  assert.equal(indicators.sleepHours.skipped, 4);
++});
++
++test("broken records are ignored without crashing", () => {
++  const records = [
++    null,
++    undefined,
++    42,
++    "day 21",
++    { heartRate: 80 }, // no mission day
++    { missionDay: "21", heartRate: 80 }, // mission day not a number
++    { missionDay: 21.5, heartRate: 80 }, // not a whole day
++    { missionDay: 22, heartRate: 60 },
++    { missionDay: 23, heartRate: 62 },
++  ];
++  const { indicators } = calculateBaseline(records, ["heartRate"], IN_FLIGHT_WINDOW);
++
++  assert.equal(indicators.heartRate.n, 2);
++  assert.equal(indicators.heartRate.mean, 61);
++});
++
++test("no data at all gives no_data with null numbers", () => {
++  const { indicators } = calculateBaseline([], ["heartRate"], IN_FLIGHT_WINDOW);
++  assert.deepEqual(indicators.heartRate, {
++    status: "no_data",
++    mean: null,
++    sd: null,
++    n: 0,
++    skipped: 0,
++  });
++});
++
++test("one reading is not enough for a standard deviation", () => {
++  const { indicators } = calculateBaseline(
++    [{ missionDay: 21, heartRate: 60 }],
++    ["heartRate"],
++    IN_FLIGHT_WINDOW,
++  );
++  assert.equal(indicators.heartRate.status, "insufficient_data");
++  assert.equal(indicators.heartRate.mean, null);
++  assert.equal(indicators.heartRate.sd, null);
++  assert.equal(indicators.heartRate.n, 1);
++});
++
++test("minReadings raises the bar for an ok result", () => {
++  const records = heartRateDays(21, [60, 61, 62]);
++  const strict = calculateBaseline(records, ["heartRate"], IN_FLIGHT_WINDOW, { minReadings: 4 });
++  const loose = calculateBaseline(records, ["heartRate"], IN_FLIGHT_WINDOW, { minReadings: 3 });
++
++  assert.equal(strict.indicators.heartRate.status, "insufficient_data");
++  assert.equal(loose.indicators.heartRate.status, "ok");
++});
++
++test("identical readings give a standard deviation of exactly 0", () => {
++  const { indicators } = calculateBaseline(
++    heartRateDays(21, [64, 64, 64, 64]),
++    ["heartRate"],
++    IN_FLIGHT_WINDOW,
++  );
++  assert.equal(indicators.heartRate.sd, 0);
++});
++
++test("deterministic: record order does not change the result, even in the last bit", () => {
++  const values = [0.1, 0.2, 0.3, 1e-9, 7.7, 3.3, 9.9, 0.7, 5.5, 2.2, 6.6, 4.4, 8.8, 1.1, 0.05];
++  const records = values.map((sleepHours, index) => ({ missionDay: 21 + index, sleepHours }));
++  const reversed = [...records].reverse();
++  const shuffled = [records[7], ...records.slice(0, 7), ...records.slice(8)].reverse();
++
++  const a = calculateBaseline(records, ["sleepHours"], IN_FLIGHT_WINDOW);
++  const b = calculateBaseline(reversed, ["sleepHours"], IN_FLIGHT_WINDOW);
++  const c = calculateBaseline(shuffled, ["sleepHours"], IN_FLIGHT_WINDOW);
++
++  assert.deepEqual(a, b);
++  assert.deepEqual(a, c);
++  assert.deepEqual(a, calculateBaseline(records, ["sleepHours"], IN_FLIGHT_WINDOW));
++});
++
++test("inputs are not modified and the result is read-only", () => {
++  const records = heartRateDays(21, [60, 65, 70]);
++  const snapshot = structuredClone(records);
++  const result = calculateBaseline(records, ["heartRate"], IN_FLIGHT_WINDOW);
++
++  assert.deepEqual(records, snapshot);
++  assert.ok(Object.isFrozen(result));
++  assert.ok(Object.isFrozen(result.indicators));
++  assert.ok(Object.isFrozen(result.indicators.heartRate));
++});
++
++test("a custom day field name can be used", () => {
++  const records = [
++    { mission_day: 21, heartRate: 60 },
++    { mission_day: 22, heartRate: 62 },
++  ];
++  const { indicators } = calculateBaseline(records, ["heartRate"], IN_FLIGHT_WINDOW, {
++    dayKey: "mission_day",
++  });
++  assert.equal(indicators.heartRate.n, 2);
++});
++
++test("wrong arguments throw clear errors", () => {
++  const records = heartRateDays(21, [60, 61]);
++
++  assert.throws(() => calculateBaseline(null, ["heartRate"], IN_FLIGHT_WINDOW), TypeError);
++  assert.throws(() => calculateBaseline(records, [], IN_FLIGHT_WINDOW), TypeError);
++  assert.throws(() => calculateBaseline(records, ["heartRate", "heartRate"], IN_FLIGHT_WINDOW), TypeError);
++  assert.throws(() => calculateBaseline(records, [""], IN_FLIGHT_WINDOW), TypeError);
++  assert.throws(() => calculateBaseline(records, ["heartRate"], { fromDay: 35, toDay: 21 }), RangeError);
++  assert.throws(() => calculateBaseline(records, ["heartRate"], { fromDay: 21 }), RangeError);
++  assert.throws(() => calculateBaseline(records, ["heartRate"], null), RangeError);
++  assert.throws(
++    () => calculateBaseline(records, ["heartRate"], IN_FLIGHT_WINDOW, { minReadings: 1 }),
++    RangeError,
++  );
++});
++
++test("IN_FLIGHT_WINDOW matches DECISIONS.md (days 21–35) and cannot be changed", () => {
++  assert.deepEqual({ ...IN_FLIGHT_WINDOW }, { fromDay: 21, toDay: 35 });
++  assert.ok(Object.isFrozen(IN_FLIGHT_WINDOW));
++});
+-- 
+2.43.0
+
+
+From 1d92ee42c9be53d0ca6526d2d4c2050f70c1dcc9 Mon Sep 17 00:00:00 2001
+From: Isaac Adeniji <isaaclys@users.noreply.github.com>
+Date: Sat, 14 Nov 2026 14:34:23 +0000
+Subject: [PATCH 2/3] Add verified clinical reference ranges and open gaps to
+ SOURCES.md
+
+Heart rate and blood pressure (AHA), blood glucose low and fasting high
+(ADA), fever and hypothermia (CDC), sleep (CDC), each checked against the
+live page on 14 Nov 2026 and written in our own words. Lists the red
+limits no allowed source gives (heart rate, high glucose, high temperature,
+low blood pressure, SpO2) for the team to decide. Units: mg/dL.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_012U3WghHoSinPyjqHsrgUEJ
+---
+ docs/AI_USAGE.md |  1 +
+ docs/SOURCES.md  | 22 +++++++++++++++++++++-
+ 2 files changed, 22 insertions(+), 1 deletion(-)
+
+diff --git a/docs/AI_USAGE.md b/docs/AI_USAGE.md
+index efe5076..fd8d396 100644
+--- a/docs/AI_USAGE.md
++++ b/docs/AI_USAGE.md
+@@ -11,6 +11,7 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
+ | 14 Nov 2026 | Chidozie | Claude Code | PR #6: merged main, moved header and pages into `src/`, restored dark theme, swapped emoji for Lucide icon | `src/components/Header.js`, `src/app/*` |
+ | 14 Nov 2026 | Chidozie | Claude Code | PR #6 review fixes: keyboard focus rings, current-page nav highlight, theme colour tokens, crew switcher | `src/components/*`, `src/lib/crew.js` |
+ | 14 Nov 2026 | Isaac | Claude | Baseline calculator (mean and sample SD per indicator over a fixed window) with unit tests; `npm test` script | `src/lib/engine/baseline.js`, `src/lib/engine/baseline.test.js`, `package.json` |
++| 14 Nov 2026 | Isaac | Claude | Looked up and checked AHA, ADA and CDC reference ranges against the live pages; drafted the clinical-ranges table and gap list (values to be confirmed by a teammate) | `docs/SOURCES.md` |
+ 
+ ## AI-generated media
+ 
+diff --git a/docs/SOURCES.md b/docs/SOURCES.md
+index 9196809..078cfc8 100644
+--- a/docs/SOURCES.md
++++ b/docs/SOURCES.md
+@@ -18,9 +18,29 @@ Licence notes: **CDC** content is US Government work (public domain). **AHA** an
+ copyrighted, so use only the numeric facts (facts can't be copyrighted), write our own
+ wording, and cite the page. Never copy their text, images or charts.
+ 
++Every value below was checked against the live page on **14 Nov 2026**. Wording is ours.
++"Red limit" means the value that triggers the red-limit screen on a single reading.
++
+ | Indicator | Range used | Source | URL |
+ |---|---|---|---|
+-| | | | |
++| Heart rate (resting) | **Normal:** 60–100 bpm, sitting or lying, calm and feeling well. **Watch:** below 60 (possible bradycardia, a slow heart rate) or above 100 (possible tachycardia, a fast heart rate). **Red limit:** no fixed number; AHA says to get emergency help if heart rate is *suddenly very high or very low for you*, so this is a personal-baseline rule, not a fixed threshold. **How to measure:** two fingers on the inner wrist, count beats for 60 s. | AHA, All About Heart Rate | https://www.heart.org/en/health-topics/high-blood-pressure/the-facts-about-high-blood-pressure/all-about-heart-rate-pulse |
++| Blood pressure | **Normal:** below 120 systolic **and** below 80 diastolic. **Elevated:** 120–129 and below 80. **Stage 1 high:** 130–139 **or** 80–89. **Stage 2 high:** 140+ **or** 90+. **Red limit (severe):** above 180 systolic **and/or** above 120 diastolic: wait 5 min and re-measure; if still that high, contact the flight surgeon at once; if there are signs of organ damage (chest pain, shortness of breath, back pain, numbness or weakness, vision change, trouble speaking), treat as an emergency without waiting. **Low:** AHA gives no number, only that unusually low readings need checking. | AHA, Understanding Blood Pressure Readings | https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings (short link: https://heart.org/bplevels) |
++| Blood glucose: low | **Unit: mg/dL.** **Level 1 low (act):** below 70 and at or above 54. **Level 2 low (red limit):** below 54. **Level 3 (emergency at any value):** low blood sugar has affected thinking or movement so the person needs help. Symptoms: hunger, sweating or chills, shakiness or anxiety, fast heartbeat, dizziness, confusion, fainting, seizure. | ADA, Hypoglycemia infographic (based on ADA Standards of Care 2025) | https://professional.diabetes.org/sites/dpro/files/2025-05/hypoglycemia-patient-5-27-25.pdf |
++| Blood glucose: high (fasting) | **Fasting** = nothing to eat or drink except water for 8+ hours. **Normal:** below 100. **Watch:** 100–125 (prediabetes range). **Act:** 126 or higher (diabetes range): re-measure on another day and tell the flight surgeon; one reading is not a diagnosis. **Any time of day:** 200 or higher **with** symptoms of high blood sugar (thirst, passing urine often) also meets ADA's diabetes criterion. **Red limit:** none verified for people without diabetes (ADA's 240 mg/dL ketone check is advice for people with diabetes). | ADA, Diabetes Diagnosis; ADA, Hyperglycemia | https://diabetes.org/about-diabetes/diagnosis · https://diabetes.org/living-with-diabetes/treatment-care/hyperglycemia |
++| Body temperature | **Fever (act):** 38.0 °C (100.4 °F) or higher. **Red limit, low:** below 35.0 °C (95 °F), possible hypothermia (dangerously low body temperature): get medical help immediately. Hypothermia signs: shivering, extreme tiredness, confusion, clumsy hands, memory problems, slurred speech, sleepiness. **Red limit, high:** none verified from CDC. **Normal range:** not stated on these pages. | CDC, Definitions of Signs, Symptoms and Conditions of Ill Travelers (reviewed 15 May 2024); CDC, Preventing Hypothermia (reviewed 25 Aug 2026) | https://www.cdc.gov/port-health/php/definitions-symptoms-reportable-illness/index.html · https://www.cdc.gov/winter-weather/prevention/index.html |
++| Sleep hours | **Recommended:** at least 7 hours a day for adults. **Watch:** below 7 hours, which CDC calls insufficient sleep (short sleep duration). **Red limit:** none (sleep loss is tracked as drift, not a single-reading emergency). | CDC, FastStats: Sleep in Adults (reviewed 16 Feb 2024) | https://www.cdc.gov/sleep/data-research/facts-stats/adults-sleep-facts-and-stats.html |
++| Mood (1–5) | No clinical reference range exists for a 1–5 self-rating. Judged only against the astronaut's own baseline (drift). | Team design choice | n/a |
++
++### Gaps the team must decide (no verified value yet)
++
++Per `docs/DECISIONS.md` › Red-Limit Sources, "if a value can't be verified, don't use it". These are open:
++
++1. **Heart rate red limit.** AHA gives none; options: a symptom-triggered red limit (chest pain, fainting) plus drift, or approve another source.
++2. **High-glucose red limit** for people without diabetes. None verified.
++3. **High-temperature red limit** above fever. CDC gives none on these pages.
++4. **Low blood pressure.** AHA gives no number (relevant: NASA's cardiovascular risk page names fainting on return to gravity).
++5. **SpO₂ (blood oxygen).** No AHA, ADA or CDC source chosen yet, though hypoxia is a planned emergency. Either drop SpO₂ red limits or approve a source (a US Government page such as NIH MedlinePlus would be public domain).
++6. **Units:** this table uses **mg/dL** (ADA's unit). Lock it in `docs/CHECKLIST.md` §1.
+ 
+ ## Emergency first-response steps (see `docs/DECISIONS.md` › Emergency Step Sources)
+ 
+-- 
+2.43.0
+
+
+From 72fd2e0f47b56611863f7135e68b3d768cb483a0 Mon Sep 17 00:00:00 2001
+From: Isaac Adeniji <isaaclys@users.noreply.github.com>
+Date: Sat, 14 Nov 2026 15:15:28 +0000
+Subject: [PATCH 3/3] =?UTF-8?q?Add=20CHECKLIST=20=C2=A72=20logic=20engine?=
+ =?UTF-8?q?=20with=20unit=20tests?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Plain-JavaScript engine in src/lib/engine/ (no React, DOM, database or
+network; MiniSearch is the only dependency, already installed). Every
+function is marked with the checklist item it satisfies.
+
+- 7-day average (at least 4 readings) and the locked drift z-score
+  against the fixed in-flight baseline, with a per-indicator minimum s
+- Status per indicator: no data, steady, drifting, expected adaptation
+- Alert levels (note, alert, escalated after 14 days) with blood pressure
+  and reaction counted once
+- Red-limit check on every reading, using only AHA/ADA/CDC values
+  verified in docs/SOURCES.md, each cited and labelled
+- Health score 0-100 with caps 79/59/25, bands and day/week change
+- Reaction scoring, reminder scheduler, mission evaluator
+- Search over MiniSearch (typos, prefixes, keywords, symptoms first,
+  "did you mean"), region mapper, surgeon summary, calendar scheduler,
+  Scenario Lab data injection
+- 76 tests incl. 180-day seeded missions (healthy, slow decline, bad
+  day, red limit, missing days)
+
+README states the z = 3.5 cut-off as a design choice; DECISIONS records
+every assumption; CHECKLIST ticked or marked partial; AI use logged.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_012U3WghHoSinPyjqHsrgUEJ
+---
+ README.md                          |  20 ++-
+ docs/AI_USAGE.md                   |   1 +
+ docs/CHECKLIST.md                  |  48 +++----
+ docs/DECISIONS.md                  |  61 ++++++--
+ src/lib/engine/alerts.js           | 119 ++++++++++++++++
+ src/lib/engine/alerts.test.js      |  50 +++++++
+ src/lib/engine/average.js          |  61 ++++++++
+ src/lib/engine/average.test.js     |  27 ++++
+ src/lib/engine/baseline.js         |  60 +++++++-
+ src/lib/engine/calendar.js         |  70 ++++++++++
+ src/lib/engine/calendar.test.js    |  16 +++
+ src/lib/engine/drift.js            |  61 ++++++++
+ src/lib/engine/drift.test.js       |  41 ++++++
+ src/lib/engine/evaluate.js         |  85 ++++++++++++
+ src/lib/engine/evaluate.test.js    |  79 +++++++++++
+ src/lib/engine/healthScore.js      | 150 ++++++++++++++++++++
+ src/lib/engine/healthScore.test.js |  42 ++++++
+ src/lib/engine/index.js            |  22 +++
+ src/lib/engine/indicators.js       |  99 +++++++++++++
+ src/lib/engine/reaction.js         |  68 +++++++++
+ src/lib/engine/reaction.test.js    |  29 ++++
+ src/lib/engine/redLimits.js        | 216 +++++++++++++++++++++++++++++
+ src/lib/engine/redLimits.test.js   |  45 ++++++
+ src/lib/engine/regions.js          |  68 +++++++++
+ src/lib/engine/regions.test.js     |  20 +++
+ src/lib/engine/reminders.js        |  66 +++++++++
+ src/lib/engine/reminders.test.js   |  22 +++
+ src/lib/engine/scenarios.js        |  89 ++++++++++++
+ src/lib/engine/scenarios.test.js   |  31 +++++
+ src/lib/engine/search.js           | 159 +++++++++++++++++++++
+ src/lib/engine/search.test.js      |  57 ++++++++
+ src/lib/engine/status.js           |  91 ++++++++++++
+ src/lib/engine/status.test.js      |  48 +++++++
+ src/lib/engine/summary.js          |  77 ++++++++++
+ src/lib/engine/testData.js         |  74 ++++++++++
+ 35 files changed, 2231 insertions(+), 41 deletions(-)
+ create mode 100644 src/lib/engine/alerts.js
+ create mode 100644 src/lib/engine/alerts.test.js
+ create mode 100644 src/lib/engine/average.js
+ create mode 100644 src/lib/engine/average.test.js
+ create mode 100644 src/lib/engine/calendar.js
+ create mode 100644 src/lib/engine/calendar.test.js
+ create mode 100644 src/lib/engine/drift.js
+ create mode 100644 src/lib/engine/drift.test.js
+ create mode 100644 src/lib/engine/evaluate.js
+ create mode 100644 src/lib/engine/evaluate.test.js
+ create mode 100644 src/lib/engine/healthScore.js
+ create mode 100644 src/lib/engine/healthScore.test.js
+ create mode 100644 src/lib/engine/index.js
+ create mode 100644 src/lib/engine/indicators.js
+ create mode 100644 src/lib/engine/reaction.js
+ create mode 100644 src/lib/engine/reaction.test.js
+ create mode 100644 src/lib/engine/redLimits.js
+ create mode 100644 src/lib/engine/redLimits.test.js
+ create mode 100644 src/lib/engine/regions.js
+ create mode 100644 src/lib/engine/regions.test.js
+ create mode 100644 src/lib/engine/reminders.js
+ create mode 100644 src/lib/engine/reminders.test.js
+ create mode 100644 src/lib/engine/scenarios.js
+ create mode 100644 src/lib/engine/scenarios.test.js
+ create mode 100644 src/lib/engine/search.js
+ create mode 100644 src/lib/engine/search.test.js
+ create mode 100644 src/lib/engine/status.js
+ create mode 100644 src/lib/engine/status.test.js
+ create mode 100644 src/lib/engine/summary.js
+ create mode 100644 src/lib/engine/testData.js
+
+diff --git a/README.md b/README.md
+index 173217d..56844ee 100644
+--- a/README.md
++++ b/README.md
+@@ -75,6 +75,23 @@ Detects:
+ - Vital sign drift
+ - Radiation exposure trends
+ 
++#### Drift detection: a design choice
++
++Each day, ATHENA compares the last 7 days' average of each indicator with the
++astronaut's own fixed in-flight baseline (mission days 21–35):
++
++    z = (7-day average − baseline mean) ÷ (s × √(1/n + 1/m))
++
++where `n` is the number of readings in the last 7 days (at least 4), `m` the number
++in the baseline, and `s` the baseline's day-to-day spread (never below a minimum set
++per indicator). An indicator is **drifting when z ≥ 3.5** in its worrying direction.
++
++**The 3.5 cut-off is our design choice, not a clinical standard.** We chose it by
++simulation: on our own simulator, 100 healthy 180-day missions gave 1 false alert,
++while all 100 slowly declining missions were caught (median alert on day 101,
++decline starting day 75). Real data is noisier, so real false-alarm rates would be
++higher. Details: `docs/DECISIONS.md` › Drift Cut-off. Code: `src/lib/engine/`.
++
+ ### Explainable Alerts
+ 
+ Every alert includes:
+@@ -171,7 +188,8 @@ Search:
+ 
+ Analytics:
+ - Rules engine with cited sources
+-- Fixed personal baselines and z-score drift detection
++- Fixed personal baselines and z-score drift detection (z ≥ 3.5, a design choice)
++- Logic engine in plain JavaScript (`src/lib/engine/`), tested with `npm test`
+ 
+ No backend server and no internet connection needed at runtime.
+ 
+diff --git a/docs/AI_USAGE.md b/docs/AI_USAGE.md
+index fd8d396..73d6721 100644
+--- a/docs/AI_USAGE.md
++++ b/docs/AI_USAGE.md
+@@ -12,6 +12,7 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
+ | 14 Nov 2026 | Chidozie | Claude Code | PR #6 review fixes: keyboard focus rings, current-page nav highlight, theme colour tokens, crew switcher | `src/components/*`, `src/lib/crew.js` |
+ | 14 Nov 2026 | Isaac | Claude | Baseline calculator (mean and sample SD per indicator over a fixed window) with unit tests; `npm test` script | `src/lib/engine/baseline.js`, `src/lib/engine/baseline.test.js`, `package.json` |
+ | 14 Nov 2026 | Isaac | Claude | Looked up and checked AHA, ADA and CDC reference ranges against the live pages; drafted the clinical-ranges table and gap list (values to be confirmed by a teammate) | `docs/SOURCES.md` |
++| 14 Nov 2026 | Isaac | Claude | CHECKLIST §2 logic engine: 7-day average, drift z-score, statuses, alert levels, red limits, health score, reaction scoring, reminders, search, region mapper, surgeon summary, calendar and Scenario Lab injection, with 76 unit tests; README drift design choice | `src/lib/engine/*`, `README.md`, `docs/CHECKLIST.md`, `docs/DECISIONS.md` |
+ 
+ ## AI-generated media
+ 
+diff --git a/docs/CHECKLIST.md b/docs/CHECKLIST.md
+index d7ec23b..1035c14 100644
+--- a/docs/CHECKLIST.md
++++ b/docs/CHECKLIST.md
+@@ -15,8 +15,8 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
+ 
+ ## 1. Data and storage
+ 
+-- [ ] **M** Daily record defined: date, mission day, heart rate, blood pressure (two numbers), blood sugar, temperature, sleep hours, mood (1–5), reaction median, lapses, false starts, exercise minutes, symptoms, SpO2 (optional), radiation dose (optional)
+-- [ ] **M** Units chosen and shown everywhere (mg/dL or mmol/L, °C)
++- [ ] **M** Daily record defined: date, mission day, heart rate, blood pressure (two numbers), blood sugar, temperature, sleep hours, mood (1–5), reaction median, lapses, false starts, exercise minutes, symptoms, SpO2 (optional), radiation dose (optional) 🟡 Partial (PR #TBD): the engine assumes camelCase field names (`src/lib/engine/indicators.js`); still to do: team confirms them, adds the date field and the database table
++- [ ] **M** Units chosen and shown everywhere (mg/dL or mmol/L, °C) 🟡 Partial (PR #TBD): engine and `docs/SOURCES.md` use mg/dL and °C; still to do: show units in every screen
+ - [ ] **M** Save and load daily records in the browser: SQLite via sql.js, saved to IndexedDB after every write, with the `.wasm` file bundled locally (`docs/DECISIONS.md` › Database)
+ - [ ] **M** Save and load the two baselines
+ - [ ] **M** Mission simulator: 180 days for 3 crew (`docs/DECISIONS.md` › Crew):
+@@ -32,25 +32,25 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
+ 
+ ## 2. Logic (plain functions with no screen code)
+ 
+-- [x] **M** Baseline calculator: mean and standard deviation per indicator for a fixed window (`src/lib/engine/baseline.js`, tests: `npm test`) (PR #?)
+-- [ ] **M** Pre-flight baseline and in-flight baseline (for example mission days 21–35) both calculated once and stored
+-- [ ] **M** Seven-day average per indicator
+-- [ ] **M** Health score 0–100 per astronaut (100 = perfect), with the change since yesterday and over 7 days (`docs/DECISIONS.md` › Health Score)
+-- [ ] **M** Z-score of the seven-day average against the in-flight baseline
+-- [ ] **M** Status per indicator: no data, steady, drifting, expected adaptation
+-- [ ] **M** Drift cut-off of **z = 3.5** (`docs/DECISIONS.md` › Drift Cut-off) written in the README as a design choice
+-- [ ] **M** Alert level: 1 drifting = note, 2 or more = alert, no recovery after 14 more days = tell crew and ground (linked indicators count once; `docs/DECISIONS.md` › Drift Cut-off)
+-- [ ] **M** Red-limit check on every new reading, independent of baselines
+-- [ ] **M** Red limits taken from a published source and cited (general clinical reference ranges, `docs/DECISIONS.md` › Thresholds)
+-- [ ] **M** Reaction scoring: median, lapses over 500 ms, false starts
+-- [ ] **M** Handles missing days without crashing or false alerts
+-- [ ] **M** Search index: offline fuzzy search over all content (typos, prefixes, synonyms, symptoms; `docs/DECISIONS.md` › Search). Library: **MiniSearch** (MIT)
+-- [ ] **M** Reminder scheduler: which measurements are due today
+-- [ ] **S** Region mapper: indicator-to-body-region table and worst-status function
+-- [ ] **S** Calendar scheduler: which periodic exams are due on a given mission day
+-- [ ] **S** Summary builder for the flight-surgeon report
++- [x] **M** Baseline calculator: mean and standard deviation per indicator for a fixed window (`src/lib/engine/baseline.js`) (PR #TBD)
++- [ ] **M** Pre-flight baseline and in-flight baseline (for example mission days 21–35) both calculated once and stored 🟡 Partial (PR #TBD): calculated by `calculateMissionBaselines` (pre-flight days −30 to −1, in-flight 21–35); still to do: store them (§1 "Save and load the two baselines")
++- [x] **M** Seven-day average per indicator (`src/lib/engine/average.js`) (PR #TBD)
++- [x] **M** Health score 0–100 per astronaut (100 = perfect), with the change since yesterday and over 7 days (`docs/DECISIONS.md` › Health Score) (`src/lib/engine/healthScore.js`) (PR #TBD)
++- [x] **M** Z-score of the seven-day average against the in-flight baseline (`src/lib/engine/drift.js`) (PR #TBD)
++- [x] **M** Status per indicator: no data, steady, drifting, expected adaptation (`src/lib/engine/status.js`; "expected adaptation" defined in `docs/DECISIONS.md` › Logic Engine Assumptions) (PR #TBD)
++- [x] **M** Drift cut-off of **z = 3.5** (`docs/DECISIONS.md` › Drift Cut-off) written in the README as a design choice (README › Drift detection) (PR #TBD)
++- [x] **M** Alert level: 1 drifting = note, 2 or more = alert, no recovery after 14 more days = tell crew and ground (linked indicators count once; `docs/DECISIONS.md` › Drift Cut-off) (`src/lib/engine/alerts.js`) (PR #TBD)
++- [x] **M** Red-limit check on every new reading, independent of baselines (`src/lib/engine/redLimits.js`) (PR #TBD)
++- [ ] **M** Red limits taken from a published source and cited (general clinical reference ranges, `docs/DECISIONS.md` › Thresholds) 🟡 Partial (PR #TBD): AHA, ADA and CDC limits verified, cited in `docs/SOURCES.md` and in `src/lib/engine/redLimits.js`; still to do: decide the 5 gaps (heart-rate red limit, high glucose, high temperature, low blood pressure, SpO₂) and have a teammate re-check the values
++- [x] **M** Reaction scoring: median, lapses over 500 ms, false starts (`src/lib/engine/reaction.js`) (PR #TBD)
++- [x] **M** Handles missing days without crashing or false alerts (all of `src/lib/engine`; tested in `evaluate.test.js`) (PR #TBD)
++- [ ] **M** Search index: offline fuzzy search over all content (typos, prefixes, synonyms, symptoms; `docs/DECISIONS.md` › Search). Library: **MiniSearch** (MIT) 🟡 Partial (PR #TBD): `src/lib/engine/search.js` handles typos, prefixes, keywords, symptoms-first and "Did you mean" (tested on sample items); still to do: index the real content once §1 keywords and §4 text exist
++- [x] **M** Reminder scheduler: which measurements are due today (`src/lib/engine/reminders.js`) (PR #TBD)
++- [x] **S** Region mapper: indicator-to-body-region table and worst-status function (`src/lib/engine/regions.js`; table to confirm in `docs/BODY_MAP.md`) (PR #TBD)
++- [ ] **S** Calendar scheduler: which periodic exams are due on a given mission day 🟡 Partial (PR #TBD): `src/lib/engine/calendar.js` (due and overdue); still to do: the exam list (§4 "List of periodic exams and how often")
++- [x] **S** Summary builder for the flight-surgeon report (`src/lib/engine/summary.js`; Earth delay passed in) (PR #TBD)
+ - [ ] **S** Mission mode changes which hazards and advice are shown (ISS, Lunar Gateway, Mars Transit; no Lunar Surface Base)
+-- [ ] **S** Scenario Lab: inject radiation, fatigue, sleep loss or hypoxia into the data and watch the alerts react
++- [ ] **S** Scenario Lab: inject radiation, fatigue, sleep loss or hypoxia into the data and watch the alerts react 🟡 Partial (PR #TBD): injection in `src/lib/engine/scenarios.js` (demo effect sizes); still to do: the screen (§3)
+ 
+ ---
+ 
+@@ -161,13 +161,13 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
+ ## 6. Testing
+ 
+ - [ ] **M** Fresh browser: load demo mission, Rivera's alert appears in the expected week
+-- [ ] **M** Healthy data (Singh) produces no alert and a stable, high health score
+-- [ ] **M** Health score drops as Rivera declines and when a red limit is hit
+-- [ ] **M** One bad day produces no alert
++- [ ] **M** Healthy data (Singh) produces no alert and a stable, high health score 🟡 Partial (PR #TBD): passes on engine-level simulated missions (`evaluate.test.js`); still to do: re-run with the real mission simulator in the app
++- [ ] **M** Health score drops as Rivera declines and when a red limit is hit 🟡 Partial (PR #TBD): passes at engine level (`evaluate.test.js`); still to do: check in the app
++- [ ] **M** One bad day produces no alert 🟡 Partial (PR #TBD): passes at engine level (`evaluate.test.js`); still to do: check in the app
+ - [ ] **M** A dangerous reading (Nakamura) triggers the red-limit screen
+ - [ ] **M** Empty state (no data yet) looks sensible
+ - [ ] **M** Reaction test run ten times in a row without breaking
+-- [ ] **M** Search finds the right item for misspellings ("hart rate"), synonyms ("pulse") and symptoms ("chest pain")
++- [ ] **M** Search finds the right item for misspellings ("hart rate"), synonyms ("pulse") and symptoms ("chest pain") 🟡 Partial (PR #TBD): passes on sample items (`search.test.js`); still to do: re-check with the real content
+ - [ ] **M** Whole app usable by keyboard only; status readable in greyscale
+ - [ ] **M** Full demo rehearsed start to finish on the machine that will present it
+ - [ ] **M** Someone outside the team tries it without instructions
+diff --git a/docs/DECISIONS.md b/docs/DECISIONS.md
+index 3914325..7021b7c 100644
+--- a/docs/DECISIONS.md
++++ b/docs/DECISIONS.md
+@@ -3,7 +3,7 @@
+ Every locked choice and why. Entries are in the order they were made. **Index:**
+ - **Product:** Originality · Crew · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
+ - **Data and content:** Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
+-- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open) · Baseline Calculator · Logic Tests
++- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open) · Baseline Calculator · Logic Engine Assumptions · Logic Tests
+ - **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
+ 
+ ## Frontend
+@@ -529,23 +529,16 @@ LOCKED
+ 
+ ## Baseline Calculator
+ 
+-`src/lib/engine/baseline.js` › `calculateBaseline(records, indicators, window, options)`.
++`src/lib/engine/baseline.js` › `calculateBaseline` and `calculateMissionBaselines`.
+ - **Standard deviation:** sample SD (divide by n − 1), the usual estimate of day-to-day spread.
+   This is the `s` in the Drift Cut-off formula; `n` is its `m`.
+-- **Raw SD is returned.** The per-indicator minimum SD (Drift Cut-off) is applied later, in the
+-  z-score step, so the stored baseline stays the true measured value.
++- **Raw SD is stored.** The per-indicator minimum SD (Drift Cut-off) is applied in the z-score
++  step (`drift.js`), so the stored baseline stays the true measured value.
+ - **Missing data:** only finite numbers count. Missing, null, NaN, infinite or text values are
+-  skipped and counted, never filled in.
+-- **Too few readings:** fewer than `minReadings` (default 2, the mathematical minimum) gives
+-  `insufficient_data` with no numbers. The team still needs to choose the real minimum
+-  (e.g. 10 of the 15 in-flight days) and pass it in.
+-- **In-flight window:** `IN_FLIGHT_WINDOW` = mission days 21–35. The pre-flight window is not
+-  decided yet.
+-- **Field names:** indicator fields are passed in by the caller; the mission-day field defaults
+-  to `missionDay`. Both follow whatever the daily record (CHECKLIST §1) defines.
++  skipped and counted, never filled in. Too few readings gives no numbers, never a guess.
+ 
+ Status:
+-ACTIVE (minimum readings and pre-flight window still to decide)
++ACTIVE
+ 
+ ---
+ 
+@@ -556,3 +549,45 @@ nothing extra is installed. Test files sit next to the code as `*.test.js`; run
+ 
+ Status:
+ ACTIVE
++
++---
++
++## Logic Engine Assumptions
++
++Choices made while building CHECKLIST §2 (`src/lib/engine/`) where no decision existed.
++Each is marked ASSUMPTION in the code. Change them in one place, then run `npm test`.
++- **Field names** (`indicators.js`): camelCase, e.g. `heartRate`, `bpSystolic`, `bpDiastolic`,
++  `glucose` (mg/dL), `temperature` (°C), `sleepHours`, `mood`, `reactionMedianMs`,
++  `reactionLapses`, `reactionFalseStarts`, `exerciseMinutes`, `symptoms` (list), `spo2`,
++  `radiationMsv`, `missionDay`. CHECKLIST §1 "Daily record defined" should confirm or rename.
++- **Drift-tracked indicators:** the core six plus sleep, mood, reaction median and lapses,
++  exercise and SpO₂. Not tracked: false starts (no worrying direction given), symptoms (not a
++  number) and radiation dose (it accumulates by design).
++- **Minimum spread `s` per indicator** (Drift Cut-off gives none): heart rate 2 bpm, systolic
++  3 mmHg, diastolic 2 mmHg, glucose 4 mg/dL, temperature 0.1 °C, sleep 0.25 h, mood 0.3,
++  reaction median 10 ms, lapses 0.5, exercise 5 min, SpO₂ 0.5 %. Tune after simulator runs.
++- **Pre-flight window:** mission days −30 to −1. **Minimum readings per baseline:** 10.
++- **"Expected adaptation"** (status not defined before): the 7-day average differs from the
++  PRE-FLIGHT baseline by z ≥ 3.5 in the worrying direction but is NOT drifting against the
++  in-flight baseline: "changed since Earth, stable in space". This gives the pre-flight
++  baseline its job. Before day 36 nothing can be "drifting", as the in-flight baseline
++  isn't complete.
++- **Alert escalation:** an alert starts on the first day with 2+ drifting groups and ends only
++  on a day WITH data that has fewer than 2. It escalates when 14 days have passed since it
++  started. Days without data neither start nor end an alert.
++- **Red-limit severities:** `red` (opens the red-limit screen, caps the score at 25),
++  `act` (source gives an action) and `watch`. Only verified values are used; the 5 gaps in
++  `docs/SOURCES.md` stay empty. Glucose readings are treated as fasting (morning).
++- **Reminders:** every measurement once per mission day; SpO₂ and radiation not reminded.
++- **Region table** (`regions.js`) follows the indicators listed in `docs/BODY_MAP.md`; it is
++  the proposal for that file's open "agreed with the logic owner" check.
++- **Scenario Lab effect sizes** are invented demo values, never to be shown as physiology.
++
++Interim check of the 3.5 cut-off (Drift Cut-off asks for a re-run on our own simulator):
++with the engine and the test-data generator in `src/lib/engine/testData.js`, 100 healthy
++180-day missions gave 1 false alert and 100 of 100 declining missions were caught (median
++day 101; decline from day 75). 68 of the 100 healthy missions had at least one "note" day,
++so the UI should present a note quietly. Re-run with the real mission simulator (§1).
++
++Status:
++ACTIVE (team to confirm)
+diff --git a/src/lib/engine/alerts.js b/src/lib/engine/alerts.js
+new file mode 100644
+index 0000000..d30a696
+--- /dev/null
++++ b/src/lib/engine/alerts.js
+@@ -0,0 +1,119 @@
++// Alert level (docs/CHECKLIST.md › 2. Logic, item 8).
++// Pure logic: no React, DOM, database or Node-only APIs.
++//
++// DECISIONS › Drift Cut-off and CHECKLIST §2:
++// - 1 group drifting = "note", 2 or more = "alert".
++// - No recovery after 14 more days = "escalated" (tell crew and ground).
++// - Linked indicators count once: reaction median + lapses are one group, systolic +
++//   diastolic are one group (see `group` in indicators.js).
++
++/** Days an alert must last without recovery before it escalates. */
++export const ESCALATION_DAYS = 14;
++
++/** Status ranking used to pick a group's worst member. */
++const STATUS_RANK = Object.freeze({ no_data: 0, steady: 1, expected_adaptation: 2, drifting: 3 });
++
++/**
++ * @typedef {Object} GroupStatus
++ * @property {string} group
++ * @property {"no_data" | "steady" | "expected_adaptation" | "drifting"} status Worst member status.
++ * @property {number | null} worryingZ Highest in-flight worrying z among drifting members, else
++ *   the highest available, else null.
++ * @property {ReadonlyArray<string>} drifting Member keys that are drifting.
++ */
++
++/**
++ * Collapses per-indicator statuses into one status per linked group, so blood pressure
++ * and reaction each count once.
++ *
++ * @param {ReadonlyArray<{ key: string, group: string, status: string, worryingZ: number | null }>} statuses
++ *   From allIndicatorStatuses().
++ * @returns {ReadonlyArray<Readonly<GroupStatus>>} In first-seen order.
++ */
++export function groupStatuses(statuses) {
++  /** @type {Map<string, { group: string, status: string, worryingZ: number | null, drifting: string[] }>} */
++  const groups = new Map();
++  for (const item of statuses) {
++    let entry = groups.get(item.group);
++    if (!entry) {
++      entry = { group: item.group, status: "no_data", worryingZ: null, drifting: [] };
++      groups.set(item.group, entry);
++    }
++    if (STATUS_RANK[item.status] > STATUS_RANK[entry.status]) entry.status = item.status;
++    if (item.status === "drifting") entry.drifting.push(item.key);
++    if (item.worryingZ !== null && (entry.worryingZ === null || item.worryingZ > entry.worryingZ)) {
++      entry.worryingZ = item.worryingZ;
++    }
++  }
++  return Object.freeze(
++    [...groups.values()].map((g) =>
++      Object.freeze({ ...g, drifting: Object.freeze(g.drifting) }),
++    ),
++  );
++}
++
++/**
++ * Number of drifting groups on a day, or null if no group had data (a day without
++ * data is not evidence of recovery, so it must not reset an alert).
++ *
++ * @param {ReadonlyArray<{ status: string }>} groups From groupStatuses().
++ * @returns {number | null}
++ */
++export function countDriftingGroups(groups) {
++  if (groups.every((g) => g.status === "no_data")) return null;
++  return groups.filter((g) => g.status === "drifting").length;
++}
++
++/**
++ * @typedef {"none" | "note" | "alert" | "escalated"} AlertLevel
++ */
++
++/**
++ * @typedef {Object} AlertResult
++ * @property {AlertLevel} level
++ * @property {number | null} driftingGroups Groups drifting on `day` (null = no data).
++ * @property {number | null} alertSince First day of the current unbroken alert, or null.
++ */
++
++/**
++ * CHECKLIST §2: "Alert level: 1 drifting = note, 2 or more = alert, no recovery after
++ * 14 more days = tell crew and ground (linked indicators count once)".
++ *
++ * `history` holds the drifting-group count for each evaluated day (null = no data).
++ * An alert starts on the first day with 2 or more drifting groups and only ends on a
++ * day WITH data that has fewer than 2. Days with no data, or missing from the history,
++ * neither end it nor start it. It escalates once `day − alertSince ≥ 14`.
++ *
++ * @param {ReadonlyArray<{ day: number, driftingGroups: number | null }>} history
++ *   Any order; entries after `day` are ignored.
++ * @param {number} day
++ * @returns {Readonly<AlertResult>}
++ */
++export function alertLevelOnDay(history, day) {
++  const upToDay = history.filter((h) => h.day <= day).sort((a, b) => a.day - b.day);
++  const today = upToDay.find((h) => h.day === day);
++  const driftingGroups = today ? today.driftingGroups : null;
++
++  if (driftingGroups === null) {
++    return Object.freeze({ level: "none", driftingGroups: null, alertSince: null });
++  }
++  if (driftingGroups < 2) {
++    return Object.freeze({
++      level: driftingGroups === 1 ? "note" : "none",
++      driftingGroups,
++      alertSince: null,
++    });
++  }
++
++  // Walk back to the start of this unbroken alert.
++  let alertSince = day;
++  for (let i = upToDay.length - 1; i >= 0; i -= 1) {
++    const entry = upToDay[i];
++    if (entry.driftingGroups === null) continue; // no data: not a recovery
++    if (entry.driftingGroups < 2) break; // recovered on this day
++    alertSince = entry.day;
++  }
++
++  const level = day - alertSince >= ESCALATION_DAYS ? "escalated" : "alert";
++  return Object.freeze({ level, driftingGroups, alertSince });
++}
+diff --git a/src/lib/engine/alerts.test.js b/src/lib/engine/alerts.test.js
+new file mode 100644
+index 0000000..ba9cc47
+--- /dev/null
++++ b/src/lib/engine/alerts.test.js
+@@ -0,0 +1,50 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { alertLevelOnDay, countDriftingGroups, groupStatuses } from "./alerts.js";
++
++const s = (key, group, status, worryingZ = null) => ({ key, group, status, worryingZ });
++
++test("linked indicators count once", () => {
++  const groups = groupStatuses([
++    s("bpSystolic", "bloodPressure", "drifting", 4),
++    s("bpDiastolic", "bloodPressure", "drifting", 5),
++    s("reactionMedianMs", "reaction", "steady", 1),
++    s("reactionLapses", "reaction", "drifting", 3.6),
++  ]);
++  assert.equal(groups.length, 2);
++  assert.equal(countDriftingGroups(groups), 2);
++  assert.equal(groups[0].worryingZ, 5);
++  assert.deepEqual([...groups[0].drifting], ["bpSystolic", "bpDiastolic"]);
++});
++
++test("a day where every group has no data is null, not zero", () => {
++  assert.equal(countDriftingGroups(groupStatuses([s("mood", "mood", "no_data")])), null);
++});
++
++test("1 group = note, 2 or more = alert", () => {
++  assert.equal(alertLevelOnDay([{ day: 1, driftingGroups: 0 }], 1).level, "none");
++  assert.equal(alertLevelOnDay([{ day: 1, driftingGroups: 1 }], 1).level, "note");
++  assert.equal(alertLevelOnDay([{ day: 1, driftingGroups: 2 }], 1).level, "alert");
++});
++
++test("escalates after 14 more days without recovery", () => {
++  const history = [{ day: 99, driftingGroups: 0 }];
++  for (let day = 100; day <= 114; day += 1) history.push({ day, driftingGroups: 2 });
++  assert.equal(alertLevelOnDay(history, 113).level, "alert");
++  const at114 = alertLevelOnDay(history, 114);
++  assert.equal(at114.level, "escalated");
++  assert.equal(at114.alertSince, 100);
++});
++
++test("a recovery day resets the clock; a no-data day does not", () => {
++  const withRecovery = [];
++  const withGap = [];
++  for (let day = 100; day <= 120; day += 1) {
++    withRecovery.push({ day, driftingGroups: day === 110 ? 1 : 2 });
++    withGap.push({ day, driftingGroups: day === 110 ? null : 2 });
++  }
++  assert.equal(alertLevelOnDay(withRecovery, 120).level, "alert");
++  assert.equal(alertLevelOnDay(withRecovery, 120).alertSince, 111);
++  assert.equal(alertLevelOnDay(withGap, 120).level, "escalated");
++  assert.equal(alertLevelOnDay(withGap, 110).level, "none"); // no data today: no alert shown
++});
+diff --git a/src/lib/engine/average.js b/src/lib/engine/average.js
+new file mode 100644
+index 0000000..351c498
+--- /dev/null
++++ b/src/lib/engine/average.js
+@@ -0,0 +1,61 @@
++// Seven-day average (docs/CHECKLIST.md › 2. Logic, item 3).
++// Pure logic: no React, DOM, database or Node-only APIs.
++
++import { DAY_KEY, readingOrNull } from "./indicators.js";
++
++/** Days in the recent window (DECISIONS › Drift Cut-off: "the last 7 days"). */
++export const RECENT_WINDOW_DAYS = 7;
++
++/** Fewest readings for a usable recent average (DECISIONS › Drift Cut-off: "at least 4"). */
++export const RECENT_MIN_READINGS = 4;
++
++/**
++ * @typedef {Object} RecentAverage
++ * @property {"ok" | "insufficient_data"} status `insufficient_data` when fewer than 4 readings.
++ * @property {number | null} mean Average of the readings, or null when insufficient.
++ * @property {number} n           Readings used (the drift formula's `n`).
++ * @property {number} fromDay     First day of the window (inclusive).
++ * @property {number} toDay       Last day of the window (inclusive): the day being evaluated.
++ */
++
++/**
++ * CHECKLIST §2: "Seven-day average per indicator".
++ *
++ * Averages one indicator over the 7 mission days ending on `day` (day − 6 … day).
++ * Missing days and invalid values are skipped, never filled in. With fewer than 4
++ * readings the result is `insufficient_data` with a null mean, so a gap in the data
++ * can never produce a drift alert. If a day appears more than once, every reading
++ * for it counts (the database allows one row per astronaut per day, so this should
++ * not happen).
++ *
++ * Deterministic: values are sorted before summing, so record order can't change the result.
++ *
++ * @param {ReadonlyArray<Object<string, unknown>>} records Daily records for ONE astronaut.
++ * @param {string} indicator Field name, e.g. "sleepHours".
++ * @param {number} day       Mission day being evaluated (integer).
++ * @returns {Readonly<RecentAverage>}
++ * @throws {TypeError} If `records` isn't an array or `day` isn't an integer.
++ */
++export function sevenDayAverage(records, indicator, day) {
++  if (!Array.isArray(records)) throw new TypeError("sevenDayAverage: records must be an array.");
++  if (!Number.isInteger(day)) throw new TypeError("sevenDayAverage: day must be an integer.");
++
++  const fromDay = day - (RECENT_WINDOW_DAYS - 1);
++  const values = [];
++  for (const record of records) {
++    if (record === null || typeof record !== "object") continue;
++    const recordDay = record[DAY_KEY];
++    if (!Number.isInteger(recordDay) || recordDay < fromDay || recordDay > day) continue;
++    const value = readingOrNull(record[indicator]);
++    if (value !== null) values.push(value);
++  }
++
++  const n = values.length;
++  if (n < RECENT_MIN_READINGS) {
++    return Object.freeze({ status: "insufficient_data", mean: null, n, fromDay, toDay: day });
++  }
++  values.sort((a, b) => a - b);
++  let sum = 0;
++  for (const value of values) sum += value;
++  return Object.freeze({ status: "ok", mean: sum / n, n, fromDay, toDay: day });
++}
+diff --git a/src/lib/engine/average.test.js b/src/lib/engine/average.test.js
+new file mode 100644
+index 0000000..824cc09
+--- /dev/null
++++ b/src/lib/engine/average.test.js
+@@ -0,0 +1,27 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { sevenDayAverage } from "./average.js";
++
++test("averages the 7 days ending on the given day", () => {
++  const records = [1, 2, 3, 4, 5, 6, 7, 8].map((d) => ({ missionDay: d, mood: d }));
++  const result = sevenDayAverage(records, "mood", 8); // days 2–8
++  assert.deepEqual({ ...result }, { status: "ok", mean: 5, n: 7, fromDay: 2, toDay: 8 });
++});
++
++test("needs at least 4 readings; gaps never produce a number", () => {
++  const records = [{ missionDay: 10, mood: 3 }, { missionDay: 12, mood: 3 }, { missionDay: 14, mood: null }];
++  const result = sevenDayAverage(records, "mood", 14);
++  assert.equal(result.status, "insufficient_data");
++  assert.equal(result.mean, null);
++  assert.equal(result.n, 2);
++});
++
++test("skips invalid values and broken records", () => {
++  const records = [null, "x", { missionDay: 1, mood: "4" }, ...[2, 3, 4, 5].map((d) => ({ missionDay: d, mood: 4 }))];
++  assert.equal(sevenDayAverage(records, "mood", 5).n, 4);
++});
++
++test("record order does not change the result", () => {
++  const records = [0.1, 0.2, 0.7, 1e-9, 3.3, 9.9, 2.2].map((v, i) => ({ missionDay: i + 1, sleepHours: v }));
++  assert.deepEqual(sevenDayAverage(records, "sleepHours", 7), sevenDayAverage([...records].reverse(), "sleepHours", 7));
++});
+diff --git a/src/lib/engine/baseline.js b/src/lib/engine/baseline.js
+index c3f974f..9154282 100644
+--- a/src/lib/engine/baseline.js
++++ b/src/lib/engine/baseline.js
+@@ -1,4 +1,4 @@
+-// Baseline calculator (docs/CHECKLIST.md › 2. Logic, first item).
++// Baseline calculator and mission baselines (docs/CHECKLIST.md › 2. Logic, items 1–2).
+ //
+ // Mean and standard deviation per indicator over a FIXED window of mission days
+ // (docs/DECISIONS.md › Baselines: fixed, not rolling). The same function computes
+@@ -51,17 +51,33 @@
+ 
+ /**
+  * The in-flight baseline window named in docs/DECISIONS.md › Baselines
+- * ("e.g. mission days 21–35"). The pre-flight window isn't fixed by the team yet,
+- * so it is not defined here.
++ * ("e.g. mission days 21–35").
+  *
+  * @type {Readonly<BaselineWindow>}
+  */
+ export const IN_FLIGHT_WINDOW = Object.freeze({ fromDay: 21, toDay: 35 });
+ 
++/**
++ * Pre-flight baseline window. ASSUMPTION: DECISIONS names a pre-flight baseline but
++ * not its days; the last 30 days before launch (mission days −30 to −1) are used.
++ *
++ * @type {Readonly<BaselineWindow>}
++ */
++export const PRE_FLIGHT_WINDOW = Object.freeze({ fromDay: -30, toDay: -1 });
++
++/**
++ * Fewest readings a mission baseline needs. ASSUMPTION: the team hasn't set this;
++ * 10 is two thirds of the 15-day in-flight window.
++ */
++export const BASELINE_MIN_READINGS = 10;
++
+ /** A standard deviation needs at least two readings. */
+ const ABSOLUTE_MIN_READINGS = 2;
+ 
+ /**
++ * CHECKLIST §2: "Baseline calculator: mean and standard deviation per indicator for a
++ * fixed window".
++ *
+  * Calculates a fixed baseline (mean and sample standard deviation) for each
+  * requested indicator, using only records whose mission day falls inside the window.
+  *
+@@ -207,3 +223,41 @@ function validateArguments(records, indicators, window, minReadings, dayKey) {
+     throw new TypeError("calculateBaseline: dayKey must be a non-empty string.");
+   }
+ }
++
++/**
++ * @typedef {Object} MissionBaselines
++ * @property {Readonly<BaselineResult>} preflight Baseline over PRE_FLIGHT_WINDOW.
++ * @property {Readonly<BaselineResult>} inflight  Baseline over IN_FLIGHT_WINDOW.
++ */
++
++/**
++ * CHECKLIST §2: "Pre-flight baseline and in-flight baseline (for example mission days
++ * 21–35) both calculated once and stored". This function does the calculating; saving
++ * the result is CHECKLIST §1 ("Save and load the two baselines"). Both baselines are
++ * FIXED (DECISIONS › Baselines): call this once per astronaut, store the result, and
++ * never recompute it from later days.
++ *
++ * The in-flight baseline only exists once its window has ended, so pass only records
++ * up to the current day; before day 36 the in-flight result is `insufficient_data`.
++ *
++ * @param {ReadonlyArray<DailyRecord>} records Daily records for ONE astronaut.
++ * @param {ReadonlyArray<string>} indicators   Field names, e.g. DRIFT_INDICATOR_KEYS.
++ * @param {Object} [options]
++ * @param {BaselineWindow} [options.preflightWindow=PRE_FLIGHT_WINDOW]
++ * @param {BaselineWindow} [options.inflightWindow=IN_FLIGHT_WINDOW]
++ * @param {number} [options.minReadings=BASELINE_MIN_READINGS]
++ * @param {string} [options.dayKey="missionDay"]
++ * @returns {Readonly<MissionBaselines>}
++ */
++export function calculateMissionBaselines(records, indicators, options = {}) {
++  const {
++    preflightWindow = PRE_FLIGHT_WINDOW,
++    inflightWindow = IN_FLIGHT_WINDOW,
++    minReadings = BASELINE_MIN_READINGS,
++    dayKey = "missionDay",
++  } = options;
++  return Object.freeze({
++    preflight: calculateBaseline(records, indicators, preflightWindow, { minReadings, dayKey }),
++    inflight: calculateBaseline(records, indicators, inflightWindow, { minReadings, dayKey }),
++  });
++}
+diff --git a/src/lib/engine/calendar.js b/src/lib/engine/calendar.js
+new file mode 100644
+index 0000000..0180f92
+--- /dev/null
++++ b/src/lib/engine/calendar.js
+@@ -0,0 +1,70 @@
++// Calendar scheduler (docs/CHECKLIST.md › 2. Logic, S item "Calendar scheduler").
++// Pure logic: no React, DOM, database or Node-only APIs.
++//
++// The list of periodic exams and how often they happen is CHECKLIST §4 (S) and doesn't
++// exist yet, so this module ships no exams. Pass the list in once it's written.
++
++/**
++ * @typedef {Object} PeriodicExam
++ * @property {string} id         e.g. "exam:eye-check".
++ * @property {number} firstDay   First mission day it's due (integer).
++ * @property {number} everyDays  Repeat interval in days (integer ≥ 1).
++ */
++
++/**
++ * CHECKLIST §2 (S): "Calendar scheduler: which periodic exams are due on a given mission day".
++ *
++ * An exam is due on `firstDay`, then every `everyDays` after it. Invalid exam entries
++ * are skipped rather than crashing the calendar.
++ *
++ * @param {ReadonlyArray<PeriodicExam>} exams
++ * @param {number} day Mission day (integer).
++ * @returns {ReadonlyArray<string>} Ids of exams due that day, sorted.
++ * @throws {TypeError} If `exams` isn't an array or `day` isn't an integer.
++ */
++export function examsDueOn(exams, day) {
++  if (!Array.isArray(exams)) throw new TypeError("examsDueOn: exams must be an array.");
++  if (!Number.isInteger(day)) throw new TypeError("examsDueOn: day must be an integer.");
++  return Object.freeze(
++    exams
++      .filter(isValidExam)
++      .filter((e) => day >= e.firstDay && (day - e.firstDay) % e.everyDays === 0)
++      .map((e) => e.id)
++      .sort(),
++  );
++}
++
++/**
++ * Exams whose most recent due day (on or before `day`) has no completion recorded.
++ *
++ * @param {ReadonlyArray<PeriodicExam>} exams
++ * @param {ReadonlyArray<{ examId: string, day: number }>} completed Completions so far.
++ * @param {number} day
++ * @returns {ReadonlyArray<{ id: string, dueDay: number }>} Sorted by id.
++ */
++export function examsOverdue(exams, completed, day) {
++  if (!Array.isArray(exams) || !Array.isArray(completed)) {
++    throw new TypeError("examsOverdue: exams and completed must be arrays.");
++  }
++  if (!Number.isInteger(day)) throw new TypeError("examsOverdue: day must be an integer.");
++  const result = [];
++  for (const exam of exams.filter(isValidExam)) {
++    if (day < exam.firstDay) continue;
++    const dueDay = exam.firstDay + Math.floor((day - exam.firstDay) / exam.everyDays) * exam.everyDays;
++    const done = completed.some((c) => c && c.examId === exam.id && Number.isInteger(c.day) && c.day >= dueDay);
++    if (!done && dueDay < day) result.push(Object.freeze({ id: exam.id, dueDay }));
++  }
++  return Object.freeze(result.sort((a, b) => a.id.localeCompare(b.id)));
++}
++
++/** @param {unknown} e */
++function isValidExam(e) {
++  return (
++    e !== null &&
++    typeof e === "object" &&
++    typeof e.id === "string" &&
++    Number.isInteger(e.firstDay) &&
++    Number.isInteger(e.everyDays) &&
++    e.everyDays >= 1
++  );
++}
+diff --git a/src/lib/engine/calendar.test.js b/src/lib/engine/calendar.test.js
+new file mode 100644
+index 0000000..d9defeb
+--- /dev/null
++++ b/src/lib/engine/calendar.test.js
+@@ -0,0 +1,16 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { examsDueOn, examsOverdue } from "./calendar.js";
++
++const exams = [{ id: "b-weekly", firstDay: 7, everyDays: 7 }, { id: "a-monthly", firstDay: 30, everyDays: 30 }, { id: "bad" }];
++
++test("due on the first day and every interval after; bad entries skipped", () => {
++  assert.deepEqual([...examsDueOn(exams, 7)], ["b-weekly"]);
++  assert.deepEqual([...examsDueOn(exams, 210)], ["a-monthly", "b-weekly"]);
++  assert.deepEqual([...examsDueOn(exams, 3)], []);
++});
++
++test("overdue when the latest due day has no completion", () => {
++  assert.deepEqual(examsOverdue(exams, [], 9).map((e) => ({ ...e })), [{ id: "b-weekly", dueDay: 7 }]);
++  assert.deepEqual([...examsOverdue(exams, [{ examId: "b-weekly", day: 8 }], 9)], []);
++});
+diff --git a/src/lib/engine/drift.js b/src/lib/engine/drift.js
+new file mode 100644
+index 0000000..1e3fce5
+--- /dev/null
++++ b/src/lib/engine/drift.js
+@@ -0,0 +1,61 @@
++// Drift z-score (docs/CHECKLIST.md › 2. Logic, items 5 and 7).
++// Pure logic: no React, DOM, database or Node-only APIs.
++
++/**
++ * CHECKLIST §2: "Drift cut-off of z = 3.5". A design choice, not a clinical standard
++ * (DECISIONS › Drift Cut-off; also stated in README › Drift detection).
++ */
++export const DRIFT_CUTOFF = 3.5;
++
++/**
++ * @typedef {Object} DriftResult
++ * @property {number} z          Signed z: positive means the recent average is higher
++ *                               than the baseline.
++ * @property {number} worryingZ  z in the worrying direction only: −z for "down",
++ *                               z for "up", |z| for "both". Negative or 0 = no concern.
++ * @property {boolean} drifting  True when worryingZ ≥ DRIFT_CUTOFF.
++ * @property {number} s          Spread used: the baseline SD, raised to the floor if lower.
++ * @property {boolean} floorApplied True if the floor replaced a smaller baseline SD.
++ */
++
++/**
++ * CHECKLIST §2: "Z-score of the seven-day average against the in-flight baseline".
++ *
++ * Implements the locked formula (DECISIONS › Drift Cut-off):
++ *
++ *     z = (recent average − baseline mean) ÷ (s × √(1/n + 1/m))
++ *
++ * where s is the baseline's day-to-day SD, never below the indicator's floor.
++ * The function is generic, so the status step can also compare against the
++ * pre-flight baseline (for "expected adaptation").
++ *
++ * Returns null, never a guess, when either side lacks data: a recent average with
++ * status other than "ok", or a baseline whose status isn't "ok".
++ *
++ * @param {{ status: string, mean: number | null, n: number }} recent  From sevenDayAverage().
++ * @param {{ status: string, mean: number | null, sd: number | null, n: number }} baseline
++ *   One indicator's entry from calculateBaseline().
++ * @param {"down" | "up" | "both"} direction Worrying direction for this indicator.
++ * @param {number} sdFloor Minimum s for this indicator (> 0).
++ * @returns {Readonly<DriftResult> | null}
++ */
++export function driftZ(recent, baseline, direction, sdFloor) {
++  if (!(sdFloor > 0)) throw new RangeError("driftZ: sdFloor must be a positive number.");
++  if (!recent || recent.status !== "ok" || !baseline || baseline.status !== "ok") return null;
++  if (!(recent.n > 0) || !(baseline.n > 0)) return null;
++
++  const floorApplied = baseline.sd < sdFloor;
++  const s = floorApplied ? sdFloor : baseline.sd;
++  const z = (recent.mean - baseline.mean) / (s * Math.sqrt(1 / recent.n + 1 / baseline.n));
++
++  let worryingZ;
++  if (direction === "down") worryingZ = -z;
++  else if (direction === "up") worryingZ = z;
++  else if (direction === "both") worryingZ = Math.abs(z);
++  else throw new RangeError(`driftZ: unknown direction "${direction}".`);
++
++  // Normalise −0 so results compare equal in tests and storage.
++  if (Object.is(worryingZ, -0)) worryingZ = 0;
++
++  return Object.freeze({ z, worryingZ, drifting: worryingZ >= DRIFT_CUTOFF, s, floorApplied });
++}
+diff --git a/src/lib/engine/drift.test.js b/src/lib/engine/drift.test.js
+new file mode 100644
+index 0000000..2e885d5
+--- /dev/null
++++ b/src/lib/engine/drift.test.js
+@@ -0,0 +1,41 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { DRIFT_CUTOFF, driftZ } from "./drift.js";
++
++const baseline = { status: "ok", mean: 7, sd: 0.5, n: 15 };
++
++test("implements z = (recent − mean) ÷ (s × √(1/n + 1/m))", () => {
++  const recent = { status: "ok", mean: 6, n: 7 };
++  const expected = (6 - 7) / (0.5 * Math.sqrt(1 / 7 + 1 / 15));
++  const result = driftZ(recent, baseline, "down", 0.25);
++  assert.equal(result.z, expected);
++  assert.equal(result.worryingZ, -expected);
++});
++
++test("cut-off is 3.5 and only the worrying direction counts", () => {
++  assert.equal(DRIFT_CUTOFF, 3.5);
++  const lower = { status: "ok", mean: 6, n: 7 }; // z ≈ −4.4
++  assert.equal(driftZ(lower, baseline, "down", 0.25).drifting, true);
++  assert.equal(driftZ(lower, baseline, "up", 0.25).drifting, false);
++  assert.equal(driftZ(lower, baseline, "both", 0.25).drifting, true);
++});
++
++test("the sd floor stops a very steady baseline from inflating z", () => {
++  const steady = { status: "ok", mean: 7, sd: 0.01, n: 15 };
++  const recent = { status: "ok", mean: 6.9, n: 7 };
++  const result = driftZ(recent, steady, "down", 0.25);
++  assert.equal(result.floorApplied, true);
++  assert.equal(result.s, 0.25);
++  assert.equal(result.drifting, false);
++});
++
++test("returns null when either side lacks data", () => {
++  assert.equal(driftZ({ status: "insufficient_data", mean: null, n: 2 }, baseline, "down", 0.25), null);
++  assert.equal(driftZ({ status: "ok", mean: 6, n: 7 }, { status: "no_data", mean: null, sd: null, n: 0 }, "down", 0.25), null);
++  assert.equal(driftZ({ status: "ok", mean: 6, n: 7 }, undefined, "down", 0.25), null);
++});
++
++test("rejects a missing floor or unknown direction", () => {
++  assert.throws(() => driftZ({ status: "ok", mean: 6, n: 7 }, baseline, "down", 0), RangeError);
++  assert.throws(() => driftZ({ status: "ok", mean: 6, n: 7 }, baseline, "sideways", 1), RangeError);
++});
+diff --git a/src/lib/engine/evaluate.js b/src/lib/engine/evaluate.js
+new file mode 100644
+index 0000000..41b74c5
+--- /dev/null
++++ b/src/lib/engine/evaluate.js
+@@ -0,0 +1,85 @@
++// Day and mission evaluation: runs the logic items together.
++// Pure logic: no React, DOM, database or Node-only APIs.
++//
++// CHECKLIST §2 item 12, "Handles missing days without crashing or false alerts", is
++// met here and in every step below: missing days and values are skipped, fewer than
++// 4 readings in 7 days gives "no_data" (never "drifting"), and a day without data
++// neither starts nor ends an alert. Covered by evaluate.test.js.
++
++import { alertLevelOnDay, countDriftingGroups, groupStatuses } from "./alerts.js";
++import { healthScore, scoreChange } from "./healthScore.js";
++import { DAY_KEY } from "./indicators.js";
++import { checkReading } from "./redLimits.js";
++import { allIndicatorStatuses } from "./status.js";
++
++/**
++ * @typedef {Object} DayEvaluation
++ * @property {number} day
++ * @property {ReadonlyArray<Object>} indicators  Per-indicator statuses (status.js).
++ * @property {ReadonlyArray<Object>} groups      Per-group statuses (alerts.js).
++ * @property {ReadonlyArray<Object>} limitBreaches Today's reading vs red limits (redLimits.js).
++ * @property {{ level: string, driftingGroups: number | null, alertSince: number | null }} alert
++ * @property {Object} health Health score (healthScore.js).
++ * @property {{ sinceYesterday: number | null, over7Days: number | null }} change
++ */
++
++/**
++ * Evaluates every day from `fromDay` to `toDay` for ONE astronaut, in order, so the
++ * alert history and score changes are available. Days with no data still get an entry
++ * (with no_data statuses and a null score).
++ *
++ * Baselines are passed in, not recalculated: they are fixed (DECISIONS › Baselines).
++ *
++ * @param {ReadonlyArray<Object<string, unknown>>} records Daily records for ONE astronaut.
++ * @param {Parameters<typeof allIndicatorStatuses>[1]} baselines From calculateMissionBaselines().
++ * @param {number} fromDay First day to evaluate (integer).
++ * @param {number} toDay   Last day to evaluate (integer, ≥ fromDay).
++ * @returns {ReadonlyArray<Readonly<DayEvaluation>>}
++ * @throws {TypeError | RangeError} On invalid arguments.
++ */
++export function evaluateMission(records, baselines, fromDay, toDay) {
++  if (!Array.isArray(records)) throw new TypeError("evaluateMission: records must be an array.");
++  if (!Number.isInteger(fromDay) || !Number.isInteger(toDay)) {
++    throw new TypeError("evaluateMission: fromDay and toDay must be integers.");
++  }
++  if (fromDay > toDay) throw new RangeError("evaluateMission: fromDay must not be after toDay.");
++
++  const byDay = new Map();
++  for (const record of records) {
++    if (record !== null && typeof record === "object" && Number.isInteger(record[DAY_KEY])) {
++      byDay.set(record[DAY_KEY], record);
++    }
++  }
++
++  const history = [];
++  const scores = [];
++  const results = [];
++  for (let day = fromDay; day <= toDay; day += 1) {
++    const indicators = allIndicatorStatuses(records, baselines, day);
++    const groups = groupStatuses(indicators);
++    history.push({ day, driftingGroups: countDriftingGroups(groups) });
++    const alert = alertLevelOnDay(history, day);
++    const limitBreaches = checkReading(byDay.get(day));
++    const health = healthScore({ groups, limitBreaches, alertLevel: alert.level });
++    scores.push({ day, score: health.score });
++    results.push(
++      Object.freeze({ day, indicators, groups, limitBreaches, alert, health, change: scoreChange(scores, day) }),
++    );
++  }
++  return Object.freeze(results);
++}
++
++/**
++ * Evaluates a single day. Alert escalation needs history, so this evaluates from the
++ * first in-flight day (1) up to `day` and returns the last entry. For many days at once,
++ * use evaluateMission() instead.
++ *
++ * @param {ReadonlyArray<Object<string, unknown>>} records
++ * @param {Parameters<typeof allIndicatorStatuses>[1]} baselines
++ * @param {number} day
++ * @returns {Readonly<DayEvaluation>}
++ */
++export function evaluateDay(records, baselines, day) {
++  const results = evaluateMission(records, baselines, Math.min(1, day), day);
++  return results[results.length - 1];
++}
+diff --git a/src/lib/engine/evaluate.test.js b/src/lib/engine/evaluate.test.js
+new file mode 100644
+index 0000000..24cf519
+--- /dev/null
++++ b/src/lib/engine/evaluate.test.js
+@@ -0,0 +1,79 @@
++// End-to-end checks on 180-day simulated missions (seeded, so always the same data).
++// These mirror CHECKLIST §6 tests for the three crew roles in DECISIONS › Crew.
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { calculateMissionBaselines } from "./baseline.js";
++import { evaluateDay, evaluateMission } from "./evaluate.js";
++import { DRIFT_INDICATOR_KEYS } from "./indicators.js";
++import { buildSurgeonSummary } from "./summary.js";
++import { makeMission } from "./testData.js";
++
++/** Baselines from data up to day 35 only: they're fixed (DECISIONS › Baselines). */
++const baselinesFor = (records) =>
++  calculateMissionBaselines(records.filter((r) => r.missionDay <= 35), DRIFT_INDICATOR_KEYS);
++
++test("healthy astronaut (Singh): no alert all mission and a stable high score", () => {
++  for (const seed of [11, 12, 13]) {
++    const records = makeMission({ seed });
++    const days = evaluateMission(records, baselinesFor(records), 1, 180);
++    assert.ok(days.every((d) => ["none", "note"].includes(d.alert.level)), `seed ${seed}: false alert`);
++    const scores = days.map((d) => d.health.score).filter((s) => s !== null);
++    assert.ok(Math.min(...scores) >= 80, `seed ${seed}: score fell to ${Math.min(...scores)}`);
++  }
++});
++
++test("slow decline from day 75 (Rivera): alert appears, then escalates, and the score drops", () => {
++  const records = makeMission({
++    seed: 21,
++    shift: (d) => (d > 75 ? { sleepHours: -0.025 * (d - 75), mood: -0.02 * (d - 75), reactionMedianMs: 1.2 * (d - 75) } : {}),
++  });
++  const days = evaluateMission(records, baselinesFor(records), 1, 180);
++  const firstAlert = days.find((d) => d.alert.level === "alert");
++  assert.ok(firstAlert, "no alert raised");
++  assert.ok(firstAlert.day > 75 && firstAlert.day < 150, `alert on day ${firstAlert.day}`);
++  assert.ok(days.some((d) => d.alert.level === "escalated"), "never escalated");
++  assert.ok(firstAlert.health.score <= 79);
++  const day180 = days[days.length - 1];
++  assert.ok(day180.health.score < days[60].health.score);
++});
++
++test("one bad day produces no alert", () => {
++  const records = makeMission({ seed: 31, shift: (d) => (d === 100 ? { sleepHours: -4, mood: -2, reactionMedianMs: 150 } : {}) });
++  const days = evaluateMission(records, baselinesFor(records), 95, 110);
++  assert.ok(days.every((d) => d.alert.level !== "alert" && d.alert.level !== "escalated"));
++});
++
++test("dangerous reading (Nakamura): red limit caps the score at 25 that day", () => {
++  const records = makeMission({ seed: 41, toDay: 120 });
++  const event = records.find((r) => r.missionDay === 120);
++  event.bpSystolic = 195;
++  const today = evaluateDay(records, baselinesFor(records), 120);
++  assert.equal(today.limitBreaches[0].severity, "red");
++  assert.ok(today.health.score <= 25);
++  const summary = buildSurgeonSummary({ astronaut: "Engineer Nakamura", evaluation: today, earthOneWayMinutes: 20 });
++  assert.equal(summary.replyExpectedMinutes, 40);
++  assert.ok(summary.lines.some((l) => l.includes("heart.org")));
++});
++
++test("missing days: no crash and no false alert", () => {
++  const missing = [];
++  for (let d = 40; d <= 180; d += 1) if (d % 3 === 0 || (d >= 90 && d <= 104)) missing.push(d);
++  const records = makeMission({ seed: 51, missingDays: missing });
++  const days = evaluateMission(records, baselinesFor(records), 1, 180);
++  assert.equal(days.length, 180);
++  assert.ok(days.every((d) => ["none", "note"].includes(d.alert.level)));
++  const gap = days.find((d) => d.day === 100); // inside a 15-day gap
++  assert.equal(gap.health.score, null);
++  assert.ok(gap.indicators.every((i) => i.status === "no_data"));
++});
++
++test("empty data: everything is no_data and nothing throws", () => {
++  const days = evaluateMission([], {}, 1, 10);
++  assert.ok(days.every((d) => d.health.score === null && d.alert.level === "none"));
++});
++
++test("deterministic: same records give identical evaluations", () => {
++  const records = makeMission({ seed: 61, toDay: 60 });
++  const baselines = baselinesFor(records);
++  assert.deepEqual(evaluateMission(records, baselines, 1, 60), evaluateMission([...records].reverse(), baselines, 1, 60));
++});
+diff --git a/src/lib/engine/healthScore.js b/src/lib/engine/healthScore.js
+new file mode 100644
+index 0000000..3b8c83b
+--- /dev/null
++++ b/src/lib/engine/healthScore.js
+@@ -0,0 +1,150 @@
++// Health score 0–100 (docs/CHECKLIST.md › 2. Logic, item 4).
++// Pure logic: no React, DOM, database or Node-only APIs.
++// Formula, caps and bands: docs/DECISIONS.md › Health Score.
++
++import { DRIFT_CUTOFF } from "./drift.js";
++import { getIndicator } from "./indicators.js";
++
++/** Sub-scores per status (DECISIONS › Health Score). */
++export const SUB_SCORES = Object.freeze({
++  steady: 100,
++  expected_adaptation: 90,
++  driftingStart: 80,
++  driftingPerZ: 20,
++  driftingFloor: 20,
++  redLimit: 0,
++});
++
++/** Score caps (DECISIONS › Health Score). */
++export const SCORE_CAPS = Object.freeze({ alert: 79, escalated: 59, redLimit: 25 });
++
++/** Bands, highest first (DECISIONS › Health Score). */
++export const SCORE_BANDS = Object.freeze([
++  Object.freeze({ band: "good", label: "Good", min: 80 }),
++  Object.freeze({ band: "watch", label: "Watch", min: 60 }),
++  Object.freeze({ band: "alert", label: "Alert", min: 40 }),
++  Object.freeze({ band: "critical", label: "Critical", min: 0 }),
++]);
++
++/**
++ * @typedef {Object} ScorePart
++ * @property {string} group
++ * @property {number} subScore
++ * @property {"red_limit" | "drifting" | "expected_adaptation" | "steady"} reason
++ * @property {number | null} worryingZ
++ */
++
++/**
++ * @typedef {Object} HealthScore
++ * @property {number | null} score  0–100, or null when no indicator has data.
++ * @property {"good" | "watch" | "alert" | "critical" | null} band
++ * @property {string | null} label  "Good", "Watch", "Alert" or "Critical".
++ * @property {number | null} cappedAt The cap that applied, if any.
++ * @property {ReadonlyArray<ScorePart>} parts Lowest sub-score first ("Why this score?").
++ */
++
++/**
++ * CHECKLIST §2: "Health score 0–100 per astronaut (100 = perfect)".
++ *
++ * Each linked group gets a sub-score: red limit today = 0; drifting =
++ * 80 − 20 × (z − 3.5), floored at 20; expected adaptation = 90; steady = 100. Groups
++ * with no data are left out. The score is the rounded average, then capped: 79 for an
++ * active alert, 59 for an escalated alert, 25 for any red limit.
++ *
++ * @param {Object} input
++ * @param {ReadonlyArray<{ group: string, status: string, worryingZ: number | null }>} input.groups
++ *   From groupStatuses().
++ * @param {ReadonlyArray<{ indicator: string, severity: string }>} [input.limitBreaches]
++ *   From checkReading() for today's reading; only "red" ones count.
++ * @param {"none" | "note" | "alert" | "escalated"} [input.alertLevel]
++ * @returns {Readonly<HealthScore>}
++ */
++export function healthScore({ groups, limitBreaches = [], alertLevel = "none" }) {
++  const redGroups = new Set(
++    limitBreaches
++      .filter((breach) => breach.severity === "red")
++      .map((breach) => getIndicator(breach.indicator)?.group ?? breach.indicator),
++  );
++
++  /** @type {ScorePart[]} */
++  const parts = [];
++  for (const g of groups) {
++    if (redGroups.has(g.group)) {
++      parts.push({ group: g.group, subScore: SUB_SCORES.redLimit, reason: "red_limit", worryingZ: g.worryingZ });
++    } else if (g.status === "drifting") {
++      const z = g.worryingZ ?? DRIFT_CUTOFF;
++      const sub = Math.max(
++        SUB_SCORES.driftingFloor,
++        SUB_SCORES.driftingStart - SUB_SCORES.driftingPerZ * (z - DRIFT_CUTOFF),
++      );
++      parts.push({ group: g.group, subScore: sub, reason: "drifting", worryingZ: g.worryingZ });
++    } else if (g.status === "expected_adaptation") {
++      parts.push({ group: g.group, subScore: SUB_SCORES.expected_adaptation, reason: "expected_adaptation", worryingZ: g.worryingZ });
++    } else if (g.status === "steady") {
++      parts.push({ group: g.group, subScore: SUB_SCORES.steady, reason: "steady", worryingZ: g.worryingZ });
++    }
++  }
++  // A red limit on an indicator whose group had no drift data still counts.
++  for (const group of redGroups) {
++    if (!parts.some((p) => p.group === group)) {
++      parts.push({ group, subScore: SUB_SCORES.redLimit, reason: "red_limit", worryingZ: null });
++    }
++  }
++
++  if (parts.length === 0) {
++    return Object.freeze({ score: null, band: null, label: null, cappedAt: null, parts: Object.freeze([]) });
++  }
++
++  const average = parts.reduce((sum, p) => sum + p.subScore, 0) / parts.length;
++  let score = Math.round(average);
++
++  const caps = [];
++  if (alertLevel === "alert") caps.push(SCORE_CAPS.alert);
++  if (alertLevel === "escalated") caps.push(SCORE_CAPS.escalated);
++  if (redGroups.size > 0) caps.push(SCORE_CAPS.redLimit);
++  const cap = caps.length > 0 ? Math.min(...caps) : null;
++  let cappedAt = null;
++  if (cap !== null && score > cap) {
++    score = cap;
++    cappedAt = cap;
++  }
++
++  const { band, label } = scoreBand(score);
++  const sortedParts = [...parts]
++    .sort((a, b) => a.subScore - b.subScore || a.group.localeCompare(b.group))
++    .map((p) => Object.freeze(p));
++  return Object.freeze({ score, band, label, cappedAt, parts: Object.freeze(sortedParts) });
++}
++
++/**
++ * Band for a score (80–100 Good, 60–79 Watch, 40–59 Alert, 0–39 Critical).
++ *
++ * @param {number} score
++ * @returns {{ band: "good" | "watch" | "alert" | "critical", label: string }}
++ */
++export function scoreBand(score) {
++  const found = SCORE_BANDS.find((b) => score >= b.min) ?? SCORE_BANDS[SCORE_BANDS.length - 1];
++  return { band: found.band, label: found.label };
++}
++
++/**
++ * CHECKLIST §2: "…with the change since yesterday and over 7 days".
++ *
++ * @param {ReadonlyArray<{ day: number, score: number | null }>} scores One entry per day.
++ * @param {number} day
++ * @returns {Readonly<{ sinceYesterday: number | null, over7Days: number | null }>}
++ *   Positive = improved. Null when either score is missing.
++ */
++export function scoreChange(scores, day) {
++  const at = (d) => {
++    const entry = scores.find((s) => s.day === d);
++    return entry && typeof entry.score === "number" ? entry.score : null;
++  };
++  const today = at(day);
++  const yesterday = at(day - 1);
++  const weekAgo = at(day - 7);
++  return Object.freeze({
++    sinceYesterday: today !== null && yesterday !== null ? today - yesterday : null,
++    over7Days: today !== null && weekAgo !== null ? today - weekAgo : null,
++  });
++}
+diff --git a/src/lib/engine/healthScore.test.js b/src/lib/engine/healthScore.test.js
+new file mode 100644
+index 0000000..00a4b5e
+--- /dev/null
++++ b/src/lib/engine/healthScore.test.js
+@@ -0,0 +1,42 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { healthScore, scoreBand, scoreChange } from "./healthScore.js";
++
++const g = (group, status, worryingZ = null) => ({ group, status, worryingZ });
++
++test("all steady = 100 Good; no data = null", () => {
++  assert.deepEqual({ ...healthScore({ groups: [g("mood", "steady"), g("sleep", "steady")] }), parts: undefined }, { score: 100, band: "good", label: "Good", cappedAt: null, parts: undefined });
++  assert.equal(healthScore({ groups: [g("mood", "no_data")] }).score, null);
++});
++
++test("sub-scores follow DECISIONS › Health Score", () => {
++  assert.equal(healthScore({ groups: [g("a", "expected_adaptation")] }).score, 90);
++  assert.equal(healthScore({ groups: [g("a", "drifting", 3.5)] }).score, 80);
++  assert.equal(healthScore({ groups: [g("a", "drifting", 4.5)] }).score, 60);
++  assert.equal(healthScore({ groups: [g("a", "drifting", 99)] }).score, 20); // floor
++});
++
++test("caps: alert 79, escalated 59, red limit 25", () => {
++  const groups = [g("a", "drifting", 3.6), g("b", "drifting", 3.6), ...Array.from({ length: 7 }, (_, i) => g(`s${i}`, "steady"))];
++  assert.equal(healthScore({ groups }).score, 95); // (2 × 78 + 7 × 100) ÷ 9 = 95.1
++  assert.equal(healthScore({ groups, alertLevel: "alert" }).score, 79);
++  assert.equal(healthScore({ groups, alertLevel: "escalated" }).score, 59);
++  const red = healthScore({ groups, alertLevel: "alert", limitBreaches: [{ indicator: "bpSystolic", severity: "red" }] });
++  assert.equal(red.score, 25);
++  assert.equal(red.label, "Critical");
++  assert.equal(red.parts[0].reason, "red_limit");
++});
++
++test("act/watch breaches don't change the score", () => {
++  assert.equal(healthScore({ groups: [g("glucose", "steady")], limitBreaches: [{ indicator: "glucose", severity: "act" }] }).score, 100);
++});
++
++test("bands", () => {
++  assert.deepEqual([80, 79, 60, 59, 40, 39, 0].map((s) => scoreBand(s).label), ["Good", "Watch", "Watch", "Alert", "Alert", "Critical", "Critical"]);
++});
++
++test("change since yesterday and over 7 days", () => {
++  const scores = [{ day: 1, score: 90 }, { day: 7, score: 85 }, { day: 8, score: 72 }];
++  assert.deepEqual({ ...scoreChange(scores, 8) }, { sinceYesterday: -13, over7Days: -18 });
++  assert.deepEqual({ ...scoreChange(scores, 7) }, { sinceYesterday: null, over7Days: null });
++});
+diff --git a/src/lib/engine/index.js b/src/lib/engine/index.js
+new file mode 100644
+index 0000000..6f2e087
+--- /dev/null
++++ b/src/lib/engine/index.js
+@@ -0,0 +1,22 @@
++// ATHENA logic engine (docs/CHECKLIST.md › 2. Logic): one import for the app.
++// import { calculateMissionBaselines, evaluateMission } from "@/lib/engine";
++//
++// Everything here is plain JavaScript with no React, DOM, database or network use,
++// so it runs offline in the browser. Search imports MiniSearch, the only dependency.
++
++export * from "./indicators.js";
++export * from "./baseline.js";
++export * from "./average.js";
++export * from "./drift.js";
++export * from "./status.js";
++export * from "./alerts.js";
++export * from "./redLimits.js";
++export * from "./healthScore.js";
++export * from "./reaction.js";
++export * from "./reminders.js";
++export * from "./evaluate.js";
++export * from "./search.js";
++export * from "./regions.js";
++export * from "./summary.js";
++export * from "./calendar.js";
++export * from "./scenarios.js";
+diff --git a/src/lib/engine/indicators.js b/src/lib/engine/indicators.js
+new file mode 100644
+index 0000000..52335c6
+--- /dev/null
++++ b/src/lib/engine/indicators.js
+@@ -0,0 +1,99 @@
++// Indicator settings used by the logic engine (docs/CHECKLIST.md › 2. Logic).
++//
++// This is engine configuration, not health content: labels, guides and keywords
++// for people live with the content data (CHECKLIST §4). Field names follow the
++// daily record; until CHECKLIST §1 "Daily record defined" is done they are an
++// ASSUMPTION (camelCase, units in docs/SOURCES.md). Change them here only.
++
++/**
++ * Which change counts as worrying (docs/DECISIONS.md › Drift Cut-off):
++ * - "down": lower is worrying (sleep, mood, exercise, SpO₂)
++ * - "up": higher is worrying (reaction time, lapses)
++ * - "both": either way (vital signs)
++ *
++ * @typedef {"down" | "up" | "both"} Direction
++ */
++
++/**
++ * @typedef {Object} DriftIndicator
++ * @property {string} key       Field name in the daily record.
++ * @property {string} group     Linked indicators share a group and count once for alerts
++ *                              and the health score (DECISIONS › Drift Cut-off).
++ * @property {Direction} direction
++ * @property {number} sdFloor   Minimum spread `s` used by the drift formula, in the
++ *                              indicator's unit. ASSUMPTION: the team has not set these
++ *                              (DECISIONS › Drift Cut-off says "s has a minimum per
++ *                              indicator" but gives no values). Tune after simulator runs.
++ * @property {string} unit
++ */
++
++/**
++ * Indicators that get a baseline, a 7-day average, a z-score and a status.
++ * Core six from the challenge text first (DECISIONS › Indicators), then the daily
++ * extras, then optional SpO₂. Reaction false starts, symptoms and radiation dose are
++ * recorded but not drift-tracked: DECISIONS gives no worrying direction for false
++ * starts, symptoms aren't numbers, and radiation dose accumulates by design.
++ *
++ * @type {ReadonlyArray<Readonly<DriftIndicator>>}
++ */
++export const DRIFT_INDICATORS = Object.freeze(
++  [
++    { key: "heartRate", group: "heartRate", direction: "both", sdFloor: 2, unit: "bpm" },
++    { key: "bpSystolic", group: "bloodPressure", direction: "both", sdFloor: 3, unit: "mmHg" },
++    { key: "bpDiastolic", group: "bloodPressure", direction: "both", sdFloor: 2, unit: "mmHg" },
++    { key: "glucose", group: "glucose", direction: "both", sdFloor: 4, unit: "mg/dL" },
++    { key: "temperature", group: "temperature", direction: "both", sdFloor: 0.1, unit: "°C" },
++    { key: "sleepHours", group: "sleep", direction: "down", sdFloor: 0.25, unit: "h" },
++    { key: "mood", group: "mood", direction: "down", sdFloor: 0.3, unit: "1–5" },
++    { key: "reactionMedianMs", group: "reaction", direction: "up", sdFloor: 10, unit: "ms" },
++    { key: "reactionLapses", group: "reaction", direction: "up", sdFloor: 0.5, unit: "count" },
++    { key: "exerciseMinutes", group: "exercise", direction: "down", sdFloor: 5, unit: "min" },
++    { key: "spo2", group: "spo2", direction: "down", sdFloor: 0.5, unit: "%" },
++  ].map((indicator) => Object.freeze(indicator)),
++);
++
++/** Field names of the drift-tracked indicators, in display order. */
++export const DRIFT_INDICATOR_KEYS = Object.freeze(DRIFT_INDICATORS.map((i) => i.key));
++
++/** The mission-day field in every daily record (negative = pre-flight). */
++export const DAY_KEY = "missionDay";
++
++/**
++ * Looks up an indicator's settings.
++ *
++ * @param {string} key
++ * @returns {Readonly<DriftIndicator> | undefined}
++ */
++export function getIndicator(key) {
++  return DRIFT_INDICATORS.find((indicator) => indicator.key === key);
++}
++
++/**
++ * Lists the groups in display order with their member keys, e.g.
++ * { group: "bloodPressure", keys: ["bpSystolic", "bpDiastolic"] }.
++ *
++ * @returns {ReadonlyArray<{ group: string, keys: ReadonlyArray<string> }>}
++ */
++export function listGroups() {
++  const groups = [];
++  for (const indicator of DRIFT_INDICATORS) {
++    let entry = groups.find((g) => g.group === indicator.group);
++    if (!entry) {
++      entry = { group: indicator.group, keys: [] };
++      groups.push(entry);
++    }
++    entry.keys.push(indicator.key);
++  }
++  return Object.freeze(groups.map((g) => Object.freeze({ group: g.group, keys: Object.freeze(g.keys) })));
++}
++
++/**
++ * Returns the value only if it is a usable reading (a finite number). Anything else
++ * (missing, null, NaN, Infinity, text) is treated as "no reading".
++ *
++ * @param {unknown} value
++ * @returns {number | null}
++ */
++export function readingOrNull(value) {
++  return typeof value === "number" && Number.isFinite(value) ? value : null;
++}
+diff --git a/src/lib/engine/reaction.js b/src/lib/engine/reaction.js
+new file mode 100644
+index 0000000..a66d9f0
+--- /dev/null
++++ b/src/lib/engine/reaction.js
+@@ -0,0 +1,68 @@
++// Reaction-test scoring (docs/CHECKLIST.md › 2. Logic, item 11).
++// Pure logic: no React, DOM, database or Node-only APIs. Timing and the test screen
++// itself are CHECKLIST §3; this only scores the results.
++
++/** A response slower than this many milliseconds is a lapse (CHECKLIST §2: "lapses over 500 ms"). */
++export const LAPSE_THRESHOLD_MS = 500;
++
++/**
++ * @typedef {Object} ReactionScore
++ * @property {number | null} medianMs  Median of valid responses, or null if there were none.
++ * @property {number} lapses           Valid responses slower than 500 ms.
++ * @property {number} falseStarts      Presses before the signal.
++ * @property {number} validTrials      Responses counted.
++ * @property {number} ignoredTrials    Entries that weren't a positive finite number.
++ */
++
++/**
++ * CHECKLIST §2: "Reaction scoring: median, lapses over 500 ms, false starts".
++ *
++ * The median is used (not the mean) so one very slow or very fast press doesn't
++ * swing the result. False starts are counted separately and never enter the median.
++ * Invalid entries (missing, zero, negative, NaN, text) are ignored and counted.
++ *
++ * @param {Object} test
++ * @param {ReadonlyArray<unknown>} test.trialsMs Reaction times in milliseconds, one per
++ *   signal the astronaut responded to after it appeared.
++ * @param {number} [test.falseStarts=0] Number of presses before the signal.
++ * @returns {Readonly<ReactionScore>}
++ * @throws {TypeError} If `trialsMs` isn't an array or `falseStarts` isn't a whole number ≥ 0.
++ */
++export function scoreReactionTest({ trialsMs, falseStarts = 0 }) {
++  if (!Array.isArray(trialsMs)) throw new TypeError("scoreReactionTest: trialsMs must be an array.");
++  if (!Number.isInteger(falseStarts) || falseStarts < 0) {
++    throw new TypeError("scoreReactionTest: falseStarts must be a whole number of 0 or more.");
++  }
++
++  const valid = trialsMs.filter((ms) => typeof ms === "number" && Number.isFinite(ms) && ms > 0);
++  const sorted = [...valid].sort((a, b) => a - b);
++  const n = sorted.length;
++
++  let medianMs = null;
++  if (n > 0) {
++    const mid = Math.floor(n / 2);
++    medianMs = n % 2 === 1 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
++  }
++
++  return Object.freeze({
++    medianMs,
++    lapses: sorted.filter((ms) => ms > LAPSE_THRESHOLD_MS).length,
++    falseStarts,
++    validTrials: n,
++    ignoredTrials: trialsMs.length - n,
++  });
++}
++
++/**
++ * The daily-record fields a reaction test fills in (field names: indicators.js).
++ *
++ * @param {Readonly<ReactionScore>} score From scoreReactionTest().
++ * @returns {{ reactionMedianMs: number | null, reactionLapses: number, reactionFalseStarts: number }}
++ */
++export function reactionRecordFields(score) {
++  return {
++    reactionMedianMs: score.medianMs,
++    reactionLapses: score.lapses,
++    reactionFalseStarts: score.falseStarts,
++  };
++}
+diff --git a/src/lib/engine/reaction.test.js b/src/lib/engine/reaction.test.js
+new file mode 100644
+index 0000000..e7c0188
+--- /dev/null
++++ b/src/lib/engine/reaction.test.js
+@@ -0,0 +1,29 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { reactionRecordFields, scoreReactionTest } from "./reaction.js";
++
++test("median, lapses over 500 ms and false starts", () => {
++  const score = scoreReactionTest({ trialsMs: [320, 280, 510, 300, 500], falseStarts: 2 });
++  assert.equal(score.medianMs, 320);
++  assert.equal(score.lapses, 1); // 500 exactly is not "over 500"
++  assert.equal(score.falseStarts, 2);
++  assert.deepEqual(reactionRecordFields(score), { reactionMedianMs: 320, reactionLapses: 1, reactionFalseStarts: 2 });
++});
++
++test("even number of trials averages the middle two", () => {
++  assert.equal(scoreReactionTest({ trialsMs: [300, 200, 400, 100] }).medianMs, 250);
++});
++
++test("invalid entries are ignored; no valid trials gives a null median", () => {
++  const score = scoreReactionTest({ trialsMs: [null, -5, 0, "300", Number.NaN] });
++  assert.equal(score.medianMs, null);
++  assert.equal(score.ignoredTrials, 5);
++  assert.throws(() => scoreReactionTest({ trialsMs: "fast" }), TypeError);
++  assert.throws(() => scoreReactionTest({ trialsMs: [], falseStarts: -1 }), TypeError);
++});
++
++test("ten runs in a row give identical results", () => {
++  const trials = [301, 299, 650, 280, 310, 305];
++  const first = scoreReactionTest({ trialsMs: trials, falseStarts: 1 });
++  for (let i = 0; i < 10; i += 1) assert.deepEqual(scoreReactionTest({ trialsMs: trials, falseStarts: 1 }), first);
++});
+diff --git a/src/lib/engine/redLimits.js b/src/lib/engine/redLimits.js
+new file mode 100644
+index 0000000..0353850
+--- /dev/null
++++ b/src/lib/engine/redLimits.js
+@@ -0,0 +1,216 @@
++// Red-limit check (docs/CHECKLIST.md › 2. Logic, items 9 and 10).
++// Pure logic: no React, DOM, database or Node-only APIs.
++//
++// Every number below is a general clinical reference range, NOT a NASA flight
++// standard (DECISIONS › Thresholds, › Red-Limit Sources). Each was checked against
++// the live source page on 14 Nov 2026 and is listed in docs/SOURCES.md. Values
++// without a verified source are deliberately absent (see RED_LIMIT_GAPS).
++// Glucose is in mg/dL and temperature in °C.
++
++import { readingOrNull } from "./indicators.js";
++
++/** Label every threshold must carry in the app (DECISIONS › Thresholds). */
++export const RANGE_LABEL = "general clinical reference range";
++
++/** Source pages, as listed in docs/SOURCES.md. */
++export const LIMIT_SOURCES = Object.freeze({
++  ahaHeartRate: Object.freeze({
++    name: "American Heart Association: All About Heart Rate",
++    url: "https://www.heart.org/en/health-topics/high-blood-pressure/the-facts-about-high-blood-pressure/all-about-heart-rate-pulse",
++  }),
++  ahaBloodPressure: Object.freeze({
++    name: "American Heart Association: Understanding Blood Pressure Readings",
++    url: "https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings",
++  }),
++  adaHypoglycemia: Object.freeze({
++    name: "American Diabetes Association: Hypoglycemia (Standards of Care 2025)",
++    url: "https://professional.diabetes.org/sites/dpro/files/2025-05/hypoglycemia-patient-5-27-25.pdf",
++  }),
++  adaDiagnosis: Object.freeze({
++    name: "American Diabetes Association: Diabetes Diagnosis",
++    url: "https://diabetes.org/about-diabetes/diagnosis",
++  }),
++  cdcFever: Object.freeze({
++    name: "CDC: Definitions of Signs, Symptoms, and Conditions of Ill Travelers",
++    url: "https://www.cdc.gov/port-health/php/definitions-symptoms-reportable-illness/index.html",
++  }),
++  cdcHypothermia: Object.freeze({
++    name: "CDC: Preventing Hypothermia",
++    url: "https://www.cdc.gov/winter-weather/prevention/index.html",
++  }),
++  cdcSleep: Object.freeze({
++    name: "CDC: FastStats, Sleep in Adults",
++    url: "https://www.cdc.gov/sleep/data-research/facts-stats/adults-sleep-facts-and-stats.html",
++  }),
++});
++
++/**
++ * Severity of a breached limit:
++ * - "red": red limit; opens the red-limit/emergency screen and caps the health score at 25.
++ * - "act": the source gives an action (re-measure, tell the flight surgeon), not an emergency.
++ * - "watch": outside the normal range; worth noting.
++ *
++ * @typedef {"red" | "act" | "watch"} Severity
++ */
++
++/**
++ * @typedef {Object} LimitRule
++ * @property {string} id
++ * @property {string} indicator Daily-record field name.
++ * @property {"<" | ">" | ">="} op
++ * @property {number} value
++ * @property {Severity} severity
++ * @property {string} summary   Short engine-side description; plain-English guidance
++ *                              text for people belongs to the content data (CHECKLIST §4).
++ * @property {string | null} confirm Re-check the source asks for before acting, if any.
++ * @property {keyof typeof LIMIT_SOURCES} source
++ */
++
++/** @type {ReadonlyArray<Readonly<LimitRule>>} */
++export const LIMIT_RULES = Object.freeze(
++  [
++    // Blood pressure (AHA): above 180 and/or above 120 is severe.
++    { id: "bp-systolic-severe", indicator: "bpSystolic", op: ">", value: 180, severity: "red",
++      summary: "Systolic blood pressure above 180 mmHg (severe).",
++      confirm: "Wait 5 minutes and measure again.", source: "ahaBloodPressure" },
++    { id: "bp-diastolic-severe", indicator: "bpDiastolic", op: ">", value: 120, severity: "red",
++      summary: "Diastolic blood pressure above 120 mmHg (severe).",
++      confirm: "Wait 5 minutes and measure again.", source: "ahaBloodPressure" },
++    { id: "bp-systolic-stage2", indicator: "bpSystolic", op: ">=", value: 140, severity: "watch",
++      summary: "Systolic blood pressure 140 mmHg or higher (stage 2 high).", confirm: null,
++      source: "ahaBloodPressure" },
++    { id: "bp-diastolic-stage2", indicator: "bpDiastolic", op: ">=", value: 90, severity: "watch",
++      summary: "Diastolic blood pressure 90 mmHg or higher (stage 2 high).", confirm: null,
++      source: "ahaBloodPressure" },
++
++    // Blood glucose (ADA), mg/dL.
++    { id: "glucose-level2-low", indicator: "glucose", op: "<", value: 54, severity: "red",
++      summary: "Blood glucose below 54 mg/dL (level 2 low).", confirm: null, source: "adaHypoglycemia" },
++    { id: "glucose-level1-low", indicator: "glucose", op: "<", value: 70, severity: "act",
++      summary: "Blood glucose below 70 mg/dL (level 1 low).", confirm: null, source: "adaHypoglycemia" },
++    { id: "glucose-fasting-high", indicator: "glucose", op: ">=", value: 126, severity: "act",
++      summary: "Fasting blood glucose 126 mg/dL or higher.",
++      confirm: "Measure again, fasting, on another day: one reading is not a diagnosis.",
++      source: "adaDiagnosis" },
++
++    // Body temperature (CDC), °C.
++    { id: "temperature-hypothermia", indicator: "temperature", op: "<", value: 35, severity: "red",
++      summary: "Body temperature below 35 °C (possible hypothermia).", confirm: null,
++      source: "cdcHypothermia" },
++    { id: "temperature-fever", indicator: "temperature", op: ">=", value: 38, severity: "act",
++      summary: "Body temperature 38 °C or higher (fever).", confirm: null, source: "cdcFever" },
++
++    // Heart rate at rest (AHA): outside 60–100 bpm.
++    { id: "heart-rate-high", indicator: "heartRate", op: ">", value: 100, severity: "watch",
++      summary: "Resting heart rate above 100 bpm.", confirm: "Re-measure sitting, calm, after rest.",
++      source: "ahaHeartRate" },
++    { id: "heart-rate-low", indicator: "heartRate", op: "<", value: 60, severity: "watch",
++      summary: "Resting heart rate below 60 bpm (can be normal for very fit people).",
++      confirm: null, source: "ahaHeartRate" },
++
++    // Sleep (CDC): fewer than 7 hours.
++    { id: "sleep-short", indicator: "sleepHours", op: "<", value: 7, severity: "watch",
++      summary: "Less than 7 hours of sleep.", confirm: null, source: "cdcSleep" },
++  ].map((rule) => Object.freeze(rule)),
++);
++
++/**
++ * Limits the team still has to source before they can exist (docs/SOURCES.md › Gaps).
++ * Kept here so the gap is visible to anyone reading the engine.
++ */
++export const RED_LIMIT_GAPS = Object.freeze([
++  "heartRate: no fixed red limit (AHA: suddenly very high or low *for you*)",
++  "glucose: no verified high red limit for people without diabetes",
++  "temperature: no verified high red limit above fever",
++  "bpSystolic/bpDiastolic: no verified low blood pressure limit",
++  "spo2: no allowed source chosen yet",
++]);
++
++const SEVERITY_ORDER = Object.freeze({ red: 0, act: 1, watch: 2 });
++
++/**
++ * @typedef {Object} LimitBreach
++ * @property {string} ruleId
++ * @property {string} indicator
++ * @property {number} value       The reading that breached the limit.
++ * @property {number} limit
++ * @property {string} op
++ * @property {Severity} severity
++ * @property {string} summary
++ * @property {string | null} confirm
++ * @property {{ name: string, url: string }} source
++ * @property {string} rangeLabel  Always RANGE_LABEL.
++ */
++
++/**
++ * CHECKLIST §2: "Red-limit check on every new reading, independent of baselines" and
++ * "Red limits taken from a published source and cited".
++ *
++ * Checks ONE reading (a daily record, or a partial record such as emergency vitals)
++ * against the fixed limits. Uses no baseline and no history, so it works from the
++ * very first reading. Missing or invalid values are skipped.
++ *
++ * For each indicator only the most severe breached rule is reported (e.g. glucose 50
++ * reports "level 2 low", not also "level 1 low"). Results are sorted red → act → watch,
++ * then by rule order, so the output is deterministic.
++ *
++ * @param {Object<string, unknown> | null | undefined} reading
++ * @returns {ReadonlyArray<Readonly<LimitBreach>>}
++ */
++export function checkReading(reading) {
++  if (reading === null || typeof reading !== "object") return Object.freeze([]);
++
++  /** @type {Map<string, { rule: Readonly<LimitRule>, index: number, value: number }>} */
++  const worstPerIndicator = new Map();
++  LIMIT_RULES.forEach((rule, index) => {
++    const value = readingOrNull(reading[rule.indicator]);
++    if (value === null || !breaches(value, rule.op, rule.value)) return;
++    const current = worstPerIndicator.get(rule.indicator);
++    if (!current || SEVERITY_ORDER[rule.severity] < SEVERITY_ORDER[current.rule.severity]) {
++      worstPerIndicator.set(rule.indicator, { rule, index, value });
++    }
++  });
++
++  const found = [...worstPerIndicator.values()].sort(
++    (a, b) => SEVERITY_ORDER[a.rule.severity] - SEVERITY_ORDER[b.rule.severity] || a.index - b.index,
++  );
++  return Object.freeze(
++    found.map(({ rule, value }) =>
++      Object.freeze({
++        ruleId: rule.id,
++        indicator: rule.indicator,
++        value,
++        limit: rule.value,
++        op: rule.op,
++        severity: rule.severity,
++        summary: rule.summary,
++        confirm: rule.confirm,
++        source: LIMIT_SOURCES[rule.source],
++        rangeLabel: RANGE_LABEL,
++      }),
++    ),
++  );
++}
++
++/**
++ * True if the reading breaches any red limit.
++ *
++ * @param {Object<string, unknown> | null | undefined} reading
++ * @returns {boolean}
++ */
++export function hasRedLimit(reading) {
++  return checkReading(reading).some((breach) => breach.severity === "red");
++}
++
++/**
++ * @param {number} value
++ * @param {string} op
++ * @param {number} limit
++ * @returns {boolean}
++ */
++function breaches(value, op, limit) {
++  if (op === "<") return value < limit;
++  if (op === ">") return value > limit;
++  if (op === ">=") return value >= limit;
++  throw new RangeError(`Unknown operator "${op}".`);
++}
+diff --git a/src/lib/engine/redLimits.test.js b/src/lib/engine/redLimits.test.js
+new file mode 100644
+index 0000000..d9a27cd
+--- /dev/null
++++ b/src/lib/engine/redLimits.test.js
+@@ -0,0 +1,45 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { checkReading, hasRedLimit, LIMIT_RULES, RANGE_LABEL } from "./redLimits.js";
++
++test("normal reading breaches nothing", () => {
++  assert.deepEqual([...checkReading({ heartRate: 70, bpSystolic: 115, bpDiastolic: 75, glucose: 90, temperature: 36.8, sleepHours: 7.5 })], []);
++});
++
++test("severe blood pressure is a red limit (AHA: above 180 and/or above 120)", () => {
++  assert.equal(hasRedLimit({ bpSystolic: 181, bpDiastolic: 80 }), true);
++  assert.equal(hasRedLimit({ bpSystolic: 150, bpDiastolic: 121 }), true);
++  assert.equal(hasRedLimit({ bpSystolic: 180, bpDiastolic: 120 }), false); // "higher than", so 180/120 itself isn't
++  assert.equal(checkReading({ bpSystolic: 185 })[0].confirm, "Wait 5 minutes and measure again.");
++});
++
++test("glucose reports only the most severe level", () => {
++  const breaches = checkReading({ glucose: 50 });
++  assert.equal(breaches.length, 1);
++  assert.equal(breaches[0].ruleId, "glucose-level2-low");
++  assert.equal(checkReading({ glucose: 60 })[0].severity, "act");
++  assert.equal(checkReading({ glucose: 54 })[0].ruleId, "glucose-level1-low"); // 54 is level 1
++});
++
++test("temperature: below 35 °C is red, 38 °C is a fever", () => {
++  assert.equal(checkReading({ temperature: 34.9 })[0].severity, "red");
++  assert.equal(checkReading({ temperature: 38 })[0].ruleId, "temperature-fever");
++});
++
++test("results are sorted red first and every one is cited and labelled", () => {
++  const breaches = checkReading({ sleepHours: 5, temperature: 34, glucose: 65 });
++  assert.deepEqual(breaches.map((b) => b.severity), ["red", "act", "watch"]);
++  for (const b of breaches) {
++    assert.equal(b.rangeLabel, RANGE_LABEL);
++    assert.match(b.source.url, /^https:\/\//);
++  }
++});
++
++test("works on the first reading ever and ignores missing or invalid values", () => {
++  assert.deepEqual([...checkReading(null)], []);
++  assert.deepEqual([...checkReading({ glucose: "40", temperature: Number.NaN })], []);
++});
++
++test("every rule cites one of the verified sources", () => {
++  for (const rule of LIMIT_RULES) assert.ok(rule.source, rule.id);
++});
+diff --git a/src/lib/engine/regions.js b/src/lib/engine/regions.js
+new file mode 100644
+index 0000000..e84613f
+--- /dev/null
++++ b/src/lib/engine/regions.js
+@@ -0,0 +1,68 @@
++// Region mapper (docs/CHECKLIST.md › 2. Logic, S item "Region mapper").
++// Pure logic: no React, DOM, database or Node-only APIs.
++//
++// The 8 regions and their indicators come from docs/BODY_MAP.md (verified 14 Nov).
++// That file's last check, "Indicators per region agreed with the logic owner", is
++// still open: this table is the proposal to agree. Region cards (function, risks,
++// hazards, sources) are content and live elsewhere.
++
++import { getIndicator } from "./indicators.js";
++
++/**
++ * Region id → drift-tracked indicators shown on that region. Regions 2 (eyes) have
++ * only symptoms in BODY_MAP.md, so no numeric indicator.
++ *
++ * @type {ReadonlyArray<Readonly<{ id: string, name: string, indicators: ReadonlyArray<string> }>>}
++ */
++export const REGIONS = Object.freeze(
++  [
++    { id: "brain", name: "Brain and nerves", indicators: ["reactionMedianMs", "reactionLapses"] },
++    { id: "eyes", name: "Eyes", indicators: [] },
++    { id: "mindSleep", name: "Mind and sleep", indicators: ["mood", "sleepHours", "reactionMedianMs", "reactionLapses"] },
++    { id: "heart", name: "Heart and blood vessels", indicators: ["heartRate", "bpSystolic", "bpDiastolic", "exerciseMinutes"] },
++    { id: "breathing", name: "Breathing and oxygen", indicators: ["spo2"] },
++    { id: "musclesBones", name: "Muscles and bones", indicators: ["exerciseMinutes"] },
++    { id: "gutNutrition", name: "Gut, kidneys and nutrition", indicators: ["glucose"] },
++    { id: "immuneSkinBlood", name: "Immune system, skin and blood", indicators: ["temperature"] },
++  ].map((r) => Object.freeze({ ...r, indicators: Object.freeze(r.indicators) })),
++);
++
++/** Region statuses, most to least severe. */
++const REGION_RANK = Object.freeze(["red_limit", "drifting", "expected_adaptation", "steady", "no_data"]);
++
++/**
++ * CHECKLIST §2 (S): "Region mapper: indicator-to-body-region table and worst-status function".
++ *
++ * Worst status among a region's indicators: a red limit on today's reading beats
++ * drifting, which beats expected adaptation, then steady. A region with no data (or
++ * no numeric indicators) is "no_data".
++ *
++ * @param {string} regionId
++ * @param {ReadonlyArray<{ key: string, status: string }>} indicatorStatuses From allIndicatorStatuses().
++ * @param {ReadonlyArray<{ indicator: string, severity: string }>} [limitBreaches] From checkReading().
++ * @returns {"red_limit" | "drifting" | "expected_adaptation" | "steady" | "no_data"}
++ * @throws {RangeError} If the region id is unknown.
++ */
++export function regionStatus(regionId, indicatorStatuses, limitBreaches = []) {
++  const region = REGIONS.find((r) => r.id === regionId);
++  if (!region) throw new RangeError(`regionStatus: unknown region "${regionId}".`);
++
++  const found = new Set();
++  for (const key of region.indicators) {
++    if (limitBreaches.some((b) => b.indicator === key && b.severity === "red")) found.add("red_limit");
++    const status = indicatorStatuses.find((s) => s.key === key)?.status;
++    if (status) found.add(status);
++  }
++  return /** @type {any} */ (REGION_RANK.find((s) => found.has(s)) ?? "no_data");
++}
++
++/**
++ * Which regions show an indicator (for linking an alert to the body figure).
++ *
++ * @param {string} indicatorKey
++ * @returns {ReadonlyArray<string>} Region ids.
++ */
++export function regionsForIndicator(indicatorKey) {
++  if (!getIndicator(indicatorKey)) return Object.freeze([]);
++  return Object.freeze(REGIONS.filter((r) => r.indicators.includes(indicatorKey)).map((r) => r.id));
++}
+diff --git a/src/lib/engine/regions.test.js b/src/lib/engine/regions.test.js
+new file mode 100644
+index 0000000..62a0d46
+--- /dev/null
++++ b/src/lib/engine/regions.test.js
+@@ -0,0 +1,20 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { REGIONS, regionStatus, regionsForIndicator } from "./regions.js";
++
++test("8 regions, as in docs/BODY_MAP.md", () => {
++  assert.equal(REGIONS.length, 8);
++});
++
++test("worst status wins; red limit beats drifting", () => {
++  const statuses = [{ key: "heartRate", status: "steady" }, { key: "bpSystolic", status: "drifting" }];
++  assert.equal(regionStatus("heart", statuses), "drifting");
++  assert.equal(regionStatus("heart", statuses, [{ indicator: "heartRate", severity: "red" }]), "red_limit");
++  assert.equal(regionStatus("heart", statuses, [{ indicator: "heartRate", severity: "watch" }]), "drifting");
++});
++
++test("no data and unknown regions", () => {
++  assert.equal(regionStatus("eyes", []), "no_data");
++  assert.throws(() => regionStatus("tail", []), RangeError);
++  assert.deepEqual([...regionsForIndicator("exerciseMinutes")], ["heart", "musclesBones"]);
++});
+diff --git a/src/lib/engine/reminders.js b/src/lib/engine/reminders.js
+new file mode 100644
+index 0000000..c561f6e
+--- /dev/null
++++ b/src/lib/engine/reminders.js
+@@ -0,0 +1,66 @@
++// Reminder scheduler (docs/CHECKLIST.md › 2. Logic, item 14).
++// Pure logic: no React, DOM, database or Node-only APIs.
++
++import { readingOrNull } from "./indicators.js";
++
++/**
++ * Measurements the crew is reminded to take. ASSUMPTION: every one is due once per
++ * mission day; the team hasn't set a schedule. The six core indicators come from the
++ * challenge text, then the daily extras (DECISIONS › Indicators). Optional SpO₂ and
++ * radiation dose are not reminded. Blood pressure counts as one measurement with two
++ * numbers, so it's due until both are recorded.
++ *
++ * @type {ReadonlyArray<Readonly<{ id: string, fields: ReadonlyArray<string>, everyDays: number }>>}
++ */
++export const MEASUREMENT_SCHEDULE = Object.freeze(
++  [
++    { id: "heartRate", fields: ["heartRate"], everyDays: 1 },
++    { id: "bloodPressure", fields: ["bpSystolic", "bpDiastolic"], everyDays: 1 },
++    { id: "glucose", fields: ["glucose"], everyDays: 1 },
++    { id: "temperature", fields: ["temperature"], everyDays: 1 },
++    { id: "sleepHours", fields: ["sleepHours"], everyDays: 1 },
++    { id: "mood", fields: ["mood"], everyDays: 1 },
++    { id: "reactionTest", fields: ["reactionMedianMs"], everyDays: 1 },
++    { id: "exerciseMinutes", fields: ["exerciseMinutes"], everyDays: 1 },
++    { id: "symptoms", fields: ["symptoms"], everyDays: 1 },
++  ].map((m) => Object.freeze({ ...m, fields: Object.freeze(m.fields) })),
++);
++
++/**
++ * True if a field holds a recorded value. Symptoms are a list, and an EMPTY list counts
++ * as recorded ("no symptoms today" is an answer). Everything else must be a finite number.
++ *
++ * @param {string} field
++ * @param {unknown} value
++ * @returns {boolean}
++ */
++function isRecorded(field, value) {
++  if (field === "symptoms") return Array.isArray(value);
++  return readingOrNull(value) !== null;
++}
++
++/**
++ * CHECKLIST §2: "Reminder scheduler: which measurements are due today".
++ *
++ * Returns the scheduled measurements that today's record doesn't have yet, in schedule
++ * order. With no record at all, everything due today is returned. A measurement with
++ * `everyDays` > 1 is due on mission days where (day − 1) is a multiple of it
++ * (day 1, 1 + everyDays, …); nothing is due before day 1.
++ *
++ * @param {Object<string, unknown> | null | undefined} todayRecord The record for `day`, if any.
++ * @param {number} day Mission day (integer).
++ * @param {typeof MEASUREMENT_SCHEDULE} [schedule=MEASUREMENT_SCHEDULE]
++ * @returns {ReadonlyArray<string>} Measurement ids still due, e.g. ["glucose", "mood"].
++ * @throws {TypeError} If `day` isn't an integer.
++ */
++export function dueMeasurements(todayRecord, day, schedule = MEASUREMENT_SCHEDULE) {
++  if (!Number.isInteger(day)) throw new TypeError("dueMeasurements: day must be an integer.");
++  if (day < 1) return Object.freeze([]);
++
++  const record = todayRecord !== null && typeof todayRecord === "object" ? todayRecord : {};
++  const due = schedule
++    .filter((m) => (day - 1) % m.everyDays === 0)
++    .filter((m) => !m.fields.every((field) => isRecorded(field, record[field])))
++    .map((m) => m.id);
++  return Object.freeze(due);
++}
+diff --git a/src/lib/engine/reminders.test.js b/src/lib/engine/reminders.test.js
+new file mode 100644
+index 0000000..db6a6ff
+--- /dev/null
++++ b/src/lib/engine/reminders.test.js
+@@ -0,0 +1,22 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { dueMeasurements } from "./reminders.js";
++
++test("everything is due with no record yet", () => {
++  assert.deepEqual([...dueMeasurements(undefined, 5)], ["heartRate", "bloodPressure", "glucose", "temperature", "sleepHours", "mood", "reactionTest", "exerciseMinutes", "symptoms"]);
++});
++
++test("recorded measurements drop off; blood pressure needs both numbers", () => {
++  const due = dueMeasurements({ heartRate: 64, bpSystolic: 118, glucose: Number.NaN, symptoms: [] }, 5);
++  assert.ok(!due.includes("heartRate"));
++  assert.ok(due.includes("bloodPressure"));
++  assert.ok(due.includes("glucose")); // NaN isn't a reading
++  assert.ok(!due.includes("symptoms")); // empty list = "no symptoms today"
++});
++
++test("nothing is due before day 1; custom intervals work", () => {
++  assert.deepEqual([...dueMeasurements(null, 0)], []);
++  const schedule = [{ id: "weekly", fields: ["x"], everyDays: 7 }];
++  assert.deepEqual([...dueMeasurements({}, 8, schedule)], ["weekly"]);
++  assert.deepEqual([...dueMeasurements({}, 9, schedule)], []);
++});
+diff --git a/src/lib/engine/scenarios.js b/src/lib/engine/scenarios.js
+new file mode 100644
+index 0000000..39ec828
+--- /dev/null
++++ b/src/lib/engine/scenarios.js
+@@ -0,0 +1,89 @@
++// Scenario Lab data injection (docs/CHECKLIST.md › 2. Logic, S item "Scenario Lab").
++// Pure logic: no React, DOM, database or Node-only APIs. The Scenario Lab screen
++// ("watch the alerts react") is CHECKLIST §3.
++//
++// ASSUMPTION: the effect sizes below are invented DEMO values to show the engine
++// reacting. They are not physiological data and must never be presented as such
++// in the app or the pitch.
++
++import { DAY_KEY, readingOrNull } from "./indicators.js";
++
++/**
++ * Change per day at full intensity (intensity 1). Only fields that already hold a
++ * reading are changed: a scenario never invents a measurement that wasn't taken.
++ * Radiation dose isn't drift-tracked and has no sourced limit, so the radiation
++ * scenario only raises the recorded dose.
++ */
++export const SCENARIO_EFFECTS = Object.freeze({
++  radiation: Object.freeze({ radiationMsv: 1 }),
++  fatigue: Object.freeze({ reactionMedianMs: 80, reactionLapses: 3, mood: -1.2, exerciseMinutes: -20 }),
++  sleepLoss: Object.freeze({ sleepHours: -2.5, mood: -1, reactionMedianMs: 60 }),
++  hypoxia: Object.freeze({ spo2: -8, heartRate: 20 }),
++});
++
++/** Value limits so injected data stays possible (mood is 1–5, SpO₂ at most 100 %). */
++const BOUNDS = Object.freeze({
++  mood: [1, 5],
++  spo2: [0, 100],
++  sleepHours: [0, 24],
++  reactionLapses: [0, Infinity],
++  exerciseMinutes: [0, Infinity],
++  radiationMsv: [0, Infinity],
++});
++
++/**
++ * @typedef {Object} Scenario
++ * @property {keyof typeof SCENARIO_EFFECTS} type
++ * @property {number} fromDay   First affected mission day (integer).
++ * @property {number} days      Number of affected days (integer ≥ 1).
++ * @property {number} intensity 0–1; multiplies the effect.
++ */
++
++/**
++ * CHECKLIST §2 (S): "Scenario Lab: inject radiation, fatigue, sleep loss or hypoxia
++ * into the data and watch the alerts react".
++ *
++ * Returns NEW records with the scenario applied to days fromDay … fromDay + days − 1;
++ * the input is never modified. Changed records get `origin: "scenario"` so the app can
++ * label them and "undo" by reloading the originals. Mood and reaction lapses are
++ * rounded to whole numbers, as they're recorded that way.
++ *
++ * @param {ReadonlyArray<Object<string, unknown>>} records Daily records for ONE astronaut.
++ * @param {Scenario} scenario
++ * @returns {ReadonlyArray<Object<string, unknown>>}
++ * @throws {RangeError} On an unknown type or invalid days/intensity.
++ */
++export function applyScenario(records, { type, fromDay, days, intensity }) {
++  const effects = SCENARIO_EFFECTS[type];
++  if (!effects) throw new RangeError(`applyScenario: unknown scenario "${type}".`);
++  if (!Number.isInteger(fromDay) || !Number.isInteger(days) || days < 1) {
++    throw new RangeError("applyScenario: fromDay must be an integer and days an integer ≥ 1.");
++  }
++  if (!(typeof intensity === "number" && intensity >= 0 && intensity <= 1)) {
++    throw new RangeError("applyScenario: intensity must be between 0 and 1.");
++  }
++  const toDay = fromDay + days - 1;
++
++  return Object.freeze(
++    records.map((record) => {
++      if (record === null || typeof record !== "object") return record;
++      const day = record[DAY_KEY];
++      if (!Number.isInteger(day) || day < fromDay || day > toDay) return record;
++
++      const changed = { ...record };
++      let touched = false;
++      for (const [field, perDay] of Object.entries(effects)) {
++        const value = readingOrNull(record[field]);
++        if (value === null) continue;
++        let next = value + perDay * intensity;
++        const [min, max] = BOUNDS[field] ?? [-Infinity, Infinity];
++        next = Math.min(max, Math.max(min, next));
++        if (field === "mood" || field === "reactionLapses") next = Math.round(next);
++        changed[field] = next;
++        touched = true;
++      }
++      if (touched) changed.origin = "scenario";
++      return changed;
++    }),
++  );
++}
+diff --git a/src/lib/engine/scenarios.test.js b/src/lib/engine/scenarios.test.js
+new file mode 100644
+index 0000000..0765c67
+--- /dev/null
++++ b/src/lib/engine/scenarios.test.js
+@@ -0,0 +1,31 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { applyScenario } from "./scenarios.js";
++
++const records = [
++  { missionDay: 9, sleepHours: 7, mood: 4 },
++  { missionDay: 10, sleepHours: 7, mood: 4, spo2: 98 },
++  { missionDay: 11, sleepHours: 7, mood: 1 },
++];
++
++test("changes only the chosen days, never the input", () => {
++  const out = applyScenario(records, { type: "sleepLoss", fromDay: 10, days: 2, intensity: 1 });
++  assert.equal(out[0], records[0]);
++  assert.equal(out[1].sleepHours, 4.5);
++  assert.equal(out[1].origin, "scenario");
++  assert.equal(records[1].sleepHours, 7);
++  assert.equal(out[2].mood, 1); // clamped to the 1–5 scale
++});
++
++test("never invents readings that weren't taken", () => {
++  const out = applyScenario(records, { type: "hypoxia", fromDay: 9, days: 3, intensity: 0.5 });
++  assert.equal(out[1].spo2, 94);
++  assert.equal("spo2" in out[0], false);
++  assert.equal(out[0].origin, undefined);
++});
++
++test("rejects bad input", () => {
++  assert.throws(() => applyScenario(records, { type: "zombies", fromDay: 1, days: 1, intensity: 1 }), RangeError);
++  assert.throws(() => applyScenario(records, { type: "fatigue", fromDay: 1, days: 0, intensity: 1 }), RangeError);
++  assert.throws(() => applyScenario(records, { type: "fatigue", fromDay: 1, days: 1, intensity: 2 }), RangeError);
++});
+diff --git a/src/lib/engine/search.js b/src/lib/engine/search.js
+new file mode 100644
+index 0000000..15fa04b
+--- /dev/null
++++ b/src/lib/engine/search.js
+@@ -0,0 +1,159 @@
++// Offline search (docs/CHECKLIST.md › 2. Logic, item 13).
++// Pure logic: no React or DOM. Uses MiniSearch (MIT), already installed
++// (docs/DECISIONS.md › Search). Runs fully in the browser with no network.
++//
++// The content to index (indicators, measurement guides, emergency guides, alert
++// explanations, body parts, each with a `keywords` list) is CHECKLIST §1/§4 and
++// doesn't exist yet. This module only needs it in the SearchDocument shape below.
++
++import MiniSearch from "minisearch";
++
++/**
++ * One searchable item.
++ *
++ * @typedef {Object} SearchDocument
++ * @property {string} id      Unique across all content, e.g. "indicator:heartRate".
++ * @property {"indicator" | "guide" | "emergency" | "alert" | "bodyPart"} type
++ * @property {string} title   e.g. "Heart rate".
++ * @property {ReadonlyArray<string>} keywords Synonyms, plain-English terms, symptoms and common
++ *   misspellings, e.g. ["pulse", "heartbeat", "hart rate"] (DECISIONS › Search).
++ * @property {string} [text]  Optional short description to search as well.
++ */
++
++/**
++ * @typedef {Object} SearchHit
++ * @property {string} id
++ * @property {string} type
++ * @property {string} title
++ * @property {number} score
++ */
++
++/**
++ * @typedef {Object} SearchResponse
++ * @property {string} query               The normalised query actually searched.
++ * @property {ReadonlyArray<SearchHit>} results Best first; emergency guides first for symptom-like queries.
++ * @property {boolean} symptomLike        True if the query matched an emergency guide's keywords.
++ * @property {ReadonlyArray<string>} didYouMean Suggestions, only when there are no results.
++ * @property {true} emergencyShortcut     Always true: the UI always offers the emergency
++ *                                        guide, so search is never a dead end.
++ */
++
++/** Search options (DECISIONS › Search: typos, prefixes, field boosting). */
++const SEARCH_OPTIONS = Object.freeze({
++  prefix: true,
++  fuzzy: 0.2,
++  boost: Object.freeze({ title: 3, keywords: 2, text: 1 }),
++  combineWith: "OR",
++});
++
++/** Maximum results returned. */
++export const MAX_RESULTS = 10;
++
++/**
++ * Builds the search index once, from all content. Call again only if content changes.
++ *
++ * @param {ReadonlyArray<SearchDocument>} documents
++ * @returns {MiniSearch} The index (pass it to `search`).
++ * @throws {TypeError} If `documents` isn't an array or an id is missing or repeated.
++ */
++export function buildSearchIndex(documents) {
++  if (!Array.isArray(documents)) throw new TypeError("buildSearchIndex: documents must be an array.");
++  const seen = new Set();
++  const prepared = documents.map((doc) => {
++    if (!doc || typeof doc.id !== "string" || doc.id.length === 0) {
++      throw new TypeError("buildSearchIndex: every document needs a string id.");
++    }
++    if (seen.has(doc.id)) throw new TypeError(`buildSearchIndex: duplicate id "${doc.id}".`);
++    seen.add(doc.id);
++    return {
++      id: doc.id,
++      type: doc.type,
++      title: String(doc.title ?? ""),
++      keywords: Array.isArray(doc.keywords) ? doc.keywords.join(" ") : "",
++      text: String(doc.text ?? ""),
++    };
++  });
++
++  const index = new MiniSearch({
++    fields: ["title", "keywords", "text"],
++    storeFields: ["type", "title"],
++    processTerm: (term) => normaliseQuery(term) || null,
++  });
++  index.addAll(prepared);
++  return index;
++}
++
++/**
++ * Lower-cases, turns punctuation into spaces and collapses spaces, so case,
++ * punctuation and extra spaces never change the result (DECISIONS › Search).
++ * Word order already doesn't matter to the index.
++ *
++ * @param {unknown} query
++ * @returns {string}
++ */
++export function normaliseQuery(query) {
++  return String(query ?? "")
++    .toLowerCase()
++    .replace(/[^\p{L}\p{N}]+/gu, " ")
++    .trim()
++    .replace(/\s+/g, " ");
++}
++
++/**
++ * CHECKLIST §2: "Search index: offline fuzzy search over all content (typos, prefixes,
++ * synonyms, symptoms)".
++ *
++ * - Typos ("hart rate") and partial words ("oxy") match through fuzzy and prefix search.
++ * - Synonyms and symptoms match through each document's `keywords`.
++ * - If every word of the query matches an emergency guide's title or keywords, the
++ *   query is symptom-like and emergency guides are ranked first.
++ * - With no results, `didYouMean` holds the closest known terms. `emergencyShortcut`
++ *   is always true.
++ *
++ * Deterministic: equal scores are ordered by id.
++ *
++ * @param {MiniSearch} index From buildSearchIndex().
++ * @param {string} query What the astronaut typed.
++ * @returns {Readonly<SearchResponse>}
++ */
++export function search(index, query) {
++  const q = normaliseQuery(query);
++  if (q.length === 0) {
++    return Object.freeze({ query: q, results: Object.freeze([]), symptomLike: false, didYouMean: Object.freeze([]), emergencyShortcut: true });
++  }
++
++  const hits = index
++    .search(q, SEARCH_OPTIONS)
++    .map((r) => ({ id: r.id, type: r.type, title: r.title, score: r.score }))
++    .sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
++
++  const symptomLike =
++    index.search(q, {
++      fields: ["title", "keywords"],
++      prefix: true,
++      fuzzy: 0.2,
++      combineWith: "AND",
++      filter: (r) => r.type === "emergency",
++    }).length > 0;
++
++  const ordered = symptomLike
++    ? [...hits.filter((h) => h.type === "emergency"), ...hits.filter((h) => h.type !== "emergency")]
++    : hits;
++
++  const didYouMean =
++    ordered.length === 0
++      ? index
++          .autoSuggest(q, { fuzzy: 0.4, prefix: true })
++          .sort((a, b) => b.score - a.score || a.suggestion.localeCompare(b.suggestion))
++          .slice(0, 3)
++          .map((s) => s.suggestion)
++      : [];
++
++  return Object.freeze({
++    query: q,
++    results: Object.freeze(ordered.slice(0, MAX_RESULTS).map((h) => Object.freeze(h))),
++    symptomLike,
++    didYouMean: Object.freeze(didYouMean),
++    emergencyShortcut: true,
++  });
++}
+diff --git a/src/lib/engine/search.test.js b/src/lib/engine/search.test.js
+new file mode 100644
+index 0000000..18a8e31
+--- /dev/null
++++ b/src/lib/engine/search.test.js
+@@ -0,0 +1,57 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { buildSearchIndex, normaliseQuery, search } from "./search.js";
++
++// Sample content for tests only; the real content is CHECKLIST §4.
++const docs = [
++  { id: "indicator:heartRate", type: "indicator", title: "Heart rate", keywords: ["pulse", "heartbeat", "bpm"] },
++  { id: "indicator:glucose", type: "indicator", title: "Blood glucose", keywords: ["sugar", "blood sugar", "glucos"] },
++  { id: "indicator:temperature", type: "indicator", title: "Body temperature", keywords: ["fever", "temp", "temprature"] },
++  { id: "indicator:spo2", type: "indicator", title: "Blood oxygen (SpO2)", keywords: ["oxygen", "low oxygen", "hypoxia", "oximeter"] },
++  { id: "indicator:sleep", type: "indicator", title: "Sleep hours", keywords: ["cant sleep", "insomnia", "tired"] },
++  { id: "emergency:chest-pain", type: "emergency", title: "Chest pain or collapse", keywords: ["chest pain", "collapsed", "fainted", "heart attack"] },
++  { id: "emergency:hypoxia", type: "emergency", title: "Low oxygen (hypoxia)", keywords: ["cant breathe", "short of breath", "dizzy", "low oxygen"] },
++];
++const index = buildSearchIndex(docs);
++const top = (q) => search(index, q).results[0]?.id;
++
++test("typos and misspellings", () => {
++  assert.equal(top("hart rate"), "indicator:heartRate");
++  assert.equal(top("temprature"), "indicator:temperature");
++});
++
++test("partial words while typing", () => {
++  assert.ok(search(index, "oxy").results.some((r) => r.id === "indicator:spo2"));
++});
++
++test("synonyms from keywords", () => {
++  assert.equal(top("pulse"), "indicator:heartRate");
++  assert.equal(top("sugar"), "indicator:glucose");
++  assert.equal(top("fever"), "indicator:temperature");
++});
++
++test("symptom queries put emergency guides first", () => {
++  const r = search(index, "chest pain");
++  assert.equal(r.symptomLike, true);
++  assert.equal(r.results[0].id, "emergency:chest-pain");
++  assert.equal(search(index, "can't breathe").results[0].type, "emergency");
++  assert.equal(search(index, "pulse").symptomLike, false);
++});
++
++test("case, punctuation, extra spaces and word order don't matter", () => {
++  assert.equal(normaliseQuery("  Heart,   RATE!! "), "heart rate");
++  assert.deepEqual(search(index, "RATE heart").results, search(index, "heart rate").results);
++});
++
++test("no match gives 'did you mean' and the emergency shortcut, never a dead end", () => {
++  const r = search(index, "zzqx");
++  assert.deepEqual([...r.results], []);
++  assert.equal(r.emergencyShortcut, true);
++  assert.equal(search(index, "   ").emergencyShortcut, true);
++  const near = search(index, "insomnai");
++  assert.ok(near.results.length > 0 || near.didYouMean.length > 0);
++});
++
++test("rejects duplicate ids", () => {
++  assert.throws(() => buildSearchIndex([{ id: "a", type: "indicator", title: "A" }, { id: "a", type: "indicator", title: "B" }]), TypeError);
++});
+diff --git a/src/lib/engine/status.js b/src/lib/engine/status.js
+new file mode 100644
+index 0000000..08c4647
+--- /dev/null
++++ b/src/lib/engine/status.js
+@@ -0,0 +1,91 @@
++// Status per indicator (docs/CHECKLIST.md › 2. Logic, item 6).
++// Pure logic: no React, DOM, database or Node-only APIs.
++//
++// The four statuses (CHECKLIST §2):
++// - no_data: fewer than 4 readings in the last 7 days, or no usable baseline.
++// - drifting: the 7-day average has moved ≥ 3.5 z from the IN-FLIGHT baseline in
++//   the worrying direction (DECISIONS › Drift Cut-off). Only possible after the
++//   in-flight baseline window has ended (day 36 onwards).
++// - expected_adaptation: ASSUMPTION (not defined in DECISIONS). The 7-day average
++//   differs from the PRE-FLIGHT baseline by ≥ 3.5 z in the worrying direction, but is
++//   not drifting against the in-flight baseline. In plain words: "different from how
++//   you were on Earth, but stable in space", i.e. the body adapting to spaceflight.
++//   This is also what gives the pre-flight baseline a job.
++// - steady: none of the above.
++
++import { sevenDayAverage } from "./average.js";
++import { IN_FLIGHT_WINDOW } from "./baseline.js";
++import { driftZ } from "./drift.js";
++import { DRIFT_INDICATORS } from "./indicators.js";
++
++/** The four indicator statuses, from least to most concerning (no_data is separate). */
++export const STATUSES = Object.freeze(["no_data", "steady", "expected_adaptation", "drifting"]);
++
++/**
++ * @typedef {Object} IndicatorStatus
++ * @property {string} key
++ * @property {string} group
++ * @property {"no_data" | "steady" | "expected_adaptation" | "drifting"} status
++ * @property {number | null} z          Signed z against the in-flight baseline (null if unavailable).
++ * @property {number | null} worryingZ  In-flight z in the worrying direction (null if unavailable).
++ * @property {number | null} preflightWorryingZ Same against the pre-flight baseline.
++ * @property {number | null} recentAverage 7-day average, or null.
++ * @property {number} recentReadings Readings in the 7-day window.
++ */
++
++/**
++ * CHECKLIST §2: "Status per indicator: no data, steady, drifting, expected adaptation".
++ *
++ * @param {ReadonlyArray<Object<string, unknown>>} records Daily records for ONE astronaut,
++ *   up to and including `day` (later records are ignored by the 7-day window anyway).
++ * @param {{ preflight?: { indicators: Object }, inflight?: { indicators: Object } }} baselines
++ *   From calculateMissionBaselines(). Either part may be missing.
++ * @param {string} key Indicator field name from DRIFT_INDICATORS.
++ * @param {number} day Mission day being evaluated.
++ * @returns {Readonly<IndicatorStatus>}
++ * @throws {RangeError} If `key` isn't a drift-tracked indicator.
++ */
++export function indicatorStatus(records, baselines, key, day) {
++  const indicator = DRIFT_INDICATORS.find((i) => i.key === key);
++  if (!indicator) throw new RangeError(`indicatorStatus: "${key}" is not a drift-tracked indicator.`);
++
++  const recent = sevenDayAverage(records, key, day);
++  const inflightBaseline = baselines?.inflight?.indicators?.[key];
++  const preflightBaseline = baselines?.preflight?.indicators?.[key];
++
++  // The in-flight baseline can only be used once its window is over.
++  const inflight =
++    day > IN_FLIGHT_WINDOW.toDay
++      ? driftZ(recent, inflightBaseline, indicator.direction, indicator.sdFloor)
++      : null;
++  const preflight = driftZ(recent, preflightBaseline, indicator.direction, indicator.sdFloor);
++
++  let status;
++  if (recent.status !== "ok" || (inflight === null && preflight === null)) status = "no_data";
++  else if (inflight?.drifting) status = "drifting";
++  else if (preflight?.drifting) status = "expected_adaptation";
++  else status = "steady";
++
++  return Object.freeze({
++    key,
++    group: indicator.group,
++    status,
++    z: inflight ? inflight.z : null,
++    worryingZ: inflight ? inflight.worryingZ : null,
++    preflightWorryingZ: preflight ? preflight.worryingZ : null,
++    recentAverage: recent.mean,
++    recentReadings: recent.n,
++  });
++}
++
++/**
++ * Statuses for every drift-tracked indicator on one day, in display order.
++ *
++ * @param {ReadonlyArray<Object<string, unknown>>} records Daily records for ONE astronaut.
++ * @param {Parameters<typeof indicatorStatus>[1]} baselines
++ * @param {number} day
++ * @returns {ReadonlyArray<Readonly<IndicatorStatus>>}
++ */
++export function allIndicatorStatuses(records, baselines, day) {
++  return Object.freeze(DRIFT_INDICATORS.map((i) => indicatorStatus(records, baselines, i.key, day)));
++}
+diff --git a/src/lib/engine/status.test.js b/src/lib/engine/status.test.js
+new file mode 100644
+index 0000000..72f4083
+--- /dev/null
++++ b/src/lib/engine/status.test.js
+@@ -0,0 +1,48 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { calculateMissionBaselines } from "./baseline.js";
++import { DRIFT_INDICATOR_KEYS } from "./indicators.js";
++import { allIndicatorStatuses, indicatorStatus } from "./status.js";
++import { makeMission } from "./testData.js";
++
++test("no_data with no records or no baselines", () => {
++  assert.equal(indicatorStatus([], {}, "sleepHours", 50).status, "no_data");
++  const records = makeMission({ seed: 1, toDay: 50 });
++  assert.equal(indicatorStatus(records, {}, "sleepHours", 50).status, "no_data");
++});
++
++test("healthy astronaut is steady on every indicator with data", () => {
++  const records = makeMission({ seed: 2 });
++  const baselines = calculateMissionBaselines(records.filter((r) => r.missionDay <= 35), DRIFT_INDICATOR_KEYS);
++  for (const s of allIndicatorStatuses(records, baselines, 150)) {
++    assert.ok(["steady", "no_data"].includes(s.status), `${s.key} was ${s.status}`);
++  }
++  // SpO₂ isn't in the test data, so it has no data.
++  assert.equal(indicatorStatus(records, baselines, "spo2", 150).status, "no_data");
++});
++
++test("a slow decline after the in-flight baseline is 'drifting'", () => {
++  const records = makeMission({ seed: 3, shift: (d) => (d > 75 ? { sleepHours: -0.03 * (d - 75) } : {}) });
++  const baselines = calculateMissionBaselines(records.filter((r) => r.missionDay <= 35), DRIFT_INDICATOR_KEYS);
++  const s = indicatorStatus(records, baselines, "sleepHours", 130);
++  assert.equal(s.status, "drifting");
++  assert.ok(s.worryingZ >= 3.5);
++});
++
++test("a change since Earth that is stable in flight is 'expected_adaptation'", () => {
++  // Heart rate settles 10 bpm higher from launch onwards and stays there.
++  const records = makeMission({ seed: 4, shift: (d) => (d > 0 ? { heartRate: 10 } : {}) });
++  const baselines = calculateMissionBaselines(records.filter((r) => r.missionDay <= 35), DRIFT_INDICATOR_KEYS);
++  assert.equal(indicatorStatus(records, baselines, "heartRate", 15).status, "expected_adaptation");
++  assert.equal(indicatorStatus(records, baselines, "heartRate", 120).status, "expected_adaptation");
++});
++
++test("drifting is impossible before the in-flight window ends (day 36)", () => {
++  const records = makeMission({ seed: 5, toDay: 35, shift: (d) => (d > 25 ? { sleepHours: -3 } : {}) });
++  const baselines = calculateMissionBaselines(records, DRIFT_INDICATOR_KEYS);
++  assert.notEqual(indicatorStatus(records, baselines, "sleepHours", 35).status, "drifting");
++});
++
++test("rejects an indicator that isn't drift-tracked", () => {
++  assert.throws(() => indicatorStatus([], {}, "reactionFalseStarts", 1), RangeError);
++});
+diff --git a/src/lib/engine/summary.js b/src/lib/engine/summary.js
+new file mode 100644
+index 0000000..cd9d571
+--- /dev/null
++++ b/src/lib/engine/summary.js
+@@ -0,0 +1,77 @@
++// Flight-surgeon summary builder (docs/CHECKLIST.md › 2. Logic, S item "Summary builder").
++// Pure logic: no React, DOM, database or Node-only APIs. The one-page screen is CHECKLIST §3.
++
++/**
++ * @typedef {Object} SurgeonSummary
++ * @property {string} astronaut
++ * @property {number} day
++ * @property {number | null} score
++ * @property {string | null} band
++ * @property {{ sinceYesterday: number | null, over7Days: number | null }} change
++ * @property {string} alertLevel
++ * @property {number | null} alertSince
++ * @property {ReadonlyArray<{ key: string, worryingZ: number | null }>} drifting
++ * @property {ReadonlyArray<{ indicator: string, value: number, severity: string, summary: string, source: string }>} limitBreaches
++ * @property {number | null} replyExpectedMinutes Round trip (2 × one-way delay), or null if unknown.
++ * @property {ReadonlyArray<string>} lines Plain-text lines, ready to show or send.
++ */
++
++/**
++ * CHECKLIST §2 (S): "Summary builder for the flight-surgeon report".
++ *
++ * Builds the report from one day's evaluation. The Earth delay is passed in because
++ * its values depend on mission mode, which has no sourced numbers yet; without it,
++ * `replyExpectedMinutes` is null and the text says the delay is unknown.
++ *
++ * @param {Object} input
++ * @param {string} input.astronaut Display name, e.g. "Commander Rivera".
++ * @param {Readonly<import("./evaluate.js").DayEvaluation>} input.evaluation From evaluateDay()/evaluateMission().
++ * @param {number | null} [input.earthOneWayMinutes] One-way signal delay in minutes.
++ * @returns {Readonly<SurgeonSummary>}
++ */
++export function buildSurgeonSummary({ astronaut, evaluation, earthOneWayMinutes = null }) {
++  const { day, health, change, alert, indicators, limitBreaches } = evaluation;
++  const drifting = indicators
++    .filter((i) => i.status === "drifting")
++    .map((i) => Object.freeze({ key: i.key, worryingZ: i.worryingZ }));
++  const breaches = limitBreaches.map((b) =>
++    Object.freeze({ indicator: b.indicator, value: b.value, severity: b.severity, summary: b.summary, source: b.source.url }),
++  );
++  const replyExpectedMinutes =
++    typeof earthOneWayMinutes === "number" && Number.isFinite(earthOneWayMinutes) && earthOneWayMinutes >= 0
++      ? Math.round(earthOneWayMinutes * 2)
++      : null;
++
++  const signed = (n) => (n > 0 ? `+${n}` : String(n));
++  const lines = [
++    `${astronaut}, mission day ${day}`,
++    health.score === null
++      ? "Health score: not enough data"
++      : `Health score: ${health.score} (${health.label})` +
++        (change.sinceYesterday !== null ? `, ${signed(change.sinceYesterday)} since yesterday` : "") +
++        (change.over7Days !== null ? `, ${signed(change.over7Days)} over 7 days` : ""),
++    `Alert level: ${alert.level}${alert.alertSince !== null ? ` (since day ${alert.alertSince})` : ""}`,
++    drifting.length > 0
++      ? `Drifting from in-flight baseline: ${drifting.map((d) => `${d.key} (z ${d.worryingZ?.toFixed(1)})`).join(", ")}`
++      : "Drifting from in-flight baseline: none",
++    ...breaches.map((b) => `Limit (${b.severity}): ${b.summary} Reading ${b.value}. Source: ${b.source}`),
++    replyExpectedMinutes !== null
++      ? `Reply expected in about ${replyExpectedMinutes} minutes (Earth signal delay).`
++      : "Reply time: Earth signal delay not known.",
++    "Thresholds are general clinical reference ranges, not NASA flight standards. Not medical advice.",
++  ];
++
++  return Object.freeze({
++    astronaut,
++    day,
++    score: health.score,
++    band: health.band,
++    change,
++    alertLevel: alert.level,
++    alertSince: alert.alertSince,
++    drifting: Object.freeze(drifting),
++    limitBreaches: Object.freeze(breaches),
++    replyExpectedMinutes,
++    lines: Object.freeze(lines),
++  });
++}
+diff --git a/src/lib/engine/testData.js b/src/lib/engine/testData.js
+new file mode 100644
+index 0000000..eb71be9
+--- /dev/null
++++ b/src/lib/engine/testData.js
+@@ -0,0 +1,74 @@
++// Test helpers only (imported by *.test.js, never by the app).
++// Seeded random numbers so every test run sees exactly the same data.
++
++/**
++ * Mulberry32: tiny seeded pseudo-random generator (public domain algorithm).
++ * @param {number} seed
++ * @returns {() => number} Uniform numbers in [0, 1).
++ */
++export function seededRandom(seed) {
++  let a = seed >>> 0;
++  return () => {
++    a = (a + 0x6d2b79f5) >>> 0;
++    let t = a;
++    t = Math.imul(t ^ (t >>> 15), t | 1);
++    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
++    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
++  };
++}
++
++/**
++ * Normal noise from a seeded generator (Box–Muller).
++ * @param {() => number} random
++ * @returns {() => number}
++ */
++export function gaussian(random) {
++  return () => {
++    const u = Math.max(random(), 1e-12);
++    const v = random();
++    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
++  };
++}
++
++/** Typical healthy values and day-to-day noise for test data (not real physiology). */
++export const HEALTHY = Object.freeze({
++  heartRate: [62, 3],
++  bpSystolic: [116, 4],
++  bpDiastolic: [74, 3],
++  glucose: [88, 5],
++  temperature: [36.7, 0.15],
++  sleepHours: [7.4, 0.45],
++  mood: [4, 0.4],
++  reactionMedianMs: [300, 15],
++  reactionLapses: [0.4, 0.6],
++  exerciseMinutes: [90, 10],
++});
++
++/**
++ * Builds daily records from day `fromDay` to `toDay`.
++ * @param {Object} options
++ * @param {number} options.seed
++ * @param {number} [options.fromDay=-30]
++ * @param {number} [options.toDay=180]
++ * @param {(day: number) => Object<string, number>} [options.shift] Added to the healthy
++ *   mean for each field on a day (use for declines and events).
++ * @param {ReadonlyArray<number>} [options.missingDays] Days with no record at all.
++ * @returns {Array<Object<string, unknown>>}
++ */
++export function makeMission({ seed, fromDay = -30, toDay = 180, shift = () => ({}), missingDays = [] }) {
++  const noise = gaussian(seededRandom(seed));
++  const records = [];
++  for (let day = fromDay; day <= toDay; day += 1) {
++    if (day === 0 || missingDays.includes(day)) continue; // day 0 = launch day, not recorded
++    const extra = shift(day);
++    const record = { missionDay: day };
++    for (const [field, [mean, sd]] of Object.entries(HEALTHY)) {
++      let value = mean + (extra[field] ?? 0) + sd * noise();
++      if (field === "mood") value = Math.min(5, Math.max(1, Math.round(value)));
++      if (field === "reactionLapses") value = Math.max(0, Math.round(value));
++      record[field] = value;
++    }
++    records.push(record);
++  }
++  return records;
++}
+-- 
+2.43.0
+
