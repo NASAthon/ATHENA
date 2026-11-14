@@ -3,7 +3,7 @@
 Every locked choice and why. Entries are in the order they were made. **Index:**
 - **Product:** Originality · Body Map Required · Crew · Trends Over Single Readings · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
 - **Data and content:** No Medicines or Diagnoses · Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
-- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open) · Logic Engine · Logic Engine Assumptions · Logic Tests
+- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open) · Logic Engine · Logic Engine Assumptions · Logic Tests · Mission Modes
 - **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
 
 ## Frontend
@@ -51,6 +51,8 @@ includes NASA OSDR (https://osdr.nasa.gov/), which the official challenge video
 names. Do not use the extra sources in Section 9 for now.
 Exceptions: general clinical reference ranges for thresholds (see Thresholds), and
 emergency first-response steps (see Emergency Step Sources).
+Added 14 Nov (team agreed): two official NASA pages for the ISS and Gateway Earth-link
+delays, which the Section 7 pages don't give (see Mission Modes).
 
 Reason:
 Team decision to stay within the data we were given.
@@ -688,3 +690,25 @@ use the real content in `src/data/`, so they also catch content and engine drift
 
 Status:
 ACTIVE
+
+---
+
+## Mission Modes
+
+Three modes (ISS, Lunar Gateway, Mars Transit; no Lunar Surface Base), in
+`src/data/missionModes.js`, used by the header switch and `src/lib/engine/missionMode.js`.
+- **Earth-link delays (one way), from NASA:** ISS under 1 second (NASA Goddard); Mars up to
+  20 minutes (HRP Distance from Earth). No NASA page gives a Gateway figure, so NASA's
+  estimate for lunar missions, 3–14 seconds (NASA/TM-20250003885), is applied to Gateway and
+  marked `inferred: true` ("lunar estimate" in the app).
+- **What changes per mode (design choices):** the order of the 5 hazards (the mode's most
+  relevant ones first, nothing hidden) and one line of advice on working with Earth given
+  the delay (e.g. Mars: "follow the guide and act now; don't wait for Earth").
+- The flight-surgeon summary takes its reply time from the mode.
+
+Reason:
+CHECKLIST §2 "Mission mode changes which hazards and advice are shown". The delay is the real
+difference between the modes for medical decisions, so it drives the advice.
+
+Status:
+ACTIVE (emphasis and advice wording tunable)

@@ -6,6 +6,8 @@ Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Age
 |---|---|---|---|---|
 | 5 Hazards of Human Spaceflight | https://www.nasa.gov/hrp/hazards/ | The five hazards | Yes | US Gov work; no NASA logos |
 | Risks of Human Spaceflight | https://www.nasa.gov/hrp/risks/ | The 17 risks (the pages don't map them to hazards; our mapping is in `docs/BODY_MAP.md`) | Yes | US Gov work; no NASA logos |
+| Data Rate Increase on the ISS (NASA Goddard) | https://www.nasa.gov/feature/goddard/2019/data-rate-increase-on-the-international-space-station-supports-future-exploration | ISS Earth-link delay: under 1 second | Yes (team-approved 14 Nov, `docs/DECISIONS.md` › Data Sources) | US Gov work; no NASA logos |
+| NASA/TM-20250003885: Assessment of the State of Communication Delay Research | https://ntrs.nasa.gov/citations/20250003885 | Lunar-mission delay of 3–14 s one way, applied to Gateway (marked as inferred) | Yes (team-approved 14 Nov) | US Gov work; no NASA logos |
 | NASA Open Science Data Repository (OSDR) | https://osdr.nasa.gov/ | Real spaceflight biology data for inspiration and testing (named in the challenge video) | Yes | Check each dataset's licence before use |
 | Challenge video (Brazilian Space Agency) | https://www.youtube.com/watch?v=RERG3gEmdC8 | Challenge goals, emergency scenario, guidance requirements | Official challenge material | Cite and link only |
 | 17 NASA risk pages + 5 hazard pages | URLs listed in `docs/BODY_MAP.md` | Body regions, affected systems, verified facts (e.g. bone loss 1–1.5%/month) | Yes | US Gov work; no NASA logos |
