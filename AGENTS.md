@@ -24,7 +24,7 @@ GitHub is the single source of truth, so always branch from the latest `main`.
       against the criteria (Impact, Creativity, Validity, Relevance, Presentation).
    4. `DECISIONS.md`: locked decisions. Do not reverse a LOCKED decision.
    5. `docs/`: `SOURCES.md` (every source used), `AI_USAGE.md` (AI log), `BODY_MAP.md`
-      (draft body regions mapped to the 17 NASA risks), and other files as they are added.
+      (verified body regions mapped to the 17 NASA risks and 5 hazards), and other files as they are added.
 3. If two files conflict:
    - Submission, demo, AI/SI rules and judging: `judging.md` wins.
    - Challenge, data and citations: the official sections of `context.md` win.

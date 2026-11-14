@@ -374,7 +374,7 @@ LOCKED (numbers tunable)
 
 - The NASA data map covers **all 5 hazards and all 17 risks** from the HRP pages.
 - **Body map** regions cover every body system those risks affect. Draft of the 8 regions
-  and their risk links: `docs/BODY_MAP.md` (to be verified against NASA pages).
+  and their risk links: `docs/BODY_MAP.md` (verified against all 22 NASA pages on 14 Nov).
 - **Emergency scenarios** cover the acute events linked to the hazards (e.g. chest
   pain/collapse, hypoxia, decompression sickness, radiation exposure, injury,
   severe behavioural crisis). Chest pain/collapse is built first.

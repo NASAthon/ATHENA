@@ -136,7 +136,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** Source list with links in `docs/SOURCES.md` (NASA HRP, NASA OSDR, Canadian Space Agency, clinical ranges, libraries)
 - [ ] **M** Every resource used is open source, openly licensed or public domain, with no NASA logos (`DECISIONS.md` › Licensing)
 - [ ] **M** Every figure in the app or pitch traced to a source, or removed
-- [ ] **S** Verify `docs/BODY_MAP.md` against the NASA pages, then write every region card (linked to its hazards and risks)
+- [ ] **S** Write every region card from `docs/BODY_MAP.md` (verified 14 Nov; linked to its hazards and risks)
 - [ ] **S** List of periodic exams and how often
 - [ ] **S** Short note on existing tools and what ATHENA adds
 
