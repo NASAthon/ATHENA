@@ -69,8 +69,9 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 
 - **Do not redesign the architecture.** Stack: offline-first web app run on the laptop (not a PWA),
   Next.js (JavaScript) + Tailwind + ShadCN, SQLite in the browser (sql.js +
-  IndexedDB), JS rules engine, 2D SVG body map. No backend and no
-  runtime internet dependency. No hosting or deployment work.
+  IndexedDB), JS rules engine, 2D SVG body map. No backend and no runtime internet dependency.
+  A static GitHub Pages copy exists only for judge access; the local build remains the operational
+  offline version (`docs/DECISIONS.md` › Hosting and Demo).
 - Priorities: hackathon speed, then NASA relevance, then demo quality, then simplicity. Prefer MVP solutions.
 - **Every health rule must cite its source in `docs/SOURCES.md` (and its `sourceIds` in
   `src/data`).** The app itself shows no source links or other external links: astronauts

@@ -10,8 +10,8 @@ Every locked choice and why. Entries are in the order they were made. **Index:**
 
 Next.js (JavaScript, static export), offline-first, with Tailwind and ShadCN. It runs from
 the laptop it's installed on (`localhost`), so it needs no internet, as it would onboard a spacecraft.
-**Not a PWA:** no installable app or service worker (team decision 14 Nov). We don't host it, so
-there's nothing to install from or cache.
+**Not a PWA:** no installable app or service worker (team decision 14 Nov). The judge-facing hosted
+copy needs internet for its initial load; the operational local build does not.
 
 Reason:
 Fast development, and fully offline without extra machinery.
@@ -100,9 +100,13 @@ LOCKED
 
 ## Hosting and Demo
 
-- **No hosting.** We won't deploy the app anywhere, so we can focus on building
-  a good app. The public GitHub repo is the official "final project" link.
-- The README must keep clear "How to run" steps so judges can run it locally.
+- **Hosted evaluation copy:** GitHub Pages publishes the static export so global judges can open
+  ATHENA without installing Node or packages. It has no backend; SQLite and mission data remain in
+  each visitor's browser. The URL is `https://nasathon.github.io/ATHENA/`.
+- **Operational version stays local and offline.** Hosting is a convenience for evaluation, not a
+  change to the spacecraft architecture. The hosted copy needs internet for its initial page load
+  and must not be presented as reloadable offline because ATHENA has no service worker.
+- The README keeps both the hosted link and clear local "How to run" steps.
 - Demo on localhost: `npm run build`, then serve the static output (or `npm run dev`).
 - 30-second video "offline moment": turn Wi-Fi off on camera, reload, and trigger
   an alert (a dangerous reading, or a Scenario Lab event if built). The alert still fires.

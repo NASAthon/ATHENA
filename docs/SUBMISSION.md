@@ -5,6 +5,17 @@ Ready-to-paste answers for the Space Apps project page (`docs/judging.md` › 1C
 The NASA and clinical tables are generated from `src/data/sources.js` (the sources behind the app's health content), so keep them
 in step with it when sources change. Check every link in an incognito window before submitting.
 
+## Project links
+
+| Link Text | Link URL |
+|---|---|
+| Open the ATHENA hosted evaluation copy | https://nasathon.github.io/ATHENA/ |
+| View the public source repository | https://github.com/NASAthon/ATHENA |
+
+The hosted copy is provided so judges can evaluate ATHENA without installing packages. It has no
+backend; its simulated mission data is stored only in the visitor's browser. The local build remains
+the operational offline version described in the README.
+
 ---
 
 ## 1. Use of Super Intelligence (SI)

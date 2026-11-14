@@ -6,13 +6,14 @@ import { OctagonAlert, TriangleAlert } from "lucide-react";
 import { INDICATORS } from "@/data";
 import { useTodayEvaluation } from "@/components/useTodayEvaluation";
 import { focusRing } from "@/lib/ui";
+import { appPathname } from "@/lib/basePath";
 
 const nameOf = Object.fromEntries(INDICATORS.map((i) => [i.id, i.name]));
 
 // Alert banner at the top of every screen (CHECKLIST › Layout) for the astronaut selected in the
 // header: red limits first, then drift alerts. Hidden on Today, which shows the full alert card.
 export default function AlertBanner() {
-  const pathname = usePathname();
+  const pathname = appPathname(usePathname());
   const { state, member, evaluation } = useTodayEvaluation();
   if (state !== "ready" || !evaluation || pathname === "/" || pathname === "/today") return null;
 
