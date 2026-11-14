@@ -15,7 +15,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 ## 1. Data and storage
 
-- [ ] **M** Daily record defined: date, mission day, heart rate, blood pressure (two numbers), blood sugar, temperature, sleep hours, mood (1–5), reaction median, lapses, false starts, exercise minutes, symptoms, SpO2 (optional), radiation dose (optional) 🟡 Partial (PR #PRNUM): the engine assumes camelCase field names (`RECORD_FIELDS` in `src/lib/engine/indicators.js`); still to do: team confirms them, adds the date field and the database table
+- [ ] **M** Daily record defined: date, mission day, heart rate, blood pressure (two numbers), blood sugar, temperature, sleep hours, mood (1–5), reaction median, lapses, false starts, exercise minutes, symptoms, SpO2 (optional), radiation dose (optional) 🟡 Partial (PR #10): the engine assumes camelCase field names (`RECORD_FIELDS` in `src/lib/engine/indicators.js`); still to do: team confirms them, adds the date field and the database table
 - [ ] **M** Units chosen and shown everywhere (mg/dL or mmol/L, °C) 🟡 Partial (PR #7): units chosen in `src/data/indicators.js` (bpm, mmHg, mg/dL, °C, hours, 1–5, ms, minutes, %, mSv); still to do: show them on every screen
 - [ ] **M** Save and load daily records in the browser: SQLite via sql.js, saved to IndexedDB after every write, with the `.wasm` file bundled locally (`docs/DECISIONS.md` › Database)
 - [ ] **M** Save and load the two baselines
@@ -32,25 +32,25 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 ## 2. Logic (plain functions with no screen code)
 
-- [x] **M** Baseline calculator: mean and standard deviation per indicator for a fixed window (`src/lib/engine/baseline.js`) (PR #PRNUM)
-- [ ] **M** Pre-flight baseline and in-flight baseline (for example mission days 21–35) both calculated once and stored 🟡 Partial (PR #PRNUM): calculated by `calculateMissionBaselines` (pre-flight days −30 to −1, in-flight 21–35); still to do: store them (§1 "Save and load the two baselines")
-- [x] **M** Seven-day average per indicator (`src/lib/engine/average.js`) (PR #PRNUM)
-- [x] **M** Health score 0–100 per astronaut (100 = perfect), with the change since yesterday and over 7 days (`docs/DECISIONS.md` › Health Score) (`src/lib/engine/healthScore.js`) (PR #PRNUM)
-- [x] **M** Z-score of the seven-day average against the in-flight baseline (`src/lib/engine/drift.js`) (PR #PRNUM)
-- [x] **M** Status per indicator: no data, steady, drifting, expected adaptation (`src/lib/engine/status.js; "expected adaptation" defined in DECISIONS › Logic Engine Assumptions`) (PR #PRNUM)
-- [x] **M** Drift cut-off of **z = 3.5** (`docs/DECISIONS.md` › Drift Cut-off) written in the README as a design choice (`README › Drift detection`) (PR #PRNUM)
-- [x] **M** Alert level: 1 drifting = note, 2 or more = alert, no recovery after 14 more days = tell crew and ground (linked indicators count once; `docs/DECISIONS.md` › Drift Cut-off) (`src/lib/engine/alerts.js`) (PR #PRNUM)
-- [x] **M** Red-limit check on every new reading, independent of baselines (`src/lib/engine/redLimits.js, reading the bands in src/data/indicators.js`) (PR #PRNUM)
+- [x] **M** Baseline calculator: mean and standard deviation per indicator for a fixed window (`src/lib/engine/baseline.js`) (PR #10)
+- [ ] **M** Pre-flight baseline and in-flight baseline (for example mission days 21–35) both calculated once and stored 🟡 Partial (PR #10): calculated by `calculateMissionBaselines` (pre-flight days −30 to −1, in-flight 21–35); still to do: store them (§1 "Save and load the two baselines")
+- [x] **M** Seven-day average per indicator (`src/lib/engine/average.js`) (PR #10)
+- [x] **M** Health score 0–100 per astronaut (100 = perfect), with the change since yesterday and over 7 days (`docs/DECISIONS.md` › Health Score) (`src/lib/engine/healthScore.js`) (PR #10)
+- [x] **M** Z-score of the seven-day average against the in-flight baseline (`src/lib/engine/drift.js`) (PR #10)
+- [x] **M** Status per indicator: no data, steady, drifting, expected adaptation (`src/lib/engine/status.js; "expected adaptation" defined in DECISIONS › Logic Engine Assumptions`) (PR #10)
+- [x] **M** Drift cut-off of **z = 3.5** (`docs/DECISIONS.md` › Drift Cut-off) written in the README as a design choice (`README › Drift detection`) (PR #10)
+- [x] **M** Alert level: 1 drifting = note, 2 or more = alert, no recovery after 14 more days = tell crew and ground (linked indicators count once; `docs/DECISIONS.md` › Drift Cut-off) (`src/lib/engine/alerts.js`) (PR #10)
+- [x] **M** Red-limit check on every new reading, independent of baselines (`src/lib/engine/redLimits.js, reading the bands in src/data/indicators.js`) (PR #10)
 - [x] **M** Red limits taken from a published source and cited (general clinical reference ranges, `docs/DECISIONS.md` › Thresholds) (PR #7; heart rate and SpO₂ use personal baselines by design)
-- [x] **M** Reaction scoring: median, lapses over 500 ms, false starts (`src/lib/engine/reaction.js`) (PR #PRNUM)
-- [x] **M** Handles missing days without crashing or false alerts (`all of src/lib/engine; tested in evaluate.test.js`) (PR #PRNUM)
-- [x] **M** Search index: offline fuzzy search over all content (typos, prefixes, synonyms, symptoms; `docs/DECISIONS.md` › Search). Library: **MiniSearch** (MIT) (`src/lib/engine/search.js over everything in src/data`) (PR #PRNUM)
-- [x] **M** Reminder scheduler: which measurements are due today (`src/lib/engine/reminders.js`) (PR #PRNUM)
-- [x] **M** Region mapper: indicator-to-body-region table and worst-status function (table: `src/data/regions.js`; worst-status function: `src/lib/engine/regions.js`) (PR #7, PR #PRNUM)
-- [x] **S** Calendar scheduler: which periodic exams are due on a given mission day (`src/lib/engine/calendar.js, exams from src/data/exams.js`) (PR #PRNUM)
-- [x] **S** Summary builder for the flight-surgeon report (`src/lib/engine/summary.js; Earth delay passed in`) (PR #PRNUM)
+- [x] **M** Reaction scoring: median, lapses over 500 ms, false starts (`src/lib/engine/reaction.js`) (PR #10)
+- [x] **M** Handles missing days without crashing or false alerts (`all of src/lib/engine; tested in evaluate.test.js`) (PR #10)
+- [x] **M** Search index: offline fuzzy search over all content (typos, prefixes, synonyms, symptoms; `docs/DECISIONS.md` › Search). Library: **MiniSearch** (MIT) (`src/lib/engine/search.js over everything in src/data`) (PR #10)
+- [x] **M** Reminder scheduler: which measurements are due today (`src/lib/engine/reminders.js`) (PR #10)
+- [x] **M** Region mapper: indicator-to-body-region table and worst-status function (table: `src/data/regions.js`; worst-status function: `src/lib/engine/regions.js`) (PR #7, PR #10)
+- [x] **S** Calendar scheduler: which periodic exams are due on a given mission day (`src/lib/engine/calendar.js, exams from src/data/exams.js`) (PR #10)
+- [x] **S** Summary builder for the flight-surgeon report (`src/lib/engine/summary.js; Earth delay passed in`) (PR #10)
 - [ ] **S** Mission mode changes which hazards and advice are shown (ISS, Lunar Gateway, Mars Transit; no Lunar Surface Base)
-- [ ] **S** Scenario Lab: inject radiation, fatigue, sleep loss or hypoxia into the data and watch the alerts react 🟡 Partial (PR #PRNUM): injection in `src/lib/engine/scenarios.js` (demo effect sizes); still to do: the screen (§3)
+- [ ] **S** Scenario Lab: inject radiation, fatigue, sleep loss or hypoxia into the data and watch the alerts react 🟡 Partial (PR #10): injection in `src/lib/engine/scenarios.js` (demo effect sizes); still to do: the screen (§3)
 
 ---
 
@@ -161,13 +161,13 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 ## 6. Testing
 
 - [ ] **M** Fresh browser: load demo mission, Rivera's alert appears in the expected week
-- [ ] **M** Healthy data (Singh) produces no alert and a stable, high health score 🟡 Partial (PR #PRNUM): passes on engine-level simulated missions (`evaluate.test.js`); still to do: re-run with the real mission simulator in the app
-- [ ] **M** Health score drops as Rivera declines and when a red limit is hit 🟡 Partial (PR #PRNUM): passes at engine level (`evaluate.test.js`); still to do: check in the app
-- [ ] **M** One bad day produces no alert 🟡 Partial (PR #PRNUM): passes at engine level (`evaluate.test.js`); still to do: check in the app
+- [ ] **M** Healthy data (Singh) produces no alert and a stable, high health score 🟡 Partial (PR #10): passes on engine-level simulated missions (`evaluate.test.js`); still to do: re-run with the real mission simulator in the app
+- [ ] **M** Health score drops as Rivera declines and when a red limit is hit 🟡 Partial (PR #10): passes at engine level (`evaluate.test.js`); still to do: check in the app
+- [ ] **M** One bad day produces no alert 🟡 Partial (PR #10): passes at engine level (`evaluate.test.js`); still to do: check in the app
 - [ ] **M** A dangerous reading (Nakamura) triggers the red-limit screen
 - [ ] **M** Empty state (no data yet) looks sensible
 - [ ] **M** Reaction test run ten times in a row without breaking
-- [ ] **M** Search finds the right item for misspellings ("hart rate"), synonyms ("pulse") and symptoms ("chest pain") 🟡 Partial (PR #PRNUM): passes on the real content (`search.test.js`); still to do: check in the search bar
+- [ ] **M** Search finds the right item for misspellings ("hart rate"), synonyms ("pulse") and symptoms ("chest pain") 🟡 Partial (PR #10): passes on the real content (`search.test.js`); still to do: check in the search bar
 - [ ] **M** Whole app usable by keyboard only; status readable in greyscale
 - [ ] **M** Full demo rehearsed start to finish on the machine that will present it
 - [ ] **M** Someone outside the team tries it without instructions
