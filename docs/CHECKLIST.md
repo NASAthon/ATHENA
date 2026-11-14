@@ -27,8 +27,8 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [x] **M** "Load demo mission" and "Reset data" buttons work (Crew page, `src/components/MissionDataPanel.js`; demo loaded automatically on first run, stays empty after reset; tested against the real sql.js in `demo.db.test.js`)
 - [x] **M** Every indicator, guide and emergency entry has a `keywords` list (synonyms, plain-English terms, symptoms, common misspellings) for search (PR #7)
 - [x] **S** Store periodic exam results and the check-in streak (PR #19: `saveExamResult`/`loadExamResults` in `src/lib/checkIn.js`, cleared by Reset data; streak worked out from stored records with `checkInStreak`)
-- [x] **S** Persist immutable simulated Earth-link reports and separate history per astronaut; Reset and Load demo clear it (PR #TBD)
-- [x] **S** Serialise SQLite/IndexedDB writes and restore in-memory state after a failed persistence save (PR #TBD)
+- [x] **S** Persist immutable simulated Earth-link reports and separate history per astronaut; Reset and Load demo clear it (PR #45)
+- [x] **S** Serialise SQLite/IndexedDB writes and restore in-memory state after a failed persistence save (PR #45)
 
 ---
 
@@ -147,7 +147,7 @@ One line per designed page. A page is ticked when it's built and working in the 
 - [x] **S** Mission calendar listing due and completed periodic exams (PR #21: `/calendar`, overdue, due today, next 30 days, "Mark done today" saves with `saveExamResult`)
 - [x] **S** One-page flight-surgeon summary, with "reply expected in about N minutes" (Earth Link delay) (PR #10, PR #12, PR #21: `/summary` screen; "Send to Earth" button (simulated send, shows the reply time; replaced "Copy text" in PR #34); mission mode now shared app-wide)
 - [x] **S** Earth Link: shows the current communication delay for the mission mode (PR #8; header pill removed, delay shown on the Emergency, Summary and Trends pages; sourced delays for all three modes and the summary's reply time PR #12)
-- [x] **S** Mission communications simulation: queued report, two-way delay, deterministic simulated reply, 1×/60×/720× clock, progress and persistent per-astronaut history (PR #TBD)
+- [x] **S** Mission communications simulation: queued report, two-way delay, deterministic simulated reply, 1×/60×/720× clock, progress and persistent per-astronaut history (PR #45)
 - [x] **S** Mission mode switch: ISS, Lunar Gateway, Mars Transit (PR #8; modes in `src/data/missionModes.js`)
 - [x] **S** Check-in streak (PR #19: shown after saving the Daily check)
 
@@ -190,7 +190,7 @@ One line per designed page. A page is ticked when it's built and working in the 
 - [x] **M** Empty state (no data yet) looks sensible (PR #9, PR #10, PR #20, PR #24): engine safe; Today, Daily check, Body, Calendar and Summary handle no stored data (PR #21); Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
 - [x] **M** Reaction test run ten times in a row without breaking (checked 14 Nov on the production build: 10 back-to-back 60 s runs in guest mode, including false starts, missed signals, space bar and double taps; every run finished, no errors or blank results)
 - [x] **M** Search finds the right item for misspellings ("hart rate"), synonyms ("pulse") and symptoms ("chest pain") (PR #10, PR #21: checked in the search bar in Chrome)
-- [x] **S** Mission communications unit/storage coverage: mode delays, all statuses, speed changes, reload, separate histories, multiple immutable snapshots and reset/reload clearing (PR #TBD)
+- [x] **S** Mission communications unit/storage coverage: mode delays, all statuses, speed changes, reload, separate histories, multiple immutable snapshots and reset/reload clearing (PR #45)
 - [x] **M** Whole app usable by keyboard only; status readable in greyscale (checked 14 Nov on every built page: all focusable controls have a visible focus style and a name, no click handlers on non-buttons, status readable in greyscale through icon and label, PR #24): ; Trends done in PR #24 (labelled chart areas, 44 px chips and slider, keyboard and screen-reader descriptions, no animation, units, empty state)
 - [ ] **M** Full demo rehearsed start to finish on the machine that will present it
 - [ ] **M** Someone outside the team tries it without instructions
