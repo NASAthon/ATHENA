@@ -150,7 +150,7 @@ AI-generated code was used to speed up the development process.
 - Chidozie Onyejelem
 - Isaac Adeniji
 - Mercy Olasehinde
-- Izabela
+- Izabela Heczková
 
 ---
 
