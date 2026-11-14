@@ -1,24 +1,28 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Check, Eye, OctagonAlert, TriangleAlert, Volume2 } from "lucide-react";
+import { Check, CircleDashed, Eye, LoaderCircle, OctagonAlert, PencilLine, RotateCcw, ScanLine, TriangleAlert, Volume2 } from "lucide-react";
 import { INDICATORS, SYMPTOMS, EMERGENCIES } from "@/data";
 import { RECORD_FIELDS, SYMPTOMS_FIELD, checkReading } from "@/lib/engine";
 import { useCrew } from "@/components/CrewProvider";
 import { useMissionData } from "@/components/MissionDataProvider";
 import { checkInStreak } from "@/lib/checkIn";
+import { SCAN_SENSORS, readSensor, scanToRecordFields } from "@/lib/sim/sensorScan";
+import { formatValue } from "@/lib/readings";
 import { plainFieldError } from "@/lib/readings";
 import { focusRing } from "@/lib/ui";
 
-// Daily check (layout and design by Izabela, PR #8).
+// Daily check (layout and design by Izabela, PR #8; simulated sensor scan, docs/DECISIONS.md ›
+// Simulated Sensor Scan). Vitals are collected by a SIMULATED sensor scan (src/lib/sim/sensorScan.js),
+// validated and saved automatically; the crew only adds mood and symptoms, which no sensor can
+// report. A sensor that fails can be retried or entered by hand.
 // All health text, units, steps, limits and symptoms come from src/data (AGENTS.md rule),
 // so the screen always matches the verified research.
 
 const byId = Object.fromEntries(INDICATORS.map((i) => [i.id, i]));
 const FORM_ORDER = ["sleep", "heartRate", "bloodPressure", "glucose", "temperature", "exercise", "spo2"];
-const WIDE = new Set(["exercise", "spo2"]);
 const mood = byId.mood;
 const emergencyName = Object.fromEntries(EMERGENCIES.map((e) => [e.id, e.name]));
 
@@ -35,9 +39,9 @@ const plainError = plainFieldError;
 
 // Turns the form into the engine's daily record (src/lib/engine/indicators.js › RECORD_FIELDS),
 // so the form and the logic engine always use the same field names.
-function toRecord(values, moodValue, symptoms) {
-  const record = { [SYMPTOMS_FIELD]: symptoms };
-  for (const id of FORM_ORDER) {
+function toRecord(values, moodValue, symptoms, ids = FORM_ORDER) {
+  const record = symptoms ? { [SYMPTOMS_FIELD]: symptoms } : {};
+  for (const id of ids) {
     const fields = RECORD_FIELDS[id];
     const parts = byId[id].inputs ? byId[id].inputs.map((f) => [f.id, values[`${id}.${f.id}`]]) : [["value", values[id]]];
     for (const [part, raw] of parts) {
@@ -79,126 +83,277 @@ function DailyCheckForCrew() {
   return <DailyCheck key={crewId} />;
 }
 
+// How each scan step is shown: always icon + text label + colour token (Inclusive Design).
+const STEP_STYLE = {
+  waiting: { label: "Waiting", Icon: CircleDashed, colour: "var(--status-nodata)" },
+  reading: { label: "Reading…", Icon: LoaderCircle, colour: "var(--primary)" },
+  valid: { label: "Checked and saved", Icon: Check, colour: "var(--status-steady)" },
+  invalid: { label: "Check failed", Icon: TriangleAlert, colour: "var(--status-amber)" },
+  manual: { label: "Entered by hand", Icon: PencilLine, colour: "var(--status-steady)" },
+};
+
+/** Pause between sensors while scanning (none when the person asks for reduced motion). */
+const STEP_MS = 650;
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/** "120 / 80 mmHg", "7.25 h": one scanned reading for display. */
+function readingText(r) {
+  const unit = byId[r.indicatorId].unit;
+  const vals = Object.values(r.parts).map((v) => formatValue(r.indicatorId, v));
+  return `${vals.join(" / ")} ${unit}`;
+}
+
 function DailyCheck() {
+  const [steps, setSteps] = useState({}); // sensorId → { state, result, attempt }
+  const [scanning, setScanning] = useState(false);
+  const [manualFor, setManualFor] = useState(null); // sensorId being entered by hand
   const [values, setValues] = useState({});
   const [moodValue, setMoodValue] = useState(null);
   const [symptoms, setSymptoms] = useState([]);
-  // `?guide=<indicator id>` (from search) opens that indicator's "How to measure" guide.
+  // `?guide=<indicator id>` (from search) opens that indicator's "How it's measured" guide.
   const guide = useSearchParams().get("guide");
   const guideId = guide && byId[guide] ? guide : null;
-  const [focusId, setFocusId] = useState(guideId ?? "bloodPressure");
+  const [focusId, setFocusId] = useState(guideId ?? "heartRate");
   const [lastGuide, setLastGuide] = useState(guideId);
   if (guideId !== lastGuide) {
     setLastGuide(guideId);
     if (guideId) setFocusId(guideId);
   }
   const [result, setResult] = useState(null);
-  const [saveInfo, setSaveInfo] = useState(null); // { day, streak } after a successful save
+  const [saveInfo, setSaveInfo] = useState(null); // { day, streak, what } after a successful save
   const [errors, setErrors] = useState([]);
   const { crewId, member } = useCrew();
   const { db, status, today, saveCheckIn } = useMissionData();
   const canSave = status === "ready" && today !== null;
+  const alive = useRef(true);
+  useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+    };
+  }, []);
 
   const focused = byId[focusId];
   const redFlags = SYMPTOMS.filter((s) => s.redFlag && symptoms.includes(s.id));
+  const scanned = SCAN_SENSORS.filter((s) => steps[s.id]?.state && steps[s.id].state !== "waiting" && steps[s.id].state !== "reading");
+  const scanDone = scanned.length === SCAN_SENSORS.length;
+  const failed = SCAN_SENSORS.filter((s) => steps[s.id]?.state === "invalid");
 
-  // Any edit after saving clears the result and the "Saved…" message (the edit isn't saved yet).
-  const clearOutcome = () => {
+  // Saves record fields (validated first, src/lib/dailyRecord.js), then checks the whole of
+  // today's record with the engine's red-limit check, using the previous days for streak bands.
+  const persist = async (fields, what) => {
+    setErrors([]);
+    try {
+      const saved = await saveCheckIn(crewId, fields);
+      if (!alive.current) return false;
+      if (!saved.ok) {
+        setErrors(saved.errors);
+        return false;
+      }
+      setResult(checkReading(saved.record, saved.history));
+      setSaveInfo({ day: today, streak: checkInStreak(db.loadDailyRecords(crewId), today), what });
+      return true;
+    } catch (e) {
+      if (alive.current) setErrors([`Couldn't save: ${e instanceof Error ? e.message : String(e)}`]);
+      return false;
+    }
+  };
+
+  // The scan: reads each simulated sensor in turn, validates it, then saves every valid reading.
+  const startScan = async () => {
+    if (!canSave || scanning) return;
+    setScanning(true);
     setResult(null);
     setSaveInfo(null);
-    setErrors([]);
+    setManualFor(null);
+    setSteps(Object.fromEntries(SCAN_SENSORS.map((s) => [s.id, { state: "waiting", result: null, attempt: 0 }])));
+    const delay = prefersReducedMotion() ? 0 : STEP_MS;
+    const results = [];
+    for (const sensor of SCAN_SENSORS) {
+      if (!alive.current) return;
+      setSteps((st) => ({ ...st, [sensor.id]: { ...st[sensor.id], state: "reading" } }));
+      await wait(delay);
+      if (!alive.current) return;
+      const r = readSensor(crewId, today, sensor.id, { attempt: 0 });
+      results.push(r);
+      setSteps((st) => ({ ...st, [sensor.id]: { state: r.ok ? "valid" : "invalid", result: r, attempt: 0 } }));
+    }
+    const fields = scanToRecordFields(results);
+    if (Object.keys(fields).length > 0) await persist(fields, "Simulated sensor readings");
+    if (alive.current) setScanning(false);
   };
 
-  const setValue = (key) => (value) => {
-    setValues((v) => ({ ...v, [key]: value }));
-    clearOutcome();
+  // Retry one failed sensor (a retry always reads cleanly in the simulation) and save it.
+  const retry = async (sensorId) => {
+    const attempt = (steps[sensorId]?.attempt ?? 0) + 1;
+    setSteps((st) => ({ ...st, [sensorId]: { ...st[sensorId], state: "reading" } }));
+    await wait(prefersReducedMotion() ? 0 : STEP_MS);
+    if (!alive.current) return;
+    const r = readSensor(crewId, today, sensorId, { attempt });
+    setSteps((st) => ({ ...st, [sensorId]: { state: r.ok ? "valid" : "invalid", result: r, attempt } }));
+    if (r.ok) await persist(scanToRecordFields([r]), "Simulated sensor reading");
   };
+
+  // Manual fallback for a failed sensor: typed values, checked by the same record validation.
+  const saveManual = async (sensor) => {
+    const fields = toRecord(values, null, null, sensor.indicators);
+    if (Object.keys(fields).length === 0) {
+      setErrors(["Enter at least one reading, or retry the sensor."]);
+      return;
+    }
+    if (await persist(fields, "Readings entered by hand")) {
+      setSteps((st) => ({ ...st, [sensor.id]: { ...st[sensor.id], state: "manual" } }));
+      setManualFor(null);
+    }
+  };
+
+  const setValue = (key) => (value) => setValues((v) => ({ ...v, [key]: value }));
 
   const toggleSymptom = (id) => {
-    clearOutcome();
+    setSaveInfo(null);
     setSymptoms((list) => (list.includes(id) ? list.filter((s) => s !== id) : [...list, id]));
+  };
+  const clearOutcome = () => setSaveInfo(null);
+
+  const saveCrewInput = () => {
+    const fields = { [SYMPTOMS_FIELD]: symptoms };
+    if (moodValue != null) fields[RECORD_FIELDS.mood.value] = moodValue;
+    return persist(fields, "Mood and symptoms");
   };
 
   const readAloud = () => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
     window.speechSynthesis.cancel();
-    const steps = focused.howToMeasure.map((s) => s.step).join(" ");
-    window.speechSynthesis.speak(new SpeechSynthesisUtterance(`${focused.name}. ${steps}`));
-  };
-
-  // Saves today's readings to the selected astronaut's stored record (validated first,
-  // src/lib/dailyRecord.js), then checks them with the engine's red-limit check, using the
-  // previous days for the streak bands.
-  const save = async () => {
-    setErrors([]);
-    setResult(null);
-    setSaveInfo(null);
-    try {
-      const saved = await saveCheckIn(crewId, toRecord(values, moodValue, symptoms));
-      if (!saved.ok) {
-        setErrors(saved.errors);
-        return;
-      }
-      setResult(checkReading(saved.record, saved.history));
-      setSaveInfo({ day: today, streak: checkInStreak(db.loadDailyRecords(crewId), today) });
-    } catch (e) {
-      setErrors([`Couldn't save: ${e instanceof Error ? e.message : String(e)}`]);
-    }
+    const stepsText = focused.howToMeasure.map((s) => s.step).join(" ");
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(`${focused.name}. ${stepsText}`));
   };
 
   return (
     <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
-      <h1 className="text-xl font-bold">Daily check</h1>
-      <p className="mt-2 text-base text-muted-foreground">
-        Skip anything you can&apos;t measure today. Tap a box to see how to measure it.
+      <h1 className="flex flex-wrap items-baseline gap-x-2 text-xl font-bold">
+        Daily check{" "}
+        <span className="text-base font-normal text-muted-foreground">
+          | {member.name}
+          {today !== null && ` | Day ${today}`}
+        </span>
+        <span className="rounded-full border border-dashed px-2.5 py-0.5 text-sm font-semibold" style={{ borderColor: "var(--status-nodata)", color: "var(--status-nodata)" }}>
+          Simulated sensors
+        </span>
+      </h1>
+      <p className="mt-1 text-base text-muted-foreground">
+        ATHENA reads your vitals from your sensors, checks them and saves them for you. You only add your mood and any symptoms.
       </p>
 
       <div className="mt-2 grid gap-2 lg:grid-cols-[minmax(0,1fr)_380px]">
         <div className="space-y-2">
-          <section className={card} aria-labelledby="readings-heading">
-            <h2 id="readings-heading" className="text-base font-bold">
-              Readings
-            </h2>
-            <div className="mt-2 grid gap-2 md:grid-cols-2">
-              {FORM_ORDER.map((id) => {
-                const ind = byId[id];
-                const title = ind.optional ? `${ind.name} (optional)` : ind.name;
-                if (ind.inputs) {
-                  return (
-                    <fieldset key={id} className="md:col-span-2" onFocus={() => setFocusId(id)}>
-                      <legend className="font-semibold">{title}</legend>
-                      <div className="grid gap-2 md:grid-cols-2">
-                        {ind.inputs.map((f) => (
-                          <NumberInput
-                            key={f.id}
-                            id={`${id}-${f.id}`}
-                            label={f.label}
-                            unit={ind.unit}
-                            limits={f}
-                            value={values[`${id}.${f.id}`] ?? ""}
-                            onChange={setValue(`${id}.${f.id}`)}
-                            onFocus={() => setFocusId(id)}
-                          />
-                        ))}
-                      </div>
-                    </fieldset>
-                  );
-                }
+          <section className={card} aria-labelledby="scan-heading">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 id="scan-heading" className="text-base font-bold">
+                Sensor scan
+              </h2>
+              <span className="text-sm text-muted-foreground">All readings are simulated for this demo.</span>
+              <button
+                type="button"
+                onClick={startScan}
+                disabled={!canSave || scanning}
+                className={`ml-auto inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-5 text-base font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 ${focusRing}`}
+              >
+                <ScanLine aria-hidden="true" className="size-5" />
+                {scanning ? "Scanning…" : scanned.length > 0 ? "Scan again" : "Start sensor scan"}
+              </button>
+            </div>
+
+            <ol className="mt-2 grid auto-rows-fr gap-2 md:grid-cols-2" aria-label="Sensors">
+              {SCAN_SENSORS.map((sensor) => {
+                const step = steps[sensor.id] ?? { state: "waiting" };
+                const { label, Icon, colour } = STEP_STYLE[step.state];
+                const shown = step.result?.readings.filter((r) => r.status !== "not_measured") ?? [];
+                const reason = step.result?.readings.find((r) => r.status === "invalid")?.reason;
                 return (
-                  <div key={id} className={WIDE.has(id) ? "md:col-span-1" : ""}>
-                    <NumberInput
-                      id={id}
-                      label={title}
-                      unit={ind.unit}
-                      limits={ind.input}
-                      value={values[id] ?? ""}
-                      onChange={setValue(id)}
-                      onFocus={() => setFocusId(id)}
-                    />
-                  </div>
+                  <li key={sensor.id} className="flex flex-col gap-1 rounded-lg border bg-input/10 p-3" style={{ borderColor: step.state === "invalid" ? colour : "var(--border)" }}>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-semibold">{sensor.name}</span>
+                      <span className="flex items-center gap-1 rounded-full border px-2 py-0.5 text-sm" style={{ borderColor: colour, color: colour }}>
+                        <Icon aria-hidden="true" className={`size-4 ${step.state === "reading" ? "animate-spin motion-reduce:animate-none" : ""}`} />
+                        {label}
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">Reads {sensor.detail}</p>
+                    {(step.state === "valid" || step.state === "manual") && shown.length > 0 && (
+                      <ul className="mt-1 space-y-0.5">
+                        {shown.map((r) => (
+                          <li key={r.indicatorId} className="text-base">
+                            {byId[r.indicatorId].name}: <strong>{readingText(r)}</strong>{" "}
+                            <span className="text-sm text-muted-foreground">{step.state === "manual" ? "(by hand)" : "(simulated)"}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {step.state === "invalid" && (
+                      <>
+                        <p className="text-sm">{reason} Nothing from this sensor was saved.</p>
+                        <div className="mt-1 flex flex-wrap gap-2">
+                          <button type="button" onClick={() => retry(sensor.id)} disabled={scanning} className={`inline-flex min-h-11 items-center gap-2 rounded-lg border border-input px-3 text-sm font-semibold hover:bg-accent disabled:opacity-50 ${focusRing}`}>
+                            <RotateCcw aria-hidden="true" className="size-4" /> Retry sensor
+                          </button>
+                          <button
+                            type="button"
+                            aria-expanded={manualFor === sensor.id}
+                            onClick={() => {
+                              setManualFor(manualFor === sensor.id ? null : sensor.id);
+                              setFocusId(sensor.indicators[0]);
+                            }}
+                            className={`inline-flex min-h-11 items-center gap-2 rounded-lg border border-input px-3 text-sm font-semibold hover:bg-accent ${focusRing}`}
+                          >
+                            <PencilLine aria-hidden="true" className="size-4" /> Enter by hand
+                          </button>
+                        </div>
+                      </>
+                    )}
+                    {manualFor === sensor.id && (
+                      <div className="mt-1 space-y-2 rounded-lg border border-border p-2">
+                        {sensor.indicators.map((id) => {
+                          const ind = byId[id];
+                          if (ind.inputs) {
+                            return (
+                              <fieldset key={id} onFocus={() => setFocusId(id)}>
+                                <legend className="font-semibold">{ind.name}</legend>
+                                <div className="grid gap-2 sm:grid-cols-2">
+                                  {ind.inputs.map((f) => (
+                                    <NumberInput key={f.id} id={`${id}-${f.id}`} label={f.label} unit={ind.unit} limits={f} value={values[`${id}.${f.id}`] ?? ""} onChange={setValue(`${id}.${f.id}`)} onFocus={() => setFocusId(id)} />
+                                  ))}
+                                </div>
+                              </fieldset>
+                            );
+                          }
+                          return (
+                            <NumberInput key={id} id={id} label={ind.optional ? `${ind.name} (optional)` : ind.name} unit={ind.unit} limits={ind.input} value={values[id] ?? ""} onChange={setValue(id)} onFocus={() => setFocusId(id)} />
+                          );
+                        })}
+                        <button type="button" onClick={() => saveManual(sensor)} className={`min-h-11 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground hover:bg-primary/90 ${focusRing}`}>
+                          Save these readings
+                        </button>
+                      </div>
+                    )}
+                    <button type="button" onClick={() => setFocusId(sensor.indicators[0])} className={`mt-auto self-start rounded text-sm text-primary underline ${focusRing}`}>
+                      How it&apos;s measured
+                    </button>
+                  </li>
                 );
               })}
-            </div>
+            </ol>
+
+            <p role="status" aria-live="polite" className="mt-2 text-sm text-muted-foreground">
+              {scanning
+                ? `Scanning: ${scanned.length} of ${SCAN_SENSORS.length} sensors read.`
+                : scanDone
+                  ? failed.length > 0
+                    ? `Scan finished. ${failed.length} ${failed.length === 1 ? "sensor needs" : "sensors need"} attention: retry or enter by hand.`
+                    : "Scan finished. Every reading passed its checks and was saved."
+                  : "Press Start sensor scan. It takes a few seconds and needs nothing from you."}
+            </p>
           </section>
 
           <section className={card} aria-labelledby="mood-heading">
@@ -229,7 +384,6 @@ function DailyCheck() {
               ))}
             </div>
           </section>
-
           <section className={card} aria-labelledby="symptoms-heading">
             <h2 id="symptoms-heading" className="text-base font-bold">
               Any of these today?
@@ -278,24 +432,20 @@ function DailyCheck() {
               </div>
             )}
           </section>
-
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
-              onClick={save}
+              onClick={saveCrewInput}
               disabled={!canSave}
               className={`min-h-11 rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 ${focusRing}`}
             >
-              Save today&apos;s check
+              Save mood and symptoms
             </button>
-            <Link href="/today" className={`rounded text-primary underline ${focusRing}`}>
-              Cancel
-            </Link>
             <p role="status" className="flex items-center gap-2 font-semibold">
               {saveInfo && (
                 <>
                   <Check aria-hidden="true" className="size-5" style={{ color: "var(--status-steady)" }} />
-                  Saved to {member.name}&apos;s record for day {saveInfo.day}. Check-in streak: {saveInfo.streak}{" "}
+                  {saveInfo.what} saved to {member.name}&apos;s record for day {saveInfo.day}. Check-in streak: {saveInfo.streak}{" "}
                   {saveInfo.streak === 1 ? "day" : "days"}.
                 </>
               )}
@@ -323,7 +473,6 @@ function DailyCheck() {
               </ul>
             </div>
           )}
-
           {result && (
             <section className={card} aria-labelledby="result-heading">
               <h2 id="result-heading" className="text-base font-bold">
@@ -371,10 +520,13 @@ function DailyCheck() {
         </div>
 
         <aside className={`${card} h-fit lg:sticky lg:top-4`} aria-live="polite">
-          <p className="text-sm uppercase tracking-wider text-muted-foreground">How to measure</p>
+          <p className="text-sm uppercase tracking-wider text-muted-foreground">How it&apos;s measured</p>
           <h2 className="mt-2 text-base font-bold">{focused.name}</h2>
           <p className="mt-1 text-muted-foreground">{focused.glance}</p>
 
+          {focused.howToMeasure.length > 0 && (
+            <p className="mt-2 text-sm text-muted-foreground">If a sensor fails, measure by hand like this:</p>
+          )}
           {focused.howToMeasure.length > 0 && (
             <ol className="mt-2 list-decimal space-y-2 pl-5 text-base">
               {focused.howToMeasure.map((s) => (
