@@ -1,3 +1,4 @@
+// shadcn/ui base component, kept on purpose for upcoming screens (AGENTS.md › Installed packages).
 import * as React from "react"
 import { cva } from "class-variance-authority";
 import { cn } from "cn"
