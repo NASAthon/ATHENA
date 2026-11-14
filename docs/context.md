@@ -24,7 +24,6 @@
 | Venue | Engineering Building, Technological University of the Shannon (TUS): Midlands, Bunnavally, Athlone, Co. Westmeath, Ireland |
 | Format | In-person, 48-hour hackathon |
 | Dates | **14–15 November 2026**. Work officially starts **09:00 on 14 Nov** and concludes on 15 Nov |
-| Local event lead | Sahir Sharma (sharma.sahir@gmail.com / spaceappsathlone@gmail.com) |
 | Facilities | Tech resources, mentors, food and drink provided. No accommodation (sleeping bags allowed on site) |
 | Local judging | Submission closes **10:30 Sun 15 Nov**. Live pitching from **11:30**: **3 min pitch + 2 min Q&A** in front of local judges |
 | Global judging | Separate: online submission (≤30 s video or ≤7 slides), portal closes 23:59 Sun 15 Nov |
