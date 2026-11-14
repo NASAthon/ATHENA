@@ -2,6 +2,7 @@
 // the shared database from @/lib/db, so the buttons only need to call these.
 
 import { simulateCrew, DEMO_SEED } from "./simulator.js";
+import { EXAM_META_PREFIX } from "../checkIn.js";
 
 /** Mission day the demo opens on: the day of Nakamura's event, with Rivera's drift alert active. */
 export const DEMO_TODAY = 129;
@@ -35,4 +36,46 @@ export async function loadDemoMission(db, { today = DEMO_TODAY, seed = DEMO_SEED
 export async function resetData(db) {
   await db.resetAll();
   await db.setMeta("today", "");
+  await db.deleteMetaPrefix(EXAM_META_PREFIX); // stored exam results (src/lib/checkIn.js)
+}
+
+/** Meta key set once the app has been opened before (so "Reset data" stays empty). */
+const INITIALISED_KEY = "initialised";
+
+/**
+ * docs/DECISIONS.md › Database: "Seed 3 simulated astronauts on first run". Loads the demo
+ * mission the very first time the app opens, and never again by itself: after "Reset data"
+ * the app stays empty until "Load demo mission" is pressed.
+ *
+ * @param {import("../db/database.js").AthenaDatabase} db
+ * @returns {Promise<boolean>} True if the demo mission was loaded now.
+ */
+export async function seedOnFirstRun(db) {
+  if (db.getMeta(INITIALISED_KEY)) return false;
+  await loadDemoMission(db);
+  await db.setMeta(INITIALISED_KEY, "yes");
+  return true;
+}
+
+/**
+ * What is stored, for the mission-data panel and the header: today's mission day and,
+ * per astronaut, how many daily records and which fixed baselines exist.
+ *
+ * @param {import("../db/database.js").AthenaDatabase} db
+ * @param {ReadonlyArray<string>} crewIds
+ * @returns {{ today: number | null, crew: Array<{ id: string, records: number, latestDay: number | null, preflight: boolean, inflight: boolean }> }}
+ */
+export function missionSummary(db, crewIds) {
+  const raw = db.getMeta("today");
+  const today = raw && Number.isInteger(Number(raw)) ? Number(raw) : null;
+  return {
+    today,
+    crew: crewIds.map((id) => ({
+      id,
+      records: db.loadDailyRecords(id).length,
+      latestDay: db.latestDay(id),
+      preflight: db.hasBaseline(id, "preflight"),
+      inflight: db.hasBaseline(id, "inflight"),
+    })),
+  };
 }

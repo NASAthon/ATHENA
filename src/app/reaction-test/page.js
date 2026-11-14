@@ -10,9 +10,11 @@ import {
   LAPSE_THRESHOLD_MS,
   calculateMissionBaselines,
   compareReactionToBaseline,
+  reactionRecordFields,
   scoreReactionTest,
 } from "@/lib/engine";
 import { simulateAstronaut } from "@/lib/sim/simulator";
+import { useMissionData } from "@/components/MissionDataProvider";
 import { focusRing } from "@/lib/ui";
 
 // Reaction test (design and test flow by Izabela, PR #16).
@@ -29,8 +31,19 @@ const randomWaitMs = () => 2000 + Math.random() * 3000; // random wait of 2 to 5
 
 const card = "rounded-2xl border border-border bg-card p-6";
 
-export default function ReactionTest() {
+// A fresh test for each astronaut: switching crew in the header starts over.
+export default function ReactionTestPage() {
+  const { crewId } = useCrew();
+  return <ReactionTest key={crewId} />;
+}
+
+function ReactionTest() {
   const { crewId, member } = useCrew();
+  const { status: dataStatus, today, saveCheckIn } = useMissionData();
+  // Guest mode (for judges): the run is never saved to the crew's records.
+  const [guest, setGuest] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
+  const [savedRun, setSavedRun] = useState(false); // this run is already saved
   // The astronaut's own in-flight baseline (simulated mission, DECISIONS › Baselines).
   const baseline = useMemo(() => {
     const records = simulateAstronaut(crewId).filter((r) => r.missionDay <= IN_FLIGHT_WINDOW.toDay);
@@ -87,6 +100,8 @@ export default function ReactionTest() {
     clearTimers();
     setTimes([]);
     setFalseStarts(0);
+    setSaveMessage("");
+    setSavedRun(false);
     setNotice("");
     setSecondsLeft(RUN_SECONDS);
     endAt.current = now() + RUN_SECONDS * 1000;
@@ -165,6 +180,21 @@ export default function ReactionTest() {
   const progress = ((RUN_SECONDS - secondsLeft) / RUN_SECONDS) * 100;
   const slower = Boolean(compared?.slower);
 
+  // Adds this run to the selected astronaut's record for today (validated, src/lib/checkIn.js).
+  const saveResult = async () => {
+    try {
+      const saved = await saveCheckIn(crewId, reactionRecordFields(score));
+      setSavedRun(saved.ok);
+      setSaveMessage(
+        saved.ok
+          ? `Saved to ${member.name}'s record for mission day ${today}.`
+          : `Not saved: ${saved.errors.join(" ")}`,
+      );
+    } catch (e) {
+      setSaveMessage(`Couldn't save: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  };
+
   return (
     <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">
       <h1 className="text-4xl font-bold">Reaction test</h1>
@@ -172,6 +202,22 @@ export default function ReactionTest() {
         Step 1 of 3 · {RUN_SECONDS} seconds · tap the panel or press the space
         bar as soon as it lights up
       </p>
+      <label className="mt-4 inline-flex min-h-11 cursor-pointer items-center gap-3 rounded-lg border border-input px-4 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring">
+        <input
+          type="checkbox"
+          checked={guest}
+          disabled={running}
+          onChange={(e) => {
+            setGuest(e.target.checked);
+            setSaveMessage("");
+          }}
+          className="size-5 accent-primary outline-none"
+        />
+        <span>
+          <span className="font-semibold">Guest mode</span>{" "}
+          <span className="text-muted-foreground">(for judges: this run is never saved to the crew&apos;s records)</span>
+        </span>
+      </label>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
         <div>
@@ -351,6 +397,16 @@ export default function ReactionTest() {
                 >
                   Continue to readings
                 </Link>
+                {!guest && (
+                  <button
+                    type="button"
+                    onClick={saveResult}
+                    disabled={savedRun || dataStatus !== "ready" || today === null || score.validTrials === 0}
+                    className={`min-h-14 rounded-xl border border-primary px-6 text-lg font-semibold text-primary hover:bg-accent disabled:opacity-50 ${focusRing}`}
+                  >
+                    {savedRun ? "Saved" : <>Save to {member.name}&apos;s record</>}
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={start}
@@ -359,6 +415,11 @@ export default function ReactionTest() {
                   Try again
                 </button>
               </div>
+              <p role="status" className="mt-3 min-h-6 font-semibold">
+                {guest
+                  ? "Guest mode: this run isn't saved."
+                  : saveMessage}
+              </p>
             </div>
           </div>
         </section>

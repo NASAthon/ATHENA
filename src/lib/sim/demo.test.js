@@ -14,6 +14,7 @@ function fakeDb() {
     async saveDailyRecords(id, records) { calls.push(`save:${id}`); db.records[id] = [...records]; },
     async ensureMissionBaselines(id, today) { calls.push(`baselines:${id}:${today}`); return {}; },
     async setMeta(key, value) { db.meta[key] = value; },
+    async deleteMetaPrefix(prefix) { for (const k of Object.keys(db.meta)) if (k.startsWith(prefix)) delete db.meta[k]; },
   };
   return db;
 }

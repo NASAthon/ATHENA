@@ -3,7 +3,7 @@
 Every locked choice and why. Entries are in the order they were made. **Index:**
 - **Product:** Originality · Body Map Required · Crew · Trends Over Single Readings · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · Design · First-Time Help · Checklist
 - **Data and content:** No Medicines or Diagnoses · Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
-- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open) · Logic Engine · Logic Engine Assumptions · Logic Tests · Mission Simulator · Storage Layer · Mission Modes
+- **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts (open) · Logic Engine · Logic Engine Assumptions · Logic Tests · Mission Simulator · Storage Layer · Daily Record · Saving From the App · Mission Modes
 - **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
 
 ## Frontend
@@ -716,6 +716,13 @@ the 3 crew in Crew. Every number is an invented demo value, labelled simulated, 
   once) and stores each astronaut's fixed baselines.
 - **Scenario Lab** (`/scenario-lab`) runs events on a copy of this mission with the fixed
   baselines, so it never changes stored data.
+- **First run and Reset data:** the demo mission is loaded automatically the very first time
+  the app opens (`seedOnFirstRun`, meta flag `initialised`). It is never reloaded by itself:
+  after "Reset data" the app stays empty, even after reopening, until "Load demo mission" is
+  pressed. Both buttons are on the Crew page (`MissionDataPanel`), with inline confirmation
+  before anything stored is deleted.
+- **Today's mission day** is stored with the mission (meta `today`) and shared with every screen
+  by `MissionDataProvider` (`useMissionData()`); the header shows it.
 
 Reason:
 CHECKLIST §1 (simulator, noise and bad days) and the demo script. Seeded so the live demo and
@@ -736,7 +743,8 @@ How the locked Database decision is built (`src/lib/db/`). Use `await getDatabas
   to memory (data lasts until reload).
 - **Tables:** `daily_record` (one row per astronaut per mission day; the record is stored as
   JSON so its fields can change without a migration), `baseline` (fixed: one per astronaut and
-  kind, never overwritten except by "Reset data") and `meta` (schema version).
+  kind, never overwritten except by "Reset data") and `meta` (schema version, today's mission
+  day, first-run flag).
 - **Baselines are calculated once and stored:** `ensureMissionBaselines(astronautId, today)`
   calculates each baseline the first time its window has ended, then only loads it. If no
   indicator has enough readings yet, nothing is stored and it tries again next time.
@@ -767,3 +775,41 @@ difference between the modes for medical decisions, so it drives the advice.
 
 Status:
 ACTIVE (emphasis and advice wording tunable)
+
+
+---
+
+## Daily Record
+
+One record = one astronaut's daily check on one mission day, defined in `src/lib/dailyRecord.js`
+(Mercy, PR #18). Every part of ATHENA (form, engine, simulator, storage) uses this shape.
+- **Field names** come from the engine's `RECORD_FIELDS`; units are those in `src/data/indicators.js`.
+- **Any reading may be missing** (skipped measurement). Saving again on the same day replaces the record.
+- **`validateRecord()`** catches typing mistakes using the input limits in `src/data` (plus a few
+  design-choice fallbacks for reaction and radiation). These are not health thresholds.
+- **Dates:** mission day 1 is the day after launch; day 0 (launch day) has no check.
+  `LAUNCH_DATE` (2026-07-01) is an ASSUMPTION for the simulated mission.
+
+Status:
+LOCKED
+
+
+---
+
+## Saving From the App
+
+Screens save through `useMissionData()` (`saveCheckIn`, `saveExamResult`), which calls `src/lib/checkIn.js`.
+- **One record per astronaut per day.** The Daily check and the Reaction test both add to today's
+  record. Fields left empty keep what's already stored today, so neither overwrites the other.
+- **Validated before saving** with `validateRecord()` (Daily Record). If it fails, nothing is saved
+  and the errors are shown in plain English (indicator names, not code field names).
+- **Today's result** runs the engine's red-limit check with the previous 7 days of stored records,
+  so streak bands (e.g. 3+ nights of short sleep) work.
+- **Check-in streak:** consecutive days with at least one reading, ending today (or yesterday);
+  launch day neither counts nor breaks it. Worked out from stored records, not stored separately.
+- **Exam results:** stored per astronaut in the meta table (`exams:<id>`); "Reset data" clears them.
+  The screen to enter them comes with the mission calendar.
+- **Guest mode** (reaction test): for judges; the run is never saved.
+
+Status:
+LOCKED
