@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CREW } from "@/lib/crew";
+import { focusRing } from "@/lib/ui";
 
 // Picks which astronaut the app is showing. The selection is local for now;
 // wire it to shared state once the data layer (CHECKLIST section 1) exists.
@@ -23,7 +24,7 @@ export default function CrewSwitcher() {
         id="crew-switcher"
         value={crewId}
         onChange={(event) => setCrewId(event.target.value)}
-        className="min-h-9 rounded-md bg-transparent pr-1 font-medium text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className={`min-h-9 rounded-md bg-transparent pr-1 font-medium text-foreground ${focusRing}`}
       >
         {CREW.map((member) => (
           <option key={member.id} value={member.id} className="bg-popover text-popover-foreground">

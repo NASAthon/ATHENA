@@ -1,6 +1,13 @@
 # ATHENA build checklist
 
-The single list of **what to build and what to hand in**. Tick items as they're done and push the change.
+The single list of **what to build and what to hand in**. Update it in the same PR as the work.
+
+**Legend:**
+- `- [ ]` = not started
+- `- [ ] 🟡 Partial (PR #n): done…; still to do: …` = partly done, including overlap from another task
+- `- [x] … (PR #n)` = done and working
+
+Full rules: `AGENTS.md` › Before finishing a task.
 Order within each section is the build order. **M** = must have, **S** = should have (cut from the bottom if time runs short).
 The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choices are in `docs/DECISIONS.md`.
 
@@ -9,7 +16,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 ## 1. Data and storage
 
 - [ ] **M** Daily record defined: date, mission day, heart rate, blood pressure (two numbers), blood sugar, temperature, sleep hours, mood (1–5), reaction median, lapses, false starts, exercise minutes, symptoms, SpO2 (optional), radiation dose (optional)
-- [ ] **M** Units chosen and shown everywhere (mg/dL or mmol/L, °C)
+- [ ] **M** Units chosen and shown everywhere (mg/dL or mmol/L, °C) 🟡 Partial (PR #7): units chosen in `src/data/indicators.js` (bpm, mmHg, mg/dL, °C, hours, 1–5, ms, minutes, %, mSv); still to do: show them on every screen
 - [ ] **M** Save and load daily records in the browser: SQLite via sql.js, saved to IndexedDB after every write, with the `.wasm` file bundled locally (`docs/DECISIONS.md` › Database)
 - [ ] **M** Save and load the two baselines
 - [ ] **M** Mission simulator: 180 days for 3 crew (`docs/DECISIONS.md` › Crew):
@@ -18,7 +25,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
   - **Engineer Nakamura:** a sudden event (red-limit screen and crewmate emergency guidance, e.g. chest pain)
 - [ ] **M** Simulator adds realistic day-to-day noise and one or two harmless bad days
 - [ ] **M** "Load demo mission" and "Reset data" buttons work
-- [ ] **M** Every indicator, guide and emergency entry has a `keywords` list (synonyms, plain-English terms, symptoms, common misspellings) for search
+- [x] **M** Every indicator, guide and emergency entry has a `keywords` list (synonyms, plain-English terms, symptoms, common misspellings) for search (PR #7)
 - [ ] **S** Store periodic exam results and the check-in streak
 
 ---
@@ -34,12 +41,12 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** Drift cut-off of **z = 3.5** (`docs/DECISIONS.md` › Drift Cut-off) written in the README as a design choice
 - [ ] **M** Alert level: 1 drifting = note, 2 or more = alert, no recovery after 14 more days = tell crew and ground (linked indicators count once; `docs/DECISIONS.md` › Drift Cut-off)
 - [ ] **M** Red-limit check on every new reading, independent of baselines
-- [ ] **M** Red limits taken from a published source and cited (general clinical reference ranges, `docs/DECISIONS.md` › Thresholds)
+- [x] **M** Red limits taken from a published source and cited (general clinical reference ranges, `docs/DECISIONS.md` › Thresholds) (PR #7; heart rate and SpO₂ use personal baselines by design)
 - [ ] **M** Reaction scoring: median, lapses over 500 ms, false starts
 - [ ] **M** Handles missing days without crashing or false alerts
 - [ ] **M** Search index: offline fuzzy search over all content (typos, prefixes, synonyms, symptoms; `docs/DECISIONS.md` › Search). Library: **MiniSearch** (MIT)
 - [ ] **M** Reminder scheduler: which measurements are due today
-- [ ] **S** Region mapper: indicator-to-body-region table and worst-status function
+- [ ] **M** Region mapper: indicator-to-body-region table and worst-status function 🟡 Partial (PR #7): the indicator-to-region table is in `src/data/regions.js`; still to do: worst-status function
 - [ ] **S** Calendar scheduler: which periodic exams are due on a given mission day
 - [ ] **S** Summary builder for the flight-surgeon report
 - [ ] **S** Mission mode changes which hazards and advice are shown (ISS, Lunar Gateway, Mars Transit; no Lunar Surface Base)
@@ -51,30 +58,30 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 ### Layout
 
-- [ ] **M** Navigation: Today, Trends, Body, Calendar, Summary
-- [ ] **M** Search bar and an **Emergency** button on every screen
-- [ ] **M** Crew switcher, with the mission day and astronaut name always visible
+- [x] **M** Navigation: Today, Trends, Body, Calendar, Summary (PR #6)
+- [ ] **M** Search bar and an **Emergency** button on every screen 🟡 Partial (PR #6): both shown on every screen; still to do: search logic and results (section 3 › Search) and the Emergency screen content
+- [ ] **M** Crew switcher, with the mission day and astronaut name always visible 🟡 Partial (PR #6): switcher for all 3 crew in the header; still to do: real mission day from the simulator, and sharing the selected astronaut with the pages
 - [ ] **M** Alert banner area at the top of every screen
-- [ ] **M** Dark theme dashboard (`docs/DECISIONS.md` › Design)
+- [x] **M** Dark theme dashboard (`docs/DECISIONS.md` › Design) (PR #4, PR #6)
 - [ ] **M** Health score (0–100) shown prominently per astronaut, with a status icon and drop indicator
 - [ ] **M** One colour scheme for status, used everywhere, always colour **plus** icon **plus** text label
 - [ ] **M** Readable on a laptop and a tablet
 
 ### Inclusive design (`docs/DECISIONS.md` › Inclusive Design)
 
-- [ ] **M** Colour-blind-safe palette, text contrast at least 4.5:1
-- [ ] **M** Tap targets at least 44×44 px (usable with gloves); large text
-- [ ] **M** Full keyboard navigation and screen-reader labels (including the body figure)
+- [ ] **M** Colour-blind-safe palette, text contrast at least 4.5:1 🟡 Partial (PR #8): space palette checked (text 6.5–17:1, form borders 3.5–3.9:1); still to do: status colours and chart colours
+- [ ] **M** Tap targets at least 44×44 px (usable with gloves); large text 🟡 Partial (PR #6, PR #8): header, navigation and daily check done; still to do: other screens
+- [ ] **M** Full keyboard navigation and screen-reader labels (including the body figure) 🟡 Partial (PR #6, PR #8): header, nav, crew switcher, mission mode and daily check done; still to do: other screens and the body figure
 - [ ] **M** Respects "reduce motion"; no information shown only through animation
-- [ ] **M** Health text in plain English: glance summary plus "Learn more" layer, medical terms explained in brackets (`docs/DECISIONS.md` › Content Style)
+- [ ] **M** Health text in plain English: glance summary plus "Learn more" layer, medical terms explained in brackets 🟡 Partial (PR #8): daily check side panel (glance, steps, Learn more, sources) reads from `src/data`; still to do: alerts, body cards, emergency screens (`docs/DECISIONS.md` › Content Style)
 
 ### Daily check
 
-- [ ] **M** Form for the six brief indicators, with units and sensible input limits
-- [ ] **M** "How to measure" help beside each field (how to take it, why it matters, what to do if abnormal)
-- [ ] **M** Mood as five large buttons, not a text box
-- [ ] **M** Symptom tick boxes and exercise minutes
-- [ ] **M** Save confirmation and today's result shown straight away
+- [x] **M** Form for the six brief indicators, with units and sensible input limits (PR #8)
+- [x] **M** "How to measure" help beside each field (how to take it, why it matters, what to do if abnormal) (PR #8)
+- [x] **M** Mood as five large buttons, not a text box (PR #8)
+- [x] **M** Symptom tick boxes and exercise minutes (PR #8; red-flag symptoms link to their emergency guide)
+- [ ] **M** Save confirmation and today's result shown straight away 🟡 Partial (PR #8): confirmation shown; still to do: store the record and show today's result (needs data layer and logic)
 - [ ] **M** Reminders: shows which measurements are still due today
 
 ### Reaction test
@@ -105,39 +112,39 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** Alert card: what is drifting, since when, likely hazard, what to do, when to tell the ground ("Why this alert?")
 - [ ] **M** Red-limit and emergency screen: numbered first-response steps with a short "why" each, one step at a time with big controls
 - [ ] **M** Emergency guidance works for **a crewmate** (pick the affected astronaut, follow steps, record vitals)
-- [ ] **S** Voice reads the first-response steps aloud
+- [ ] **S** Voice reads the first-response steps aloud 🟡 Partial (PR #8): "Read these steps aloud" on the daily check; still to do: emergency steps
 
-### Body figure (2D SVG; regions drafted in `docs/BODY_MAP.md`)
+### Body figure (2D SVG; regions in `docs/BODY_MAP.md` and `src/data/regions.js`). Required: the brief asks for a clickable body figure
 
-- [ ] **S** Outline with the eight clickable regions from `docs/BODY_MAP.md`
-- [ ] **S** Region colour from the region mapper
-- [ ] **S** Card on click: function, status, risk, hazard, advice, "last checked" date
+- [ ] **M** Outline with the eight clickable regions from `docs/BODY_MAP.md`
+- [ ] **M** Region colour (plus icon and label) from the region mapper
+- [ ] **M** Card on click: function, status, risk, hazard, advice, "last checked" date (card text ready in `src/data/regions.js`)
 - [ ] **S** Fallback: region tiles if the drawing takes too long
 
 ### Calendar, summary, extras
 
 - [ ] **S** Mission calendar listing due and completed periodic exams
 - [ ] **S** One-page flight-surgeon summary, with "reply expected in about N minutes" (Earth Link delay)
-- [ ] **S** Earth Link: shows the current communication delay for the mission mode
-- [ ] **S** Mission mode switch: ISS, Lunar Gateway, Mars Transit
+- [ ] **S** Earth Link: shows the current communication delay for the mission mode 🟡 Partial (PR #8): header pill shows the sourced delay (Mars: up to 20 min one way); still to do: use it in the summary
+- [x] **S** Mission mode switch: ISS, Lunar Gateway, Mars Transit (PR #8; modes in `src/data/missionModes.js`)
 - [ ] **S** Check-in streak
 
 ---
 
 ## 4. Content and research
 
-- [ ] **M** Open the NASA HRP pages for **all 5 hazards and all 17 risks**; note key points with links
-- [ ] **M** NASA data map: hazard → risk → body system → indicator → countermeasure, each entry with its source URL
-- [ ] **M** Guidance card text for each indicator, answering the brief's five questions: can it be measured in space, why it matters, how hazards affect it, when to escalate, what action helps
-- [ ] **M** "How to measure" steps for each indicator, in plain English
-- [ ] **M** Emergency guide text in plain English (NASA steps first, otherwise AHA or CDC in our own words, each cited; `docs/DECISIONS.md` › Emergency Step Sources) covering the hazards (`docs/DECISIONS.md` › Data Map Coverage): chest pain/collapse first, then the rest
-- [ ] **M** Search keywords for every item (synonyms, symptoms, misspellings)
-- [ ] **M** Advice wording checked: modest, no diagnoses, no medication instructions
-- [ ] **M** Source list with links in `docs/SOURCES.md` (NASA HRP, NASA OSDR, Canadian Space Agency, clinical ranges, libraries)
-- [ ] **M** Every resource used is open source, openly licensed or public domain, with no NASA logos (`docs/DECISIONS.md` › Licensing)
-- [ ] **M** Every figure in the app or pitch traced to a source, or removed
-- [ ] **S** Write every region card from `docs/BODY_MAP.md` (verified 14 Nov; linked to its hazards and risks)
-- [ ] **S** List of periodic exams and how often
+- [x] **M** Open the NASA HRP pages for **all 5 hazards and all 17 risks**; note key points with links (PR #7; `docs/BODY_MAP.md`, `src/data/risks.js`)
+- [x] **M** NASA data map: hazard → risk → body system → indicator → countermeasure, each entry with its source URL (PR #7; `src/data/`)
+- [x] **M** Guidance card text for each indicator, answering the brief's five questions: can it be measured in space, why it matters, how hazards affect it, when to escalate, what action helps (PR #7; `briefAnswers` in `src/data/indicators.js`)
+- [x] **M** "How to measure" steps for each indicator, in plain English (PR #7)
+- [x] **M** Emergency guide text in plain English (NASA steps first, otherwise AHA or CDC in our own words, each cited; `docs/DECISIONS.md` › Emergency Step Sources) covering the hazards (`docs/DECISIONS.md` › Data Map Coverage): chest pain/collapse first, then the rest (PR #7: all 13 guides ready: chest pain, collapse with CPR, stroke, low blood sugar, very high BP, hypothermia, decompression, hypoxia, radiation, head injury, severe bleeding, suspected broken bone, mental health crisis)
+- [x] **M** Search keywords for every item (synonyms, symptoms, misspellings) (PR #7; checked by `npm run check:content`)
+- [x] **M** Advice wording checked: modest, no diagnoses, no medication instructions (PR #7)
+- [x] **M** Source list with links in `docs/SOURCES.md` (NASA HRP, NASA OSDR, Canadian Space Agency, clinical ranges, libraries) (PR #7)
+- [ ] **M** Every resource used is open source, openly licensed or public domain, with no NASA logos (`docs/DECISIONS.md` › Licensing) 🟡 Partial (PR #7): all content and packages so far checked; still to do: re-check at submission
+- [ ] **M** Every figure in the app or pitch traced to a source, or removed 🟡 Partial (PR #7): every number in `src/data` has a source or `basis: "design"`; still to do: the pitch and the final UI
+- [x] **S** Write every region card from `docs/BODY_MAP.md` (verified 14 Nov; linked to its hazards and risks) (PR #7; `src/data/regions.js`)
+- [ ] **S** List of periodic exams and how often 🟡 Partial (PR #7): 5 exams from NASA pages in `src/data/exams.js`; intervals are design choices because NASA doesn't state them
 - [ ] **S** Short note on existing tools and what ATHENA adds
 
 ---
@@ -145,7 +152,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 ## 5. Offline
 
 - [ ] **M** App loads and works with the network switched off
-- [ ] **M** No fonts, scripts or data fetched from the internet at run time
+- [ ] **M** No fonts, scripts or data fetched from the internet at run time 🟡 Partial (PR #3, PR #4): system fonts only and sql.js engine served locally; still to do: re-check once all screens exist
 - [ ] **M** Data survives closing and reopening the browser
 - [ ] **S** Installable as an app (PWA) on a laptop or tablet
 
