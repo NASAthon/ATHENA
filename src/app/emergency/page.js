@@ -27,7 +27,7 @@ const indicatorName = Object.fromEntries(INDICATORS.map((i) => [i.id, i.name]));
 const symptomById = Object.fromEntries(SYMPTOMS.map((s) => [s.id, s]));
 const GUIDES_BY_PRIORITY = [...EMERGENCIES].sort((a, b) => a.priority - b.priority);
 const card = "rounded-xl border border-border bg-card p-3";
-const bigButton = `inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-4 text-base font-semibold ${focusRing}`;
+const bigButton = `inline-flex min-h-12 items-center justify-center gap-2 rounded-lg px-4 text-base font-semibold ${focusRing}`;
 
 function speak(text) {
   if (typeof window === "undefined" || !window.speechSynthesis) return;
@@ -37,8 +37,7 @@ function speak(text) {
 
 const NotAdvice = () => (
   <p className="text-muted-foreground">
-    First-response guidance from cited sources, written in plain English. Not medical advice: the flight surgeon makes every
-    medical decision. No medicines or doses are given here.
+    First-response steps in plain English, with no medicines or doses. Not medical advice: the flight surgeon decides.
   </p>
 );
 
@@ -47,10 +46,10 @@ function GuideList() {
   return (
     <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-3">
       <h1 className="flex items-center gap-2 text-xl font-bold">
-        <OctagonAlert className="size-9" aria-hidden="true" style={{ color: "var(--status-red)" }} />
+        <OctagonAlert className="size-6" aria-hidden="true" style={{ color: "var(--status-red)" }} />
         Emergency guides
       </h1>
-      <div className="mt-2 text-base">
+      <div className="mt-1 text-base">
         <NotAdvice />
       </div>
       <p className="mt-2 text-base">Pick what you see. Not sure? Type the symptom in the search bar (e.g. &ldquo;can&apos;t breathe&rdquo;).</p>
@@ -59,13 +58,13 @@ function GuideList() {
           <li key={g.id}>
             <Link
               href={`/emergency?id=${g.id}`}
-              className={`flex h-full min-h-12 flex-col justify-center rounded-xl border-2 border-border bg-card px-4 py-2 hover:bg-accent ${focusRing}`}
+              className={`flex h-full min-h-12 flex-col justify-center rounded-xl border border-border bg-card px-3 py-2 hover:bg-accent ${focusRing}`}
             >
               <span className="flex items-center gap-2 text-base font-semibold">
                 <OctagonAlert className="size-5 shrink-0" aria-hidden="true" style={{ color: "var(--status-red)" }} />
                 {g.name}
               </span>
-              <span className="mt-1 text-muted-foreground">{g.glance}</span>
+              <span className="mt-1 text-sm text-muted-foreground">{g.glance}</span>
             </Link>
           </li>
         ))}
@@ -106,7 +105,7 @@ function Guide({ guide }) {
         <ArrowLeft className="size-4" aria-hidden="true" /> All emergency guides
       </Link>
       <h1 className="mt-2 flex items-start gap-2 text-xl font-bold">
-        <OctagonAlert className="mt-1 size-9 shrink-0" aria-hidden="true" style={{ color: "var(--status-red)" }} />
+        <OctagonAlert className="mt-0.5 size-6 shrink-0" aria-hidden="true" style={{ color: "var(--status-red)" }} />
         {guide.name}
       </h1>
       <p className="mt-2 text-base">{guide.glance}</p>
@@ -123,7 +122,7 @@ function Guide({ guide }) {
                 type="button"
                 aria-pressed={selected}
                 onClick={() => setCrewId(m.id)}
-                className={`min-h-11 rounded-xl border-2 px-4 text-base font-semibold ${focusRing} ${selected ? "border-primary bg-accent" : "border-border bg-card hover:bg-accent/60"}`}
+                className={`min-h-11 rounded-lg border px-4 text-base font-semibold ${focusRing} ${selected ? "border-primary bg-accent" : "border-input bg-card hover:bg-accent/60"}`}
               >
                 {m.name}
               </button>
@@ -134,14 +133,14 @@ function Guide({ guide }) {
       </fieldset>
 
       {redLimits.length > 0 && (
-        <p className="mt-2 flex flex-wrap items-center gap-2 rounded-lg border-2 px-4 py-2 text-base font-semibold" style={{ borderColor: "var(--status-red)" }}>
+        <p className="mt-2 flex flex-wrap items-center gap-2 rounded-xl border-2 bg-card px-3 py-2 text-base font-semibold" style={{ borderColor: "var(--status-red)" }}>
           <OctagonAlert className="size-5" aria-hidden="true" style={{ color: "var(--status-red)" }} />
           {member.name} today: {redLimits.map((r) => `${indicatorName[r.indicatorId]}: ${r.label}`).join("; ")}
         </p>
       )}
 
       {related.length > 0 && (
-        <div className="mt-2 rounded-lg border-2 border-border px-4 py-2">
+        <div className="mt-2 rounded-xl border border-border bg-card px-3 py-2">
           <p className="text-base font-semibold">Also reported today by {member.name}:</p>
           <ul className="mt-2 flex flex-wrap gap-2">
             {related.map((s) => (
