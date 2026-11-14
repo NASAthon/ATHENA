@@ -10,7 +10,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 - [ ] **M** Daily record defined: date, mission day, heart rate, blood pressure (two numbers), blood sugar, temperature, sleep hours, mood (1–5), reaction median, lapses, false starts, exercise minutes, symptoms, SpO2 (optional), radiation dose (optional)
 - [ ] **M** Units chosen and shown everywhere (mg/dL or mmol/L, °C)
-- [ ] **M** Save and load daily records in the browser: SQLite via sql.js, saved to IndexedDB (`DECISIONS.md` › Database)
+- [ ] **M** Save and load daily records in the browser: SQLite via sql.js, saved to IndexedDB after every write, with the `.wasm` file bundled locally (`DECISIONS.md` › Database)
 - [ ] **M** Save and load the two baselines
 - [ ] **M** Mission simulator: 180 days for 3 crew (`DECISIONS.md` › Crew):
   - **Commander Rivera:** pre-flight days, early adaptation, a settled period, then slow decline in sleep, reaction and mood from about week 12 (drift alert)

@@ -24,4 +24,5 @@ Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Age
 | React | UI library | MIT |
 | Tailwind CSS | Styling | MIT |
 | ESLint + eslint-config-next | Linting (dev only) | MIT |
+| sql.js | SQLite database in the browser (WASM) | MIT. https://github.com/sql-js/sql.js |
 | MiniSearch | Offline fuzzy search (typos, prefixes, synonyms) | MIT. https://github.com/lucaong/minisearch |

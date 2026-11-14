@@ -57,9 +57,17 @@ ACTIVE (revisit only if the team agrees)
 ## Database
 
 SQLite in the browser via sql.js (WASM), saved to IndexedDB.
+- **SQLite** is the database the app uses (SQL queries). The team knows it.
+- **IndexedDB** is required underneath: sql.js keeps the database in memory only, so
+  the database file must be saved to IndexedDB (browser storage on the device) to survive
+  closing the app.
+- **Save after every write** (and load on startup). If the save step is missed, data is lost.
+- Bundle the sql.js `.wasm` file with the app (e.g. in `public/`). **Never load it from a CDN**,
+  because there's no connection onboard.
 
 Reason:
-Must work offline. It's embedded, needs no server and survives reloads.
+Works fully offline with no Wi-Fi or mobile data, needs no server and survives reloads.
+Chosen over IndexedDB alone (e.g. Dexie) because the team is familiar with SQLite.
 Seed 3 simulated astronauts on first run, with a "reset demo" button.
 
 Status:
