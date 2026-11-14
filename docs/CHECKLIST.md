@@ -180,7 +180,7 @@ One line per designed page. A page is ticked when it's built and working in the 
 - [x] **M** No fonts, scripts or data fetched from the internet at run time (checked 14 Nov: build scan plus all 10 pages loaded with 0 external requests; system fonts only. Re-check new screens in PR review)
 - [x] **M** Data survives closing and reopening the browser (PR #14 storage, PR #17 app wiring; checked in the app 14 Nov: reset stays empty and loaded data stays loaded after reload)
 - [x] **S** ~~Installable as an app (PWA) on a laptop or tablet~~ Dropped (team decision 14 Nov): the operational version runs locally; the hosted evaluation copy intentionally has no service worker
-- [x] **S** Hosted evaluation copy deploys the static export to GitHub Pages with no backend; local build remains the offline operational version (PR #TBD)
+- [x] **S** Hosted evaluation copy deploys the static export to GitHub Pages with no backend; local build remains the offline operational version (PR #46)
 
 ---
 
