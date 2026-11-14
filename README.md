@@ -12,6 +12,10 @@ detect emerging risks, understand long-term trends,
 and receive guidance even when communication with Earth
 is delayed.
 
+**What makes ATHENA different:** it catches the slow decline that fixed
+thresholds miss, it's built for astronauts who aren't doctors, and it works
+fully offline.
+
 ---
 
 ## Why ATHENA?
@@ -39,6 +43,12 @@ with limited access to health services.
 ---
 
 ## Features
+
+### Health Score
+
+Each astronaut has a health score from 0 to 100 (100 = perfect), shown on a
+dark mission dashboard with clear status icons, so drops in vitals stand out
+at a glance.
 
 ### Emergency Guidance
 
@@ -86,7 +96,7 @@ Mars Transit
 Astronauts aren't doctors, and they may be tired, stressed or wearing gloves.
 ATHENA is built for different levels of knowledge and different abilities:
 - Plain English, with a quick summary first and full detail on tap
-- Search that understands typos, everyday words and symptoms
+- Search that understands typos, everyday words and symptoms (MiniSearch, MIT licence)
 - Status shown with colour **plus** icons and labels (colour-blind friendly)
 - Large text and large buttons, high contrast, keyboard and screen-reader support
 

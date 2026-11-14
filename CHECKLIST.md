@@ -28,6 +28,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** Baseline calculator: mean and standard deviation per indicator for a fixed window
 - [ ] **M** Pre-flight baseline and in-flight baseline (for example mission days 21–35) both calculated once and stored
 - [ ] **M** Seven-day average per indicator
+- [ ] **M** Health score 0–100 per astronaut (100 = perfect), with the change since yesterday and over 7 days (`DECISIONS.md` › Health Score)
 - [ ] **M** Z-score of the seven-day average against the in-flight baseline
 - [ ] **M** Status per indicator: no data, steady, drifting, expected adaptation
 - [ ] **M** Drift cut-off chosen (for example 1.5 or 2) and written in the README as a design choice
@@ -36,7 +37,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** Red limits taken from a published source and cited (general clinical reference ranges, `DECISIONS.md` › Thresholds)
 - [ ] **M** Reaction scoring: median, lapses over 500 ms, false starts
 - [ ] **M** Handles missing days without crashing or false alerts
-- [ ] **M** Search index: offline fuzzy search over all content (typos, prefixes, synonyms, symptoms; `DECISIONS.md` › Search). Library: MiniSearch or Fuse.js
+- [ ] **M** Search index: offline fuzzy search over all content (typos, prefixes, synonyms, symptoms; `DECISIONS.md` › Search). Library: **MiniSearch** (MIT)
 - [ ] **M** Reminder scheduler: which measurements are due today
 - [ ] **S** Region mapper: indicator-to-body-region table and worst-status function
 - [ ] **S** Calendar scheduler: which periodic exams are due on a given mission day
@@ -54,6 +55,8 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 - [ ] **M** Search bar and an **Emergency** button on every screen
 - [ ] **M** Crew switcher, with the mission day and astronaut name always visible
 - [ ] **M** Alert banner area at the top of every screen
+- [ ] **M** Dark theme dashboard (`DECISIONS.md` › Design)
+- [ ] **M** Health score (0–100) shown prominently per astronaut, with a status icon and drop indicator
 - [ ] **M** One colour scheme for status, used everywhere, always colour **plus** icon **plus** text label
 - [ ] **M** Readable on a laptop and a tablet
 
@@ -85,7 +88,7 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 ### Trends
 
-- [ ] **M** One chart per indicator across the mission (open-licensed chart library, e.g. Recharts, MIT)
+- [ ] **M** One chart per indicator across the mission (chart library to be chosen later; must be open-licensed)
 - [ ] **M** Shaded bands for pre-flight normal and in-flight normal
 - [ ] **M** Drifting periods visibly marked
 - [ ] **M** Side-by-side view: ATHENA status against a fixed-threshold status (the "stays green" comparison)
@@ -106,10 +109,10 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 ### Body figure (2D SVG)
 
-- [ ] **S** Outline with eight clickable regions
+- [ ] **S** Outline with clickable regions covering every body system in the data map (about eight)
 - [ ] **S** Region colour from the region mapper
 - [ ] **S** Card on click: function, status, risk, hazard, advice, "last checked" date
-- [ ] **S** Fallback: eight tiles if the drawing takes too long
+- [ ] **S** Fallback: region tiles if the drawing takes too long
 
 ### Calendar, summary, extras
 
@@ -123,17 +126,17 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 
 ## 4. Content and research
 
-- [ ] **M** Open the NASA HRP risk pages for sleep, behavioural, cardiovascular and bone; note key figures with links
+- [ ] **M** Open the NASA HRP pages for **all 5 hazards and all 17 risks**; note key points with links
 - [ ] **M** NASA data map: hazard → risk → body system → indicator → countermeasure, each entry with its source URL
 - [ ] **M** Guidance card text for each indicator, answering the brief's five questions: can it be measured in space, why it matters, how hazards affect it, when to escalate, what action helps
 - [ ] **M** "How to measure" steps for each indicator, in plain English
-- [ ] **M** Emergency guide text for at least the chest-pain/collapse scenario, in plain English
+- [ ] **M** Emergency guide text in plain English covering the hazards (`DECISIONS.md` › Data Map Coverage): chest pain/collapse first, then the rest
 - [ ] **M** Search keywords for every item (synonyms, symptoms, misspellings)
 - [ ] **M** Advice wording checked: modest, no diagnoses, no medication instructions
 - [ ] **M** Source list with links in `docs/SOURCES.md` (NASA HRP, NASA OSDR, Canadian Space Agency, clinical ranges, libraries)
 - [ ] **M** Every resource used is open source, openly licensed or public domain, with no NASA logos (`DECISIONS.md` › Licensing)
 - [ ] **M** Every figure in the app or pitch traced to a source, or removed
-- [ ] **S** Text for the eight body-region cards
+- [ ] **S** Text for every body-region card (linked to its hazards and risks)
 - [ ] **S** List of periodic exams and how often
 - [ ] **S** Short note on existing tools and what ATHENA adds
 
@@ -151,7 +154,8 @@ The rules for *how* to build are in `AGENTS.md`, and the reasons behind the choi
 ## 6. Testing
 
 - [ ] **M** Fresh browser: load demo mission, Rivera's alert appears in the expected week
-- [ ] **M** Healthy data (Singh) produces no alert
+- [ ] **M** Healthy data (Singh) produces no alert and a stable, high health score
+- [ ] **M** Health score drops as Rivera declines and when a red limit is hit
 - [ ] **M** One bad day produces no alert
 - [ ] **M** A dangerous reading (Nakamura) triggers the red-limit screen
 - [ ] **M** Empty state (no data yet) looks sensible
@@ -177,8 +181,8 @@ Deadlines: **local submission closes 10:30 Sun 15 Nov**, local pitching starts *
   5. Nakamura's red-limit response and crewmate emergency guidance
   6. Offline proof: Wi-Fi off on camera
   7. Close on the same tool for remote communities on Earth
-- [ ] **M** Demo video (≤30 s) or slides (≤7) in the required format (format to be decided). Going over the limit disqualifies the project from global judging
-- [ ] **M** 3-minute local pitch prepared, with a working local demo and a recorded backup
+- [ ] **M** Global demo: **30-second video** following the pacing in `judging.md` 1D (intro and team, challenge, title and tagline, how it works with NASA data, future vision). Going over 30 s disqualifies the project from global judging
+- [ ] **M** Local pitch: a **short presentation plus a live demo** of the app within 3 minutes (team name and members, challenge, NASA data, UI flow), with a recorded backup
 - [ ] **M** Q&A prep: where thresholds and emergency steps come from, what's simulated, limits, future work
 - [ ] **M** Laptop charger and screen adapter (HDMI or USB-C) for the venue
 

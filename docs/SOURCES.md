@@ -20,4 +20,4 @@ Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Age
 
 | Name | Use | Licence |
 |---|---|---|
-| | | |
+| MiniSearch | Offline fuzzy search (typos, prefixes, synonyms) | MIT. https://github.com/lucaong/minisearch |

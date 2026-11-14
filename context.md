@@ -133,7 +133,9 @@ Planning should decide which of these are **must-have for the demo** versus **st
 
 > **Decided:** all guidance is **accurate and informative, in plain English**: astronauts aren't doctors, so simplify the wording, not the facts. Show a glanceable summary first and a "Learn more" layer with the full explanation. Emergency steps are clear and ordered, each with a short "why", and labelled not medical advice. See `DECISIONS.md` › Content Style.
 
-**Innovation angles:** explainable AI, anomaly detection (rolling baseline + z-score), decision support, visual health insights, Earth-delay simulation.
+**What makes ATHENA original (our pitch line):** ATHENA **catches the slow decline that fixed thresholds miss**, is **built for astronauts who aren't doctors**, and **works fully offline**. See `DECISIONS.md` › Originality.
+
+**Innovation angles:** explainable alerts, personal fixed baselines + z-score drift detection, 0–100 health score, decision support, Earth-delay simulation.
 
 **Tech stack** (locked in `DECISIONS.md`): offline-first PWA. Next.js (JavaScript, static export) + Tailwind + ShadCN; SQLite in the browser (sql.js, saved to IndexedDB); JS rules engine + rolling-baseline/z-score trend detection; 2D SVG body map. No backend server. Everything runs onboard.
 

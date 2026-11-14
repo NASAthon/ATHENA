@@ -265,7 +265,7 @@ Both run fully offline, need no server and are free to use.
 - Rank results with emergency matches first when the query looks like a symptom.
 
 Status:
-LOCKED (library choice open)
+LOCKED. Library: **MiniSearch (MIT)**, recorded in `docs/SOURCES.md`.
 
 
 ---
@@ -334,6 +334,91 @@ LOCKED
 It merges the team's build checklist with the earlier plan. New features from the
 checklist: reaction-time test, mission calendar, flight-surgeon summary, check-in
 streak and voice read-aloud.
+
+Status:
+LOCKED
+
+
+---
+
+## Design
+
+- **Dark theme** app/dashboard. Theme options (e.g. light mode) are a **future feature**, not in scope.
+- Status uses **icons** (plus colour and a text label) so critical vs OK is obvious at a glance.
+
+Status:
+LOCKED
+
+---
+
+## Health Score
+
+Each astronaut has a **0–100 health score** (100 = perfect, 0 = critical), so drops in
+vitals are noticed straight away.
+
+Starting formula (the logic owner may tune the numbers; record any change here):
+- Each core indicator gets a sub-score: steady = 100, expected adaptation = 90,
+  drifting = 100 − 20 × (|z| − 1) (floored at 20), red limit = 0. No data = left out.
+- Score = average of the available sub-scores, rounded.
+- **Any red limit caps the score at 25**, so emergencies always look critical.
+- Bands, each with an icon and label: **80–100 Good**, **60–79 Watch**, **40–59 Alert**, **0–39 Critical**.
+- Show the change since yesterday and over 7 days, e.g. "72 ▼ 9 this week".
+- "Why this score?" lists the indicators pulling it down, in plain English.
+
+Status:
+LOCKED (numbers tunable)
+
+---
+
+## Data Map Coverage
+
+- The NASA data map covers **all 5 hazards and all 17 risks** from the HRP pages.
+- **Body map** regions cover every body system those risks affect.
+- **Emergency scenarios** cover the acute events linked to the hazards (e.g. chest
+  pain/collapse, hypoxia, decompression sickness, radiation exposure, injury,
+  severe behavioural crisis). Chest pain/collapse is built first.
+
+Status:
+LOCKED
+
+---
+
+## Charts
+
+No chart library chosen yet; it will be decided when the Trends screen is built. It must be open-licensed.
+
+Status:
+OPEN
+
+---
+
+## First-Time Help
+
+Not included. Astronauts are trained on onboard software before flight, so the
+app doesn't need a walkthrough. Plain-English guides and "Learn more" cover the rest.
+
+Status:
+LOCKED
+
+---
+
+## Demo and Pitch
+
+Follows the recommendations in `judging.md` 1D.
+- **Global:** a 30-second video using the recommended pacing.
+- **Local (11:30):** a short presentation **plus a live demo** of the app in 3 minutes,
+  followed by 2 minutes of Q&A.
+
+Status:
+LOCKED
+
+---
+
+## Originality
+
+ATHENA's original angle: it **catches the slow decline that fixed thresholds miss**,
+is **built for astronauts who aren't doctors**, and **works fully offline**. Every
+feature and the pitch should support this line.
 
 Status:
 LOCKED
