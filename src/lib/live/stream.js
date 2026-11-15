@@ -333,9 +333,9 @@ export function feedEvents(astronautId, readings, evaluation, day) {
           push({ minute: m, state: "deteriorating", text: "ATHENA requested an extra check: cuff blood pressure now", why: "A cuff reading confirms the shirt's trend before anything else is decided.", request: "cuffBp" });
         }
       } else if (to === "fluctuating" && from === "stable") {
-        push({ minute: m, measureId: measure.id, state: "fluctuating", text: `${measure.name} ${valueText(measure.id, r)}: short excursion`, why: "Outside the personal band for 2 minutes or more but not sustained: noted as fluctuating, no alert yet." });
+        push({ minute: m, measureId: measure.id, state: "fluctuating", text: `${measure.name} ${valueText(measure.id, r)}: short excursion`, why: `Outside the personal band for ${RULES.spikeMinutes} minutes or more but not sustained: noted as fluctuating, no alert yet.` });
       } else if (to === "stable" && (from === "fluctuating" || from === "deteriorating")) {
-        push({ minute: m, measureId: measure.id, state: "stable", text: `${measure.name} back in own normal`, why: from === "deteriorating" ? `Average back inside the personal band for ${RULES.recoverAfter} minutes.` : "Recovered within 10 minutes." });
+        push({ minute: m, measureId: measure.id, state: "stable", text: `${measure.name} back in own normal`, why: from === "deteriorating" ? `Average back inside the personal band for ${RULES.recoverAfter} minutes.` : `Recovered within ${RULES.fluctuateMemory} minutes.` });
       }
     }
   }

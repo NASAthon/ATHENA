@@ -89,7 +89,7 @@ The full licence text of every package is in [`THIRD_PARTY_LICENSES.md`](../THIR
 
 ### Dependency licence scan (14 Nov 2026, after installing sql.js, MiniSearch and shadcn/ui)
 
-All 575 installed npm packages (direct and transitive) are open source:
+All 576 installed npm packages (direct and transitive) are open source (re-scanned 15 Nov 2026; `cn` is shadcn's MIT class-merging package):
 MIT (498), Apache-2.0 (27), ISC (19), BSD-2/3-Clause (18), BlueOak-1.0.0 (3), MPL-2.0 (3:
 axe-core, lightningcss), CC-BY-4.0 (caniuse-lite browser data), CC0-1.0, 0BSD,
 Python-2.0 (argparse), MIT OR CC0-1.0 (type-fest), and LGPL-3.0 (sharp/libvips,
