@@ -1,7 +1,7 @@
 "use client";
 
 // Bedside-monitor style waveform for the Live Monitor (heart rate → ECG-style trace, SpO₂ → pulse
-// wave, breathing → breathing wave). A write head sweeps left to right in real time and erases just
+// wave, blood pressure → arterial wave, breathing → breathing wave, skin temperature → steady line). A write head sweeps left to right in real time and erases just
 // ahead of itself, like a hospital monitor.
 //
 // ILLUSTRATIVE ONLY: the shape is generated from the live RATE (beats or breaths per minute) of the
@@ -27,10 +27,14 @@ const SHAPES = {
   pleth: (p) => g(p, 0.2, 0.07, 0.95) + g(p, 0.45, 0.07, 0.35),
   // Smooth in and out.
   resp: (p) => 0.5 - 0.5 * Math.cos(2 * Math.PI * p),
+  // Arterial pressure: steep upstroke, notch, then run-off (like an arterial line on a monitor).
+  arterial: (p) => g(p, 0.16, 0.05, 0.9) + g(p, 0.4, 0.06, 0.38) - g(p, 0.3, 0.02, 0.06),
+  // No beat (e.g. skin temperature): a steady live line with a slow, gentle wave.
+  level: (p) => 0.45 + 0.06 * Math.sin(2 * Math.PI * p),
 };
 
 /**
- * @param {{ kind: "ecg" | "pleth" | "resp", rate: number | null, colour: string, label: string }} props
+ * @param {{ kind: "ecg" | "pleth" | "arterial" | "resp" | "level", rate: number | null, colour: string, label: string }} props
  *   `rate` per minute; null = no signal (flat line).
  */
 export default function LiveWaveform({ kind, rate, colour, label }) {
