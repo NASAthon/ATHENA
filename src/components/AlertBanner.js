@@ -6,6 +6,7 @@ import { OctagonAlert, TriangleAlert } from "lucide-react";
 import { INDICATORS } from "@/data";
 import { useTodayEvaluation } from "@/components/useTodayEvaluation";
 import { useLive } from "@/components/LiveProvider";
+import { useCrew } from "@/components/CrewProvider";
 import { CREW } from "@/lib/crew";
 import { focusRing } from "@/lib/ui";
 import { appPathname } from "@/lib/basePath";
@@ -16,6 +17,8 @@ const crewName = Object.fromEntries(CREW.map((m) => [m.id, m.name]));
 // The live alert bar (docs/DECISIONS.md › Always-On Live Monitoring): shown on every page except the
 // Live Monitor, for the most serious live event of any astronaut who is still in that state.
 function LiveAlertBar({ live }) {
+  // The guide opens for the astronaut the alert is about (works for a crewmate), not whoever is selected.
+  const { setCrewId } = useCrew();
   const rank = { critical: 2, deteriorating: 1 };
   const current = live.events.filter((e) => {
     if (!rank[e.state]) return false;
@@ -39,6 +42,7 @@ function LiveAlertBar({ live }) {
         {top.emergencyId && (
           <Link
             href={`/emergency?id=${top.emergencyId}`}
+            onClick={() => top.astronautId && setCrewId(top.astronautId)}
             className={`inline-flex min-h-11 items-center rounded-lg bg-destructive px-4 font-semibold text-background hover:bg-destructive/90 ${focusRing}`}
           >
             Open emergency guide
