@@ -5,6 +5,7 @@ import { CrewProvider } from "@/components/CrewProvider";
 import { MissionDataProvider } from "@/components/MissionDataProvider";
 import { MissionModeProvider } from "@/components/MissionModeProvider";
 import { LiveProvider } from "@/components/LiveProvider";
+import { SidebarProvider } from "@/components/SidebarProvider";
 
 export const metadata = {
   title: "ATHENA",
@@ -19,8 +20,10 @@ export default function RootLayout({ children }) {
           <CrewProvider>
             <MissionModeProvider>
               <LiveProvider>
-                <Header />
-                <DesktopShell>{children}</DesktopShell>
+                <SidebarProvider>
+                  <Header />
+                  <DesktopShell>{children}</DesktopShell>
+                </SidebarProvider>
               </LiveProvider>
             </MissionModeProvider>
           </CrewProvider>
