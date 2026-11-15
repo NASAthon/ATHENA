@@ -14,7 +14,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight, Clock, OctagonAlert, Radio, RotateCcw, TriangleAlert, Volume2 } from "lucide-react";
 import { EMERGENCIES, INDICATORS, SYMPTOMS } from "@/data";
-import { adviceForMode } from "@/lib/engine";
+import { adviceForMode, emergencyForMode } from "@/lib/engine";
 import { CREW } from "@/lib/crew";
 import { useCrew } from "@/components/CrewProvider";
 import { useMissionMode } from "@/components/MissionModeProvider";
@@ -43,6 +43,8 @@ const NotAdvice = () => (
 
 /** The list of guides (no ?id). */
 function GuideList() {
+  // Wording for the mission mode: far from Earth, guides never tell the crew to wait for a reply.
+  const { modeId } = useMissionMode();
   return (
     <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
       <h1 className="flex items-center gap-2 text-xl font-bold">
@@ -64,7 +66,7 @@ function GuideList() {
                 <OctagonAlert className="size-5 shrink-0" aria-hidden="true" style={{ color: "var(--status-red)" }} />
                 {g.name}
               </span>
-              <span className="mt-1 text-sm text-muted-foreground">{g.glance}</span>
+              <span className="mt-1 text-sm text-muted-foreground">{emergencyForMode(g, modeId).glance}</span>
             </Link>
           </li>
         ))}
@@ -74,10 +76,12 @@ function GuideList() {
 }
 
 /** One guide, one step at a time. Keyed by guide id, so switching guides starts at step 1. */
-function Guide({ guide }) {
+function Guide({ guide: baseGuide }) {
   const router = useRouter();
   const { crewId, setCrewId, member } = useCrew();
   const { modeId, mode } = useMissionMode();
+  // Worded for the mission mode (e.g. on Mars: send a message and carry on, never wait for Earth).
+  const guide = emergencyForMode(baseGuide, modeId);
   const { evaluation, record } = useTodayEvaluation();
   const [step, setStep] = useState(0);
   const [times, setTimes] = useState([]);

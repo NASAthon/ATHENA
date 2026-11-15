@@ -786,6 +786,12 @@ Three modes (ISS, Lunar Gateway, Mars Transit; no Lunar Surface Base), in
   relevant ones first, nothing hidden) and one line of advice on working with Earth given
   the delay (e.g. Mars: "follow the guide and act now; don't wait for Earth").
 - The flight-surgeon summary takes its reply time from the mode.
+- **Emergency wording follows the delay (15 Nov):** when a reply from Earth takes more than 2 minutes round trip
+  (`LONG_DELAY_SECONDS`; Mars, up to 40 minutes), emergency steps never tell the crew to wait for Earth: "contact
+  the flight surgeon" becomes "send a message now, don't wait for the reply, carry on", and radiation shelter steps
+  follow the onboard monitor and the crew's procedure instead of mission control (`delayed` wording in
+  `src/data/emergencies.js`, chosen by `emergencyForMode`; ATHENA adaptations of the cited sources). ISS and Gateway
+  (seconds) keep the original wording. A test checks no Mars step or glance waits for Earth.
 
 Reason:
 CHECKLIST §2 "Mission mode changes which hazards and advice are shown". The delay is the real

@@ -43,3 +43,19 @@ test("advice changes with the mode and is labelled a design choice", () => {
   assert.match(mars.basisLabel, /design choice/);
   assert.equal(mars.earthLink.modeId, "mars");
 });
+
+test("emergency steps never tell a Mars crew to wait for Earth; ISS wording is unchanged", async () => {
+  const { EMERGENCIES } = await import("../../data/index.js");
+  const { emergencyForMode, isEarthDelayed } = await import("./missionMode.js");
+  assert.equal(isEarthDelayed("mars"), true);
+  assert.equal(isEarthDelayed("iss"), false);
+  assert.equal(isEarthDelayed("gateway"), false);
+  const waitsForEarth = /(until|unless) (mission control|the flight surgeon) (says|asks|advises)|flight surgeon advises otherwise|from mission control,|follow mission control/i;
+  for (const guide of EMERGENCIES) {
+    const mars = emergencyForMode(guide, "mars");
+    for (const text of [mars.glance, ...mars.steps.map((s) => s.text)]) {
+      assert.ok(!waitsForEarth.test(text), `${guide.id} (Mars): "${text}"`);
+    }
+    assert.equal(emergencyForMode(guide, "iss"), guide, `${guide.id}: ISS keeps the original wording`);
+  }
+});
