@@ -9,7 +9,7 @@
 import Link from "next/link";
 import { CircleCheck, OctagonAlert, Radio, TriangleAlert } from "lucide-react";
 import { INDICATORS } from "@/data";
-import { DRIFT_INDICATORS, IN_FLIGHT_WINDOW, buildSurgeonSummary, driftKeyName, earthLink, evaluateMission, likelyHazards } from "@/lib/engine";
+import { DRIFT_INDICATORS, ESCALATION_DAYS, IN_FLIGHT_WINDOW, buildSurgeonSummary, driftKeyName, earthLink, evaluateMission, likelyHazards } from "@/lib/engine";
 import { useTodayEvaluation } from "@/components/useTodayEvaluation";
 import { useMissionMode } from "@/components/MissionModeProvider";
 import MissionCommunications from "@/components/MissionCommunications";
@@ -27,7 +27,7 @@ const ALERT_TEXT = {
   none: "No alert",
   note: "Note: one indicator drifting",
   alert: "Drift alert: two or more indicators drifting",
-  escalated: "Escalated: drift alert not recovered after 14 days",
+  escalated: `Escalated: drift alert not recovered after ${ESCALATION_DAYS} days`,
 };
 
 export default function SummaryPage() {
