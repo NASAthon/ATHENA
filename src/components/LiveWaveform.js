@@ -34,10 +34,10 @@ const SHAPES = {
 };
 
 /**
- * @param {{ kind: "ecg" | "pleth" | "arterial" | "resp" | "level", rate: number | null, colour: string, label: string }} props
+ * @param {{ kind: "ecg" | "pleth" | "arterial" | "resp" | "level", rate: number | null, colour: string }} props
  *   `rate` per minute; null = no signal (flat line).
  */
-export default function LiveWaveform({ kind, rate, colour, label }) {
+export default function LiveWaveform({ kind, rate, colour }) {
   const canvasRef = useRef(null);
   const live = useRef({ rate, colour });
 
@@ -141,9 +141,11 @@ export default function LiveWaveform({ kind, rate, colour, label }) {
   return (
     <div className="relative">
       <canvas ref={canvasRef} aria-hidden="true" className="block h-12 w-full rounded-md bg-black/40" />
-      <span className="pointer-events-none absolute top-0.5 right-1.5 text-[10px] uppercase tracking-wider text-muted-foreground" aria-hidden="true">
-        {rate ? label : "no signal"}
-      </span>
+      {!rate && (
+        <span className="pointer-events-none absolute top-0.5 right-1.5 text-[10px] uppercase tracking-wider text-muted-foreground" aria-hidden="true">
+          no signal
+        </span>
+      )}
     </div>
   );
 }

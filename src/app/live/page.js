@@ -36,11 +36,11 @@ const TILE_NOTE = {
 // src/components/LiveWaveform.js): which waveform each measurement shows, and at what rate.
 const hr = (snap) => snap.measures.heartRate.reading?.heartRate ?? null;
 const WAVEFORM = {
-  heartRate: { kind: "ecg", label: "ECG-style", rate: hr },
-  bloodPressure: { kind: "arterial", label: "pressure", rate: (snap) => (snap.measures.bloodPressure.reading ? hr(snap) : null) },
-  spo2: { kind: "pleth", label: "pulse", rate: (snap) => (snap.measures.spo2.reading ? hr(snap) : null) },
-  breathing: { kind: "resp", label: "breathing", rate: (snap) => snap.measures.breathing.reading?.breathing ?? null },
-  skinTemp: { kind: "level", label: "live", rate: (snap) => (snap.measures.skinTemp.reading ? 6 : null) },
+  heartRate: { kind: "ecg", rate: hr },
+  bloodPressure: { kind: "arterial", rate: (snap) => (snap.measures.bloodPressure.reading ? hr(snap) : null) },
+  spo2: { kind: "pleth", rate: (snap) => (snap.measures.spo2.reading ? hr(snap) : null) },
+  breathing: { kind: "resp", rate: (snap) => snap.measures.breathing.reading?.breathing ?? null },
+  skinTemp: { kind: "level", rate: (snap) => (snap.measures.skinTemp.reading ? 6 : null) },
 };
 
 function Tile({ measure, snap, onGuide }) {
@@ -60,7 +60,6 @@ function Tile({ measure, snap, onGuide }) {
       </p>
       <LiveWaveform
         kind={WAVEFORM[measure.id]?.kind ?? "level"}
-        label={WAVEFORM[measure.id]?.label ?? "live"}
         rate={WAVEFORM[measure.id]?.rate(snap) ?? null}
         colour={highlight ? style.colour : "var(--status-steady)"}
       />
@@ -252,7 +251,7 @@ function LiveMonitor() {
           Simulated sensor feed
         </span>
         <span className="text-sm text-muted-foreground">
-          Always on: ATHENA checks every new reading the moment it arrives. Each chart is a live, bedside-monitor style trace drawn at the current rate (illustrative; the numbers are what ATHENA evaluates).
+          Always on: ATHENA checks every new reading the moment it arrives.
           {live.paused && " The feed is paused (Crew page › Demo controls)."}
         </span>
       </div>
