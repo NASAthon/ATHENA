@@ -14,19 +14,22 @@ import { appPathname } from "@/lib/basePath";
 const nameOf = Object.fromEntries(INDICATORS.map((i) => [i.id, i.name]));
 const crewName = Object.fromEntries(CREW.map((m) => [m.id, m.name]));
 
-// The live alert bar (docs/DECISIONS.md › Always-On Live Monitoring): shown on every page except the
-// Live Monitor, for the most serious live event of any astronaut who is still in that state.
-function LiveAlertBar({ live }) {
-  // The guide opens for the astronaut the alert is about (works for a crewmate), not whoever is selected.
-  const { setCrewId } = useCrew();
+// The most serious live event of any astronaut still in that state (or a recent crew-wide event).
+function topLiveEvent(live) {
   const rank = { critical: 2, deteriorating: 1 };
   const current = live.events.filter((e) => {
     if (!rank[e.state]) return false;
     if (e.astronautId === null) return live.minute - e.minute < 90; // crew-wide event: 90 minutes
     return live.crew[e.astronautId]?.overall === e.state;
   });
-  const top = current.sort((a, b) => rank[b.state] - rank[a.state] || b.minute - a.minute)[0];
-  if (!top) return null;
+  return current.sort((a, b) => rank[b.state] - rank[a.state] || b.minute - a.minute)[0] ?? null;
+}
+
+// The live alert bar (docs/DECISIONS.md › Always-On Live Monitoring), shown on every page except the
+// Live Monitor.
+function LiveAlertBar({ live, top }) {
+  // The guide opens for the astronaut the alert is about (works for a crewmate), not whoever is selected.
+  const { setCrewId } = useCrew();
   const isRed = top.state === "critical";
   const colour = isRed ? "var(--status-red)" : "var(--status-amber)";
   const Icon = isRed ? OctagonAlert : TriangleAlert;
@@ -56,39 +59,51 @@ function LiveAlertBar({ live }) {
   );
 }
 
-// Alert banner at the top of the main content for the astronaut selected in the header: red limits
-// first, then drift alerts. Hidden on Today, which shows the full alert card.
+// Alert banners at the top of the main content. ONE banner per problem: the live bar (any astronaut)
+// and the stored-data banner (the selected astronaut) are about the same problem when they concern the
+// same astronaut, e.g. a live red-limit reading that was also written into today's record. Then only
+// the more serious one is shown, and on a tie the live one (it has the time and the live reading).
+// Different astronauts, or the crew-wide event, are different problems and each keep their banner.
 export default function AlertBanner() {
   const pathname = appPathname(usePathname());
   const { state, member, evaluation } = useTodayEvaluation();
   const live = useLive();
-  const liveBar = live.active && pathname !== "/live" ? <LiveAlertBar live={live} /> : null;
+  const top = live.active && pathname !== "/live" ? topLiveEvent(live) : null;
+  const stored = storedAlert({ pathname, state, member, evaluation });
+
+  const sameAstronaut = top && stored && top.astronautId === member.id;
+  const liveRank = top ? (top.state === "critical" ? 2 : 1) : 0;
+  const showLive = top && !(sameAstronaut && stored.rank > liveRank);
+  const showStored = stored && !(sameAstronaut && liveRank >= stored.rank);
   return (
     <>
-      {liveBar}
-      <StoredAlertBanner pathname={pathname} state={state} member={member} evaluation={evaluation} />
+      {showLive && <LiveAlertBar live={live} top={top} />}
+      {showStored && <StoredAlertBanner alert={stored} />}
     </>
   );
 }
 
-// The stored-data banner for the selected astronaut (daily drift and red limits). Hidden on Today,
-// which shows the full alert card.
-function StoredAlertBanner({ pathname, state, member, evaluation }) {
+// What the stored-data banner would say for the selected astronaut (daily drift and red limits), or
+// null. Hidden on Today, which shows the full alert card.
+function storedAlert({ pathname, state, member, evaluation }) {
   if (state !== "ready" || !evaluation || pathname === "/" || pathname === "/today") return null;
-
   const red = evaluation.limitBreaches.filter((b) => b.redLimit);
   const level = evaluation.alert.level;
   if (red.length === 0 && level !== "alert" && level !== "escalated") return null;
-
   const isRed = red.length > 0;
-  const colour = isRed ? "var(--status-red)" : "var(--status-amber)";
-  const Icon = isRed ? OctagonAlert : TriangleAlert;
   const text = isRed
     ? `${member.name}: red limit (${red.map((r) => `${nameOf[r.indicatorId]}: ${r.label}`).join("; ")})`
     : level === "escalated"
       ? `${member.name}: drift alert not recovered. Tell the crew and the ground.`
       : `${member.name}: ${evaluation.alert.driftingGroups} indicators drifting from their normal.`;
-  const emergencyId = red.find((r) => r.emergencyId)?.emergencyId;
+  return { isRed, rank: isRed ? 2 : 1, text, emergencyId: red.find((r) => r.emergencyId)?.emergencyId ?? null };
+}
+
+// The stored-data banner for the selected astronaut.
+function StoredAlertBanner({ alert }) {
+  const { isRed, text, emergencyId } = alert;
+  const colour = isRed ? "var(--status-red)" : "var(--status-amber)";
+  const Icon = isRed ? OctagonAlert : TriangleAlert;
 
   return (
     <div className="px-4">
