@@ -15,6 +15,7 @@ import { useLive } from "@/components/LiveProvider";
 import { useMissionMode } from "@/components/MissionModeProvider";
 import { LIVE_STYLE, LiveStateBadge } from "@/components/LiveUI";
 import LiveWaveform from "@/components/LiveWaveform";
+import { useCrew } from "@/components/CrewProvider";
 import { CREW } from "@/lib/crew";
 import { LIVE_MEASURES, RULES, timeText } from "@/lib/live/stream";
 import { focusRing } from "@/lib/ui";
@@ -76,6 +77,7 @@ function Tile({ measure, snap, onGuide }) {
 }
 
 function CrewRow({ member, snap, replyText, onGuide }) {
+  const { setCrewId } = useCrew();
   const style = LIVE_STYLE[snap.overall];
   const strong = snap.overall === "critical" || snap.overall === "deteriorating";
   const confColour = { High: "var(--status-steady)", Medium: "var(--status-amber)", Low: "var(--status-red)" }[snap.confidence.level];
@@ -105,6 +107,7 @@ function CrewRow({ member, snap, replyText, onGuide }) {
           </span>
           <Link
             href={`/emergency?id=${critical.emergencyId}`}
+            onClick={() => setCrewId(member.id)}
             className={`inline-flex min-h-11 items-center gap-2 rounded-lg bg-destructive px-4 font-bold text-background hover:bg-destructive/90 ${focusRing}`}
           >
             <OctagonAlert aria-hidden="true" className="size-4" /> Open emergency guide
