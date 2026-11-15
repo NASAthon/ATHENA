@@ -67,10 +67,10 @@ export const SCRIPT = Object.freeze([
   { at: hm(12, 58), astronautId: "nakamura", presenter: "Nakamura: one sensor spike (ATHENA ignores it)" },
   { at: hm(13, 8), astronautId: "rivera", presenter: "Rivera: short SpO₂ dip that recovers" },
   { at: hm(13, 10), astronautId: "singh", presenter: "Singh: exercise session on the treadmill" },
-  { at: hm(14, 5), astronautId: "singh", presenter: "Singh: takes the shirt off (no data)" },
   { at: hm(14, 30), astronautId: "nakamura", presenter: "Nakamura: blood pressure starts rising" },
   { at: hm(14, 49), astronautId: "nakamura", presenter: "Nakamura: reports chest pain" },
-  { at: hm(16, 5), astronautId: "singh", presenter: "Singh: shirt back on, data resumes" },
+  { at: hm(16, 20), astronautId: "singh", presenter: "Singh: takes the shirt off (no data)" },
+  { at: hm(17, 30), astronautId: "singh", presenter: "Singh: shirt back on, data resumes" },
   { at: hm(18, 30), astronautId: null, presenter: "Whole crew: simulated solar particle event begins" },
 ].map((e) => Object.freeze(e)));
 
@@ -160,7 +160,7 @@ export function generateDay(astronautId, day, normals, { seed = DEMO_SEED } = {}
         hr += 44 * ramp(m, hm(14, 35), hm(14, 55));
         breathing += 8 * ramp(m, hm(14, 45), hm(14, 55));
       }
-      if (astronautId === "singh" && m >= hm(14, 5) && m < hm(16, 5)) worn = false;
+      if (astronautId === "singh" && m >= hm(16, 20) && m < hm(17, 30)) worn = false;
     }
 
     out.push(

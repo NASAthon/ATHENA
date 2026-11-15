@@ -1,14 +1,16 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { START_MINUTE, advanceClock, nextJumpTarget, nextScripted, restoreClock, serialiseClock } from "./clock.js";
+import { DEMO_START_MINUTE, START_MINUTE, advanceClock, nextJumpTarget, nextScripted, restoreClock, serialiseClock } from "./clock.js";
 import { SCRIPTED_DAY } from "./stream.js";
 
 test("a fresh clock starts at 08:00 in real time; a saved one for today carries on", () => {
-  assert.deepEqual(restoreClock(null, 129), { day: 129, minute: START_MINUTE, speed: 1, paused: false });
+  assert.deepEqual(restoreClock(null, 130), { day: 130, minute: START_MINUTE, speed: 1, paused: false });
+  // The scripted demo day opens at 14:40, paused, with three different crew states.
+  assert.deepEqual(restoreClock(null, SCRIPTED_DAY), { day: SCRIPTED_DAY, minute: DEMO_START_MINUTE, speed: 1, paused: true });
   const saved = serialiseClock({ day: 129, minute: 900, speed: 60, paused: true });
   assert.deepEqual(restoreClock(saved, 129), { day: 129, minute: 900, speed: 60, paused: true });
   assert.equal(restoreClock(saved, 130).minute, START_MINUTE, "a clock for another day is not reused");
-  assert.equal(restoreClock("not json", 129).minute, START_MINUTE);
+  assert.equal(restoreClock("not json", 130).minute, START_MINUTE);
 });
 
 test("speed sets how fast simulated time runs; pause stops it", () => {
@@ -38,7 +40,7 @@ test("jump to next event finds the next scripted moment on the demo day only", (
 
 test("Jump to next event always moves on, even when parked one minute before an event", () => {
   const first = nextJumpTarget({ day: SCRIPTED_DAY, minute: 480 });
-  const parked = { day: SCRIPTED_DAY, minute: first.at - 1 };
+  const parked = { day: SCRIPTED_DAY, minute: first.at };
   const second = nextJumpTarget(parked);
   assert.ok(second.at > first.at, "the second press goes to a later event");
   assert.equal(nextJumpTarget({ day: SCRIPTED_DAY + 1, minute: 0 }), null);

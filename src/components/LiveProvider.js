@@ -149,10 +149,10 @@ export function LiveProvider({ children }) {
       next,
       setSpeed: (speed) => setAndSave((c) => ({ ...c, speed, paused: false })),
       togglePause: () => setAndSave((c) => ({ ...c, paused: !c.paused })),
-      // Jumps to just before the next scripted moment, so it happens on screen.
+      // Jumps onto the next scripted moment, so it happens at once (even while paused).
       jumpToNext: () => setAndSave((c) => {
         const n = nextJumpTarget(c);
-        return n ? { ...c, minute: n.at - 1 } : c;
+        return n ? { ...c, minute: n.at } : c;
       }),
     };
   }, [clock, days, minute, persist, setClock]);
