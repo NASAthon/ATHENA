@@ -1,6 +1,6 @@
 # Sources
 
-Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Agency Partner Data and Other References" fields (`docs/judging.md` 1C.7–8). Add a row whenever you use something new. **Only open source, openly licensed or public-domain material** (see `docs/DECISIONS.md` › Licensing). If a licence is unclear, don't use it.
+Every source ATHENA uses. Add a row whenever you use something new. **Only open source, openly licensed or public-domain material** (see `docs/DECISIONS.md` › Licensing). If a licence is unclear, don't use it.
 
 | Source | URL | What we take from it | Official NASA? | Licence / terms |
 |---|---|---|---|---|
@@ -11,12 +11,11 @@ Every source ATHENA uses. This feeds the submission's "NASA Data" and "Space Age
 | NASA Open Science Data Repository (OSDR) | https://osdr.nasa.gov/ | Real spaceflight biology data for inspiration and testing (named in the challenge video) | Yes | Check each dataset's licence before use |
 | Challenge video (Brazilian Space Agency) | https://www.youtube.com/watch?v=RERG3gEmdC8 | Challenge goals, emergency scenario, guidance requirements | Official challenge material | Cite and link only |
 | 17 NASA risk pages + 5 hazard pages | URLs listed in `docs/BODY_MAP.md` | Body regions, affected systems, verified facts (e.g. bone loss 1–1.5%/month) | Yes | US Gov work; no NASA logos |
-| NASA Space Apps resources (submission and judging guides) | https://www.spaceappschallenge.org/resources/ | Rules, deadlines and judging criteria (`docs/judging.md`) | Official event material | Cite and link only |
 | CDC pages (blood pressure, heart attack, cardiac arrest, stroke, fever, hypothermia, sleep, glucose monitoring) | see tables below | Thresholds, measurement steps, emergency steps | No (clinical) | US Gov work, public domain; rewritten in our words |
 | American Heart Association: What is CPR | https://cpr.heart.org/en/resources/what-is-cpr | CPR rate, depth and technique | No (clinical) | Copyrighted: facts only, our own wording |
 | AHA and American Red Cross 2024 First Aid Guidelines | https://cpr.heart.org/en/resuscitation-science/2024-first-aid-guidelines | Bleeding and fracture first aid (read in a browser, 14 Nov) | No (clinical) | Copyrighted: facts only, our own wording |
 | American Diabetes Association pages | see tables below | Glucose ranges, 15-15 rule | No (clinical) | Copyrighted: numbers only, our own wording |
-| Tempus Pro, ARCHeR, Spaceflight Standard Measures | https://www.nasa.gov/reference/tempus-pro/, https://www.nasa.gov/reference/archer/, https://www.nasa.gov/reference/standard-measures/ | Existing tools and what ATHENA adds (`docs/EXISTING_TOOLS.md`) | Yes | US Gov work; no NASA logos |
+| Tempus Pro, ARCHeR, Spaceflight Standard Measures | https://www.nasa.gov/reference/tempus-pro/, https://www.nasa.gov/reference/archer/, https://www.nasa.gov/reference/standard-measures/ | Existing tools and what ATHENA adds (README › Why it matters) | Yes | US Gov work; no NASA logos |
 | Monitoring Radiation for Astronaut Health (CSA) | https://www.asc-csa.gc.ca/eng/news/articles/2026/2026-02-26-monitoring-radiation-astronaut-health.asp | Radiation monitoring context (CANS) | No (partner) | Cite and link only; check CSA notices |
 
 ## Clinical reference ranges (thresholds only, see `docs/DECISIONS.md` › Thresholds and › Red-Limit Sources)

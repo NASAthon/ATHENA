@@ -138,17 +138,17 @@ Eight clickable regions on the 2D SVG body figure. Together they cover all 17 ri
 | [Gravity Fields](https://www.nasa.gov/hrp/hazard-gravity-fields/) | Dizziness, bone and muscle loss (1–1.5% bone density per month), vision problems, orientation, coordination, balance, motion sickness, fainting on return, fluid shift to the head, kidney stones |
 | [Hostile/Closed Environments](https://www.nasa.gov/hrp/hazard-hostile-closed-environments/) | Microbes changing and spreading, higher stress hormones, altered immune system (allergies, illness); factors include temperature, pressure, lighting, noise and crowding |
 
-## Useful verified facts for cards and the pitch
+## Useful verified facts
 
 - Bone density loss: **1–1.5% per month** in spaceflight (bone risk page and Gravity Fields hazard page).
 - About **70% of ISS crew** show some swelling at the back of the eye (SANS page).
 - Fitness loss: **10–12%** on average, and 12–38% of crew lose more than 20% (fitness page).
 - Exercise countermeasure: **6–7 days a week, about 1.5 h a day** (fitness page).
 - **Most astronauts** get motion sickness in spaceflight (sensorimotor page).
-- Communication delay: **up to 20 minutes one way** (Distance from Earth page), so about 40 minutes round trip. This matches the 5–40 minute range in `docs/context.md`.
-- None of these pages gives clinical thresholds (heart rate, blood pressure and so on), which confirms `docs/context.md` Section 8.
+- Communication delay: **up to 20 minutes one way** (Distance from Earth page), so about 40 minutes round trip. This matches the 5–40 minute round-trip range in the challenge brief.
+- None of these pages gives clinical thresholds (heart rate, blood pressure and so on), so numeric thresholds come from general clinical reference ranges (`docs/DECISIONS.md` › Thresholds).
 
-## Region card contents (`docs/CHECKLIST.md` › Body figure)
+## Region card contents
 
 Each region card shows:
 - **Glance:** region name, status (icon, colour and label), worst indicator, "last checked" date.
@@ -158,4 +158,4 @@ Each region card shows:
 
 - [x] All 17 region-to-risk links checked against their NASA risk pages (14 Nov 2026)
 - [x] Hazard links checked against the 5 hazard pages (14 Nov 2026); unstated links marked *Inferred*
-- [ ] Indicators per region agreed with the logic owner (region mapper in `docs/CHECKLIST.md` › Logic)
+- [x] Indicators per region set in the region mapper (`src/lib/engine/regions.js`)

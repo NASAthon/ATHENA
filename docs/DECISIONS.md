@@ -1,10 +1,10 @@
 # Decision Log
 
 Every locked choice and why. Entries are in the order they were made. **Index:**
-- **Product:** Originality · Body Map Required · Crew · Trends Over Single Readings · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · No External Links · Quick Reference Only · Design · First-Time Help · Checklist
+- **Product:** Originality · Body Map Required · Crew · Trends Over Single Readings · Heart Rate and SpO₂ · Indicators · Baselines · Drift Cut-off · Health Score · Scope Additions · Search · Inclusive Design · Content Style · No External Links · Quick Reference Only · Design · First-Time Help
 - **Data and content:** No Medicines or Diagnoses · Data Sources · Thresholds · Red-Limit Sources · Emergency Step Sources · Data Map Coverage · Licensing
 - **Tech:** Frontend · Backend · Database · AI / Analytics · Body Visualisation · Charts · Logic Engine · Logic Engine Assumptions · Logic Tests · Mission Simulator · Storage Layer · Daily Record · Saving From the App · Mission Modes · Mission Communications · Write Durability · Operational History and Report Changes · Offline Backup and Recovery
-- **Team and event:** Git Workflow · Roles · File Naming · Hosting and Demo · Demo and Pitch · Local Judging
+- **Team and workflow:** Git Workflow · File Naming · Hosting and Demo
 
 ## Frontend
 
@@ -48,13 +48,13 @@ LOCKED
 
 ## Data Sources
 
-Use only the official resources listed in `docs/context.md` Section 7. This
-includes NASA OSDR (https://osdr.nasa.gov/), which the official challenge video
-names. Do not use the extra sources in Section 9 for now.
+Use only the official resources the organisers listed for the challenge (NASA HRP hazard,
+risk and research pages, the CSA partner pages and the challenge video; all in `docs/SOURCES.md`).
+This includes NASA OSDR (https://osdr.nasa.gov/), which the official challenge video names.
 Exceptions: general clinical reference ranges for thresholds (see Thresholds), and
 emergency first-response steps (see Emergency Step Sources).
 Added 14 Nov (team agreed): two official NASA pages for the ISS and Gateway Earth-link
-delays, which the Section 7 pages don't give (see Mission Modes).
+delays, which the official pages don't give (see Mission Modes).
 
 Reason:
 Team decision to stay within the data we were given.
@@ -108,9 +108,6 @@ LOCKED
   and must not be presented as reloadable offline because ATHENA has no service worker.
 - The README keeps both the hosted link and clear local "How to run" steps.
 - Demo on localhost: `npm run build`, then serve the static output (or `npm run dev`).
-- 30-second video "offline moment": turn Wi-Fi off on camera, reload, and trigger
-  an alert (a dangerous reading, or a Scenario Lab event if built). The alert still fires.
-- README screenshots go in `docs/screenshots/`.
 - **Demo browser:** present from a clean Chrome profile (or with extensions turned off). In testing, a browser
   extension injected Google Fonts and a hidden panel into the page; ATHENA itself makes no external requests.
 
@@ -140,7 +137,7 @@ LOCKED
 
 Core (official challenge text): heart rate, blood pressure, blood glucose,
 body temperature, sleep hours, mood (1–5).
-Also recorded daily (from `docs/CHECKLIST.md`): reaction test (median, lapses, false
+Also recorded daily: reaction test (median, lapses, false
 starts), exercise minutes, symptoms.
 Optional: SpO₂, radiation dose (and HRV and respiration rate if time allows).
 
@@ -178,21 +175,10 @@ with its licence recorded in `docs/SOURCES.md`.
 
 Reason:
 Submission requires citing everything and having permission for copyrighted
-material (`docs/judging.md` 1C.8). Open licences remove the risk.
+material (Space Apps submission rules). Open licences remove the risk.
 
 Status:
 LOCKED
-
----
-
-## Local Judging
-
-Submission closes 10:30 Sun 15 Nov. Pitching from 11:30: 3-minute pitch plus
-2-minute Q&A.
-
-Status:
-LOCKED
-
 
 ---
 
@@ -244,7 +230,6 @@ LOCKED
   if everyone uses Claude). If no one is free, the author may self-review and merge
   using the same checks (see `AGENTS.md` › Reviewing a PR),
   then it's merged into `main`.
-- No code freeze. Keep merging small, working changes until submission.
 
 Status:
 LOCKED
@@ -342,19 +327,6 @@ LOCKED
 
 ---
 
-## Checklist
-
-`docs/CHECKLIST.md` is the single list of what to build and hand in, with M/S priorities.
-It merges the team's build checklist with the earlier plan. New features from the
-checklist: reaction-time test, mission calendar, flight-surgeon summary, check-in
-streak and voice read-aloud.
-
-Status:
-LOCKED
-
-
----
-
 ## Design
 
 - **Dark theme** app/dashboard. Theme options (e.g. light mode) are a **future feature**, not in scope.
@@ -443,18 +415,6 @@ LOCKED
 
 ---
 
-## Demo and Pitch
-
-Follows the recommendations in `docs/judging.md` 1D.
-- **Global:** a 30-second video using the recommended pacing.
-- **Local (11:30):** a short presentation **plus a live demo** of the app in 3 minutes,
-  followed by 2 minutes of Q&A.
-
-Status:
-LOCKED
-
----
-
 ## Originality
 
 ATHENA's original angle: it **catches the slow decline that generic one-size-fits-all thresholds miss**
@@ -465,16 +425,6 @@ feature and the pitch should support this line.
 Status:
 LOCKED
 
-
----
-
-## Roles
-
-No fixed roles. Each teammate picks `docs/CHECKLIST.md` tasks they're comfortable with.
-Say which item you're taking, and work on its own branch to avoid clashes.
-
-Status:
-LOCKED
 
 ---
 
@@ -637,8 +587,8 @@ LOCKED
 
 ## Logic Engine
 
-CHECKLIST §2 lives in `src/lib/engine/` as plain JavaScript functions (no React, DOM,
-database or network), each marked with the checklist item it satisfies. Import from
+The logic engine lives in `src/lib/engine/` as plain JavaScript functions (no React, DOM,
+database or network), each commented with the build-checklist item it covered. Import from
 `@/lib/engine`. `evaluateMission(records, baselines, fromDay, toDay)` runs everything for
 one astronaut.
 - **One source of truth for health numbers.** Every threshold, source, region, exam and
@@ -664,13 +614,13 @@ ACTIVE
 
 ## Logic Engine Assumptions
 
-Choices made while building CHECKLIST §2 where no decision existed. Each is marked
+Choices made while building the logic engine where no decision existed. Each is marked
 ASSUMPTION in the code; change it in one place, then run `npm test`.
 - **Daily-record field names** (`RECORD_FIELDS` in `src/lib/engine/indicators.js`): camelCase,
   e.g. `heartRate`, `bpSystolic`, `bpDiastolic`, `glucose` (mg/dL), `temperature` (°C),
   `sleepHours`, `mood`, `reactionMedianMs`, `reactionLapses`, `reactionFalseStarts`,
   `exerciseMinutes`, `symptoms` (list of symptom ids), `spo2`, `radiationMsv`, `missionDay`.
-  CHECKLIST §1 "Daily record defined" should confirm or rename them.
+  Confirmed by Daily Record (below).
 - **Drift-tracked:** heart rate, both blood-pressure numbers, glucose, temperature, sleep, mood,
   reaction median and lapses, exercise and SpO₂. Not tracked: false starts (no worrying
   direction given), symptoms (not a number), radiation dose (a running total).
@@ -743,7 +693,7 @@ the 3 crew in Crew. Every number is an invented demo value, labelled simulated, 
   by `MissionDataProvider` (`useMissionData()`); the header shows it.
 
 Reason:
-CHECKLIST §1 (simulator, noise and bad days) and the demo script. Seeded so the live demo and
+The demo needs crew stories with realistic noise and bad days. Seeded so the live demo and
 the video show the same thing every time.
 
 Status:
@@ -794,7 +744,7 @@ Three modes (ISS, Lunar Gateway, Mars Transit; no Lunar Surface Base), in
   (seconds) keep the original wording. A test checks no Mars step or glance waits for Earth.
 
 Reason:
-CHECKLIST §2 "Mission mode changes which hazards and advice are shown". The delay is the real
+Mission mode should change which hazards and advice are shown. The delay is the real
 difference between the modes for medical decisions, so it drives the advice.
 
 Status:
@@ -866,7 +816,7 @@ in `src/data/indicators.js`, which must start with a hazard name; `hazards.test.
 "ATHENA's interpretation of the NASA hazard page, not a diagnosis", with the NASA hazard page cited.
 
 Reason:
-CHECKLIST § Alerts asks for the likely hazard. Reusing the guide's hazard keeps one reviewed source.
+The alert card shows the likely hazard. Reusing the guide's hazard keeps one reviewed source.
 
 Status:
 ACTIVE
