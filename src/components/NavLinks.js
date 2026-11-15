@@ -25,8 +25,8 @@ const navItems = [
   { href: "/body", label: "Body", Icon: ScanLine },
   { href: "/calendar", label: "Calendar", Icon: CalendarDays },
   { href: "/summary", label: "Summary", Icon: FileText },
-  { href: "/scenario-lab", label: "Scenario Lab", Icon: FlaskConical },
   { href: "/crew", label: "Crew", Icon: Users },
+  { href: "/demo", label: "Demo", Icon: FlaskConical },
 ];
 
 export default function NavLinks({ variant = "header", collapsed = false }) {
@@ -37,7 +37,8 @@ export default function NavLinks({ variant = "header", collapsed = false }) {
     <ul className={sidebar ? "flex flex-col gap-1" : "flex flex-wrap justify-center gap-2"}>
       {navItems.map((item) => {
         const isHome = item.href === "/today" && pathname === "/";
-        const isCurrent = isHome || pathname === item.href || pathname.startsWith(`${item.href}/`);
+        const isDemoRoute = item.href === "/demo" && pathname.startsWith("/scenario-lab");
+        const isCurrent = isHome || isDemoRoute || pathname === item.href || pathname.startsWith(`${item.href}/`);
         const Icon = item.Icon;
         return (
           <li key={item.href}>

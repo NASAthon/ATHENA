@@ -2,11 +2,11 @@
 
 // Crew status (design and layout by the team, PR #23). Every number and sentence comes from the
 // astronauts' STORED data evaluated by the logic engine; nothing is hard-coded (AGENTS.md: no health text or
-// numbers in components). Demo controls are the real Load demo mission / Reset data panel.
+// numbers in components). Demo and backup controls live on the dedicated Demo page.
 
 import { useMemo } from "react";
 import Link from "next/link";
-import { ArrowDown, ArrowUp, CircleCheck, Eye, FlaskConical, Minus, OctagonAlert, TriangleAlert } from "lucide-react";
+import { ArrowDown, ArrowUp, CircleCheck, Eye, Minus, OctagonAlert, TriangleAlert } from "lucide-react";
 import { EMERGENCIES, INDICATORS } from "@/data";
 import { SCORE_CAPS } from "@/lib/engine";
 import { CREW } from "@/lib/crew";
@@ -14,7 +14,6 @@ import { useCrew } from "@/components/CrewProvider";
 import { useMissionData } from "@/components/MissionDataProvider";
 import { useMissionMode } from "@/components/MissionModeProvider";
 import { evaluateStored } from "@/components/useTodayEvaluation";
-import MissionDataPanel from "@/components/MissionDataPanel";
 import { focusRing } from "@/lib/ui";
 
 const nameOf = Object.fromEntries(INDICATORS.map((i) => [i.id, i.name]));
@@ -66,7 +65,10 @@ function CrewCard({ member, result, onOpen }) {
       <article className="flex flex-col rounded-3xl border border-border bg-card p-3">
         <h2 className="text-base font-bold">{member.name}</h2>
         <p className="text-muted-foreground">{member.role}</p>
-        <p className="mt-2 flex-1 text-base text-muted-foreground">No data stored yet. Load the demo mission below.</p>
+        <p className="mt-2 flex-1 text-base text-muted-foreground">No data stored yet.</p>
+        <Link href="/demo" className={`mt-2 inline-flex min-h-11 items-center justify-center rounded-xl border border-input px-4 font-semibold hover:bg-accent ${focusRing}`}>
+          Open Demo tools
+        </Link>
       </article>
     );
   }
@@ -142,26 +144,6 @@ export default function Crew() {
           ))}
         </div>
       )}
-
-      <details className="mt-2 rounded-xl border border-dashed border-border p-3">
-        <summary className={`flex min-h-11 cursor-pointer items-center font-bold ${focusRing}`}>
-          Demo and backup controls
-        </summary>
-        <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <h2 className="text-base font-bold">
-              Demo controls
-            </h2>
-            <p className="text-muted-foreground">All crew data is simulated. Reload the demo mission, clear it, or try events in the Scenario Lab.</p>
-          </div>
-          <Link href="/scenario-lab" className={`inline-flex min-h-11 items-center gap-2 rounded-xl border border-input px-4 hover:bg-accent ${focusRing}`}>
-            <FlaskConical className="size-5" aria-hidden="true" /> Scenario Lab
-          </Link>
-        </div>
-        <div className="mt-2">
-          <MissionDataPanel />
-        </div>
-      </details>
     </main>
   );
 }
