@@ -1,4 +1,4 @@
-// Saving from the app (docs/CHECKLIST.md › 1. Data and storage):
+// Saving from the app:
 // - today's check-in (the one-minute check, extra check and Reaction test all add to the same daily record),
 // - the check-in streak (worked out from the stored records),
 // - periodic exam results (exams from src/data/exams.js).

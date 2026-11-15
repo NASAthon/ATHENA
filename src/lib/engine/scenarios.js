@@ -1,6 +1,6 @@
-// Scenario Lab data injection (docs/CHECKLIST.md › 2. Logic, S item "Scenario Lab").
+// Scenario Lab data injection.
 // Pure logic: no React, DOM, database or Node-only APIs. The Scenario Lab screen
-// ("watch the alerts react") is CHECKLIST §3.
+// ("watch the alerts react") is src/app/scenario-lab/page.js.
 //
 // ASSUMPTION: the effect sizes below are invented DEMO values to show the engine
 // reacting. They are not physiological data and must never be presented as such
@@ -40,8 +40,8 @@ const BOUNDS = Object.freeze({
  */
 
 /**
- * CHECKLIST §2 (S): "Scenario Lab: inject radiation, fatigue, sleep loss or hypoxia
- * into the data and watch the alerts react".
+ * Scenario Lab: inject radiation, fatigue, sleep loss or hypoxia
+ * into the data and watch the alerts react.
  *
  * Returns NEW records with the scenario applied to days fromDay … fromDay + days − 1;
  * the input is never modified. Changed records get `origin: "scenario"` so the app can

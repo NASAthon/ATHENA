@@ -11,7 +11,7 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 - **Root:** `AGENTS.md`, `CLAUDE.md` and `README.md` (they must stay at the root, because agents and GitHub look for them there), plus config files.
 - `docs/`: project context for agents (`DECISIONS.md`, `SOURCES.md`, `AI_USAGE.md`, `BODY_MAP.md`).
   The event-planning docs (brief, build checklist, judging guide, submission answers) were removed after
-  submission and live in git history. Code comments citing `CHECKLIST §n` refer to that build checklist.
+  submission and live in git history.
 - `src/`: all app code (`src/app/` pages, `src/components/`, `src/lib/`). Import with `@/`, e.g. `@/lib/utils`.
   - `src/lib/engine/`: **all health logic** (baselines, drift, alerts, red limits, health score, search, and so on).
     Import from `@/lib/engine`. Never put health logic in components. Tests sit next to each file (`*.test.js`).

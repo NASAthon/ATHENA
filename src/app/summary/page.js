@@ -1,6 +1,6 @@
 "use client";
 
-// One-page flight-surgeon summary (CHECKLIST §3 › Calendar, summary, extras) for the astronaut
+// One-page flight-surgeon summary for the astronaut
 // selected in the header. Built by the engine's buildSurgeonSummary (src/lib/engine/summary.js)
 // from today's evaluation of STORED data; the reply time comes from the mission mode's sourced
 // Earth-link delay (header switch). "Send to Earth" sends the plain-text version to the ground

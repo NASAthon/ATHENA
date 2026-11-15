@@ -1,6 +1,6 @@
 "use client";
 
-// Demo controls: "Load demo mission" and "Reset data" (CHECKLIST §1).
+// Demo controls: "Load demo mission" and "Reset data".
 // Inline confirmation instead of browser dialogs; results are announced with aria-live.
 
 import { useRef, useState } from "react";

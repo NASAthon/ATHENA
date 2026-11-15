@@ -1,6 +1,6 @@
 "use client";
 
-// Mission calendar (CHECKLIST §3 › Calendar, summary, extras): the periodic exams for the astronaut
+// Mission calendar: the periodic exams for the astronaut
 // selected in the header. What's due comes from the engine's calendar scheduler
 // (src/lib/engine/calendar.js); completions are stored with saveExamResult (src/lib/checkIn.js).
 // Exams and their sources come from src/data/exams.js. In-flight intervals are ATHENA design

@@ -1,6 +1,6 @@
 "use client";
 
-// Header search (docs/DECISIONS.md › Search; CHECKLIST §3 › Search). Results appear as you type and
+// Header search (docs/DECISIONS.md › Search). Results appear as you type and
 // come from the engine's offline MiniSearch index over everything in src/data, so typos ("hart rate"),
 // everyday words ("pulse") and symptoms ("chest pain") all work. Symptom-like queries list emergency
 // guides first. With no match it offers "Did you mean…?", the closest results and the emergency

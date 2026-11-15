@@ -1,5 +1,5 @@
 // End-to-end checks on 180-day simulated missions (seeded, so always the same data).
-// These mirror CHECKLIST §6 tests for the three crew roles in DECISIONS › Crew.
+// These check the three crew stories in DECISIONS › Crew.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { calculateMissionBaselines } from "./baseline.js";

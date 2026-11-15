@@ -1,5 +1,4 @@
-// Mission mode (docs/CHECKLIST.md › 2. Logic, S item "Mission mode changes which hazards
-// and advice are shown").
+// Mission mode: changes which hazards and advice are shown.
 // Pure logic: no React, DOM, database or Node-only APIs. Modes, delays, emphasis and
 // advice all come from src/data/missionModes.js; hazards from src/data/hazards.js.
 
@@ -32,7 +31,7 @@ export function getMissionMode(modeId) {
  */
 
 /**
- * The Earth-link delay for a mission mode (CHECKLIST §3 "Earth Link", and the
+ * The Earth-link delay for a mission mode (the Earth Link, and the
  * flight-surgeon summary's "reply expected in about N minutes").
  *
  * @param {string} [modeId]
@@ -73,7 +72,7 @@ function formatWait(roundTripMaxSeconds, oneWayMinSeconds) {
 }
 
 /**
- * CHECKLIST §2 (S): "Mission mode changes which hazards … are shown".
+ * Mission mode changes which hazards … are shown.
  *
  * All 5 hazards, with the mode's emphasised ones first (in the mode's order) and marked
  * `emphasised: true`; the rest follow in src/data order. Nothing is hidden, so no hazard
@@ -93,7 +92,7 @@ export function hazardsForMode(modeId) {
 }
 
 /**
- * CHECKLIST §2 (S): "Mission mode changes which … advice is shown".
+ * Mission mode changes which … advice is shown.
  *
  * The mode's advice (how to work with Earth given the delay), plus the Earth link it is
  * based on. Advice is an ATHENA design choice and says so.

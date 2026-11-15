@@ -1,4 +1,4 @@
-// Health score 0–100 (docs/CHECKLIST.md › 2. Logic, item 4).
+// Health score 0–100.
 // Pure logic: no React, DOM, database or Node-only APIs.
 // Formula, caps and bands: docs/DECISIONS.md › Health Score.
 
@@ -43,7 +43,7 @@ export const SCORE_BANDS = Object.freeze([
  */
 
 /**
- * CHECKLIST §2: "Health score 0–100 per astronaut (100 = perfect)".
+ * Health score 0–100 per astronaut (100 = perfect).
  *
  * Each linked group gets a sub-score: red limit ("urgent" band) today = 0; drifting =
  * 80 − 20 × (z − 3.5), floored at 20; expected adaptation = 90; steady = 100. Groups
@@ -124,7 +124,7 @@ export function scoreBand(score) {
 }
 
 /**
- * CHECKLIST §2: "…with the change since yesterday and over 7 days".
+ * Change in the health score since yesterday and over 7 days.
  *
  * @param {ReadonlyArray<{ day: number, score: number | null }>} scores One entry per day.
  * @param {number} day

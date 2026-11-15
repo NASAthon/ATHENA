@@ -1,4 +1,4 @@
-// Trends (docs/CHECKLIST.md › 3. Trends): the numbers behind the charts.
+// Trends: the numbers behind the charts.
 // Pure logic: no React, DOM, database or Node-only APIs.
 //
 // - driftBand(): the range a 7-day average can move in before it counts as drifting, from a

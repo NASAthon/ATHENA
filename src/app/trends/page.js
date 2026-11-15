@@ -1,6 +1,6 @@
 "use client";
 
-// Trends (CHECKLIST §3 › Trends; team design, 14 Nov). For the astronaut selected in the header:
+// Trends. For the astronaut selected in the header:
 // - one chart per indicator across the mission: 7-day average, pre-flight and in-flight normal
 //   bands, the baseline window and drifting periods (TrendChart, numbers from src/lib/engine/trends.js);
 // - a day slider to move through the stored mission (demo fast-forward);

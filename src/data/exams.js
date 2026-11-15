@@ -1,4 +1,4 @@
-// Periodic exams named on NASA risk pages (for the mission calendar, CHECKLIST section 3).
+// Periodic exams named on NASA risk pages (for the mission calendar).
 // The NASA pages don't state how often these happen in flight, so `interval` is an
 // ATHENA design choice for the demo (basis: "design"). Change it freely.
 

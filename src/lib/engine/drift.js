@@ -1,8 +1,8 @@
-// Drift z-score (docs/CHECKLIST.md › 2. Logic, items 5 and 7).
+// Drift z-score.
 // Pure logic: no React, DOM, database or Node-only APIs.
 
 /**
- * CHECKLIST §2: "Drift cut-off of z = 3.5". A design choice, not a clinical standard
+ * Drift cut-off of z = 3.5. A design choice, not a clinical standard
  * (DECISIONS › Drift Cut-off; also stated in README › Drift detection).
  */
 export const DRIFT_CUTOFF = 3.5;
@@ -19,7 +19,7 @@ export const DRIFT_CUTOFF = 3.5;
  */
 
 /**
- * CHECKLIST §2: "Z-score of the seven-day average against the in-flight baseline".
+ * Z-score of the seven-day average against the in-flight baseline.
  *
  * Implements the locked formula (DECISIONS › Drift Cut-off):
  *

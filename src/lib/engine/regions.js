@@ -1,4 +1,4 @@
-// Region mapper (docs/CHECKLIST.md › 2. Logic, S item "Region mapper").
+// Region mapper.
 // Pure logic: no React, DOM, database or Node-only APIs.
 //
 // The indicator-to-region table is the `indicators` list of each region in
@@ -10,7 +10,7 @@ import { REGIONS } from "../../data/index.js";
 export const REGION_STATUSES = Object.freeze(["red_limit", "drifting", "expected_adaptation", "steady", "no_data"]);
 
 /**
- * CHECKLIST §2 (S): "Region mapper: indicator-to-body-region table and worst-status function".
+ * Region mapper: indicator-to-body-region table and worst-status function.
  *
  * Worst status among a region's indicators: a red limit on today's reading beats
  * drifting, which beats expected adaptation, then steady. A region with no data, or

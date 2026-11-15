@@ -1,4 +1,4 @@
-// One Trends chart (CHECKLIST §3 › Trends): a plain SVG, no chart library (DECISIONS › Charts).
+// One Trends chart: a plain SVG, no chart library (DECISIONS › Charts).
 // Shows an indicator's 7-day average across the mission with:
 // - the pre-flight and in-flight "normal" bands (driftBand in src/lib/engine/trends.js). Leaving
 //   the in-flight band in the worrying direction is exactly what the engine calls drifting;

@@ -16,8 +16,8 @@ import {
 import { MISSION_DAYS, simulateAstronaut } from "@/lib/sim/simulator";
 import { focusRing } from "@/lib/ui";
 
-// Scenario Lab (CHECKLIST §2 S item "inject radiation, fatigue, sleep loss or hypoxia into the
-// data and watch the alerts react"). Works on a COPY of the simulated mission: nothing here
+// Scenario Lab: inject radiation, fatigue, sleep loss or hypoxia into the data and watch
+// the alerts react. Works on a COPY of the simulated mission: nothing here
 // changes stored crew data. All health logic is the engine's (src/lib/engine); this page
 // only picks the inputs and shows the before/after results.
 

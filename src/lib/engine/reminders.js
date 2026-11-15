@@ -1,4 +1,4 @@
-// Reminder scheduler (docs/CHECKLIST.md › 2. Logic, item 14).
+// Reminder scheduler.
 // Pure logic: no React, DOM, database or Node-only APIs.
 
 import { INDICATORS } from "../../data/index.js";
@@ -40,7 +40,7 @@ function isRecorded(field, value) {
 }
 
 /**
- * CHECKLIST §2: "Reminder scheduler: which measurements are due today".
+ * Reminder scheduler: which measurements are due today.
  *
  * Returns the scheduled measurements that today's record doesn't have yet, in schedule
  * order (content indicator ids, plus "symptoms"). With no record at all, everything due

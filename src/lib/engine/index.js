@@ -1,4 +1,4 @@
-// ATHENA logic engine (docs/CHECKLIST.md › 2. Logic): one import for the app.
+// ATHENA logic engine: one import for the app.
 // import { calculateMissionBaselines, evaluateMission } from "@/lib/engine";
 //
 // Everything here is plain JavaScript with no React, DOM, database or network use,

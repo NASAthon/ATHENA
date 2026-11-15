@@ -1,4 +1,4 @@
-// Baseline calculator and mission baselines (docs/CHECKLIST.md › 2. Logic, items 1–2).
+// Baseline calculator and mission baselines.
 //
 // Mean and standard deviation per indicator over a FIXED window of mission days
 // (docs/DECISIONS.md › Baselines: fixed, not rolling). The same function computes
@@ -75,8 +75,8 @@ export const BASELINE_MIN_READINGS = 10;
 const ABSOLUTE_MIN_READINGS = 2;
 
 /**
- * CHECKLIST §2: "Baseline calculator: mean and standard deviation per indicator for a
- * fixed window".
+ * Baseline calculator: mean and standard deviation per indicator for a
+ * fixed window.
  *
  * Calculates a fixed baseline (mean and sample standard deviation) for each
  * requested indicator, using only records whose mission day falls inside the window.
@@ -231,9 +231,9 @@ function validateArguments(records, indicators, window, minReadings, dayKey) {
  */
 
 /**
- * CHECKLIST §2: "Pre-flight baseline and in-flight baseline (for example mission days
- * 21–35) both calculated once and stored". This function does the calculating; saving
- * the result is CHECKLIST §1 ("Save and load the two baselines"). Both baselines are
+ * Pre-flight baseline and in-flight baseline (for example mission days
+ * 21–35) both calculated once and stored. This function does the calculating; saving
+ * the result is the storage layer's job (src/lib/db). Both baselines are
  * FIXED (DECISIONS › Baselines): call this once per astronaut, store the result, and
  * never recompute it from later days.
  *

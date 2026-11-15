@@ -1,7 +1,7 @@
-// Status per indicator (docs/CHECKLIST.md › 2. Logic, item 6).
+// Status per indicator.
 // Pure logic: no React, DOM, database or Node-only APIs.
 //
-// The four statuses (CHECKLIST §2):
+// The four statuses:
 // - no_data: fewer than 4 readings in the last 7 days, or no usable baseline.
 // - drifting: the 7-day average has moved ≥ 3.5 z from the IN-FLIGHT baseline in
 //   the worrying direction (DECISIONS › Drift Cut-off). Only possible after the
@@ -34,7 +34,7 @@ export const STATUSES = Object.freeze(["no_data", "steady", "expected_adaptation
  */
 
 /**
- * CHECKLIST §2: "Status per indicator: no data, steady, drifting, expected adaptation".
+ * Status per indicator: no data, steady, drifting, expected adaptation.
  *
  * @param {ReadonlyArray<Object<string, unknown>>} records Daily records for ONE astronaut,
  *   up to and including `day` (later records are ignored by the 7-day window anyway).

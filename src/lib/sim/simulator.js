@@ -1,5 +1,5 @@
-// Mission simulator (docs/CHECKLIST.md › 1. "Mission simulator: 180 days for 3 crew" and
-// "Simulator adds realistic day-to-day noise and one or two harmless bad days").
+// Mission simulator: 180 days for 3 crew, with realistic day-to-day noise and one or two
+// harmless bad days.
 // Pure logic: no React, DOM, database or network. Deterministic: the same seed always
 // gives exactly the same mission, so the demo is repeatable.
 //
@@ -98,7 +98,7 @@ const FORMAT = Object.freeze({
 export const SIMULATED_CREW = Object.freeze(Object.keys(PROFILES));
 
 /**
- * CHECKLIST §1: "Mission simulator: 180 days for 3 crew".
+ * Mission simulator: 180 days for 3 crew.
  *
  * Simulates one astronaut's daily records from day −30 to day 180 (no record on launch
  * day 0, and a few missed days). Each record has `missionDay`, every profile field, and

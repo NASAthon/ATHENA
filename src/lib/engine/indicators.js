@@ -1,12 +1,11 @@
-// Indicator settings used by the logic engine (docs/CHECKLIST.md › 2. Logic).
+// Indicator settings used by the logic engine.
 //
 // Health content (names, units, thresholds, sources, keywords) lives in src/data and
 // is never repeated here (AGENTS.md: "Never hard-code health text or numbers").
 // This file only holds what the engine needs on top of it: which daily-record fields
 // hold each indicator, the worrying direction for drift, and the minimum spread.
 //
-// Daily-record field names are an ASSUMPTION until CHECKLIST §1 "Daily record defined"
-// is done (camelCase; units as in src/data/indicators.js). Change them here only.
+// Daily-record field names (camelCase; units as in src/data/indicators.js). Change them here only.
 
 import { INDICATORS } from "../../data/index.js";
 
