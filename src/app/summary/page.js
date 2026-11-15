@@ -13,6 +13,10 @@ import { DRIFT_INDICATORS, ESCALATION_DAYS, IN_FLIGHT_WINDOW, buildSurgeonSummar
 import { useTodayEvaluation } from "@/components/useTodayEvaluation";
 import { useMissionMode } from "@/components/MissionModeProvider";
 import MissionCommunications from "@/components/MissionCommunications";
+import { useLive } from "@/components/LiveProvider";
+import { useCrew } from "@/components/CrewProvider";
+import { LIVE_STYLE, LiveStateBadge } from "@/components/LiveUI";
+import { timeText } from "@/lib/live/stream";
 import { focusRing } from "@/lib/ui";
 
 const nameOf = Object.fromEntries(INDICATORS.map((i) => [i.id, i.name]));
@@ -29,6 +33,9 @@ const ALERT_TEXT = {
 export default function SummaryPage() {
   const { state, today, member, evaluation, records, baselines } = useTodayEvaluation();
   const { modeId, mode } = useMissionMode();
+  const live = useLive();
+  const { crewId } = useCrew();
+  const snap = live.active && live.day === today ? live.crew[crewId] : null;
   if (state !== "ready" || !evaluation) {
     return (
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-3">
@@ -50,7 +57,20 @@ export default function SummaryPage() {
     );
   }
 
-  const summary = buildSurgeonSummary({ astronaut: member.name, evaluation, missionModeId: modeId });
+  const base = buildSurgeonSummary({ astronaut: member.name, evaluation, missionModeId: modeId });
+  // What the live feed has flagged today (not routine "back to normal" or exercise notes), newest first.
+  const liveFlags = snap ? snap.events.filter((e) => ["deteriorating", "critical", "no_data"].includes(e.state)).slice(-6).reverse() : [];
+  const summary = snap
+    ? {
+        ...base,
+        lines: [
+          ...base.lines,
+          "",
+          `Live sensor feed (simulated), ${timeText(snap.minute)}: ${LIVE_STYLE[snap.overall]?.label ?? snap.overall} | confidence ${snap.confidence.level} | ${snap.sensor}`,
+          ...(liveFlags.length ? liveFlags.map((e) => `- ${timeText(e.minute)} ${e.text}`) : ["- Nothing flagged today"]),
+        ],
+      }
+    : base;
   const link = earthLink(modeId);
   const hazards = likelyHazards([...new Set(summary.drifting.map((d) => groupOf[d.key]))]);
   const red = summary.limitBreaches.filter((b) => b.level === "urgent");
@@ -121,6 +141,36 @@ export default function SummaryPage() {
           )}
         </section>
       </div>
+
+      {snap && (
+        <section className={`${card} mt-2`} aria-labelledby="live-heading">
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 id="live-heading" className="text-sm uppercase tracking-wider text-muted-foreground">
+              Live sensor feed today | {timeText(snap.minute)}
+            </h2>
+            <LiveStateBadge state={snap.overall} size="sm" />
+            <span className="text-sm text-muted-foreground">
+              Confidence {snap.confidence.level.toLowerCase()} | {snap.sensor} | simulated
+            </span>
+          </div>
+          {liveFlags.length === 0 ? (
+            <p className="mt-2">Nothing flagged by the live feed today.</p>
+          ) : (
+            <ul className="mt-2 space-y-1">
+              {liveFlags.map((e) => (
+                <li key={`${e.minute}-${e.text}`} className="flex flex-wrap items-center gap-2">
+                  <span className="w-12 font-semibold tabular-nums">{timeText(e.minute)}</span>
+                  <LiveStateBadge state={e.state} size="sm" />
+                  <span>{e.text}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          <Link href="/live" className={`mt-2 inline-flex min-h-11 items-center rounded-lg border border-input px-4 hover:bg-accent ${focusRing}`}>
+            Open the Live Monitor
+          </Link>
+        </section>
+      )}
 
       {summary.limitBreaches.length > 0 && (
         <section className={`${card} mt-2`} aria-labelledby="readings-heading">

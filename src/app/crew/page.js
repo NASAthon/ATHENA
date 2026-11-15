@@ -20,6 +20,7 @@ import MissionDataPanel from "@/components/MissionDataPanel";
 import LiveDemoControls from "@/components/LiveDemoControls";
 import { useLive } from "@/components/LiveProvider";
 import { LiveStateBadge } from "@/components/LiveUI";
+import { liveTodayKey } from "@/lib/live/recordSync";
 import { focusRing } from "@/lib/ui";
 
 const nameOf = Object.fromEntries(INDICATORS.map((i) => [i.id, i.name]));
@@ -129,13 +130,15 @@ export default function Crew() {
   const { setCrewId } = useCrew();
   const { db, status, today, version } = useMissionData();
   const { mode } = useMissionMode();
-  const live = useLive();
 
+  const live = useLive();
+  const liveOn = live.active && live.day === today;
+  const liveKey = liveOn ? CREW.map((m) => liveTodayKey(live.crew[m.id])).join(";") : "";
   const results = useMemo(
-    () => (db && today !== null ? Object.fromEntries(CREW.map((m) => [m.id, evaluateStored(db, m.id, today)])) : null),
+    () => (db && today !== null ? Object.fromEntries(CREW.map((m) => [m.id, evaluateStored(db, m.id, today, liveOn ? live.crew[m.id] : null)])) : null),
     // version changes after every save, so everything is recalculated.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [db, today, version],
+    [db, today, version, liveKey],
   );
 
   return (

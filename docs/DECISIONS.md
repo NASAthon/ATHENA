@@ -1060,6 +1060,15 @@ pressure, SpO₂, breathing, skin temperature) and ATHENA evaluates every new mi
   are written into his day-129 record (`pendingRecordFields`, once only), so Today, Crew, the banner and Summary
   turn critical at the same moment as the Live Monitor. "Load demo mission" restarts the live day at 08:00, and
   "Jump to next event" always moves on (`nextJumpTarget`).
+- **Live roll-up (15 Nov):** today's heart rate, blood pressure and SpO₂ on every screen are the live
+  feed's average so far (`liveTodayRecord`, a view, not saved), so Today, Body, Trends, Summary, Crew and the
+  score move with the Live Monitor. Values a live event wrote (Nakamura's red-limit reading) are kept. At
+  midnight the finished day's record is saved with the whole day's averages. Today's vital cards show the
+  live value first, then the average so far. Summary adds a "Live sensor feed today" section (also in the
+  report text) and Body shows the live picture.
+- **Moving charts:** between whole minutes the shown value and the charts glide towards the next reading,
+  so the screen moves every second even at 1×; states and alerts still change only on whole minutes. The
+  header clock shows seconds at 1×.
 - **Clearly simulated:** "Simulated sensor feed" on the Live Monitor and demo labels on every screen.
 - **Accessible:** state = icon + label + colour, charts are decorative with the value as text, 44 px
   targets, the live dot stops pulsing with "reduce motion".

@@ -7,6 +7,8 @@ import BodyMap from "@/components/BodyMap";
 import RegionCard from "@/components/RegionCard";
 import { useCrew } from "@/components/CrewProvider";
 import { useTodayEvaluation } from "@/components/useTodayEvaluation";
+import { useLive } from "@/components/LiveProvider";
+import { LiveStateBadge } from "@/components/LiveUI";
 import { getRegionStatuses, regionInputFromEvaluation } from "@/lib/regionStatus";
 import { REGIONS } from "@/data";
 import { focusRing } from "@/lib/ui";
@@ -18,6 +20,8 @@ import { focusRing } from "@/lib/ui";
 function BodyPage() {
   const { crewId, member } = useCrew();
   const { state, evaluation, records, baselines, today } = useTodayEvaluation();
+  const live = useLive();
+  const snap = live.active && live.day === today ? live.crew[crewId] : null;
   const requested = useSearchParams().get("region");
   const requestedId = REGIONS.some((r) => r.id === requested) ? requested : null;
 
@@ -48,6 +52,12 @@ function BodyPage() {
           {today != null && ` | Day ${today}`}
         </span>
       </h1>
+      {snap && (
+        <p className="mt-1 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+          Live picture:
+          <LiveStateBadge state={snap.overall} size="sm" />| heart, blood pressure and SpO₂ use today&apos;s live average so far | {snap.sensor} | simulated
+        </p>
+      )}
       {state === "empty" && (
         <p className="mt-2 text-muted-foreground">
           No mission data stored yet, so every region shows &quot;No recent data&quot;. Load the demo mission on the{" "}

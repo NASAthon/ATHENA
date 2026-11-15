@@ -46,7 +46,7 @@ function Tile({ measure, snap, onGuide }) {
         {m.reading ? m.text.replace(` ${measure.unit}`, "") : "—"}{" "}
         <span className="text-sm font-normal text-muted-foreground">{measure.unit}</span>
       </p>
-      <Sparkline series={m.series} band={m.band} colour={highlight ? style.colour : "var(--status-steady)"} />
+      <Sparkline series={m.series} next={m.next} shift={m.shift} band={m.band} colour={highlight ? style.colour : "var(--status-steady)"} />
       <p className="text-xs" style={{ color: highlight ? style.colour : "var(--muted-foreground)" }}>
         {note}
       </p>

@@ -82,25 +82,41 @@ function IndicatorCard({ id, group, record, baselines, flag, live }) {
     <article className="flex min-h-32 flex-col rounded-xl border border-border bg-card p-3 xl:min-h-28" style={flag ? { borderColor: "var(--status-amber)" } : undefined}>
       <div className="flex items-start justify-between gap-2">
         <h3 className="text-base text-muted-foreground">{byId[id].name}</h3>
-        {readingOnly ? <StatusPill status="no_data" label="Reading only" /> : <StatusPill status={group?.status ?? "no_data"} />}
+        {readingOnly ? (
+          <StatusPill status="no_data" label="Reading only" />
+        ) : live?.reading && (group?.status ?? "no_data") === "no_data" ? (
+          <StatusPill status="no_data" label="Live only" />
+        ) : (
+          <StatusPill status={group?.status ?? "no_data"} />
+        )}
       </div>
-      <p className="mt-2 text-xl font-bold">
-        {value ?? "—"} {value && <span className="text-base font-normal text-muted-foreground">{unit}</span>}
-      </p>
-      {live && (
-        <div className="mt-1 text-sm">
-          <p className="flex flex-wrap items-center gap-x-2">
-            <span className="font-semibold">Now {live.text}</span>
-            <span className="inline-flex items-center gap-1" style={{ color: "var(--status-live)" }}>
+      {live?.reading ? (
+        <>
+          <p className="mt-2 flex flex-wrap items-center gap-x-2 text-xl font-bold">
+            <span className="tabular-nums">{live.text.replace(` ${unit}`, "")}</span>
+            <span className="text-base font-normal text-muted-foreground">{unit}</span>
+            <span className="inline-flex items-center gap-1 text-sm font-normal" style={{ color: "var(--status-live)" }}>
               <span aria-hidden="true" className="size-2 rounded-full bg-current motion-safe:animate-pulse" />
               live
             </span>
             {live.state !== "stable" && <LiveStateBadge state={live.state} size="sm" />}
           </p>
-          <p className="text-muted-foreground">
+          <p className="mt-1 text-sm text-muted-foreground">
             Today&apos;s average so far: {averageText(id, live.averageSoFar) ?? "—"} {live.averageSoFar && unit}
+            {value && value.replace(/\s/g, "") !== averageText(id, live.averageSoFar) && ` | recorded: ${value} ${unit}`}
           </p>
-        </div>
+        </>
+      ) : (
+        <>
+          <p className="mt-2 text-xl font-bold">
+            {value ?? "—"} {value && <span className="text-base font-normal text-muted-foreground">{unit}</span>}
+          </p>
+          {live && (
+            <p className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+              <LiveStateBadge state="no_data" size="sm" /> No live signal: last stored value shown
+            </p>
+          )}
+        </>
       )}
       {flag && (
         <p className="mt-1 flex items-center gap-1 text-sm font-semibold" style={{ color: "var(--status-amber)" }}>

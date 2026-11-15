@@ -2,7 +2,8 @@
 // It runs in real time by default; the presenter's demo controls on the Crew page can speed it up,
 // pause it or jump to the next scripted moment. Pure logic plus one database helper (rollOverDay).
 
-import { DAY_MINUTES, SCRIPT, SCRIPTED_DAY } from "./stream.js";
+import { DAY_MINUTES, SCRIPT, SCRIPTED_DAY, liveDay, liveSnapshot } from "./stream.js";
+import { liveTodayRecord } from "./recordSync.js";
 import { DEMO_SEED, MISSION_DAYS, simulateAstronaut } from "../sim/simulator.js";
 
 /** Meta key the clock is saved under, so a reload carries on where it left off. */
@@ -76,16 +77,24 @@ export function nextJumpTarget(clock) {
 }
 
 /**
- * Midnight roll-up: saves the next day's daily record for each astronaut (the simulated summary of
- * that day's sensor feed, from the same seeded simulator) and moves "today" on, so Today, Trends,
- * Body, Calendar and Summary all move to the new day.
+ * Midnight roll-up. First the day that just ended is closed: its heart rate, blood pressure and SpO₂
+ * become that day's live-feed averages (values a live event wrote, like a red-limit reading, are kept),
+ * so the history matches what the Live Monitor showed. Then the next day's record is saved (the
+ * simulated summary of the sleep, glucose, temperature and exercise sensors, from the same seeded
+ * simulator) and "today" moves on, so Today, Trends, Body, Calendar and Summary all move to the new day.
  *
  * @param {import("../db/database.js").AthenaDatabase} db
  * @param {ReadonlyArray<string>} crewIds
  * @param {number} newDay
  */
 export async function rollOverDay(db, crewIds, newDay, { seed = DEMO_SEED } = {}) {
+  const ended = newDay - 1;
   for (const id of crewIds) {
+    const done = db.loadDailyRecords(id, { fromDay: ended, toDay: ended })[0];
+    if (done) {
+      const snapshot = liveSnapshot(liveDay(id, ended, db.loadMissionBaselines(id), { seed }), DAY_MINUTES - 1);
+      await db.saveDailyRecord(id, liveTodayRecord(done, snapshot));
+    }
     const exists = db.loadDailyRecords(id, { fromDay: newDay, toDay: newDay }).length > 0;
     if (exists) continue;
     const record = simulateAstronaut(id, { seed, fromDay: newDay, toDay: newDay })[0];

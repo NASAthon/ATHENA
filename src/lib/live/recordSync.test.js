@@ -35,3 +35,20 @@ test("symptoms are added, never removed", () => {
   const fields = pendingRecordFields([{ record: { symptoms: ["chest-pain"] } }], { symptoms: ["headache"] });
   assert.deepEqual(fields.symptoms.sort(), ["chest-pain", "headache"]);
 });
+
+test("liveTodayRecord: today's vitals follow the live average, event values are kept", async () => {
+  const { liveTodayRecord, liveTodayKey } = await import("./recordSync.js");
+  const nakamura = liveDay("nakamura", 129, null);
+  const stored = { missionDay: 129, heartRate: 60, bpSystolic: 110, bpDiastolic: 70, sleepHours: 7 };
+  const morning = liveTodayRecord(stored, liveSnapshot(nakamura, 10 * 60));
+  assert.equal(morning.sleepHours, 7);
+  assert.notEqual(morning.heartRate, 60);
+  assert.ok(Number.isInteger(morning.spo2));
+  // After the red-limit event its values have been written to the record, and the overlay keeps them.
+  const afterEvent = { ...stored, bpSystolic: 182, bpDiastolic: 111, heartRate: 108 };
+  const later = liveTodayRecord(afterEvent, liveSnapshot(nakamura, 15 * 60));
+  assert.deepEqual([later.bpSystolic, later.bpDiastolic, later.heartRate], [182, 111, 108]);
+  assert.equal(liveTodayRecord(null, liveSnapshot(nakamura, 600)), null);
+  assert.equal(liveTodayRecord(stored, null), stored);
+  assert.notEqual(liveTodayKey(liveSnapshot(nakamura, 600)), liveTodayKey(liveSnapshot(nakamura, 900)));
+});
