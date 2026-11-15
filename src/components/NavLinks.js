@@ -6,8 +6,8 @@ import {
   Activity,
   CalendarDays,
   ChartNoAxesCombined,
-  ClipboardCheck,
   FileText,
+  HeartPulse,
   FlaskConical,
   ScanLine,
   Timer,
@@ -19,7 +19,7 @@ import { appPathname } from "@/lib/basePath";
 // Main navigation: the checklist screens plus Izabela's additions (PR #8).
 const navItems = [
   { href: "/today", label: "Today", Icon: Activity },
-  { href: "/daily-check", label: "Daily check", Icon: ClipboardCheck },
+  { href: "/live", label: "Live Monitor", Icon: HeartPulse },
   { href: "/reaction-test", label: "Reaction test", Icon: Timer },
   { href: "/trends", label: "Trends", Icon: ChartNoAxesCombined },
   { href: "/body", label: "Body", Icon: ScanLine },

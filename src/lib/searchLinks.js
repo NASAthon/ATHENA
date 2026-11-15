@@ -5,8 +5,8 @@ import { EMERGENCIES, EXAMS, HAZARDS, INDICATORS, MISSION_MODES, REGIONS, RISKS,
 
 const find = (list, id) => list.find((x) => x.id === id);
 
-// Indicators whose measurement guide is on the Daily check (its "How to measure" panel).
-const DAILY_CHECK_GUIDES = new Set(["sleep", "heartRate", "bloodPressure", "glucose", "temperature", "exercise", "spo2", "mood"]);
+// Indicators whose measurement guide opens on the Live Monitor (its "How it's measured" panel).
+const LIVE_GUIDES = new Set(["sleep", "heartRate", "bloodPressure", "glucose", "temperature", "exercise", "spo2", "mood"]);
 
 /**
  * @param {{ id: string, type: string, title: string }} hit A result from search().
@@ -32,7 +32,7 @@ export function describeHit(hit) {
     case "indicator": {
       const i = find(INDICATORS, id);
       const href =
-        id === "reaction" ? "/reaction-test" : DAILY_CHECK_GUIDES.has(id) ? `/daily-check?guide=${id}` : `/body?region=${i?.region ?? ""}`;
+        id === "reaction" ? "/reaction-test" : LIVE_GUIDES.has(id) ? `/live?guide=${id}` : `/body?region=${i?.region ?? ""}`;
       return { href, typeLabel: "Measurement guide", glance: i?.glance ?? "", emergency: false };
     }
     case "bodyPart": {

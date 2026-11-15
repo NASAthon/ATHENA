@@ -92,6 +92,7 @@
   --status-adapted: #b4aeff;
   --status-steady: #6fb7ff;
   --status-nodata: #a3aec2;
+  --status-live: #4ade80; /* live-feed indicator dot (green = feed running) */
 }
 
 @layer base {

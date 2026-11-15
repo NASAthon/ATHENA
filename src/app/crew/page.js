@@ -2,7 +2,9 @@
 
 // Crew status (design and layout by the team, PR #23). Every number and sentence comes from the
 // astronauts' STORED data evaluated by the logic engine; nothing is hard-coded (AGENTS.md: no health text or
-// numbers in components). Demo controls are the real Load demo mission / Reset data panel.
+// numbers in components). Each card also shows the live state from the simulated sensor feed.
+// Demo controls (for presenting only): live clock speed, pause, jump to the next event, and the
+// real Load demo mission / Reset data panel.
 
 import { useMemo } from "react";
 import Link from "next/link";
@@ -15,6 +17,9 @@ import { useMissionData } from "@/components/MissionDataProvider";
 import { useMissionMode } from "@/components/MissionModeProvider";
 import { evaluateStored } from "@/components/useTodayEvaluation";
 import MissionDataPanel from "@/components/MissionDataPanel";
+import LiveDemoControls from "@/components/LiveDemoControls";
+import { useLive } from "@/components/LiveProvider";
+import { LiveStateBadge } from "@/components/LiveUI";
 import { focusRing } from "@/lib/ui";
 
 const nameOf = Object.fromEntries(INDICATORS.map((i) => [i.id, i.name]));
@@ -60,7 +65,7 @@ function describe(member, evaluation) {
   return { text, href: "/today", button: `Open ${firstName}`, urgent: false };
 }
 
-function CrewCard({ member, result, onOpen }) {
+function CrewCard({ member, result, onOpen, snap }) {
   if (result.state !== "ready" || !result.evaluation) {
     return (
       <article className="flex flex-col rounded-3xl border border-border bg-card p-3">
@@ -99,6 +104,13 @@ function CrewCard({ member, result, onOpen }) {
           </p>
         </div>
       </div>
+      {snap && (
+        <p className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+          <span className="font-semibold">Live now:</span>
+          <LiveStateBadge state={snap.overall} size="sm" />
+          <span className="text-muted-foreground">| confidence {snap.confidence.level.toLowerCase()}</span>
+        </p>
+      )}
       <p className="mt-2 flex-1 text-base">{info.text}</p>
       <Link
         href={info.href}
@@ -117,6 +129,7 @@ export default function Crew() {
   const { setCrewId } = useCrew();
   const { db, status, today, version } = useMissionData();
   const { mode } = useMissionMode();
+  const live = useLive();
 
   const results = useMemo(
     () => (db && today !== null ? Object.fromEntries(CREW.map((m) => [m.id, evaluateStored(db, m.id, today)])) : null),
@@ -138,30 +151,30 @@ export default function Crew() {
       ) : (
         <div className="mt-2 grid auto-rows-fr gap-2 lg:grid-cols-3">
           {CREW.map((m) => (
-            <CrewCard key={m.id} member={m} result={results?.[m.id] ?? { state: "empty" }} onOpen={() => setCrewId(m.id)} />
+            <CrewCard key={m.id} member={m} result={results?.[m.id] ?? { state: "empty" }} onOpen={() => setCrewId(m.id)} snap={live.active ? live.crew[m.id] : null} />
           ))}
         </div>
       )}
 
-      <details className="mt-2 rounded-xl border border-dashed border-border p-3">
-        <summary className={`flex min-h-11 cursor-pointer items-center font-bold ${focusRing}`}>
-          Demo and backup controls
-        </summary>
-        <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+      <section aria-labelledby="demo-heading" className="mt-2 rounded-xl border-2 border-dashed border-border p-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h2 className="text-base font-bold">
-              Demo controls
+            <h2 id="demo-heading" className="text-base font-bold">
+              Demo controls <span className="font-normal text-muted-foreground">| For presenting only</span>
             </h2>
-            <p className="text-muted-foreground">All crew data is simulated. Reload the demo mission, clear it, or try events in the Scenario Lab.</p>
+            <p className="text-muted-foreground">All crew data and the live feed are simulated. In flight the clock just runs in real time.</p>
           </div>
           <Link href="/scenario-lab" className={`inline-flex min-h-11 items-center gap-2 rounded-xl border border-input px-4 hover:bg-accent ${focusRing}`}>
             <FlaskConical className="size-5" aria-hidden="true" /> Scenario Lab
           </Link>
         </div>
-        <div className="mt-2">
+        <div className="mt-3">
+          <LiveDemoControls />
+        </div>
+        <div className="mt-3">
           <MissionDataPanel />
         </div>
-      </details>
+      </section>
     </main>
   );
 }

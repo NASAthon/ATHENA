@@ -1,5 +1,5 @@
 // Saving from the app (docs/CHECKLIST.md › 1. Data and storage):
-// - today's check-in (Daily check and Reaction test both add to the same daily record),
+// - today's check-in (the one-minute check, extra check and Reaction test all add to the same daily record),
 // - the check-in streak (worked out from the stored records),
 // - periodic exam results (exams from src/data/exams.js).
 //
@@ -20,7 +20,7 @@ const hasValue = (v) => v !== undefined && v !== null && v !== "";
 /**
  * Adds today's new readings to the astronaut's stored record for `missionDay` and saves it.
  * Fields left empty keep any value already stored today (e.g. the reaction test result stays
- * when the Daily check is saved). If `fields` includes a symptoms list, it replaces today's list.
+ * when the one-minute check is saved). If `fields` includes a symptoms list, it replaces today's list.
  * The merged record is checked with validateRecord() first; nothing is saved if it fails.
  *
  * @param {import("./db/database.js").AthenaDatabase} db

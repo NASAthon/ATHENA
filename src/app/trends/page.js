@@ -338,7 +338,7 @@ export default function Trends() {
                 : level === "alert"
                   ? `Drift alert since day ${alertSince}. If it hasn't recovered by day ${alertSince + ESCALATION_DAYS}, tell the crew and send the summary.`
                   : level === "note"
-                    ? "One indicator is drifting: a note, not an alert. Keep doing the daily check."
+                    ? "One indicator is drifting: a note, not an alert. Keep doing the one-minute check."
                     : "No drift alert on this day. Nothing to send."}
             </p>
             {link && <p className="mt-2 text-muted-foreground">Reply from Earth expected {link.replyText}.</p>}

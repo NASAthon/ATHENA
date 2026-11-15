@@ -4,6 +4,7 @@ import CrewSwitcher from "@/components/CrewSwitcher";
 import MissionStatus from "@/components/MissionStatus";
 import NavLinks from "@/components/NavLinks";
 import SearchBox from "@/components/SearchBox";
+import LiveChip from "@/components/LiveChip";
 import { focusRing } from "@/lib/ui";
 
 export default function Header() {
@@ -23,6 +24,8 @@ export default function Header() {
               <MissionStatus />
 
               <CrewSwitcher />
+
+              <LiveChip />
             </div>
 
             <nav aria-label="Main" className="xl:hidden">
