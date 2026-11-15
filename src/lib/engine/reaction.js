@@ -1,8 +1,8 @@
-// Reaction-test scoring (docs/CHECKLIST.md › 2. Logic, item 11).
+// Reaction-test scoring.
 // Pure logic: no React, DOM, database or Node-only APIs. Timing and the test screen
-// itself are CHECKLIST §3; this only scores the results.
+// itself are in src/app/reaction-test/page.js; this only scores the results.
 
-/** A response slower than this many milliseconds is a lapse (CHECKLIST §2: "lapses over 500 ms"). */
+/** A response slower than this many milliseconds is a lapse. */
 export const LAPSE_THRESHOLD_MS = 500;
 
 /**
@@ -15,7 +15,7 @@ export const LAPSE_THRESHOLD_MS = 500;
  */
 
 /**
- * CHECKLIST §2: "Reaction scoring: median, lapses over 500 ms, false starts".
+ * Reaction scoring: median, lapses over 500 ms, false starts.
  *
  * The median is used (not the mean) so one very slow or very fast press doesn't
  * swing the result. False starts are counted separately and never enter the median.

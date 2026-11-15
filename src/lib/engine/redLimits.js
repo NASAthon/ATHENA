@@ -1,4 +1,4 @@
-// Red-limit check (docs/CHECKLIST.md › 2. Logic, items 9 and 10).
+// Red-limit check.
 // Pure logic: no React, DOM, database or Node-only APIs.
 //
 // Every threshold comes from the bands in src/data/indicators.js (their `check` field is
@@ -36,7 +36,7 @@ export const LEVELS = Object.freeze(["normal", "watch", "act", "urgent"]);
  */
 
 /**
- * CHECKLIST §2: "Red-limit check on every new reading, independent of baselines".
+ * Red-limit check on every new reading, independent of baselines.
  *
  * Classifies each indicator in today's reading against its bands in src/data and
  * returns the ones that aren't "normal", most serious first. No baseline is used, so it

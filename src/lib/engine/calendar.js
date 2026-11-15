@@ -1,4 +1,4 @@
-// Calendar scheduler (docs/CHECKLIST.md › 2. Logic, S item "Calendar scheduler").
+// Calendar scheduler.
 // Pure logic: no React, DOM, database or Node-only APIs.
 //
 // The exams and their intervals come from src/data/exams.js. Exams without an
@@ -27,7 +27,7 @@ export const EXAM_SCHEDULE = Object.freeze(
 );
 
 /**
- * CHECKLIST §2 (S): "Calendar scheduler: which periodic exams are due on a given mission day".
+ * Calendar scheduler: which periodic exams are due on a given mission day.
  *
  * An exam is due on `firstDay`, then every `everyDays` after it. Invalid entries are
  * skipped rather than crashing the calendar.

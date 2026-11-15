@@ -1,8 +1,7 @@
 // Day and mission evaluation: runs the logic items together.
 // Pure logic: no React, DOM, database or Node-only APIs.
 //
-// CHECKLIST §2 item 12, "Handles missing days without crashing or false alerts", is
-// met here and in every step below: missing days and values are skipped, fewer than
+// Missing days never cause a crash or a false alert, here and in every step below: missing days and values are skipped, fewer than
 // 4 readings in 7 days gives "no_data" (never "drifting"), and a day without data
 // neither starts nor ends an alert. Covered by evaluate.test.js.
 

@@ -1,11 +1,11 @@
-// Mission simulator (docs/CHECKLIST.md › 1. "Mission simulator: 180 days for 3 crew" and
-// "Simulator adds realistic day-to-day noise and one or two harmless bad days").
+// Mission simulator: 180 days for 3 crew, with realistic day-to-day noise and one or two
+// harmless bad days.
 // Pure logic: no React, DOM, database or network. Deterministic: the same seed always
 // gives exactly the same mission, so the demo is repeatable.
 //
 // SIMULATED DATA (docs/DECISIONS.md › Crew). Every number here is an invented demo value
 // chosen to look plausible, NOT physiology or NASA data, and is always labelled
-// "simulated" in the app. Personal normals follow src/lib/sampleData.js where it gives them.
+// "simulated" in the app.
 // Field names follow the engine's daily record (src/lib/engine/indicators.js › RECORD_FIELDS).
 
 import { DAY_KEY } from "../engine/indicators.js";
@@ -36,7 +36,7 @@ const PROFILES = Object.freeze({
   },
 });
 
-/** Day of Engineer Nakamura's sudden event (matches src/lib/sampleData.js). */
+/** Day of Engineer Nakamura's sudden event. */
 export const NAKAMURA_EVENT_DAY = 129;
 
 /** Day Commander Rivera's slow decline starts (DECISIONS › Crew: "from about week 12"). */
@@ -98,7 +98,7 @@ const FORMAT = Object.freeze({
 export const SIMULATED_CREW = Object.freeze(Object.keys(PROFILES));
 
 /**
- * CHECKLIST §1: "Mission simulator: 180 days for 3 crew".
+ * Mission simulator: 180 days for 3 crew.
  *
  * Simulates one astronaut's daily records from day −30 to day 180 (no record on launch
  * day 0, and a few missed days). Each record has `missionDay`, every profile field, and

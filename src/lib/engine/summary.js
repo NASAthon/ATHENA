@@ -1,5 +1,5 @@
-// Flight-surgeon summary builder (docs/CHECKLIST.md › 2. Logic, S item "Summary builder").
-// Pure logic: no React, DOM, database or Node-only APIs. The one-page screen is CHECKLIST §3.
+// Flight-surgeon summary builder.
+// Pure logic: no React, DOM, database or Node-only APIs. The one-page screen is src/app/summary/page.js.
 
 import { INDICATORS } from "../../data/index.js";
 import { DRIFT_INDICATORS } from "./indicators.js";
@@ -39,7 +39,7 @@ export function driftKeyName(key) {
  */
 
 /**
- * CHECKLIST §2 (S): "Summary builder for the flight-surgeon report".
+ * Summary builder for the flight-surgeon report.
  *
  * Builds the report from one day's evaluation. The reply time comes from the mission
  * mode's sourced Earth-link delay (src/data/missionModes.js), or from

@@ -1,4 +1,4 @@
-// Offline search (docs/CHECKLIST.md › 2. Logic, item 13).
+// Offline search.
 // Pure logic: no React or DOM. Uses MiniSearch (MIT), already installed
 // (docs/DECISIONS.md › Search). Runs fully in the browser with no network.
 //
@@ -140,8 +140,8 @@ export function normaliseQuery(query) {
 }
 
 /**
- * CHECKLIST §2: "Search index: offline fuzzy search over all content (typos, prefixes,
- * synonyms, symptoms)".
+ * Search index: offline fuzzy search over all content (typos, prefixes,
+ * synonyms, symptoms).
  *
  * - Typos ("hart rate") and partial words ("oxy") match through fuzzy and prefix search.
  * - Synonyms and symptoms match through each document's `keywords`.

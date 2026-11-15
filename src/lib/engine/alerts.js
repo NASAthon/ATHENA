@@ -1,7 +1,7 @@
-// Alert level (docs/CHECKLIST.md › 2. Logic, item 8).
+// Alert level.
 // Pure logic: no React, DOM, database or Node-only APIs.
 //
-// DECISIONS › Drift Cut-off and CHECKLIST §2:
+// DECISIONS › Drift Cut-off:
 // - 1 group drifting = "note", 2 or more = "alert".
 // - No recovery after 14 more days = "escalated" (tell crew and ground).
 // - Linked indicators count once: reaction median + lapses are one group, systolic +
@@ -76,8 +76,8 @@ export function countDriftingGroups(groups) {
  */
 
 /**
- * CHECKLIST §2: "Alert level: 1 drifting = note, 2 or more = alert, no recovery after
- * 14 more days = tell crew and ground (linked indicators count once)".
+ * Alert level: 1 drifting = note, 2 or more = alert, no recovery after
+ * 14 more days = tell crew and ground (linked indicators count once).
  *
  * `history` holds the drifting-group count for each evaluated day (null = no data).
  * An alert starts on the first day with 2 or more drifting groups and only ends on a

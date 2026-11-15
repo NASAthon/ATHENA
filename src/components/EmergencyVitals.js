@@ -1,6 +1,6 @@
 "use client";
 
-// "Record vitals" on the Emergency screen (CHECKLIST §3: emergency guidance works for a crewmate:
+// "Record vitals" on the Emergency screen (emergency guidance works for a crewmate:
 // pick the affected astronaut, follow the steps, record vitals). Saves to the AFFECTED astronaut's
 // record for today through useMissionData().saveCheckIn (validated first), then shows the engine's
 // red-limit check (checkReading) so the helper sees straight away if a reading is in a red limit.

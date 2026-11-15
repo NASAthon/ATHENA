@@ -1,5 +1,4 @@
-// Daily record: the one shape every part of ATHENA reads and writes
-// (docs/CHECKLIST.md › 1. Data and storage, "Daily record defined").
+// Daily record: the one shape every part of ATHENA reads and writes.
 //
 // One record = one astronaut's daily check on one mission day.
 // Field names come from the logic engine (src/lib/engine/indicators.js › RECORD_FIELDS),

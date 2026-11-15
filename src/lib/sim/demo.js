@@ -1,4 +1,4 @@
-// "Load demo mission" and "Reset data" (docs/CHECKLIST.md › 1). Plain logic: works with
+// "Load demo mission" and "Reset data". Plain logic: works with
 // the shared database from @/lib/db, so the buttons only need to call these.
 
 import { simulateCrew, DEMO_SEED, NAKAMURA_EVENT_DAY } from "./simulator.js";
@@ -75,7 +75,7 @@ export async function loadDemoMission(db, { today = DEMO_TODAY, seed = DEMO_SEED
 }
 
 /**
- * Removes every record and baseline (CHECKLIST §1 "Reset data").
+ * Removes every record and baseline.
  *
  * @param {import("../db/database.js").AthenaDatabase} db
  */

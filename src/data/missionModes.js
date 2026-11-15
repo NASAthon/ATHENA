@@ -1,4 +1,4 @@
-// Mission modes for the header switch (docs/CHECKLIST.md › Mission mode switch) and the
+// Mission modes for the header switch and the
 // logic engine (src/lib/engine/missionMode.js).
 // Delays are only what NASA sources state (docs/DECISIONS.md › Mission Modes):
 // - ISS: under 1 second (NASA Goddard: "less than a one-second delay").

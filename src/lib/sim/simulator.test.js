@@ -1,5 +1,5 @@
 // The simulated crew must tell the stories in docs/DECISIONS.md › Crew, judged by the real
-// engine with the real content (CHECKLIST §6 tests, at engine level).
+// engine with the real content.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { INDICATORS } from "../../data/index.js";

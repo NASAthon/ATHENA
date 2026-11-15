@@ -9,13 +9,15 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 
 **Repo layout:**
 - **Root:** `AGENTS.md`, `CLAUDE.md` and `README.md` (they must stay at the root, because agents and GitHub look for them there), plus config files.
-- `docs/`: all project context for agents (`context.md`, `CHECKLIST.md`, `DECISIONS.md`, `judging.md`, `SOURCES.md`, `AI_USAGE.md`, `BODY_MAP.md`, `EXISTING_TOOLS.md`, `SUBMISSION.md`).
+- `docs/`: project context for agents (`DECISIONS.md`, `SOURCES.md`, `AI_USAGE.md`, `BODY_MAP.md`).
+  The event-planning docs (brief, build checklist, judging guide, submission answers) were removed after
+  submission and live in git history.
 - `src/`: all app code (`src/app/` pages, `src/components/`, `src/lib/`). Import with `@/`, e.g. `@/lib/utils`.
   - `src/lib/engine/`: **all health logic** (baselines, drift, alerts, red limits, health score, search, and so on).
     Import from `@/lib/engine`. Never put health logic in components. Tests sit next to each file (`*.test.js`).
   - `src/lib/regionStatus.js`: body-map display layer (labels, icons, colours, recent-symptom layer) on top of the engine's status order.
   - `src/lib/sim/`: the seeded mission simulator (`simulateAstronaut`, `simulateCrew`) and `loadDemoMission` / `resetData`.
-    It seeds the on-device database that every screen reads. `src/lib/live/` is the simulated always-on sensor feed and its rules (Live Monitor, Today's live values, alerts; readings always labelled simulated); `src/lib/sampleData.js` (hand-written SIMULATED statuses) is no longer used by any screen. Always label simulated data in the UI.
+    It seeds the on-device database that every screen reads. `src/lib/live/` is the simulated always-on sensor feed and its rules (Live Monitor, Today's live values, alerts; readings always labelled simulated). Always label simulated data in the UI.
   - `src/components/CrewProvider.js`: the selected astronaut, shared by every page (`useCrew()`).
   - **Reading today's status:** `useTodayEvaluation()` (`src/components/useTodayEvaluation.js`) gives the selected
     astronaut's engine evaluation from stored data (score, alert, red limits, statuses). Today, the alert banner, Body and Summary use it.
@@ -30,25 +32,12 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 
 1. `git checkout main && git pull`, then create a branch for the task:
    `git checkout -b feature/<short-name>` (or `fix/<short-name>`). Never commit straight to `main`.
-2. Read these files in this order:
-   1. `docs/context.md`: the official event brief. It covers the rules, submission
-      deliverables, judging rubric, challenge text, NASA data sources and the
-      data caveat. Section 6.1 holds the ATHENA product spec: vision, crew, features
-      and stack.
-   2. `docs/CHECKLIST.md`: what to build and hand in, with priorities (M = must, S = should).
-      Pick your task from here.
-   3. `docs/judging.md`: the official Space Apps submission and judging guide. It
-      covers deadlines, the project page fields, demo limits, AI/SI rules, global
-      eligibility, the 1–5 judging criteria and the 10 global awards. Check work
-      against the criteria (Impact, Creativity, Validity, Relevance, Presentation).
-   4. `docs/DECISIONS.md`: locked decisions. Do not reverse a LOCKED decision.
-   5. `docs/`: `SOURCES.md` (every source used), `AI_USAGE.md` (AI log), `BODY_MAP.md`
-      (verified body regions mapped to the 17 NASA risks and 5 hazards), and other files as they are added.
-3. If two files conflict:
-   - Submission, demo, AI/SI rules and judging: `docs/judging.md` wins.
-   - Challenge, data and citations: the official sections of `docs/context.md` win.
-   - Product scope and architecture: `docs/DECISIONS.md` wins, then `docs/CHECKLIST.md`, then `docs/context.md` Section 6.1.
-   - Anything still unclear: ask the team. Do not guess.
+2. Read these files:
+   1. `README.md`: what ATHENA is, its features, the challenge and the NASA data it uses.
+   2. `docs/DECISIONS.md`: locked decisions. Do not reverse a LOCKED decision.
+   3. `docs/SOURCES.md` (every source used), `docs/AI_USAGE.md` (AI log) and `docs/BODY_MAP.md`
+      (verified body regions mapped to the 17 NASA risks and 5 hazards).
+3. If anything is unclear, ask the team. Do not guess.
 
 ## 2. While working
 
@@ -87,7 +76,7 @@ GitHub is the single source of truth, so always branch from the latest `main`.
   (`docs/DECISIONS.md` › Quick Reference Only). Explain medical terms in brackets (`docs/DECISIONS.md` › Content Style).
 - Track the 6 indicators the official challenge names (heart rate, blood pressure,
   blood glucose, body temperature, sleep hours, mood) before adding extras.
-- The challenge video adds two requirements (`docs/context.md` Section 6.1):
+- The challenge video (Brazilian Space Agency) adds two requirements:
   **emergency guidance** (including for a crewmate) and a **measurement guide for
   every indicator** covering how to take it, why it matters and what to do if it's abnormal.
   Every indicator you add needs its guide.
@@ -103,13 +92,11 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 - Mark assumptions explicitly. Never present an assumption as an official NASA value.
 - The repo is **public**. No secrets, API keys, personal data, or anyone's
   photo, voice or likeness. Some participants may be under 18.
-- Build only during the event (from 09:00, 14 Nov 2026). Do not import
-  pre-existing project code.
 - Ask the team before any hard-to-reverse decision.
 - AI may speed up building but **must not generate the core idea**. AI-generated
   media must never use or modify NASA logos, flags or mission identifiers, and
-  must carry a visible "AI-generated" watermark (`docs/judging.md` 1C.6).
-- Cite every external library, tool, text and image used (`docs/judging.md` 1C.8).
+  must carry a visible "AI-generated" watermark (Space Apps SI rules).
+- Cite every external library, tool, text and image used (Space Apps submission rules).
 - **Licensing: only use what is open source, openly licensed or public domain**,
   so we can name its licence. See `docs/DECISIONS.md` › Licensing. In short:
   - Code libraries, fonts and icons need an open licence (e.g. MIT, Apache-2.0,
@@ -125,14 +112,7 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 
 ## 3. Before finishing a task
 
-1. **Update `docs/CHECKLIST.md` in the same PR** (see the legend at the top of that file):
-   - **Done:** change `- [ ]` to `- [x]` and add `(PR #<number>)` at the end.
-   - **Partly done:** keep `- [ ]` and add `🟡 Partial (PR #<number>): <what's done>; still to do: <what's left>`.
-     This includes items your work only partly covers because they overlap with your task
-     (e.g. you added the search bar but not the search logic).
-   - Check related items in other sections too, since one change often covers several.
-   - Never tick an item that isn't fully working. When a later PR finishes a partial item,
-     replace the 🟡 note with `[x]` and both PR numbers.
+1. Update `README.md` if the change affects features, data or how to run the app.
 2. If you made or changed a decision, add it to `docs/DECISIONS.md` with a reason.
 3. Log how AI was used in `docs/AI_USAGE.md` (required for submission). List
    any AI-generated image or media there, because it must be watermarked or credited.
@@ -161,11 +141,6 @@ may review and merge their own PR, but still go through the checks below.
    - AI use is logged in `docs/AI_USAGE.md`.
 3. Leave comments on anything that fails. If it all passes, approve it and merge
    (`gh pr merge <number> --squash --delete-branch`).
-
-## 4. Build and submission checklist
-
-Everything to build and hand in is in **`docs/CHECKLIST.md`** (sections 1–7, with M/S priorities).
-Pick tasks from it, and tick items off in your PR when they're done.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

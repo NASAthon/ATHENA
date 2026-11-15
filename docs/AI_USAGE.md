@@ -1,6 +1,8 @@
 # AI Usage Log
 
-Required for submission (`docs/judging.md` 1C.6). AI may speed up building but must **not** generate the core idea. Log each meaningful use and keep entries short.
+How AI was used to build ATHENA, as required by the Space Apps rules. AI sped up building but did **not** generate the core idea, which is the team's own. ATHENA itself contains no AI.
+
+Files named below that no longer exist (`docs/CHECKLIST.md`, `docs/SUBMISSION.md`, `docs/judging.md`, `docs/context.md`, `docs/EXISTING_TOOLS.md`) were event-planning documents, and `src/lib/sampleData.js` was unused early sample data; all were removed after submission and remain in git history.
 
 | Date / time | Who | Tool | What it helped with | Files |
 |---|---|---|---|---|
@@ -72,6 +74,7 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 15 Nov 2026 | Chidozie | Claude Code | One alert banner per problem: live and stored banners about the same astronaut merged (most serious shown) | `src/components/AlertBanner.js` |
 | 15 Nov 2026 | Chidozie | Claude Code | Emergency wording follows the Earth delay: on Mars no step waits for mission control (send a message and carry on; radiation shelter follows the onboard monitor) | `src/data/emergencies.js`, `src/lib/engine/missionMode.js`, `src/app/emergency/page.js`, `scripts/check-content.mjs`, tests, `docs/DECISIONS.md` |
 | 15 Nov 2026 | Chidozie | Claude Code | Presentation guide in the submission doc: setup, live demo click path, talking points, Q&A answers, slide and video rules | `docs/SUBMISSION.md` |
+| 15 Nov 2026 | Chidozie | Claude Code | Post-submission docs cleanup: rewrote the README, removed event-planning docs, updated AGENTS, DECISIONS, SOURCES and BODY_MAP references | `*.md`, `docs/*` |
 
 ## AI-generated media
 

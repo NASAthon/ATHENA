@@ -1,4 +1,4 @@
-// Seven-day average (docs/CHECKLIST.md › 2. Logic, item 3).
+// Seven-day average.
 // Pure logic: no React, DOM, database or Node-only APIs.
 
 import { DAY_KEY, readingOrNull } from "./indicators.js";
@@ -19,7 +19,7 @@ export const RECENT_MIN_READINGS = 4;
  */
 
 /**
- * CHECKLIST §2: "Seven-day average per indicator".
+ * Seven-day average per indicator.
  *
  * Averages one indicator over the 7 mission days ending on `day` (day − 6 … day).
  * Missing days and invalid values are skipped, never filled in. With fewer than 4

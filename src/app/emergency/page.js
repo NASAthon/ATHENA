@@ -1,6 +1,6 @@
 "use client";
 
-// Emergency screen (CHECKLIST §3 › Alerts and guidance; DECISIONS › Inclusive Design: "Emergency mode:
+// Emergency screen (DECISIONS › Inclusive Design: "Emergency mode:
 // very few, very large controls, one step on screen at a time").
 // - /emergency            the guides, most urgent first
 // - /emergency?id=<guide> one guide: who needs help (works for a crewmate), signs, ONE step at a time

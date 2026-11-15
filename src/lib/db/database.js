@@ -2,8 +2,7 @@
 // SQLite in the browser via sql.js, saved to IndexedDB after EVERY write, so data
 // survives closing the app and nothing needs a network.
 //
-// Covers CHECKLIST §1 "Save and load the two baselines" (which completes §2 "baselines
-// calculated once and stored"), and the storage half of §1 "Save and load daily records".
+// Saves and loads the two fixed baselines (calculated once, then stored) and the daily records.
 //
 // Plain JavaScript, no React. sql.js and the persistence layer are passed in, so the same
 // code runs in the browser (IndexedDB) and in `node --test` (memory).
@@ -26,7 +25,7 @@ CREATE TABLE IF NOT EXISTS meta (
   value TEXT NOT NULL
 );
 -- One row per astronaut per mission day. The record itself is JSON so its fields can
--- change (CHECKLIST §1 "Daily record defined") without a migration.
+-- change without a migration.
 CREATE TABLE IF NOT EXISTS daily_record (
   astronaut_id TEXT    NOT NULL,
   mission_day  INTEGER NOT NULL,
@@ -441,8 +440,8 @@ export class AthenaDatabase {
   }
 
   /**
-   * CHECKLIST §2: "Pre-flight baseline and in-flight baseline … both calculated once and
-   * stored". Calculates each baseline from the stored records the first time its window
+   * Pre-flight baseline and in-flight baseline … both calculated once and
+   * stored. Calculates each baseline from the stored records the first time its window
    * is complete (`currentDay` past the window's last day), stores it, and from then on
    * only loads it. Later records never change a stored baseline.
    *
@@ -466,7 +465,7 @@ export class AthenaDatabase {
 
   // ---- Reset -----------------------------------------------------------------------
 
-  /** CHECKLIST §1 "Reset data": removes every record and baseline, then saves. */
+  /** Reset data: removes every record and baseline, then saves. */
   async resetAll() {
     await this.write(() => {
       this.db.run("DELETE FROM daily_record");

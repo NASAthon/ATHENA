@@ -1,5 +1,5 @@
-// Likely hazard behind a drift alert (docs/CHECKLIST.md › 3. Alerts and guidance: "Alert card:
-// … likely hazard"). Pure logic: no React, DOM, database or Node-only APIs.
+// Likely hazard behind a drift alert, shown on the alert card.
+// Pure logic: no React, DOM, database or Node-only APIs.
 //
 // Each indicator's measurement guide names ONE NASA hazard that affects it, in
 // `briefAnswers.hazardEffect` ("<Hazard name>: <effect>") in src/data/indicators.js. This
