@@ -75,10 +75,8 @@ The full licence text of every package is in [`THIRD_PARTY_LICENSES.md`](../THIR
 | Next.js | App framework (static export) | MIT | https://github.com/vercel/next.js |
 | React / React DOM | UI library | MIT | https://github.com/facebook/react |
 | Tailwind CSS (+ @tailwindcss/turbopack and @tailwindcss/postcss) | Styling and production CSS compilation | MIT | https://github.com/tailwindlabs/tailwindcss |
-| shadcn/ui (`shadcn` CLI and CSS, `cn`) | UI components copied into `src/components/ui/`; class merging | MIT | https://github.com/shadcn-ui/ui |
-| Radix UI (`radix-ui`) | Accessible UI primitives used by shadcn/ui | MIT | https://github.com/radix-ui/primitives |
+| shadcn/ui (`shadcn` CLI and CSS) | Theme base styles (`shadcn/tailwind.css`) | MIT | https://github.com/shadcn-ui/ui |
 | Lucide (`lucide-react`) | Icons (status icons and so on) | ISC | https://github.com/lucide-icons/lucide |
-| class-variance-authority | Component style variants | Apache-2.0 | https://github.com/joe-bell/cva |
 | tw-animate-css | Tailwind animation utilities | MIT | https://github.com/Wombosvideo/tw-animate-css |
 | sql.js | SQLite database in the browser (WASM, bundled locally) | MIT | https://github.com/sql-js/sql.js |
 | MiniSearch | Offline fuzzy search (typos, prefixes, synonyms) | MIT | https://github.com/lucaong/minisearch |
@@ -88,7 +86,7 @@ The full licence text of every package is in [`THIRD_PARTY_LICENSES.md`](../THIR
 
 ### Dependency licence scan (14 Nov 2026, after installing sql.js, MiniSearch and shadcn/ui)
 
-All 576 installed npm packages (direct and transitive) are open source (re-scanned 15 Nov 2026; `cn` is shadcn's MIT class-merging package):
+All 576 installed npm packages (direct and transitive) are open source (re-scanned 15 Nov 2026; three unused packages, `cn`, `radix-ui` and `class-variance-authority`, were removed afterwards, so today's set is a subset of this scan):
 MIT (498), Apache-2.0 (27), ISC (19), BSD-2/3-Clause (18), BlueOak-1.0.0 (3), MPL-2.0 (3:
 axe-core, lightningcss), CC-BY-4.0 (caniuse-lite browser data), CC0-1.0, 0BSD,
 Python-2.0 (argparse), MIT OR CC0-1.0 (type-fest), and LGPL-3.0 (sharp/libvips,

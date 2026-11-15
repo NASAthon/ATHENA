@@ -12,7 +12,7 @@ GitHub is the single source of truth, so always branch from the latest `main`.
 - `docs/`: project context for agents (`DECISIONS.md`, `SOURCES.md`, `AI_USAGE.md`, `BODY_MAP.md`).
   The event-planning docs (brief, build checklist, judging guide, submission answers) were removed after
   submission and live in git history.
-- `src/`: all app code (`src/app/` pages, `src/components/`, `src/lib/`). Import with `@/`, e.g. `@/lib/utils`.
+- `src/`: all app code (`src/app/` pages, `src/components/`, `src/lib/`). Import with `@/`, e.g. `@/lib/engine`.
   - `src/lib/engine/`: **all health logic** (baselines, drift, alerts, red limits, health score, search, and so on).
     Import from `@/lib/engine`. Never put health logic in components. Tests sit next to each file (`*.test.js`).
   - `src/lib/regionStatus.js`: body-map display layer (labels, icons, colours, recent-symptom layer) on top of the engine's status order.
@@ -48,7 +48,7 @@ GitHub is the single source of truth, so always branch from the latest `main`.
   static export in `out/`.
 - **Installed packages** (all open source; licences are in `docs/SOURCES.md`):
   - **shadcn/ui** (Radix base, dark theme): add components with `npx shadcn@latest add <name>`.
-    They land in `src/components/ui/`. Use `cn` from `@/lib/utils` and icons from `lucide-react`.
+    They land in `src/components/ui/`. Use icons from `lucide-react`.
   - **sql.js:** `npm install` copies the engine to `public/sql-wasm.wasm` and `public/sql-wasm.js`
     (`scripts/copy-sqljs-wasm.mjs`), never from a CDN. Don't open it yourself: use the shared
     database from `@/lib/db` (`await getDatabase()`), which loads both files and saves to IndexedDB.

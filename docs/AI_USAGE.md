@@ -75,6 +75,7 @@ Files named below that no longer exist (`docs/CHECKLIST.md`, `docs/SUBMISSION.md
 | 15 Nov 2026 | Chidozie | Claude Code | Emergency wording follows the Earth delay: on Mars no step waits for mission control (send a message and carry on; radiation shelter follows the onboard monitor) | `src/data/emergencies.js`, `src/lib/engine/missionMode.js`, `src/app/emergency/page.js`, `scripts/check-content.mjs`, tests, `docs/DECISIONS.md` |
 | 15 Nov 2026 | Chidozie | Claude Code | Presentation guide in the submission doc: setup, live demo click path, talking points, Q&A answers, slide and video rules | `docs/SUBMISSION.md` |
 | 15 Nov 2026 | Chidozie | Claude Code | Post-submission docs cleanup: rewrote the README, removed event-planning docs, updated AGENTS, DECISIONS, SOURCES and BODY_MAP references | `*.md`, `docs/*` |
+| 15 Nov 2026 | Chidozie | Claude Code | Removed checklist references from code comments; removed unused files (`PageShell`, shadcn `button`, `lib/utils`) and their packages (`cn`, `radix-ui`, `class-variance-authority`); regenerated the licence file | `src/*`, `package.json`, `THIRD_PARTY_LICENSES.md`, `docs/*` |
 
 ## AI-generated media
 
