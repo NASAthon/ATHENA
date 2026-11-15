@@ -33,8 +33,8 @@ fully offline.
 
 ## Why ATHENA?
 
-Future missions to Mars may experience communication
-delays of up to 40 minutes.
+Messages between Mars and Earth can take up to 20 minutes each way, so a reply can take
+about 40 minutes ([NASA HRP: Distance from Earth](https://www.nasa.gov/hrp/hazard-distance-from-earth/)).
 
 Astronauts must therefore be capable of evaluating
 their own health and responding to issues without
