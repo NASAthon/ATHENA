@@ -1055,6 +1055,11 @@ pressure, SpO₂, breathing, skin temperature) and ATHENA evaluates every new mi
   Singh exercises, then takes the shirt off (no data, lower confidence); a crew-wide solar particle event
   at 18:30. The Crew page has presenter-only controls: 1×, 10×, 60×, Pause, "Jump to next event" and the
   coming-up list. In flight the clock simply runs in real time.
+- **One story on every screen (14–15 Nov review):** the demo stores Nakamura's day 129 as an ordinary morning
+  (`holdBackLiveEvent`). When the live feed reaches his red-limit reading and chest-pain report, those values
+  are written into his day-129 record (`pendingRecordFields`, once only), so Today, Crew, the banner and Summary
+  turn critical at the same moment as the Live Monitor. "Load demo mission" restarts the live day at 08:00, and
+  "Jump to next event" always moves on (`nextJumpTarget`).
 - **Clearly simulated:** "Simulated sensor feed" on the Live Monitor and demo labels on every screen.
 - **Accessible:** state = icon + label + colour, charts are decorative with the value as text, 44 px
   targets, the live dot stops pulsing with "reduce motion".

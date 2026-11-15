@@ -1,7 +1,7 @@
 // "Load demo mission" and "Reset data" (docs/CHECKLIST.md › 1). Plain logic: works with
 // the shared database from @/lib/db, so the buttons only need to call these.
 
-import { simulateCrew, DEMO_SEED } from "./simulator.js";
+import { simulateCrew, DEMO_SEED, NAKAMURA_EVENT_DAY } from "./simulator.js";
 import { EXAM_META_PREFIX } from "../checkIn.js";
 import { EXAM_SCHEDULE } from "../engine/calendar.js";
 
@@ -23,6 +23,30 @@ export function demoExamResults(today) {
   return results;
 }
 
+/**
+ * The demo opens at 08:00 on Nakamura's event day, and the live feed plays his event at about 14:50
+ * (docs/DECISIONS.md › Always-On Live Monitoring). So his stored record for that day starts as an
+ * ordinary morning: blood pressure and heart rate from the day before and no symptoms. The live
+ * feed writes the red-limit readings and the chest-pain report into the record when they happen,
+ * so every screen turns critical at the same moment as the Live Monitor.
+ *
+ * @param {Object<string, Object[]>} crew simulateCrew() output
+ * @param {number} today The demo day.
+ */
+export function holdBackLiveEvent(crew, today) {
+  if (today !== NAKAMURA_EVENT_DAY || !crew.nakamura) return crew;
+  const records = crew.nakamura;
+  const before = records.find((r) => r.missionDay === today - 1);
+  return {
+    ...crew,
+    nakamura: records.map((r) =>
+      r.missionDay === today && before
+        ? { ...r, bpSystolic: before.bpSystolic, bpDiastolic: before.bpDiastolic, heartRate: before.heartRate, symptoms: [] }
+        : r,
+    ),
+  };
+}
+
 /** Mission day the demo opens on: the day of Nakamura's event, with Rivera's drift alert active. */
 export const DEMO_TODAY = 129;
 
@@ -36,7 +60,7 @@ export const DEMO_TODAY = 129;
  */
 export async function loadDemoMission(db, { today = DEMO_TODAY, seed = DEMO_SEED } = {}) {
   if (!Number.isInteger(today) || today < 1 || today > 180) throw new RangeError("loadDemoMission: today must be a mission day from 1 to 180.");
-  const crew = simulateCrew({ seed, toDay: today });
+  const crew = holdBackLiveEvent(simulateCrew({ seed, toDay: today }), today);
   await db.resetAll();
   await db.deleteMetaPrefix(EXAM_META_PREFIX); // exam results from an earlier mission
   for (const [astronautId, records] of Object.entries(crew)) {

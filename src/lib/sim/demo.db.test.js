@@ -27,9 +27,12 @@ test("first run seeds the demo mission once; it survives reopening", async () =>
     assert.equal(c.latestDay, DEMO_TODAY);
     assert.ok(c.records > 150 && c.preflight && c.inflight, JSON.stringify(c));
   }
-  // The stored mission tells Nakamura's story after reopening (red limit on day 129).
+  // Nakamura's day starts as an ordinary morning: the live feed adds his red limit when it happens
+  // (src/lib/live/recordSync.test.js). Rivera's drift alert is already in the stored history.
   const nakamura = evaluateMission(reopened.loadDailyRecords("nakamura"), reopened.loadMissionBaselines("nakamura"), DEMO_TODAY, DEMO_TODAY)[0];
-  assert.ok(nakamura.limitBreaches.some((b) => b.redLimit));
+  assert.equal(nakamura.limitBreaches.some((b) => b.redLimit), false);
+  const rivera = evaluateMission(reopened.loadDailyRecords("rivera"), reopened.loadMissionBaselines("rivera"), 36, DEMO_TODAY).at(-1);
+  assert.ok(["alert", "escalated"].includes(rivera.alert.level));
 });
 
 test("after Reset data the app stays empty, even on the next start, until Load demo mission", async () => {

@@ -316,7 +316,16 @@ export function feedEvents(astronautId, readings, evaluation, day) {
         continue;
       }
       if (to === "critical") {
-        push({ minute: m, measureId: measure.id, state: "critical", text: `${measure.name} ${valueText(measure.id, r)}: red limit`, why: "One reading in a red limit fires at once. Open the emergency guide; the summary is queued for the flight surgeon.", emergencyId: "severe-high-bp" });
+        push({
+          minute: m,
+          measureId: measure.id,
+          state: "critical",
+          text: `${measure.name} ${valueText(measure.id, r)}: red limit`,
+          why: "One reading in a red limit fires at once. Open the emergency guide; the summary is queued for the flight surgeon.",
+          emergencyId: "severe-high-bp",
+          // Written into today's daily record, so Today, Crew and the banner turn critical now too.
+          record: { bpSystolic: Math.round(r.bpSystolic), bpDiastolic: Math.round(r.bpDiastolic), heartRate: Math.round(r.heartRate) },
+        });
       } else if (to === "deteriorating") {
         push({ minute: m, measureId: measure.id, state: "deteriorating", text: `${measure.name} ${valueText(measure.id, r)}, outside own normal for ${RULES.deteriorateAfter}+ min`, why: `The ${RULES.averageWindow}-minute average stayed outside the personal band for ${RULES.deteriorateAfter} minutes or more.` });
         if (!requested && ["heartRate", "spo2", "bloodPressure"].includes(measure.id)) {
@@ -348,7 +357,7 @@ export function feedEvents(astronautId, readings, evaluation, day) {
     }
   }
   if (day === SCRIPTED_DAY && astronautId === "nakamura") {
-    push({ minute: hm(14, 49), state: "critical", text: "Chest pain reported", why: "An urgent symptom: open the emergency guide now.", emergencyId: "chest-pain" });
+    push({ minute: hm(14, 49), state: "critical", text: "Chest pain reported", why: "An urgent symptom: open the emergency guide now.", emergencyId: "chest-pain", record: { symptoms: ["chest-pain"] } });
   }
   // No extra-check request once a red limit has fired: the emergency guide takes over.
   const firstCritical = Math.min(...events.filter((e) => e.state === "critical").map((e) => e.minute), Infinity);

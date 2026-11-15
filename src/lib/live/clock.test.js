@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { START_MINUTE, advanceClock, nextScripted, restoreClock, serialiseClock } from "./clock.js";
+import { START_MINUTE, advanceClock, nextJumpTarget, nextScripted, restoreClock, serialiseClock } from "./clock.js";
 import { SCRIPTED_DAY } from "./stream.js";
 
 test("a fresh clock starts at 08:00 in real time; a saved one for today carries on", () => {
@@ -34,4 +34,12 @@ test("the last mission day stops at 23:59 instead of rolling over", () => {
 test("jump to next event finds the next scripted moment on the demo day only", () => {
   assert.ok(nextScripted({ day: SCRIPTED_DAY, minute: 480 }).at > 480);
   assert.equal(nextScripted({ day: SCRIPTED_DAY + 1, minute: 0 }), null);
+});
+
+test("Jump to next event always moves on, even when parked one minute before an event", () => {
+  const first = nextJumpTarget({ day: SCRIPTED_DAY, minute: 480 });
+  const parked = { day: SCRIPTED_DAY, minute: first.at - 1 };
+  const second = nextJumpTarget(parked);
+  assert.ok(second.at > first.at, "the second press goes to a later event");
+  assert.equal(nextJumpTarget({ day: SCRIPTED_DAY + 1, minute: 0 }), null);
 });

@@ -9,14 +9,15 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { useMissionData } from "@/components/MissionDataProvider";
 import { CREW } from "@/lib/crew";
 import { crewEvents, liveDay, liveSnapshot, timeText, upcomingScript } from "@/lib/live/stream";
-import { advanceClock, nextScripted, restoreClock, serialiseClock } from "@/lib/live/clock";
+import { advanceClock, nextJumpTarget, nextScripted, restoreClock, serialiseClock } from "@/lib/live/clock";
+import { pendingRecordFields } from "@/lib/live/recordSync";
 
 const LiveContext = createContext(null);
 const TICK_MS = 1000;
 const SAVE_EVERY_MS = 15000;
 
 export function LiveProvider({ children }) {
-  const { db, status, today, version, rollOverDay, saveLiveClock, getLiveClock } = useMissionData();
+  const { db, status, today, version, rollOverDay, saveLiveClock, getLiveClock, saveCheckIn } = useMissionData();
   const [clock, setClockState] = useState(null);
   const clockRef = useRef(null);
   const setClock = useCallback((next) => {
@@ -35,9 +36,16 @@ export function LiveProvider({ children }) {
       return;
     }
     const c = clockRef.current;
-    setClock(c && c.day === today ? c : restoreClock(getLiveClock(), today));
+    const saved = getLiveClock();
+    // "Load demo mission" clears the saved clock: start the demo day again at 08:00 even if the app
+    // stayed open. Otherwise keep the running clock.
+    const next = c && c.day === today && saved ? c : restoreClock(saved, today);
+    setClock(next);
+    // Saved straight away, so an empty saved clock only ever means "Load demo mission was pressed".
+    if (next !== c) saveLiveClock(serialiseClock(next));
+    // version changes after Load demo mission / Reset data.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, db, today]);
+  }, [status, db, today, version]);
 
   const persist = useCallback((c) => {
     if (c) saveLiveClock(serialiseClock(c));
@@ -80,6 +88,35 @@ export function LiveProvider({ children }) {
 
   const minute = clock ? Math.floor(clock.minute) : 0;
 
+  // Live events that change today's record (e.g. Nakamura's red-limit reading and chest-pain report)
+  // are saved once the clock passes them, so Today, Crew, the banner and Summary agree with the Live
+  // Monitor. pendingRecordFields returns nothing once the record has them, so this never repeats.
+  const syncing = useRef(false);
+  useEffect(() => {
+    // Read the clock from the ref: it's updated at once when "Load demo mission" restarts the day, so
+    // an old minute from this render can never write an event back into the fresh demo records.
+    const c = clockRef.current;
+    if (!days || !db || !c || c.day !== today || syncing.current || status !== "ready") return;
+    const now = Math.floor(c.minute);
+    const updates = CREW.map((m) => {
+      const stored = db.loadDailyRecords(m.id, { fromDay: today, toDay: today })[0] ?? null;
+      const fields = pendingRecordFields(liveSnapshot(days[m.id], now).events, stored);
+      return fields ? [m.id, fields] : null;
+    }).filter(Boolean);
+    if (updates.length === 0) return;
+    syncing.current = true;
+    (async () => {
+      try {
+        for (const [id, fields] of updates) await saveCheckIn(id, fields);
+      } catch {
+        // Not saved this time; it's tried again on the next minute.
+      } finally {
+        syncing.current = false;
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [minute, days, today, status, version]);
+
   const value = useMemo(() => {
     const setAndSave = (fn) => {
       const c = clockRef.current;
@@ -112,8 +149,8 @@ export function LiveProvider({ children }) {
       togglePause: () => setAndSave((c) => ({ ...c, paused: !c.paused })),
       // Jumps to just before the next scripted moment, so it happens on screen.
       jumpToNext: () => setAndSave((c) => {
-        const n = nextScripted(c);
-        return n ? { ...c, minute: Math.max(c.minute, n.at - 1) } : c;
+        const n = nextJumpTarget(c);
+        return n ? { ...c, minute: n.at - 1 } : c;
       }),
     };
   }, [clock, days, minute, persist, setClock]);

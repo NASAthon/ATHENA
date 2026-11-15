@@ -64,6 +64,18 @@ export function nextScripted(clock) {
 }
 
 /**
+ * Where "Jump to next event" goes: the next scripted moment whose start (one minute before it, so it
+ * happens on screen) is still ahead. An event the clock is already parked in front of is skipped, so
+ * pressing the button again always moves on.
+ *
+ * @returns {{ at: number } | null}
+ */
+export function nextJumpTarget(clock) {
+  if (clock.day !== SCRIPTED_DAY) return null;
+  return SCRIPT.find((e) => e.at - 1 > Math.floor(clock.minute)) ?? null;
+}
+
+/**
  * Midnight roll-up: saves the next day's daily record for each astronaut (the simulated summary of
  * that day's sensor feed, from the same seeded simulator) and moves "today" on, so Today, Trends,
  * Body, Calendar and Summary all move to the new day.
