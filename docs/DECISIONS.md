@@ -675,7 +675,7 @@ the 3 crew in Crew. Every number is an invented demo value, labelled simulated, 
 - **Pilot Singh:** healthy all mission, one harmless bad night on day 100: no alert, score 99–100.
 - **Engineer Nakamura:** sudden event on day 129: blood pressure 186/118 with chest pain → the
   "Emergency" band, its emergency guide, and a score capped at 25.
-- Personal normals follow `src/lib/sampleData.js`; a few missed days test the engine's gap
+- Personal normals were taken from the early hand-written sample statuses (since removed); a few missed days test the engine's gap
   handling; values stay within the entry form's limits.
 - **Demo day:** `loadDemoMission` stores the mission up to day 129 (all three stories visible at
   once) and stores each astronaut's fixed baselines.

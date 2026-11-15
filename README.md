@@ -150,7 +150,7 @@ All astronaut data and the live sensor feed are **simulated** and labelled as su
 - **Database:** SQLite in the browser (sql.js), saved to IndexedDB; validated backup and restore
 - **Search:** MiniSearch (offline fuzzy search)
 - **Logic:** a deterministic rules engine in plain JavaScript (`src/lib/engine/`) that reads every
-  threshold from `src/data/`; tested with `npm test`
+  threshold from `src/data/`; covered by 173 automated tests
 - **Charts and body map:** plain SVG, no chart library
 
 No backend server and no internet connection at runtime. ATHENA itself contains no AI.
@@ -169,32 +169,13 @@ No backend server and no internet connection at runtime. ATHENA itself contains 
 
 ---
 
-## How to run
+## Try it
 
-### Hosted copy
+Open **[https://nasathon.github.io/ATHENA/](https://nasathon.github.io/ATHENA/)** in a desktop
+browser. No login or install is needed. The demo mission loads automatically; **Crew › Load demo
+mission** restarts it. Simulated mission data is stored only in your browser.
 
-Open **[https://nasathon.github.io/ATHENA/](https://nasathon.github.io/ATHENA/)**. It needs
-internet for the first page load; simulated mission data stays in that browser's IndexedDB.
-
-### Local offline version
-
-Requires Node.js 20 or newer (tested on Node 24).
-
-```bash
-npm install
-npm run dev        # http://localhost:3000
-npm test           # logic engine tests
-npm run build      # static export in out/, serve with e.g. `npx serve out`
-```
-
-The demo mission loads automatically on first run. **Crew › Load demo mission** or
-**Reset data** restart it.
-
-### Troubleshooting
-
-- **npm is not recognised:** install Node.js 20 or newer (LTS) from nodejs.org, then restart the terminal.
-- **Running scripts is disabled** (Windows PowerShell): run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, or use `npm.cmd install`.
-- `npx serve out` downloads a small tool the first time it runs, so run it once while online.
+On a spacecraft, the same static build runs from the crew laptop with no internet connection.
 
 ---
 

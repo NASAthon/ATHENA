@@ -2,7 +2,7 @@
 
 How AI was used to build ATHENA, as required by the Space Apps rules. AI sped up building but did **not** generate the core idea, which is the team's own. ATHENA itself contains no AI.
 
-Files named below that no longer exist (`docs/CHECKLIST.md`, `docs/SUBMISSION.md`, `docs/judging.md`, `docs/context.md`, `docs/EXISTING_TOOLS.md`) were event-planning documents, removed after submission; they remain in git history.
+Files named below that no longer exist (`docs/CHECKLIST.md`, `docs/SUBMISSION.md`, `docs/judging.md`, `docs/context.md`, `docs/EXISTING_TOOLS.md`) were event-planning documents, and `src/lib/sampleData.js` was unused early sample data; all were removed after submission and remain in git history.
 
 | Date / time | Who | Tool | What it helped with | Files |
 |---|---|---|---|---|

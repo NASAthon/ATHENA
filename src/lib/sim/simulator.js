@@ -5,7 +5,7 @@
 //
 // SIMULATED DATA (docs/DECISIONS.md › Crew). Every number here is an invented demo value
 // chosen to look plausible, NOT physiology or NASA data, and is always labelled
-// "simulated" in the app. Personal normals follow src/lib/sampleData.js where it gives them.
+// "simulated" in the app.
 // Field names follow the engine's daily record (src/lib/engine/indicators.js › RECORD_FIELDS).
 
 import { DAY_KEY } from "../engine/indicators.js";
@@ -36,7 +36,7 @@ const PROFILES = Object.freeze({
   },
 });
 
-/** Day of Engineer Nakamura's sudden event (matches src/lib/sampleData.js). */
+/** Day of Engineer Nakamura's sudden event. */
 export const NAKAMURA_EVENT_DAY = 129;
 
 /** Day Commander Rivera's slow decline starts (DECISIONS › Crew: "from about week 12"). */
