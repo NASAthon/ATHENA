@@ -68,13 +68,13 @@ test("Rivera: a slow slide becomes deteriorating only after it is sustained, the
 
 test("Singh: a removed shirt reads as no data, lowers confidence, and never counts as fine", () => {
   const d = day("singh");
-  const s = liveSnapshot(d, at(14, 51));
+  const s = liveSnapshot(d, at(17, 0));
   assert.equal(s.measures.heartRate.state, "no_data");
   assert.equal(s.measures.heartRate.reading, null);
   assert.equal(s.overall, "no_data");
   assert.notEqual(s.confidence.level, "High");
-  assert.match(s.sensor, /Shirt not worn since 14:05/);
-  assert.equal(liveSnapshot(d, at(16, 30)).measures.heartRate.state === "no_data", false);
+  assert.match(s.sensor, /Shirt not worn since 16:20/);
+  assert.equal(liveSnapshot(d, at(17, 45)).measures.heartRate.state === "no_data", false);
 });
 
 test("confidence: High when worn all hour, Low after an hour off", () => {

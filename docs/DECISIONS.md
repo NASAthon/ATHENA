@@ -1052,14 +1052,16 @@ pressure, SpO₂, breathing, skin temperature) and ATHENA evaluates every new mi
 - **Confidence:** sensor wear over the last 60 minutes (High, Medium, Low), shown with the health score.
 - **Scripted demo day 129 (simulated):** Rivera's SpO₂ slides and heart rate rises (deteriorating, extra
   check); Nakamura has an ignored spike, then blood pressure reaches a red limit and he reports chest pain;
-  Singh exercises, then takes the shirt off (no data, lower confidence); a crew-wide solar particle event
-  at 18:30. The Crew page has presenter-only controls: 1×, 10×, 60×, Pause, "Jump to next event" and the
+  Singh exercises, then later (16:20–17:30) takes the shirt off (no data, lower confidence); a crew-wide solar
+  particle event at 18:30. All times are on the SIMULATED mission clock, not the real time of day. The Crew page has presenter-only controls: 1×, 10×, 60×, Pause, "Jump to next event" and the
   coming-up list. In flight the clock simply runs in real time.
 - **One story on every screen (14–15 Nov review):** the demo stores Nakamura's day 129 as an ordinary morning
   (`holdBackLiveEvent`). When the live feed reaches his red-limit reading and chest-pain report, those values
   are written into his day-129 record (`pendingRecordFields`, once only), so Today, Crew, the banner and Summary
-  turn critical at the same moment as the Live Monitor. "Load demo mission" restarts the live day at 08:00, and
-  "Jump to next event" always moves on (`nextJumpTarget`).
+  turn critical at the same moment as the Live Monitor. "Load demo mission" restarts the demo day at **14:40, paused**
+  (`DEMO_START_MINUTE`), so the crew open on three different states: Rivera deteriorating, Singh stable,
+  Nakamura fluctuating. "Jump to next event" lands on the next event (`nextJumpTarget`): one press plays
+  Nakamura's emergency (critical), so amber, blue and red show side by side.
 - **Live roll-up (15 Nov):** today's heart rate, blood pressure and SpO₂ on every screen are the live
   feed's average so far (`liveTodayRecord`, a view, not saved), so Today, Body, Trends, Summary, Crew and the
   score move with the Live Monitor. Values a live event wrote (Nakamura's red-limit reading) are kept. At

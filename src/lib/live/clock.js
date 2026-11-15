@@ -16,6 +16,13 @@ export const SPEEDS = Object.freeze([1, 10, 60]);
 export const START_MINUTE = 8 * 60;
 
 /**
+ * The scripted demo day opens at 14:40, PAUSED, so the three crew show three different stories at
+ * once (Rivera deteriorating, Singh stable, Nakamura fluctuating) and nothing moves until the
+ * presenter acts. One "Jump to next event" then plays Nakamura's emergency.
+ */
+export const DEMO_START_MINUTE = 14 * 60 + 40;
+
+/**
  * A clock: { day, minute (may be fractional), speed, paused }.
  *
  * @param {string | null} saved The stored JSON, if any.
@@ -30,6 +37,7 @@ export function restoreClock(saved, today) {
   } catch {
     // fall through to a fresh clock
   }
+  if (today === SCRIPTED_DAY) return { day: today, minute: DEMO_START_MINUTE, speed: 1, paused: true };
   return { day: today, minute: START_MINUTE, speed: 1, paused: false };
 }
 
@@ -73,7 +81,8 @@ export function nextScripted(clock) {
  */
 export function nextJumpTarget(clock) {
   if (clock.day !== SCRIPTED_DAY) return null;
-  return SCRIPT.find((e) => e.at - 1 > Math.floor(clock.minute)) ?? null;
+  // Lands ON the next moment, so it happens at once even while paused; pressing again moves on.
+  return SCRIPT.find((e) => e.at > Math.floor(clock.minute)) ?? null;
 }
 
 /**
