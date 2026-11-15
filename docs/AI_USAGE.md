@@ -71,6 +71,7 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 15 Nov 2026 | Chidozie | Claude Code | Demo opens on three different crew states (14:40, paused); one jump plays Nakamura's emergency; Singh's shirt-off moved later | `src/lib/live/clock.js`, `src/lib/live/stream.js`, `src/components/LiveProvider.js`, tests, `docs/DECISIONS.md` |
 | 15 Nov 2026 | Chidozie | Claude Code | One alert banner per problem: live and stored banners about the same astronaut merged (most serious shown) | `src/components/AlertBanner.js` |
 | 15 Nov 2026 | Chidozie | Claude Code | Emergency wording follows the Earth delay: on Mars no step waits for mission control (send a message and carry on; radiation shelter follows the onboard monitor) | `src/data/emergencies.js`, `src/lib/engine/missionMode.js`, `src/app/emergency/page.js`, `scripts/check-content.mjs`, tests, `docs/DECISIONS.md` |
+| 15 Nov 2026 | Chidozie | Claude Code | Presentation guide in the submission doc: setup, live demo click path, talking points, Q&A answers, slide and video rules | `docs/SUBMISSION.md` |
 
 ## AI-generated media
 

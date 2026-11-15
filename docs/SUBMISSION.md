@@ -1,4 +1,4 @@
-# Submission form answers (copy and paste)
+# Submission form answers and presentation guide
 
 Ready-to-paste answers for the Space Apps project page (`docs/judging.md` › 1C). Rules for each field are in
 `docs/judging.md`; this file holds **our answers**. Every link is the full URL, as the form asks.
@@ -170,9 +170,106 @@ Everything else we used: partner agencies, clinical guidance, code libraries and
 
 ---
 
+## 4. Presentation and live demo (local pitch: 3 min + 2 min Q&A)
+
+The local pitch is a short presentation **plus a live demo** within 3 minutes (`docs/judging.md`; checklist §7).
+The global demo is a separate **30-second video** (pacing in `docs/judging.md` 1D; going over 30 s disqualifies).
+
+### 4.1 Setup (about 15 minutes before, on the presenting laptop)
+
+1. In Terminal:
+   ```
+   cd ATHENA
+   git pull
+   npm run build
+   python3 -m http.server 3000 -d out
+   ```
+2. Open **http://localhost:3000/crew/** in a clean Chrome window (extensions off), full screen (Cmd+Ctrl+F),
+   sidebar expanded.
+3. Press **Load demo mission** and confirm. The simulated mission clock shows **14:40, paused**, with three
+   different stories: Rivera 🟠 **Deteriorating**, Singh 🔵 **Stable**, Nakamura 🟣 **Fluctuating**.
+   (All times are on the simulated mission clock, not the real time of day.)
+4. **Turn Wi-Fi off.** Do Not Disturb on, charger and HDMI plugged in, recorded backup video open in another window.
+5. **Roles:** one person talks, one person clicks.
+
+### 4.2 Live demo click path (about 2 min 20 s of software)
+
+| Time | Screen and clicks | What to say |
+|---|---|---|
+| ~25 s | **Live Monitor** | Hospital-style waveforms flowing for all three astronauts. Every reading is checked against each astronaut's **own** normal, every minute: stable, fluctuating, deteriorating, critical. |
+| ~15 s | **Crew** | One card per astronaut: score, band, live state, plain-English reason. "Colour-blind safe: blue, amber, orange, red, always with an icon and a label." |
+| ~35 s | **Open Rivera** → **Today**, then **Why this alert?**, then **Trends** | Drift alert since day 100 (sleep, mood, reaction time). On Trends, the **ATHENA vs one-size-fits-all** table: mood and reaction time **"Missed by the general range"**. "Generic thresholds say she's fine. ATHENA catches the slow decline." |
+| ~45 s | **Crew** → **Jump to next event** (once) | Nakamura turns 🔴 **Critical** live, and the alert banner appears. Click **Open emergency guide**: it opens with **Nakamura already picked** ("works for a crewmate"). Press **Next step** once or twice. Point at "Also reported today: chest pain" and "Reply expected up to 40 minutes: act now, don't wait for Earth." |
+| ~15 s | Any page, **Cmd+R** | "Wi-Fi has been off the whole time." Show the menu-bar icon, reload, and it still works. |
+
+Keep for Q&A, not the 3 minutes: the **Reaction test** (60 s, invite a judge), Body map, Calendar, Flight-surgeon
+summary, Scenario Lab.
+
+**If something goes wrong:** press **Load demo mission** (back to 14:40, paused, in about 5 s), or switch to the
+backup video. Don't debug on stage. The hosted copy (https://nasathon.github.io/ATHENA/) is a further backup,
+but it needs internet.
+
+### 4.3 Talking points (by judging criterion)
+
+**Creativity and originality**
+- **Catches the slow decline one-size-fits-all ranges miss:** each astronaut is compared with their **own** fixed
+  baseline (z-score drift), not population ranges. Show the "ATHENA vs one-size-fits-all" table.
+- **Emergency advice adapts to the communication delay:** on Mars (replies up to 40 minutes) guides never say "wait
+  for Earth" (send a message and carry on; radiation shelter follows the onboard monitor). On the ISS, mission control
+  can guide live.
+
+**Validity and usability (built for every astronaut)**
+- **Colour-blind safe:** "Good is blue, not green, because for the most common colour blindness green and red look
+  almost the same." Measured colour distance from Critical red: blue 61–81, plain green 9 (nearly identical). Every
+  status also has an icon and a text label.
+- **Built for astronauts who aren't doctors:** plain English, one emergency step at a time with a "why", big
+  glove-friendly buttons, read-aloud, **no medicines or diagnoses**: the flight surgeon decides.
+- **Works for a crewmate:** the emergency guide opens for the affected astronaut.
+- **Missing data is never "fine":** a sensor that's off shows "no data" and lowers confidence.
+
+**Relevance (NASA data as the core)**
+- The app shows no web links (astronauts can't open web pages in flight), so **say the NASA data out loud**: the
+  health logic is built on **NASA's Human Research Program: all 5 hazards and all 17 risks**, mapped to the body
+  map ("NASA states" labels). The full list is in section 2 above.
+- Credit the challenge author: the **Brazilian Space Agency (AEB)**.
+- **Existing tools** (Tempus Pro, ARCHeR, Spaceflight Standard Measures) mostly collect data for researchers and the
+  ground; ATHENA gives every astronaut understandable guidance (`docs/EXISTING_TOOLS.md`).
+
+**Impact**
+- **Offline and autonomous:** no internet, no server: it works when Earth is 20 minutes away each way. Prove it live
+  with Wi-Fi off.
+- **Earth impact:** the same tool could support remote communities with no doctor nearby (Galactic Impact award).
+
+### 4.4 Q&A answers
+
+| Likely question | Answer |
+|---|---|
+| Where do the thresholds come from? | General clinical reference ranges (CDC, ADA, AHA), each cited in `docs/SOURCES.md`, not NASA flight standards. The drift cut-off (z ≥ 3.5) is our design choice, tested on simulations: about 1% false alerts, and every simulated decline was caught. |
+| What's simulated? | All crew data and the live sensor feed (labelled "Simulated sensor feed"). Demo times run on a simulated mission clock. |
+| How are blood sugar, temperature and sleep collected? | In flight, from devices such as a glucose patch, a thermometer and a sleep tracker; here they come from the simulated daily summary. |
+| Are those real ECGs? | No. The waveforms are illustrative, drawn from the live heart and breathing rates. ATHENA never reads or diagnoses waveforms. |
+| Does ATHENA diagnose or prescribe? | No. It shows signs, first-response steps and when to contact the flight surgeon. No medicines, doses or diagnoses. |
+| How was AI used? | See section 1: AI helped build (coding, research checks, writing); the core idea is ours; ATHENA itself contains no AI. |
+
+### 4.5 Rules for the slides and the 30-second video
+
+- **No NASA logos, flags or mission identifiers** anywhere.
+- **Every number on a slide needs a source** (checklist §4: "every figure traced to a source").
+- **AI-generated images or video** (including the Claude-made mockups) need a **visible "AI-generated"
+  watermark**. Screenshots of the real app don't.
+- **No photo, video or voice of anyone under 18.** Everything in English (spoken audio in another language
+  needs English subtitles).
+- **30-second video:** at most 30 s. Recommended pacing (`docs/judging.md` 1D): introduce yourselves and the team
+  name (0:00), the challenge and what inspired you (0:02), the project title and tagline (0:05), how it works with the
+  UI and how NASA/partner data powers it (0:10), future vision and impact (0:20–0:30).
+
+---
+
 ## Before you submit
 
 - [ ] Add any AI used for the slides or video (sections 1 and 1.3).
 - [ ] Watermark every AI-made image or video frame that appears in the slides, video or repo.
 - [ ] Open every link above in an incognito window.
 - [ ] Paste the SI statement into the project description so judges can see it.
+- [ ] Rehearse the live demo (section 4) twice on the presenting laptop, timed, with Wi-Fi off.
+- [ ] Check every number on the slides and in the video has a source (section 4.5).
