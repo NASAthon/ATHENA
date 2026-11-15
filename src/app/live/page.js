@@ -13,7 +13,8 @@ import { INDICATORS } from "@/data";
 import { adviceForMode } from "@/lib/engine";
 import { useLive } from "@/components/LiveProvider";
 import { useMissionMode } from "@/components/MissionModeProvider";
-import { LIVE_STYLE, LiveStateBadge, Sparkline } from "@/components/LiveUI";
+import { LIVE_STYLE, LiveStateBadge } from "@/components/LiveUI";
+import LiveWaveform from "@/components/LiveWaveform";
 import { CREW } from "@/lib/crew";
 import { LIVE_MEASURES, RULES, timeText } from "@/lib/live/stream";
 import { focusRing } from "@/lib/ui";
@@ -31,6 +32,17 @@ const TILE_NOTE = {
   no_data: "No data: unknown, not fine",
 };
 
+// The tile's live chart, bedside-monitor style (illustrative, drawn from the live rate; see
+// src/components/LiveWaveform.js): which waveform each measurement shows, and at what rate.
+const hr = (snap) => snap.measures.heartRate.reading?.heartRate ?? null;
+const WAVEFORM = {
+  heartRate: { kind: "ecg", rate: hr },
+  bloodPressure: { kind: "arterial", rate: (snap) => (snap.measures.bloodPressure.reading ? hr(snap) : null) },
+  spo2: { kind: "pleth", rate: (snap) => (snap.measures.spo2.reading ? hr(snap) : null) },
+  breathing: { kind: "resp", rate: (snap) => snap.measures.breathing.reading?.breathing ?? null },
+  skinTemp: { kind: "level", rate: (snap) => (snap.measures.skinTemp.reading ? 6 : null) },
+};
+
 function Tile({ measure, snap, onGuide }) {
   const m = snap.measures[measure.id];
   const style = LIVE_STYLE[m.state];
@@ -46,7 +58,11 @@ function Tile({ measure, snap, onGuide }) {
         {m.reading ? m.text.replace(` ${measure.unit}`, "") : "—"}{" "}
         <span className="text-sm font-normal text-muted-foreground">{measure.unit}</span>
       </p>
-      <Sparkline series={m.series} next={m.next} shift={m.shift} band={m.band} colour={highlight ? style.colour : "var(--status-steady)"} />
+      <LiveWaveform
+        kind={WAVEFORM[measure.id]?.kind ?? "level"}
+        rate={WAVEFORM[measure.id]?.rate(snap) ?? null}
+        colour={highlight ? style.colour : "var(--status-steady)"}
+      />
       <p className="text-xs" style={{ color: highlight ? style.colour : "var(--muted-foreground)" }}>
         {note}
       </p>
@@ -235,7 +251,7 @@ function LiveMonitor() {
           Simulated sensor feed
         </span>
         <span className="text-sm text-muted-foreground">
-          Always on: ATHENA checks every new reading the moment it arrives. Charts show the last 60 minutes.
+          Always on: ATHENA checks every new reading the moment it arrives.
           {live.paused && " The feed is paused (Crew page › Demo controls)."}
         </span>
       </div>
