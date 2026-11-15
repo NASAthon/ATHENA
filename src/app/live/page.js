@@ -14,6 +14,7 @@ import { adviceForMode } from "@/lib/engine";
 import { useLive } from "@/components/LiveProvider";
 import { useMissionMode } from "@/components/MissionModeProvider";
 import { LIVE_STYLE, LiveStateBadge, Sparkline } from "@/components/LiveUI";
+import LiveWaveform from "@/components/LiveWaveform";
 import { CREW } from "@/lib/crew";
 import { LIVE_MEASURES, RULES, timeText } from "@/lib/live/stream";
 import { focusRing } from "@/lib/ui";
@@ -31,6 +32,13 @@ const TILE_NOTE = {
   no_data: "No data: unknown, not fine",
 };
 
+// Bedside-monitor waveforms (illustrative, drawn from the live rate): which tile shows which.
+const WAVEFORM = {
+  heartRate: { kind: "ecg", label: "ECG-style", rate: (snap) => snap.measures.heartRate.reading?.heartRate },
+  spo2: { kind: "pleth", label: "pulse", rate: (snap) => (snap.measures.spo2.reading ? snap.measures.heartRate.reading?.heartRate : null) },
+  breathing: { kind: "resp", label: "breathing", rate: (snap) => snap.measures.breathing.reading?.breathing },
+};
+
 function Tile({ measure, snap, onGuide }) {
   const m = snap.measures[measure.id];
   const style = LIVE_STYLE[m.state];
@@ -46,7 +54,16 @@ function Tile({ measure, snap, onGuide }) {
         {m.reading ? m.text.replace(` ${measure.unit}`, "") : "—"}{" "}
         <span className="text-sm font-normal text-muted-foreground">{measure.unit}</span>
       </p>
+      {WAVEFORM[measure.id] && (
+        <LiveWaveform
+          kind={WAVEFORM[measure.id].kind}
+          label={WAVEFORM[measure.id].label}
+          rate={WAVEFORM[measure.id].rate(snap) ?? null}
+          colour={highlight ? style.colour : "var(--status-steady)"}
+        />
+      )}
       <Sparkline series={m.series} next={m.next} shift={m.shift} band={m.band} colour={highlight ? style.colour : "var(--status-steady)"} />
+      {WAVEFORM[measure.id] && <span className="-mt-1 text-[10px] text-muted-foreground">last 60 min</span>}
       <p className="text-xs" style={{ color: highlight ? style.colour : "var(--muted-foreground)" }}>
         {note}
       </p>

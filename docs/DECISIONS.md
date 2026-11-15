@@ -1070,6 +1070,10 @@ pressure, SpO₂, breathing, skin temperature) and ATHENA evaluates every new mi
   so the screen moves every second even at 1×; states and alerts still change only on whole minutes. The
   header clock shows seconds at 1×.
 - **Clearly simulated:** "Simulated sensor feed" on the Live Monitor and demo labels on every screen.
+- **Bedside-monitor waveforms (15 Nov):** heart rate, SpO₂ and breathing tiles show a sweeping, real-time
+  waveform (ECG-style trace, pulse wave, breathing wave) at the astronaut's live rate, like a hospital monitor
+  (`src/components/LiveWaveform.js`). They are **illustrative**, drawn from the live rate; ATHENA does not
+  record, read or diagnose waveforms. "No signal" draws a flat line; with "reduce motion" the trace is still.
 - **Accessible:** state = icon + label + colour, charts are decorative with the value as text, 44 px
   targets, the live dot stops pulsing with "reduce motion".
 

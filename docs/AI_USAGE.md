@@ -67,6 +67,7 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 15 Nov 2026 | Chidozie | Claude Code | PR #54 review fixes: "Jump to next event" no longer sticks; Nakamura's event is held back in the demo record and written in by the live feed, so every screen turns critical together; Load demo mission restarts the live day; tests | `src/lib/live/*`, `src/lib/sim/demo.js`, `src/components/LiveProvider.js`, tests, `docs/*` |
 | 15 Nov 2026 | Isaac | Claude | Live data synced across screens (PR #56): today's vitals follow the live average (Today, Body, Trends, Summary, Crew), midnight roll-up saves the day's live averages, smooth per-second chart and value movement, live section in the flight-surgeon summary; tests | `src/lib/live/*`, `src/components/{LiveProvider,LiveUI,LiveChip,useTodayEvaluation}.js`, `src/app/{today,body,summary,crew,live}/page.js`, `docs/*` |
 | 15 Nov 2026 | Chidozie | Claude Code | Licence and figures audit: scanned all 576 packages, checked media and sources; on-screen figures now come from their constants; README Earth-delay figure cited | `src/app/summary/page.js`, `src/lib/live/stream.js`, `README.md`, `docs/*` |
+| 15 Nov 2026 | Chidozie | Claude Code | Bedside-monitor style live waveforms (ECG-style, pulse, breathing) on the Live Monitor | `src/components/LiveWaveform.js`, `src/app/live/page.js`, `docs/DECISIONS.md` |
 
 ## AI-generated media
 
