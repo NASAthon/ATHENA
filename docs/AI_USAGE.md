@@ -69,6 +69,7 @@ Required for submission (`docs/judging.md` 1C.6). AI may speed up building but m
 | 15 Nov 2026 | Chidozie | Claude Code | Licence and figures audit: scanned all 576 packages, checked media and sources; on-screen figures now come from their constants; README Earth-delay figure cited | `src/app/summary/page.js`, `src/lib/live/stream.js`, `README.md`, `docs/*` |
 | 15 Nov 2026 | Chidozie | Claude Code | Bedside-monitor style live waveforms (ECG-style, pulse, breathing) on the Live Monitor | `src/components/LiveWaveform.js`, `src/app/live/page.js`, `docs/DECISIONS.md` |
 | 15 Nov 2026 | Chidozie | Claude Code | Demo opens on three different crew states (14:40, paused); one jump plays Nakamura's emergency; Singh's shirt-off moved later | `src/lib/live/clock.js`, `src/lib/live/stream.js`, `src/components/LiveProvider.js`, tests, `docs/DECISIONS.md` |
+| 15 Nov 2026 | Chidozie | Claude Code | One alert banner per problem: live and stored banners about the same astronaut merged (most serious shown) | `src/components/AlertBanner.js` |
 
 ## AI-generated media
 
