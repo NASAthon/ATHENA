@@ -2,12 +2,19 @@
 // Steps come from NASA first, otherwise CDC/ADA, rewritten in our own words and cited.
 // adaptation: true = ATHENA's adaptation for spaceflight (e.g. "call 911" becomes
 // "contact the flight surgeon"), not a direct instruction from the source.
+// delayed: { text, why } = the wording used when the Earth link has a LONG delay (e.g. Mars, replies up to
+//   40 minutes), so steps never tell the crew to wait for Earth (ATHENA adaptation, docs/DECISIONS.md ›
+//   Mission Modes). Without it the step reads the same in every mission mode.
 // status: "ready" = every step sourced; "partial" = usable but missing a verified piece;
 //         "needs-source" = signs only, no verified steps yet. Not medical advice.
 
 const ESCALATE = {
   text: "Alert the crew and contact the flight surgeon now.",
   why: "In space the flight surgeon replaces emergency services. Messages can take up to 20 minutes each way, so start straight away.",
+  delayed: {
+    text: "Alert the crew and send the flight surgeon a message now. Don't wait for the reply: carry on with the next steps.",
+    why: "A reply can take up to 40 minutes. Sending now means advice arrives as soon as possible, while you keep helping.",
+  },
   sourceId: "nasa-hazard-distance",
   adaptation: true,
 };
@@ -58,7 +65,8 @@ export const EMERGENCIES = [
       { text: "Aim for 100 to 120 pushes a minute, at least 5 cm deep but not more than 6 cm.", why: "This is the rate and depth the AHA recommends for adults.", sourceId: "aha-what-is-cpr" },
       { text: "Let the chest come back up fully between pushes (don't lean on it), and keep pauses as short as possible.", why: "These are part of the AHA's five keys to high-quality CPR.", sourceId: "aha-what-is-cpr" },
       { text: "In microgravity, brace yourself and the casualty first, using the position from crew training.", why: "Without gravity, pushing on the chest moves you both apart unless you're anchored.", sourceId: null, adaptation: true },
-      { text: "Keep going until they respond, the defibrillator tells you to stop, or the flight surgeon advises otherwise.", why: "Interruptions reduce blood flow to the brain and heart.", sourceId: "aha-what-is-cpr" },
+      { text: "Keep going until they respond, the defibrillator tells you to stop, or the flight surgeon advises otherwise.", why: "Interruptions reduce blood flow to the brain and heart.", sourceId: "aha-what-is-cpr",
+        delayed: { text: "Keep going until they respond or the defibrillator tells you to stop. Don't pause to wait for advice from Earth.", why: "Interruptions reduce blood flow to the brain and heart, and a reply from Earth can take up to 40 minutes." } },
     ],
     risks: ["cardio"],
     keywords: ["collapse", "collapsed", "unconscious", "passed out", "not breathing", "no pulse", "cardiac arrest", "cpr", "unresponsive", "fainted"],
@@ -101,7 +109,8 @@ export const EMERGENCIES = [
       { text: "Wait 15 minutes, then check again.", why: "This is the '15-15 rule'.", sourceId: "ada-hypoglycemia-treatment" },
       { text: "Still below 70? Take another 15 g and check again after 15 minutes.", why: "Repeat until it's back above 70.", sourceId: "ada-hypoglycemia-treatment" },
       { text: "Once above 70, eat a snack with protein and carbohydrate if a meal isn't due soon.", why: "This keeps it from dropping again.", sourceId: "ada-hypoglycemia-treatment" },
-      { text: "If they are unconscious, give nothing by mouth. Alert the crew and contact the flight surgeon now.", why: "Severe low sugar is an emergency.", sourceId: "ada-hypoglycemia", adaptation: true },
+      { text: "If they are unconscious, give nothing by mouth. Alert the crew and contact the flight surgeon now.", why: "Severe low sugar is an emergency.", sourceId: "ada-hypoglycemia", adaptation: true,
+        delayed: { text: "If they are unconscious, give nothing by mouth. Alert the crew and send the flight surgeon a message now; don't wait for the reply.", why: "Severe low sugar is an emergency, and a reply from Earth can take up to 40 minutes." } },
     ],
     risks: ["nutrition"],
     keywords: ["low sugar", "low blood sugar", "hypo", "hypoglycemia", "shaky", "sweaty", "hungry", "glucose low", "15-15", "dizzy"],
@@ -118,7 +127,8 @@ export const EMERGENCIES = [
       { text: "Re-check blood pressure after a few minutes' rest.", why: "Confirms the reading before acting.", sourceId: "cdc-bp-measure" },
       { text: "If it's still above 180 and/or 120 with any symptom, treat it as an emergency.", why: "With symptoms this is a hypertensive emergency.", sourceId: "cdc-bp-about" },
       { ...ESCALATE },
-      { text: "Without symptoms, contact the flight surgeon promptly.", why: "Severe readings without symptoms still need a doctor's advice.", sourceId: "cdc-bp-about" },
+      { text: "Without symptoms, contact the flight surgeon promptly.", why: "Severe readings without symptoms still need a doctor's advice.", sourceId: "cdc-bp-about",
+        delayed: { text: "Without symptoms, send the flight surgeon a message promptly, then rest and re-check while you wait for the reply.", why: "Severe readings without symptoms still need a doctor's advice; a reply from Earth can take up to 40 minutes." } },
     ],
     risks: ["cardio"],
     keywords: ["high blood pressure", "very high bp", "hypertensive", "blood pressure emergency", "180", "pounding headache"],
@@ -188,14 +198,18 @@ export const EMERGENCIES = [
     status: "ready",
     priority: 2,
     glance: "Radiation alarm: go to the most shielded area, stay there, follow mission control.",
+    glanceDelayed: "Radiation alarm: go to the most shielded area and stay there until the onboard monitor says it's safe.",
     signs: ["Radiation alarm or dosimeter warning", "Mission control radiation alert"],
     signsSourceId: "nasa-hazard-radiation",
     steps: [
       { text: "Go straight to the most shielded part of the spacecraft (the centre or the radiation shelter).", why: "On Earth CDC says get inside and go to the middle of the building. Distance and shielding cut exposure.", sourceId: "cdc-radiation-get-inside", adaptation: true },
       { text: "Stay away from the outer walls.", why: "CDC advises staying far from outside walls and the roof.", sourceId: "cdc-radiation-get-inside" },
-      { text: "Stay sheltered until mission control says it's safe.", why: "CDC: stay inside and always follow instructions from emergency officials.", sourceId: "cdc-radiation-stay-inside", adaptation: true },
-      { text: "Keep listening for updates from mission control, and use text if voice fails.", why: "CDC: stay tuned for official instructions, and use texts if calls don't go through.", sourceId: "cdc-radiation-stay-tuned", adaptation: true },
-      { text: "Don't leave the shelter to help others or fix equipment unless mission control asks.", why: "CDC advises against going to the affected area to help.", sourceId: "cdc-radiation-stay-tuned", adaptation: true },
+      { text: "Stay sheltered until mission control says it's safe.", why: "CDC: stay inside and always follow instructions from emergency officials.", sourceId: "cdc-radiation-stay-inside", adaptation: true,
+        delayed: { text: "Stay sheltered until the onboard radiation monitor shows levels are back to normal, or the mission's radiation procedure says it's safe.", why: "CDC: stay inside until it's safe. Far from Earth, the onboard monitor and the crew's procedure decide, because mission control's reply can take up to 40 minutes." } },
+      { text: "Keep listening for updates from mission control, and use text if voice fails.", why: "CDC: stay tuned for official instructions, and use texts if calls don't go through.", sourceId: "cdc-radiation-stay-tuned", adaptation: true,
+        delayed: { text: "Keep checking the onboard radiation monitor, and send mission control short text updates.", why: "CDC: stay tuned and use texts if calls don't go through. Far from Earth their updates arrive late, so the onboard monitor is your live source." } },
+      { text: "Don't leave the shelter to help others or fix equipment unless mission control asks.", why: "CDC advises against going to the affected area to help.", sourceId: "cdc-radiation-stay-tuned", adaptation: true,
+        delayed: { text: "Don't leave the shelter to help others or fix equipment unless the mission's radiation procedure allows it.", why: "CDC advises against going to the affected area to help; far from Earth the crew's procedure decides, not a delayed reply." } },
       { text: "Log the dosimeter reading once it's safe.", why: "The flight surgeon tracks total dose; NASA uses onboard radiation monitors.", sourceId: "nasa-risk-cancer" },
     ],
     risks: ["cancer"],
@@ -219,7 +233,8 @@ export const EMERGENCIES = [
       { text: "Stop the activity straight away.", why: "CDC: remove the person from activity at once if a head injury is suspected.", sourceId: "cdc-concussion-response" },
       { text: "Check for the danger signs listed above.", why: "These signs mean the injury may be serious.", sourceId: "cdc-concussion-signs" },
       { ...ESCALATE, why: "CDC says danger signs need emergency care right away. In space that means the flight surgeon." },
-      { text: "Don't try to judge how bad it is yourself, and don't return to tasks until the flight surgeon clears you.", why: "CDC: don't judge severity yourself; rest until a healthcare provider says it's okay.", sourceId: "cdc-concussion-response" },
+      { text: "Don't try to judge how bad it is yourself, and don't return to tasks until the flight surgeon clears you.", why: "CDC: don't judge severity yourself; rest until a healthcare provider says it's okay.", sourceId: "cdc-concussion-response",
+        delayed: { text: "Don't try to judge how bad it is yourself. Send the flight surgeon a message, and rest while you wait for their reply before returning to tasks.", why: "CDC: don't judge severity yourself; rest until a healthcare provider says it's okay. A reply from Earth can take up to 40 minutes." } },
     ],
     risks: ["dynamic", "eva"],
     keywords: ["head injury", "hit head", "concussion", "bumped head", "head knock", "blow to the head", "head trauma"],
@@ -264,7 +279,8 @@ export const EMERGENCIES = [
     signsSourceId: "aha-first-aid-2024",
     steps: [
       { text: "If there's an open wound with heavy bleeding, follow the Severe bleeding guide first.", why: "Broken long bones can cause dangerous blood loss.", sourceId: "aha-first-aid-2024", nextEmergencyId: "severe-bleeding" },
-      { text: "Check the hand or foot beyond the injury. Blue, purple or pale? Contact the flight surgeon immediately.", why: "That colour can mean blood isn't reaching the limb, which threatens the limb.", sourceId: "aha-first-aid-2024", adaptation: true },
+      { text: "Check the hand or foot beyond the injury. Blue, purple or pale? Contact the flight surgeon immediately.", why: "That colour can mean blood isn't reaching the limb, which threatens the limb.", sourceId: "aha-first-aid-2024", adaptation: true,
+        delayed: { text: "Check the hand or foot beyond the injury. Blue, purple or pale? Send the flight surgeon a message immediately, and keep the limb still while you wait for the reply.", why: "That colour can mean blood isn't reaching the limb, which threatens the limb; a reply from Earth can take up to 40 minutes." } },
       { text: "Keep the limb in the position you found it. Don't try to straighten it.", why: "Straightening can damage nerves and blood vessels, or push bone through the skin.", sourceId: "aha-first-aid-2024" },
       { text: "Splint it to stop it moving.", why: "A splint reduces pain and stops further injury.", sourceId: "aha-first-aid-2024" },
       { text: "Cover any open wound with a clean dressing.", why: "This lowers the risk of infection.", sourceId: "aha-first-aid-2024" },
@@ -288,7 +304,8 @@ export const EMERGENCIES = [
     signsSourceId: "cdc-suicide-prevention",
     steps: [
       { text: "Take the warning signs seriously and stay with them.", why: "CDC: anyone can recognise the warning signs and help connect the person to support.", sourceId: "cdc-suicide-prevention", adaptation: true },
-      { text: "Contact the flight surgeon and the mission's mental health support now.", why: "CDC says to connect someone in crisis with a crisis line or mental health provider. In space, that's the flight surgeon and support team.", sourceId: "cdc-suicide-prevention", adaptation: true },
+      { text: "Contact the flight surgeon and the mission's mental health support now.", why: "CDC says to connect someone in crisis with a crisis line or mental health provider. In space, that's the flight surgeon and support team.", sourceId: "cdc-suicide-prevention", adaptation: true,
+        delayed: { text: "Send the flight surgeon and the mission's mental health support a message now, and stay with them while you wait for the reply.", why: "CDC says to connect someone in crisis with support. Far from Earth a reply can take up to 40 minutes, so a crewmate stays with them meanwhile." } },
       { text: "Securely store any medicines they could misuse. Out of sight isn't secure enough.", why: "CDC: securely storing medicines is a key safety step.", sourceId: "cdc-suicide-prevention" },
       { text: "For panic or high stress: slow, deep breaths, a break from tasks, and talking with someone they trust.", why: "These are CDC's recommended ways to manage stress.", sourceId: "cdc-managing-stress" },
       { text: "Make sure they have private space if they want it.", why: "NASA lists privacy as a countermeasure for isolation-related stress.", sourceId: "nasa-risk-behavioural" },

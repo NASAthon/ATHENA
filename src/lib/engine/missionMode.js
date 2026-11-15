@@ -110,3 +110,37 @@ export function adviceForMode(modeId) {
     earthLink: earthLink(mode.id),
   });
 }
+
+/**
+ * Round-trip Earth delay above which ATHENA tells the crew not to wait for a reply (design choice:
+ * 2 minutes; Mars is up to 40 minutes, the ISS and Gateway are seconds).
+ */
+export const LONG_DELAY_SECONDS = 120;
+
+/**
+ * True when a reply from Earth takes too long to wait for in an emergency (e.g. Mars Transit).
+ *
+ * @param {string} [modeId]
+ * @returns {boolean}
+ */
+export function isEarthDelayed(modeId) {
+  const link = earthLink(modeId);
+  return Boolean(link && link.roundTripMaxSeconds > LONG_DELAY_SECONDS);
+}
+
+/**
+ * An emergency guide worded for the mission mode: with a long Earth delay, each step that has a
+ * `delayed` wording (src/data/emergencies.js) uses it, so no step tells the crew to wait for Earth.
+ *
+ * @param {Object} guide An entry from EMERGENCIES.
+ * @param {string} [modeId]
+ * @returns {Object} The same guide, with `steps` and `glance` for this mode.
+ */
+export function emergencyForMode(guide, modeId) {
+  if (!guide || !isEarthDelayed(modeId)) return guide;
+  return {
+    ...guide,
+    glance: guide.glanceDelayed ?? guide.glance,
+    steps: guide.steps.map((s) => (s.delayed ? { ...s, text: s.delayed.text, why: s.delayed.why, adaptation: true } : s)),
+  };
+}

@@ -68,6 +68,7 @@ for (const e of EMERGENCIES) {
     src(s.sourceId, `${w} step ${n + 1}`);
     check(s.sourceId || s.adaptation, `${w} step ${n + 1}: needs a source or adaptation: true`);
     check(s.why, `${w} step ${n + 1}: needs a "why"`);
+    if (s.delayed) check(s.delayed.text && s.delayed.why, `${w} step ${n + 1}: "delayed" wording needs text and why`);
     if (s.nextEmergencyId) check(emergencyIds.has(s.nextEmergencyId), `${w} step ${n + 1}: unknown emergency "${s.nextEmergencyId}"`);
   });
   kw(e, w);
