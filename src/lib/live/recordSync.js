@@ -34,3 +34,43 @@ export function pendingRecordFields(events, stored) {
   if (newSymptom) fields.symptoms = [...symptoms];
   return Object.keys(fields).length > 0 ? fields : null;
 }
+
+// Record fields that the live feed's running average fills in for today (docs/DECISIONS.md ›
+// Always-On Live Monitoring › Live roll-up). Each is [record field, live measure, field in the measure].
+const LIVE_DAILY_FIELDS = Object.freeze([
+  ["heartRate", "heartRate", "heartRate"],
+  ["bpSystolic", "bloodPressure", "bpSystolic"],
+  ["bpDiastolic", "bloodPressure", "bpDiastolic"],
+  ["spo2", "spo2", "spo2"],
+]);
+
+/**
+ * Today's record as every screen should see it right now: the sensor vitals are the live feed's
+ * average so far, so Today, Body, Trends, Summary and Crew move with the Live Monitor. Values a live
+ * event has written into the record (e.g. a red-limit reading) are kept, and so is anything the
+ * feed can't supply (shirt not worn all day). Nothing is saved: this is a view of the record.
+ *
+ * @param {Object | null} stored Today's stored record.
+ * @param {Object | null} snapshot liveSnapshot() for the same astronaut and day.
+ * @returns {Object | null}
+ */
+export function liveTodayRecord(stored, snapshot) {
+  if (!stored || !snapshot) return stored;
+  const fromEvents = new Set(snapshot.events.flatMap((e) => Object.keys(e.record ?? {})));
+  const record = { ...stored };
+  for (const [key, measureId, field] of LIVE_DAILY_FIELDS) {
+    const avg = snapshot.measures[measureId]?.averageSoFar?.[field];
+    if (fromEvents.has(key) || !Number.isFinite(avg)) continue;
+    record[key] = Math.round(avg);
+  }
+  return record;
+}
+
+/** A short, stable key for the live overlay, so screens only re-evaluate when a value changes. */
+export function liveTodayKey(snapshot) {
+  if (!snapshot) return "";
+  return LIVE_DAILY_FIELDS.map(([, measureId, field]) => {
+    const v = snapshot.measures[measureId]?.averageSoFar?.[field];
+    return Number.isFinite(v) ? Math.round(v) : "-";
+  }).join(",") + `|${snapshot.events.filter((e) => e.record).length}`;
+}

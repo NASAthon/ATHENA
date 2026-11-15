@@ -128,7 +128,7 @@ export function LiveProvider({ children }) {
     if (!clock || !days) {
       return { active: false, setSpeed: () => {}, togglePause: () => {}, jumpToNext: () => {} };
     }
-    const crew = Object.fromEntries(CREW.map((m) => [m.id, liveSnapshot(days[m.id], minute)]));
+    const crew = Object.fromEntries(CREW.map((m) => [m.id, liveSnapshot(days[m.id], clock.minute)]));
     const events = [
       ...CREW.flatMap((m) => crew[m.id].events),
       ...crewEvents(clock.day).filter((e) => e.minute <= minute),
@@ -139,6 +139,8 @@ export function LiveProvider({ children }) {
       day: clock.day,
       minute,
       time: timeText(minute),
+      // Seconds too at real-time speed, so the clock visibly ticks.
+      clockText: clock.speed === 1 ? `${timeText(minute)}:${String(Math.floor((clock.minute % 1) * 60)).padStart(2, "0")}` : timeText(minute),
       speed: clock.speed,
       paused: clock.paused,
       crew,

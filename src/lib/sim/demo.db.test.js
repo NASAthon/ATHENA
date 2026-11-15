@@ -84,3 +84,16 @@ test("Reset and Load demo mission both clear simulated communication history", a
   await loadDemoMission(db);
   assert.deepEqual(db.loadCommunications("rivera"), []);
 });
+
+test("midnight roll-up closes the day with the live-feed averages and opens the next", async () => {
+  const { rollOverDay } = await import("../live/clock.js");
+  const db = await openDatabase({ SQL, persistence: memoryPersistence() });
+  await loadDemoMission(db);
+  await rollOverDay(db, CREW_IDS, DEMO_TODAY + 1);
+  assert.equal(db.getMeta("today"), String(DEMO_TODAY + 1));
+  for (const id of CREW_IDS) {
+    const closed = db.loadDailyRecords(id, { fromDay: DEMO_TODAY, toDay: DEMO_TODAY })[0];
+    assert.ok(Number.isInteger(closed.heartRate) && Number.isInteger(closed.spo2), id);
+    assert.equal(db.loadDailyRecords(id, { fromDay: DEMO_TODAY + 1, toDay: DEMO_TODAY + 1 }).length, 1);
+  }
+});

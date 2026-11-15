@@ -276,6 +276,7 @@ const timeText = (m) => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String
 export { timeText };
 
 const measureById = Object.fromEntries(LIVE_MEASURES.map((m) => [m.id, m]));
+const FEED_FIELDS = LIVE_MEASURES.flatMap((m) => m.fields);
 
 function valueText(measureId, r) {
   if (!r?.worn) return "no data";
@@ -388,18 +389,29 @@ export function liveDay(astronautId, day, baselines, options) {
  */
 export function liveSnapshot(dayData, minute) {
   const m = Math.max(0, Math.min(DAY_MINUTES - 1, Math.floor(minute)));
+  // Between two minutes the shown value and the chart glide towards the next reading, so the screen
+  // moves every second even at real-time speed. States and alerts still change only on whole minutes.
+  const frac = m < DAY_MINUTES - 1 ? Math.max(0, Math.min(1, minute - m)) : 0;
   const { readings, evaluation, normals } = dayData;
   const now = readings[m];
+  const after = readings[Math.min(DAY_MINUTES - 1, m + 1)];
+  const glide = frac > 0 && now.worn && after.worn;
+  const shown = glide ? { ...now, ...Object.fromEntries(FEED_FIELDS.map((f) => [f, now[f] + (after[f] - now[f]) * frac])) } : now;
   const measures = {};
   for (const measure of LIVE_MEASURES) {
     const field = measure.fields[0];
     const sofar = readings.slice(0, m + 1).filter((r) => r.worn);
+    const series = readings.slice(Math.max(0, m - 59), m + 1).map((r) => (r.worn ? r[field] : null));
     measures[measure.id] = {
       state: evaluation.states[measure.id][m],
-      reading: now.worn ? Object.fromEntries(measure.fields.map((f) => [f, now[f]])) : null,
-      text: valueText(measure.id, now),
+      reading: now.worn ? Object.fromEntries(measure.fields.map((f) => [f, shown[f]])) : null,
+      text: valueText(measure.id, shown),
       averageSoFar: sofar.length ? Object.fromEntries(measure.fields.map((f) => [f, sofar.reduce((s, r) => s + r[f], 0) / sofar.length])) : null,
-      series: readings.slice(Math.max(0, m - 59), m + 1).map((r) => (r.worn ? r[field] : null)),
+      // Always 60 slots (null before midnight's first reading), oldest first, ending at minute m.
+      series: [...Array(60 - series.length).fill(null), ...series],
+      // Where the line is heading, and how far through the minute we are (0–1), for the moving chart.
+      next: glide ? after[field] : null,
+      shift: glide ? frac : 0,
       band: { low: normals[field].mean - normals[field].half, high: normals[field].mean + normals[field].half },
     };
   }

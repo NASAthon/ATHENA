@@ -21,7 +21,7 @@ export default function LiveChip() {
       />
       <strong>{live.paused ? "Paused" : "Live"}</strong>
       <span className="text-muted-foreground">
-        | Day {live.day} | {live.time}
+        | Day {live.day} | <span className="tabular-nums">{live.clockText}</span>
       </span>
     </Link>
   );

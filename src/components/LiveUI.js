@@ -31,18 +31,21 @@ export function LiveStateBadge({ state, size = "sm" }) {
  * The last 60 minutes as a line, over a shaded band for the astronaut's own normal. Gaps (sensor
  * not worn) break the line. Decorative: the value and state are always shown as text beside it.
  */
-export function Sparkline({ series, band, colour }) {
+export function Sparkline({ series, band, colour, next = null, shift = 0 }) {
   const W = 160;
   const H = 44;
-  const vals = series.filter((v) => v !== null);
+  const vals = [...series, next].filter((v) => v !== null);
   const lo = Math.min(band.low, ...vals);
   const hi = Math.max(band.high, ...vals);
   const pad = (hi - lo) * 0.1 || 1;
   const y = (v) => H - ((v - (lo - pad)) / (hi - lo + 2 * pad)) * H;
-  const x = (i) => (i / Math.max(1, series.length - 1)) * W;
+  // The window slides left smoothly as the minute passes (`shift`); the newest point heads for
+  // `next`, and anything outside the box is clipped.
+  const x = (i) => ((i - shift) / (series.length - 1)) * W;
+  const points = next === null ? series : [...series, next];
   const segments = [];
   let current = [];
-  series.forEach((v, i) => {
+  points.forEach((v, i) => {
     if (v === null) {
       if (current.length) segments.push(current);
       current = [];
@@ -50,7 +53,7 @@ export function Sparkline({ series, band, colour }) {
   });
   if (current.length) segments.push(current);
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="block h-11 w-full" aria-hidden="true">
+    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="block h-11 w-full overflow-hidden" aria-hidden="true">
       <rect x="0" y={y(band.high)} width={W} height={Math.max(1, y(band.low) - y(band.high))} fill="var(--status-steady)" fillOpacity="0.12" />
       {segments.map((pts, i) => (
         <polyline key={i} points={pts.join(" ")} fill="none" stroke={colour} strokeWidth="2" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />

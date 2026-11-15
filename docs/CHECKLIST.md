@@ -100,6 +100,7 @@ One line per designed page. A page is ticked when it's built and working in the 
 - [x] **M** Save confirmation (PR #8, PR #13, PR #19; PR #54: one-minute check and cuff extra check confirm on Today)
 - [x] **M** Reminders: shows which measurements are still due today (PR #20; PR #54: only mood, anything new and reaction time, since sensors cover the rest)
 - [x] **M** Live monitoring (PR #54): stable, fluctuating, deteriorating, critical and no-data states with rules; live alert bar and chip on every page; live values and today's average on Today; confidence on the health score; extra-check request; presenter demo controls on Crew
+- [x] **M** Live data in sync on every screen (PR #55): today's vitals follow the live average so far on Today, Body, Trends, Summary and Crew; midnight roll-up saves the day's live averages; charts and values move every second
 
 ### Reaction test
 
